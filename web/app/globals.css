@@ -1,0 +1,118 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  /* Shadcn tokens (point at CSS vars defined below) */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-inter);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+
+  /* CREAIT brand tokens (use as bg-brand-ink, text-brand-electric, etc.) */
+  --color-brand-ink: #0a0e1a;
+  --color-brand-charcoal: #111827;
+  --color-brand-slate: #1a2235;
+  --color-brand-fog: #2a3447;
+  --color-brand-mist: #94a3b8;
+  --color-brand-paper: #f1f5f9;
+  --color-brand-electric: #3b82f6;
+  --color-brand-electric-glow: #60a5fa;
+  --color-brand-aqua: #6ee7b7;
+  --color-brand-aqua-glow: #a7f3d0;
+  --color-brand-violet: #8b5cf6;
+  --color-brand-gold: #f59e0b;
+  --color-brand-success: #22c55e;
+  --color-brand-warning: #f59e0b;
+  --color-brand-danger: #ef4444;
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/* Dark-only theme: :root === .dark values. CREAIT brand mapped to shadcn primitives. */
+:root,
+.dark {
+  --background: #0a0e1a;                      /* brand.ink */
+  --foreground: #f1f5f9;                      /* brand.paper */
+  --card: #111827;                            /* brand.charcoal */
+  --card-foreground: #f1f5f9;
+  --popover: #111827;
+  --popover-foreground: #f1f5f9;
+  --primary: #3b82f6;                         /* brand.electric */
+  --primary-foreground: #ffffff;
+  --secondary: #1a2235;                       /* brand.slate */
+  --secondary-foreground: #f1f5f9;
+  --muted: #1a2235;
+  --muted-foreground: #94a3b8;                /* brand.mist */
+  --accent: #1a2235;
+  --accent-foreground: #f1f5f9;
+  --destructive: #ef4444;                     /* brand.danger */
+  --border: #2a3447;                          /* brand.fog */
+  --input: #2a3447;
+  --ring: #3b82f6;
+  --chart-1: #3b82f6;
+  --chart-2: #6ee7b7;
+  --chart-3: #8b5cf6;
+  --chart-4: #f59e0b;
+  --chart-5: #ef4444;
+  --radius: 0.625rem;
+  --sidebar: #0a0e1a;
+  --sidebar-foreground: #f1f5f9;
+  --sidebar-primary: #3b82f6;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #1a2235;
+  --sidebar-accent-foreground: #f1f5f9;
+  --sidebar-border: #2a3447;
+  --sidebar-ring: #3b82f6;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans;
+    color-scheme: dark;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+}
