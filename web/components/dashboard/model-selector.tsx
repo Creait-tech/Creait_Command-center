@@ -1,0 +1,87 @@
+"use client";
+
+import * as React from "react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+const STORAGE_KEY = "creait.model";
+const DEFAULT_MODEL = "claude-sonnet-4-6";
+
+export const MODELS = [
+  { id: "claude-sonnet-4-6", label: "Claude Sonnet 4.6" },
+  { id: "claude-opus-4-7", label: "Claude Opus 4.7" },
+  { id: "claude-haiku-4-5", label: "Claude Haiku 4.5" },
+  { id: "gpt-5", label: "GPT-5" },
+  { id: "gemini-3-pro", label: "Gemini 3 Pro" },
+] as const;
+
+export type ModelId = (typeof MODELS)[number]["id"];
+
+function isValidModel(value: string | null): value is ModelId {
+  if (!value) return false;
+  return MODELS.some((m) => m.id === value);
+}
+
+export function useSelectedModel(): [ModelId, (id: ModelId) => void] {
+  const [model, setModel] = React.useState<ModelId>(DEFAULT_MODEL);
+
+  React.useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const stored = window.localStorage.getItem(STORAGE_KEY);
+      if (isValidModel(stored)) {
+        setModel(stored);
+      }
+    } catch {
+      // localStorage unavailable; keep default
+    }
+  }, []);
+
+  const updateModel = React.useCallback((id: ModelId) => {
+    setModel(id);
+    if (typeof window === "undefined") return;
+    try {
+      window.localStorage.setItem(STORAGE_KEY, id);
+    } catch {
+      // ignore persistence failures
+    }
+  }, []);
+
+  return [model, updateModel];
+}
+
+type ModelSelectorProps = {
+  className?: string;
+  size?: "sm" | "default";
+};
+
+export function ModelSelector({ className, size = "sm" }: ModelSelectorProps) {
+  const [model, setModel] = useSelectedModel();
+
+  return (
+    <Select
+      value={model}
+      onValueChange={(value) => {
+        if (isValidModel(value)) {
+          setModel(value);
+        }
+      }}
+    >
+      <SelectTrigger size={size} className={className}>
+        <SelectValue placeholder="Model" />
+      </SelectTrigger>
+      <SelectContent>
+        {MODELS.map((m) => (
+          <SelectItem key={m.id} value={m.id}>
+            {m.label}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  );
+}
