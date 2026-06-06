@@ -1,0 +1,8 @@
+{
+  "crons": [
+    { "path": "/api/cron/daily-briefing", "schedule": "0 12 * * *" },
+    { "path": "/api/cron/comms-sweep", "schedule": "0 */2 * * *" },
+    { "path": "/api/cron/weekly-summary", "schedule": "0 22 * * 5" },
+    { "path": "/api/cron/ghl-sync", "schedule": "0 * * * *" }
+  ]
+}

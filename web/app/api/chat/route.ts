@@ -9,6 +9,7 @@ import {
   resolveModel,
 } from '@/lib/ai'
 import { buildSystemPrompt } from '@/lib/context-builder'
+import { loadMcpTools } from '@/lib/mcp-client'
 
 export const runtime = 'nodejs'
 export const maxDuration = 60
@@ -59,9 +60,10 @@ export async function POST(req: Request) {
       )
     }
 
-    const [system, modelMessages] = await Promise.all([
+    const [system, modelMessages, tools] = await Promise.all([
       buildSystemPrompt(ORG_ID, pageContext),
       convertToModelMessages(messages as UIMessage[]),
+      loadMcpTools(),
     ])
     const resolvedModel = resolveModel(modelId)
 
@@ -69,7 +71,8 @@ export async function POST(req: Request) {
       model: resolvedModel,
       system,
       messages: modelMessages,
-      stopWhen: stepCountIs(5),
+      tools,
+      stopWhen: stepCountIs(8),
     })
 
     return result.toUIMessageStreamResponse({

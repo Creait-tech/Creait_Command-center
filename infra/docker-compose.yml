@@ -1,37 +1,26 @@
-# Deploy the CREAIT MCP server behind the existing Traefik on the Hostinger VPS.
-# Requires:
-#   - Traefik already running on the host (it is — `traefik-traefik-1`)
-#   - DNS: mcp.getcreait.com A 2.24.116.77
-#   - /etc/creait-mcp/.env populated with MCP_TOKEN, GETCREAIT_PIT, GETCREAIT_LOCATION_ID
-#   - Docker volume /opt/creait-mcp/data for markdown second brain files
+# Local-dev / repo-root compose file for the CREAIT MCP server.
 #
-# Deploy:
-#   docker compose -f infra/docker-compose.yml up -d --build
+# NOTE: this file is for running the MCP container from the repo on your
+# laptop. It is NOT used on the VPS — see infra/mcp.vps.compose.yml for
+# the production layout (which expects sources rsynced to /opt/creait-mcp).
 #
-# Traefik network name "traefik" must match what the existing Traefik instance uses.
-# If different, adjust the `networks` section below.
+# Requires a .env at /etc/creait-mcp/.env (or change env_file) with:
+#   MCP_TOKEN=...
+#   DATA_DIR=/data
+#   GETCREAIT_PIT=...           (optional — GHL tools return 503 if missing)
+#   GETCREAIT_LOCATION_ID=XJuOjmYZEFS65kTCilsH
 
 services:
   creait-mcp:
     build:
       context: ../mcp
       dockerfile: Dockerfile
+    image: creait-mcp:latest
     container_name: creait-mcp
     restart: unless-stopped
     env_file:
       - /etc/creait-mcp/.env
     volumes:
       - /opt/creait-mcp/data:/data
-    networks:
-      - traefik
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.creait-mcp.rule=Host(`mcp.getcreait.com`)"
-      - "traefik.http.routers.creait-mcp.entrypoints=websecure"
-      - "traefik.http.routers.creait-mcp.tls=true"
-      - "traefik.http.routers.creait-mcp.tls.certresolver=letsencrypt"
-      - "traefik.http.services.creait-mcp.loadbalancer.server.port=8080"
-
-networks:
-  traefik:
-    external: true
+    ports:
+      - "8080:8080"
