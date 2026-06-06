@@ -7,7 +7,11 @@ web/.env
 web/.env.local
 mcp/.env
 mcp/dist
-mcp/data/*.md
+mcp/node_modules
+
+# Per Phase 2 plan, mcp/data/**/*.md IS committed (seeds the VPS volume).
+# Only ignore work-in-progress drafts so they don't ship with the image.
+mcp/data/**/*.draft.md
 
 # IDE
 .vscode

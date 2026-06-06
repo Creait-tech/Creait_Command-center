@@ -1,0 +1,38 @@
+# Production compose file for the Hostinger VPS.
+#
+# Layout assumed on the VPS (set up by the deploy step):
+#   /opt/creait-mcp/
+#     source/              <- rsync'd from local /Users/reecebyob/code/Creait_Command-center/mcp/
+#     data/                <- markdown second brain (Docker volume mount target)
+#     docker-compose.yml   <- this file (renamed)
+#   /etc/creait-mcp/.env   <- MCP_TOKEN, DATA_DIR, GETCREAIT_PIT, GETCREAIT_LOCATION_ID
+#
+# Traefik is already running on the host in host-network mode with the
+# Docker provider enabled. It discovers containers by label regardless of
+# which user-defined bridge network they live on, so we just let Docker
+# create the default bridge for this compose project.
+#
+# Deploy:
+#   cd /opt/creait-mcp && docker compose -f docker-compose.yml up -d --build
+
+services:
+  creait-mcp:
+    build:
+      context: ./source
+      dockerfile: Dockerfile
+    image: creait-mcp:latest
+    container_name: creait-mcp
+    restart: unless-stopped
+    env_file:
+      - /etc/creait-mcp/.env
+    volumes:
+      - /opt/creait-mcp/data:/data
+    expose:
+      - "8080"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.creait-mcp.rule=Host(`mcp.getcreait.com`)"
+      - "traefik.http.routers.creait-mcp.entrypoints=websecure"
+      - "traefik.http.routers.creait-mcp.tls=true"
+      - "traefik.http.routers.creait-mcp.tls.certresolver=letsencrypt"
+      - "traefik.http.services.creait-mcp.loadbalancer.server.port=8080"
