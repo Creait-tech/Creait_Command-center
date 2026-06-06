@@ -3,6 +3,11 @@
     { "path": "/api/cron/daily-briefing", "schedule": "0 12 * * *" },
     { "path": "/api/cron/comms-sweep", "schedule": "0 */2 * * *" },
     { "path": "/api/cron/weekly-summary", "schedule": "0 22 * * 5" },
-    { "path": "/api/cron/ghl-sync", "schedule": "0 * * * *" }
+    { "path": "/api/cron/ghl-sync", "schedule": "0 * * * *" },
+    { "path": "/api/cron/goal-check", "schedule": "0 14 * * 1" },
+    { "path": "/api/cron/youtube-research", "schedule": "0 13 * * *" },
+    { "path": "/api/cron/recruiting-monitor", "schedule": "0 14 * * *" },
+    { "path": "/api/cron/client-health", "schedule": "0 15 * * *" },
+    { "path": "/api/cron/tech-watch-crawl", "schedule": "0 13 * * *" }
   ]
 }

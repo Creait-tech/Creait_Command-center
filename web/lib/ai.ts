@@ -11,6 +11,23 @@ import { google } from '@ai-sdk/google'
  *
  * Google: `gemini-3-pro` aliases to the currently-supported preview variant
  * `gemini-3-pro-preview` so the public ID stays stable as Google promotes it.
+ *
+ * ---------------------------------------------------------------------------
+ * Phase 4 TODO — OSS routing via Vercel AI Gateway
+ * ---------------------------------------------------------------------------
+ * Once `pnpm add @ai-sdk/gateway` is in, register cheap OSS models so the
+ * long-running background agents (Tech Watch Crawler, YouTube Research, etc.)
+ * can fan out without burning Anthropic credit. Suggested entries:
+ *
+ *   import { gateway } from '@ai-sdk/gateway'
+ *   'kimi-k2':        gateway('moonshotai/kimi-k2'),
+ *   'deepseek-v3':    gateway('deepseek/deepseek-v3'),
+ *   'llama-3-3-70b':  gateway('meta/llama-3.3-70b'),
+ *
+ * Routing rule: if `AI_GATEWAY_API_KEY` is set, prefer the gateway entry;
+ * else fall back to the direct provider entries below. Cost rates in
+ * skills-engine.ts will need matching rows for these IDs.
+ * ---------------------------------------------------------------------------
  */
 export const MODEL_MAP = {
   'claude-sonnet-4-6': anthropic('claude-sonnet-4-6'),

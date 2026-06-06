@@ -287,6 +287,25 @@ export interface MediaPlatform {
   updated_at: string;
 }
 
+export type StrategicBetStatus =
+  | "exploring"
+  | "validating"
+  | "committed"
+  | "dropped";
+
+export interface StrategicBet {
+  id: string;
+  org_id: string;
+  title: string;
+  hypothesis: string | null;
+  evidence: string | null;
+  status: StrategicBetStatus;
+  owner_id: string | null;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+}
+
 export type BriefingType = "daily" | "deep_research" | "market" | "custom";
 
 export interface ResearchBriefing {
@@ -488,6 +507,7 @@ export interface Database {
       advisor_insights: Table<AdvisorInsight>;
       strategy: Table<Strategy>;
       media_platforms: Table<MediaPlatform>;
+      strategic_bets: Table<StrategicBet>;
       research_briefings: Table<ResearchBriefing>;
       competitors: Table<Competitor>;
       messages: Table<Message>;

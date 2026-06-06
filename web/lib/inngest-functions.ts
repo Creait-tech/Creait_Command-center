@@ -2,6 +2,7 @@ import { inngest } from '@/lib/inngest'
 import { loadMcpTools } from '@/lib/mcp-client'
 import { runSkill } from '@/lib/skills-engine'
 import { createServiceClient } from '@/lib/supabase/server'
+import { tavilySearch, type TavilyResult } from '@/lib/tavily'
 
 /**
  * Inngest functions for the CREAIT Command Center.
@@ -236,19 +237,77 @@ export const weeklySummary = inngest.createFunction(
 )
 
 /**
- * Goal-check — placeholder cron route (no scheduled trigger of its own yet).
- * Currently only fires via the manual cron endpoint. Updates KPI snapshots
- * and surfaces drift; full implementation lands in Phase 3.
+ * Goal-check — Monday 9am ET. Surfaces goal drift: any active goal with
+ * a due_date in the next 14 days where progress is below the linear-pace
+ * threshold. Writes a digest message into the comms inbox so Maurice sees
+ * it during his Monday review.
+ *
+ * Full goal-drift heuristics (subtask completion velocity, missed dates)
+ * land iteratively — this is the v1 nudge.
  */
 export const goalCheck = inngest.createFunction(
   {
     id: 'goal-check',
     name: 'Goal Check',
-    triggers: [{ event: 'cron/goal-check' }],
+    triggers: [
+      { cron: 'TZ=America/New_York 0 9 * * 1' },
+      { event: 'cron/goal-check' },
+    ],
   },
   async ({ step }) => {
-    await step.run('noop', () => ({ note: 'goal-check stub' }))
-    return { ok: true, note: 'Phase 3 will implement goal drift detection.' }
+    const drifting = await step.run('detect-drift', async () => {
+      const supabase = createServiceClient()
+      const { data, error } = await supabase
+        .from('goals')
+        .select('id, title, progress, due_date, timeframe')
+        .eq('org_id', ORG_ID)
+        .eq('status', 'active')
+      if (error) {
+        console.error('[inngest] goal-check fetch failed:', error.message)
+        return []
+      }
+      const now = Date.now()
+      const at_risk: Array<{ id: string; title: string; reason: string }> = []
+      for (const g of data ?? []) {
+        const due = g.due_date ? new Date(g.due_date).getTime() : null
+        const progress = typeof g.progress === 'number' ? g.progress : 0
+        if (due && due - now < 14 * 86_400_000 && progress < 70) {
+          at_risk.push({
+            id: g.id as string,
+            title: g.title as string,
+            reason: `${progress}% complete, due in ${Math.max(0, Math.floor((due - now) / 86_400_000))}d`,
+          })
+        }
+      }
+      return at_risk
+    })
+
+    if (drifting.length === 0) {
+      return { ok: true, drifting: 0 }
+    }
+
+    await step.run('write-digest-message', async () => {
+      const supabase = createServiceClient()
+      const body = [
+        'Goal-check flagged the following at-risk goals this week:',
+        ...drifting.map((d) => `• ${d.title} — ${d.reason}`),
+      ].join('\n')
+      const { error } = await supabase.from('messages').insert({
+        org_id: ORG_ID,
+        source: 'other',
+        direction: 'inbound',
+        subject: `Goal drift: ${drifting.length} at-risk goal${drifting.length === 1 ? '' : 's'}`,
+        body,
+        status: 'unread',
+        priority_score: 80,
+        contact_name: 'Goal Check Agent',
+      })
+      if (error) {
+        console.error('[inngest] goal-check insert failed:', error.message)
+      }
+    })
+
+    return { ok: true, drifting: drifting.length }
   },
 )
 
@@ -425,6 +484,396 @@ function summarizeOpportunities(result: unknown): {
 }
 
 // ---------------------------------------------------------------------------
+// Agent bookkeeping
+// ---------------------------------------------------------------------------
+
+/**
+ * Bump `agents.last_run_at` (and a forward-looking `next_run_at` estimate)
+ * after a background agent completes. Looked up by the canonical agent name
+ * so we don't have to plumb agent ids through every Inngest function.
+ *
+ * Best-effort — never throws (these crons must not fail just because the
+ * dashboard couldn't update).
+ */
+async function bumpAgentRun(agentName: string, nextRunHours = 24): Promise<void> {
+  try {
+    const supabase = createServiceClient()
+    const now = new Date()
+    const nextRun = new Date(now.getTime() + nextRunHours * 60 * 60 * 1000)
+    const { error } = await supabase
+      .from('agents')
+      .update({
+        last_run_at: now.toISOString(),
+        next_run_at: nextRun.toISOString(),
+      })
+      .eq('org_id', ORG_ID)
+      .eq('name', agentName)
+    if (error) {
+      console.error(`[inngest] bumpAgentRun(${agentName}) failed:`, error.message)
+    }
+  } catch (err) {
+    console.error(`[inngest] bumpAgentRun(${agentName}) threw:`, err)
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Long-running background agents (Phase 3)
+// ---------------------------------------------------------------------------
+
+/**
+ * YouTube Research Agent — daily 8am ET. Scans for trending YouTube videos
+ * in CREAIT's industry niche via Tavily and writes the top 5 hits into a
+ * single `research_briefings` row for review on the /research page.
+ *
+ * Skipped if `TAVILY_API_KEY` is missing.
+ */
+export const youtubeResearch = inngest.createFunction(
+  {
+    id: 'youtube-research',
+    name: 'YouTube Research Agent',
+    triggers: [
+      { cron: 'TZ=America/New_York 0 8 * * *' },
+      { event: 'cron/youtube-research' },
+    ],
+  },
+  async ({ step }) => {
+    if (!process.env.TAVILY_API_KEY) {
+      console.warn('[inngest] youtube-research skipped — TAVILY_API_KEY missing')
+      await bumpAgentRun('YouTube Research Agent')
+      return { skipped: 'TAVILY_API_KEY missing' }
+    }
+
+    const search = await step.run('tavily-youtube-search', async () => {
+      const response = await tavilySearch(
+        'AI consulting OR GoHighLevel OR agency operations YouTube videos this week',
+        { max_results: 5, include_domains: ['youtube.com', 'youtu.be'] },
+      )
+      return response.results
+    })
+
+    if (search.length === 0) {
+      await bumpAgentRun('YouTube Research Agent')
+      return { ok: true, inserted: 0 }
+    }
+
+    const briefingId = await step.run('write-briefing', async () => {
+      const supabase = createServiceClient()
+      const today = new Date().toISOString().slice(0, 10)
+      const content = [
+        `# YouTube Trends — ${today}`,
+        '',
+        'Top videos from this week in AI consulting, GoHighLevel, and agency operations:',
+        '',
+        ...search.map((r, i) => {
+          const lines = [`### ${i + 1}. ${r.title}`, `[${r.url}](${r.url})`]
+          if (r.content) lines.push('', r.content.slice(0, 400))
+          return lines.join('\n')
+        }),
+      ].join('\n')
+
+      const { data, error } = await supabase
+        .from('research_briefings')
+        .insert({
+          org_id: ORG_ID,
+          title: `YouTube Trends — ${today}`,
+          briefing_type: 'market',
+          content,
+          sources: search.map((r) => ({ url: r.url, title: r.title })) as never,
+          generated_by: 'youtube-research-agent',
+          briefing_date: today,
+        })
+        .select('id')
+        .single()
+
+      if (error) {
+        console.error('[inngest] youtube-research insert failed:', error.message)
+        return null
+      }
+      return (data?.id as string | undefined) ?? null
+    })
+
+    await bumpAgentRun('YouTube Research Agent')
+    return { ok: true, inserted: search.length, briefingId }
+  },
+)
+
+/**
+ * Recruiting Monitor Agent — daily 9am ET. Placeholder: LinkedIn candidate
+ * sourcing needs the Unipile MCP server which lands in Phase 4. For now we
+ * just log a run so the dashboard shows the agent ticking, with a note about
+ * what's still needed.
+ */
+export const recruitingMonitor = inngest.createFunction(
+  {
+    id: 'recruiting-monitor',
+    name: 'Recruiting Monitor Agent',
+    triggers: [
+      { cron: 'TZ=America/New_York 0 9 * * *' },
+      { event: 'cron/recruiting-monitor' },
+    ],
+  },
+  async ({ step }) => {
+    await step.run('record-placeholder-run', async () => {
+      const supabase = createServiceClient()
+      const { error } = await supabase.from('run_history').insert({
+        org_id: ORG_ID,
+        trigger: 'agent',
+        model: null,
+        input: { agent: 'recruiting-monitor' } as never,
+        output: {
+          text: 'Recruiting Monitor placeholder run. Awaiting Unipile MCP integration in Phase 4 — currently no LinkedIn data source is wired up.',
+        } as never,
+        status: 'succeeded',
+        duration_ms: 0,
+        completed_at: new Date().toISOString(),
+      })
+      if (error) {
+        console.error('[inngest] recruiting-monitor insert failed:', error.message)
+      }
+    })
+
+    await bumpAgentRun('Recruiting Monitor Agent')
+    return { ok: true, note: 'Phase 4: wire Unipile MCP for LinkedIn sourcing' }
+  },
+)
+
+/**
+ * Client Health Agent — daily 10am ET. Pulls GHL contacts via MCP and flags
+ * any whose `dateAdded` is older than 30 days into the comms inbox as a
+ * lightweight "we haven't heard from this client" signal. Real engagement
+ * scoring (last_inbound_at, stalled milestones, declining activity) ships
+ * once we have more contact-level signal flowing.
+ */
+export const clientHealth = inngest.createFunction(
+  {
+    id: 'client-health',
+    name: 'Client Health Agent',
+    triggers: [
+      { cron: 'TZ=America/New_York 0 10 * * *' },
+      { event: 'cron/client-health' },
+    ],
+  },
+  async ({ step }) => {
+    const flagged = await step.run('fetch-stale-clients', async () => {
+      const contactsRes = await callMcpTool('ghl_get_contacts', { limit: 100 })
+      const parsed = extractMcpJson(contactsRes)
+      let items: Array<Record<string, unknown>> = []
+      if (Array.isArray(parsed)) {
+        items = parsed as Array<Record<string, unknown>>
+      } else if (parsed && typeof parsed === 'object') {
+        const candidate = (parsed as { contacts?: unknown }).contacts
+        if (Array.isArray(candidate)) {
+          items = candidate as Array<Record<string, unknown>>
+        }
+      }
+
+      const cutoff = Date.now() - 30 * 86_400_000
+      const stale: Array<{ name: string; reason: string }> = []
+      for (const item of items) {
+        const dateAddedRaw = item.dateAdded ?? item.date_added
+        if (typeof dateAddedRaw !== 'string') continue
+        const dateAdded = new Date(dateAddedRaw).getTime()
+        if (!Number.isFinite(dateAdded) || dateAdded > cutoff) continue
+        const name =
+          (item.contactName as string | undefined) ||
+          [item.firstName, item.lastName].filter(Boolean).join(' ').trim() ||
+          (item.email as string | undefined) ||
+          'Unknown contact'
+        const daysSince = Math.floor((Date.now() - dateAdded) / 86_400_000)
+        stale.push({
+          name,
+          reason: `no_recent_activity_${daysSince}d`,
+        })
+      }
+      return stale.slice(0, 10)
+    })
+
+    if (flagged.length === 0) {
+      await bumpAgentRun('Client Health Agent')
+      return { ok: true, flagged: 0 }
+    }
+
+    await step.run('insert-flags', async () => {
+      const supabase = createServiceClient()
+      const rows = flagged.map((f) => ({
+        org_id: ORG_ID,
+        source: 'other' as const,
+        direction: 'inbound' as const,
+        contact_name: 'Client Health Agent',
+        subject: `Client health: ${f.name}`,
+        body: `Client health agent flagged ${f.name}: ${f.reason}`,
+        status: 'unread' as const,
+        priority_score: 70,
+      }))
+      const { error } = await supabase.from('messages').insert(rows)
+      if (error) {
+        console.error('[inngest] client-health insert failed:', error.message)
+      }
+    })
+
+    await bumpAgentRun('Client Health Agent')
+    return { ok: true, flagged: flagged.length }
+  },
+)
+
+/**
+ * Tech Watch Crawler — daily 8am ET. For each `competitors` row with
+ * `watch_type = 'tech_watch'`, runs a Tavily search and inserts up to 5
+ * fresh `tech_watch_items` rows per company per day. Items dedupe loosely
+ * by source_url so we don't re-insert identical articles on subsequent runs.
+ *
+ * Skipped cleanly if `TAVILY_API_KEY` isn't set.
+ */
+export const techWatchCrawler = inngest.createFunction(
+  {
+    id: 'tech-watch-crawl',
+    name: 'Tech Watch Crawler',
+    triggers: [
+      { cron: 'TZ=America/New_York 0 8 * * *' },
+      { event: 'cron/tech-watch-crawl' },
+    ],
+  },
+  async ({ step }) => {
+    if (!process.env.TAVILY_API_KEY) {
+      console.warn('[inngest] tech-watch-crawl skipped — TAVILY_API_KEY missing')
+      await bumpAgentRun('Tech Watch Crawler')
+      return { skipped: 'TAVILY_API_KEY missing' }
+    }
+
+    const companies = await step.run('fetch-tech-watch-companies', async () => {
+      const supabase = createServiceClient()
+      const { data, error } = await supabase
+        .from('competitors')
+        .select('id, name, url')
+        .eq('org_id', ORG_ID)
+        .eq('watch_type', 'tech_watch')
+      if (error) {
+        console.error('[inngest] tech-watch fetch failed:', error.message)
+        return []
+      }
+      return data ?? []
+    })
+
+    if (companies.length === 0) {
+      await bumpAgentRun('Tech Watch Crawler')
+      return { ok: true, companies: 0, inserted: 0 }
+    }
+
+    const perCompany: Array<{ name: string; inserted: number }> = []
+
+    for (const company of companies) {
+      const companyName = company.name as string
+      const companyId = company.id as string
+
+      const results = await step.run(`tavily-${companyId}`, async () => {
+        try {
+          const response = await tavilySearch(
+            `${companyName} news OR blog OR hiring this week`,
+            { max_results: 5 },
+          )
+          return response.results
+        } catch (err) {
+          console.error(`[inngest] tech-watch tavily for ${companyName} failed:`, err)
+          return [] as TavilyResult[]
+        }
+      })
+
+      const inserted = await step.run(`insert-${companyId}`, async () => {
+        if (results.length === 0) return 0
+        const supabase = createServiceClient()
+
+        // Pre-filter against URLs we've seen in the last 14 days so we don't
+        // pollute the feed with duplicates on consecutive runs.
+        const sinceIso = new Date(
+          Date.now() - 14 * 86_400_000,
+        ).toISOString()
+        const { data: existing } = await supabase
+          .from('tech_watch_items')
+          .select('source_url')
+          .eq('org_id', ORG_ID)
+          .eq('competitor_id', companyId)
+          .gte('created_at', sinceIso)
+        const seen = new Set(
+          ((existing ?? []) as Array<{ source_url: string | null }>)
+            .map((r) => r.source_url)
+            .filter((u): u is string => typeof u === 'string'),
+        )
+
+        const rows = results
+          .filter((r) => !seen.has(r.url))
+          .slice(0, 5)
+          .map((r) => ({
+            org_id: ORG_ID,
+            competitor_id: companyId,
+            headline: r.title,
+            snippet: r.content ? r.content.slice(0, 600) : null,
+            source_url: r.url,
+            source_type: classifySource(r.url),
+            published_at: r.published_date ?? null,
+            ai_summary: null,
+          }))
+
+        if (rows.length === 0) return 0
+        const { error } = await supabase.from('tech_watch_items').insert(rows)
+        if (error) {
+          console.error(
+            `[inngest] tech-watch insert for ${companyName} failed:`,
+            error.message,
+          )
+          return 0
+        }
+        return rows.length
+      })
+
+      perCompany.push({ name: companyName, inserted })
+    }
+
+    await bumpAgentRun('Tech Watch Crawler')
+    const total = perCompany.reduce((s, c) => s + c.inserted, 0)
+    return { ok: true, companies: companies.length, inserted: total, perCompany }
+  },
+)
+
+/**
+ * Guess `source_type` from a URL host so the Tech Watch UI can color-code
+ * cards without an extra LLM call.
+ */
+function classifySource(url: string): 'news' | 'blog' | 'hiring' | 'social' | 'other' {
+  const lower = url.toLowerCase()
+  if (
+    lower.includes('linkedin.com/jobs') ||
+    lower.includes('greenhouse.io') ||
+    lower.includes('lever.co') ||
+    lower.includes('/careers') ||
+    lower.includes('/jobs')
+  ) {
+    return 'hiring'
+  }
+  if (
+    lower.includes('twitter.com') ||
+    lower.includes('x.com') ||
+    lower.includes('linkedin.com/posts') ||
+    lower.includes('youtube.com') ||
+    lower.includes('youtu.be')
+  ) {
+    return 'social'
+  }
+  if (lower.includes('/blog') || lower.includes('medium.com') || lower.includes('substack.com')) {
+    return 'blog'
+  }
+  if (
+    lower.includes('techcrunch.com') ||
+    lower.includes('theinformation.com') ||
+    lower.includes('bloomberg.com') ||
+    lower.includes('reuters.com') ||
+    lower.includes('news')
+  ) {
+    return 'news'
+  }
+  return 'other'
+}
+
+// ---------------------------------------------------------------------------
 // Registered functions
 // ---------------------------------------------------------------------------
 
@@ -434,4 +883,8 @@ export const functions = [
   weeklySummary,
   goalCheck,
   ghlSync,
+  youtubeResearch,
+  recruitingMonitor,
+  clientHealth,
+  techWatchCrawler,
 ]

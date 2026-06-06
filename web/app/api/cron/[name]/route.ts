@@ -17,6 +17,11 @@ const ALLOWED_NAMES = new Set([
   'goal-check',
   'weekly-summary',
   'ghl-sync',
+  // Phase 3 long-running agents
+  'youtube-research',
+  'recruiting-monitor',
+  'client-health',
+  'tech-watch-crawl',
 ])
 
 /**
