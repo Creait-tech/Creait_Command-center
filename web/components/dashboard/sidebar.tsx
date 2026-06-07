@@ -11,6 +11,7 @@ import {
   Target,
   Mountain,
   CheckSquare,
+  History,
   Users,
   UserPlus,
   Route,
@@ -19,6 +20,7 @@ import {
   Search,
   MessageSquare,
   Bot,
+  Settings,
   type LucideIcon,
 } from "lucide-react";
 
@@ -43,6 +45,7 @@ const NAV_SECTIONS: NavSection[] = [
     items: [
       { href: "/command-center", label: "Command Center", icon: LayoutDashboard },
       { href: "/level-10", label: "Level 10 Meeting", icon: CalendarCheck },
+      { href: "/meetings", label: "Meeting History", icon: History },
       { href: "/rocks", label: "Rocks (Quarterly)", icon: Mountain },
       { href: "/todos", label: "To-Dos", icon: CheckSquare },
       { href: "/initiatives", label: "Initiatives", icon: Target },
@@ -59,6 +62,7 @@ const NAV_SECTIONS: NavSection[] = [
       { href: "/research", label: "Research", icon: Search },
       { href: "/comms", label: "Comms Hub", icon: MessageSquare },
       { href: "/agents", label: "Agent Center", icon: Bot },
+      { href: "/settings", label: "Settings", icon: Settings },
     ],
   },
 ];

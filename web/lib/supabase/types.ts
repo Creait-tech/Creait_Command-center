@@ -79,6 +79,8 @@ export interface Meeting {
   source: MeetingSource;
   source_id: string | null;
   recording_url: string | null;
+  rating: number | null;
+  agenda_state: Json | null;
   created_at: string;
   updated_at: string;
 }
@@ -124,6 +126,8 @@ export interface IdsItem {
   priority: number;
   owner_id: string | null;
   resolution: string | null;
+  is_long_term: boolean;
+  vote_count: number;
   created_at: string;
   updated_at: string;
 }
