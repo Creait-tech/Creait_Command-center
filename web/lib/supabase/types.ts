@@ -468,6 +468,116 @@ export interface TechWatchItem {
 }
 
 // =============================================================================
+// EOS Wave 4 — Rocks, Milestones, To-Dos, Headlines, Meeting Ratings, Seats
+// All tables are prefixed `cc_*` to avoid colliding with Maurice's other app
+// on the same Supabase project.
+// =============================================================================
+
+export type RockType = "company" | "individual" | "departmental";
+export type RockStatus = "on_track" | "off_track" | "complete" | "incomplete" | "dropped";
+export type RockStatusColor = "green" | "yellow" | "red";
+
+export interface Rock {
+  id: string;
+  org_id: string;
+  title: string;
+  description: string | null;
+  rock_type: RockType;
+  owner_id: string | null;
+  quarter: string;                  // e.g. "2026-Q3"
+  status: RockStatus;
+  smart_specific: string | null;
+  smart_measurable: string | null;
+  smart_achievable: boolean | null;
+  smart_relevant: string | null;
+  due_date: string;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface RockMilestone {
+  id: string;
+  rock_id: string;
+  title: string;
+  done: boolean;
+  due_date: string | null;
+  sort_order: number;
+  created_at: string;
+}
+
+export interface RockStatusUpdate {
+  id: string;
+  rock_id: string;
+  meeting_id: string | null;
+  status: RockStatusColor;
+  note: string | null;
+  created_at: string;
+}
+
+export interface Todo {
+  id: string;
+  org_id: string;
+  meeting_id: string | null;
+  title: string;
+  description: string | null;
+  owner_id: string | null;
+  done: boolean;
+  due_date: string | null;
+  carried_forward_count: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export type HeadlineCategory = "customer" | "employee" | "market" | "general";
+
+export interface Headline {
+  id: string;
+  org_id: string;
+  meeting_id: string | null;
+  category: HeadlineCategory;
+  text: string;
+  cascade: boolean;
+  created_at: string;
+}
+
+export interface MeetingRating {
+  id: string;
+  meeting_id: string;
+  member_id: string | null;
+  rater_name: string | null;
+  rating: number;
+  comment: string | null;
+  created_at: string;
+}
+
+export interface TeamSeat {
+  id: string;
+  org_id: string;
+  title: string;
+  description: string | null;
+  parent_seat_id: string | null;
+  responsibilities: Json;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export type GwcRating = "plus" | "plus_minus" | "minus" | "unknown";
+
+export interface SeatAssignment {
+  id: string;
+  seat_id: string;
+  member_id: string;
+  gwc_get: GwcRating;
+  gwc_want: GwcRating;
+  gwc_capacity: GwcRating;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+// =============================================================================
 // Database shape (standard Supabase generated layout)
 // =============================================================================
 
@@ -516,6 +626,15 @@ export interface Database {
       scheduled_tasks: Table<ScheduledTask>;
       run_history: Table<RunHistory>;
       tech_watch_items: Table<TechWatchItem>;
+      // EOS Wave 4
+      cc_rocks: Table<Rock>;
+      cc_rock_milestones: Table<RockMilestone>;
+      cc_rock_status_updates: Table<RockStatusUpdate>;
+      cc_todos: Table<Todo>;
+      cc_headlines: Table<Headline>;
+      cc_meeting_ratings: Table<MeetingRating>;
+      cc_team_seats: Table<TeamSeat>;
+      cc_seat_assignments: Table<SeatAssignment>;
     };
     Views: { [_ in never]: never };
     Functions: { [_ in never]: never };

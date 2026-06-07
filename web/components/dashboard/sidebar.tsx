@@ -9,6 +9,7 @@ import {
   LayoutDashboard,
   CalendarCheck,
   Target,
+  Mountain,
   Users,
   UserPlus,
   Route,
@@ -41,6 +42,7 @@ const NAV_SECTIONS: NavSection[] = [
     items: [
       { href: "/command-center", label: "Command Center", icon: LayoutDashboard },
       { href: "/level-10", label: "Level 10 Meeting", icon: CalendarCheck },
+      { href: "/rocks", label: "Rocks (Quarterly)", icon: Mountain },
       { href: "/initiatives", label: "Initiatives", icon: Target },
       { href: "/team", label: "Team Scorecard", icon: Users },
       { href: "/recruiting", label: "Recruiting", icon: UserPlus },

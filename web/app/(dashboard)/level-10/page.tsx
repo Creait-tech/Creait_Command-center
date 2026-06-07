@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { Level10Tabs } from "@/components/level10/level10-tabs";
+import { StartMeetingButton } from "@/components/level10/start-meeting-button";
 import type {
   Meeting,
   Win,
@@ -73,12 +74,14 @@ export default async function Level10Page() {
 
   return (
     <div className="flex flex-col gap-6 p-6">
-      <div>
-        <h1 className="text-2xl font-bold">Level 10 Meeting</h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          EOS-style weekly leadership rhythm. Wins, scoreboard, initiatives,
-          and IDS.
-        </p>
+      <div className="flex items-start justify-between gap-3 flex-wrap">
+        <div>
+          <h1 className="text-2xl font-bold">Level 10 Meeting</h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            EOS weekly leadership rhythm. Same day, same time, same agenda. 90 minutes.
+          </p>
+        </div>
+        <StartMeetingButton />
       </div>
 
       <Level10Tabs
