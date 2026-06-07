@@ -5,22 +5,35 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { RosterGrid } from "./roster-grid";
 import { OrgChart } from "./org-chart";
+import { SeatsBoard } from "./seats-board";
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
-import type { TeamMember, MemberKpi } from "@/lib/supabase/types";
+import type {
+  TeamMember,
+  MemberKpi,
+  TeamSeat,
+  SeatAssignment,
+} from "@/lib/supabase/types";
 
-const VALID = ["roster", "orgchart"] as const;
+const VALID = ["roster", "orgchart", "accountability"] as const;
 type Valid = (typeof VALID)[number];
 
 interface TeamViewProps {
   members: TeamMember[];
   kpis: MemberKpi[];
+  seats: TeamSeat[];
+  assignments: SeatAssignment[];
 }
 
 function sortMembers(list: TeamMember[]): TeamMember[] {
   return [...list].sort((a, b) => a.full_name.localeCompare(b.full_name));
 }
 
-function TeamViewInner({ members: initialMembers, kpis: initialKpis }: TeamViewProps) {
+function TeamViewInner({
+  members: initialMembers,
+  kpis: initialKpis,
+  seats: initialSeats,
+  assignments: initialAssignments,
+}: TeamViewProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const raw = searchParams.get("view");
@@ -30,6 +43,8 @@ function TeamViewInner({ members: initialMembers, kpis: initialKpis }: TeamViewP
 
   const [members, setMembers] = useState<TeamMember[]>(sortMembers(initialMembers));
   const [kpis, setKpis] = useState<MemberKpi[]>(initialKpis);
+  const [seats, setSeats] = useState<TeamSeat[]>(initialSeats);
+  const [assignments, setAssignments] = useState<SeatAssignment[]>(initialAssignments);
 
   useEffect(() => {
     const supabase = createClient();
@@ -54,40 +69,48 @@ function TeamViewInner({ members: initialMembers, kpis: initialKpis }: TeamViewP
         .from("member_kpis")
         .select("*")
         .in("member_id", ids)
-        .order("sort_order", { ascending: true });
+        .order("sort_order");
       if (data) setKpis(data as MemberKpi[]);
+    }
+
+    async function refetchSeats() {
+      const { data } = await supabase
+        .from("cc_team_seats")
+        .select("*")
+        .eq("org_id", "creait")
+        .order("sort_order");
+      if (data) setSeats(data as TeamSeat[]);
+    }
+
+    async function refetchAssignments() {
+      const { data } = await supabase
+        .from("cc_seat_assignments")
+        .select("*");
+      if (data) setAssignments(data as SeatAssignment[]);
     }
 
     const membersChannel = supabase
       .channel("team-members-realtime")
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "team_members",
-          filter: "org_id=eq.creait",
-        },
-        () => {
-          void refetchMembers();
-        }
-      )
+      .on("postgres_changes", { event: "*", schema: "public", table: "team_members", filter: "org_id=eq.creait" }, refetchMembers)
       .subscribe();
-
     const kpisChannel = supabase
       .channel("member-kpis-realtime")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "member_kpis" },
-        () => {
-          void refetchKpis();
-        }
-      )
+      .on("postgres_changes", { event: "*", schema: "public", table: "member_kpis" }, () => { void refetchKpis(); })
+      .subscribe();
+    const seatsChannel = supabase
+      .channel("cc-team-seats-realtime")
+      .on("postgres_changes", { event: "*", schema: "public", table: "cc_team_seats", filter: "org_id=eq.creait" }, refetchSeats)
+      .subscribe();
+    const assignmentsChannel = supabase
+      .channel("cc-seat-assignments-realtime")
+      .on("postgres_changes", { event: "*", schema: "public", table: "cc_seat_assignments" }, refetchAssignments)
       .subscribe();
 
     return () => {
       void supabase.removeChannel(membersChannel);
       void supabase.removeChannel(kpisChannel);
+      void supabase.removeChannel(seatsChannel);
+      void supabase.removeChannel(assignmentsChannel);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -99,25 +122,20 @@ function TeamViewInner({ members: initialMembers, kpis: initialKpis }: TeamViewP
   }
 
   return (
-    <Tabs
-      value={active}
-      onValueChange={(v) => typeof v === "string" && setTab(v)}
-      className="w-full"
-    >
+    <Tabs value={active} onValueChange={(v) => typeof v === "string" && setTab(v)} className="w-full">
       <TabsList>
         <TabsTrigger value="roster">Roster</TabsTrigger>
         <TabsTrigger value="orgchart">Org Chart</TabsTrigger>
+        <TabsTrigger value="accountability">Accountability Chart (EOS)</TabsTrigger>
       </TabsList>
       <TabsContent value="roster" className="mt-4">
-        <RosterGrid
-          members={members}
-          kpis={kpis}
-          onMembersChange={setMembers}
-          onKpisChange={setKpis}
-        />
+        <RosterGrid members={members} kpis={kpis} onMembersChange={setMembers} onKpisChange={setKpis} />
       </TabsContent>
       <TabsContent value="orgchart" className="mt-4">
         <OrgChart members={members} onMembersChange={setMembers} />
+      </TabsContent>
+      <TabsContent value="accountability" className="mt-4">
+        <SeatsBoard members={members} seats={seats} assignments={assignments} />
       </TabsContent>
     </Tabs>
   );

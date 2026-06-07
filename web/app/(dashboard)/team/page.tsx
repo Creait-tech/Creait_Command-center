@@ -1,21 +1,37 @@
 import { createClient } from "@/lib/supabase/server";
 import { TeamView } from "@/components/team/team-view";
-import type { TeamMember, MemberKpi } from "@/lib/supabase/types";
+import type {
+  TeamMember,
+  MemberKpi,
+  TeamSeat,
+  SeatAssignment,
+} from "@/lib/supabase/types";
 
 export const dynamic = "force-dynamic";
 
 export default async function TeamPage() {
   const supabase = await createClient();
 
-  const membersResult = await supabase
-    .from("team_members")
-    .select("*")
-    .eq("org_id", "creait")
-    .eq("status", "active")
-    .order("full_name", { ascending: true });
+  const [membersResult, seatsResult, assignmentsResult] = await Promise.all([
+    supabase
+      .from("team_members")
+      .select("*")
+      .eq("org_id", "creait")
+      .eq("status", "active")
+      .order("full_name", { ascending: true }),
+    supabase
+      .from("cc_team_seats")
+      .select("*")
+      .eq("org_id", "creait")
+      .order("sort_order", { ascending: true }),
+    supabase
+      .from("cc_seat_assignments")
+      .select("*"),
+  ]);
 
-  const members: TeamMember[] =
-    (membersResult.data as TeamMember[] | null) ?? [];
+  const members: TeamMember[] = (membersResult.data as TeamMember[] | null) ?? [];
+  const seats: TeamSeat[] = (seatsResult.data as TeamSeat[] | null) ?? [];
+  const assignments: SeatAssignment[] = (assignmentsResult.data as SeatAssignment[] | null) ?? [];
 
   const memberIds = members.map((m) => m.id);
   let kpis: MemberKpi[] = [];
@@ -33,11 +49,16 @@ export default async function TeamPage() {
       <div>
         <h1 className="text-2xl font-bold">Team</h1>
         <p className="text-sm text-muted-foreground mt-1">
-          Roster of active members and the live org chart.
+          Roster, org chart, and the EOS Accountability Chart with GWC.
         </p>
       </div>
 
-      <TeamView members={members} kpis={kpis} />
+      <TeamView
+        members={members}
+        kpis={kpis}
+        seats={seats}
+        assignments={assignments}
+      />
     </div>
   );
 }

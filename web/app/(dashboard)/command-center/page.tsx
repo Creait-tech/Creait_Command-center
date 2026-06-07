@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { CompanyPrioritiesBar } from "@/components/command-center/company-priorities-bar";
 import { TimeHorizonColumns } from "@/components/command-center/time-horizon-columns";
+import { DailyDashboard } from "@/components/command-center/daily-dashboard";
 import type { Goal, Subtask, CompanyPriority } from "@/lib/supabase/types";
 
 export const dynamic = "force-dynamic";
@@ -45,6 +46,7 @@ export default async function CommandCenterPage() {
       </div>
 
       <CompanyPrioritiesBar priorities={priorities} />
+      <DailyDashboard />
       <TimeHorizonColumns goals={goals} subtasks={subtasks} />
     </div>
   );

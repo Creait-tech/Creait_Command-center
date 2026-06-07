@@ -269,8 +269,27 @@ export interface Strategy {
   icp: string | null;
   value_ladder: string | null;
   flywheel: string | null;
+  vto: Json | null;
   updated_at: string;
   created_at: string;
+}
+
+// V/TO blob shape stored in strategy.vto
+export interface VtoData {
+  core_values?: string[];
+  core_focus?: {
+    purpose?: string;
+    niche?: string;
+  };
+  ten_year_target?: string;
+  marketing_strategy?: {
+    target_market?: string;
+    three_uniques?: string[];
+    proven_process?: string[];
+    guarantee?: string;
+  };
+  three_year_picture?: string;
+  one_year_plan?: string;
 }
 
 export interface MediaPlatform {
