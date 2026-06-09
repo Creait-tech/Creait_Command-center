@@ -40,6 +40,20 @@ import {
   ghlUpdateOppStage,
   ghlUpdateOppStageInput,
 } from "./tools/ghl.js";
+import {
+  ccDashboard, ccDashboardInput,
+  ccListRocks, ccListRocksInput,
+  ccCreateRock, ccCreateRockInput,
+  ccSetRockStatus, ccSetRockStatusInput,
+  ccListTodos, ccListTodosInput,
+  ccCreateTodo, ccCreateTodoInput,
+  ccCompleteTodo, ccCompleteTodoInput,
+  ccListIssues, ccListIssuesInput,
+  ccCreateIssue, ccCreateIssueInput,
+  ccAddWin, ccAddWinInput,
+  ccAddHeadline, ccAddHeadlineInput,
+  ccListKpis, ccListKpisInput,
+} from "./tools/command-center.js";
 
 const PORT = Number(process.env.PORT ?? 8080);
 const TOKEN = process.env.MCP_TOKEN ?? "";
@@ -47,15 +61,15 @@ const VERSION = "1.0.0";
 const SERVER_NAME = "creait-mcp";
 
 const TOOL_NAMES = [
-  "search_context",
-  "get_file",
-  "update_file",
-  "list_topics",
-  "ghl_get_contacts",
-  "ghl_get_opportunities",
-  "ghl_get_conversations",
-  "ghl_send_message",
-  "ghl_update_opp_stage",
+  // Second brain
+  "search_context", "get_file", "update_file", "list_topics",
+  // GHL
+  "ghl_get_contacts", "ghl_get_opportunities", "ghl_get_conversations", "ghl_send_message", "ghl_update_opp_stage",
+  // Command Center
+  "cc_dashboard", "cc_list_rocks", "cc_create_rock", "cc_set_rock_status",
+  "cc_list_todos", "cc_create_todo", "cc_complete_todo",
+  "cc_list_issues", "cc_create_issue",
+  "cc_add_win", "cc_add_headline", "cc_list_kpis",
 ];
 
 /** Wrap a tool handler with stopwatch + log line. */
@@ -138,6 +152,80 @@ function buildMcpServer(): McpServer {
     "Move a GoHighLevel opportunity to a different pipeline stage.",
     ghlUpdateOppStageInput,
     instrument("ghl_update_opp_stage", ghlUpdateOppStage),
+  );
+
+  // Command Center — read + write the CREAIT operating system
+  server.tool(
+    "cc_dashboard",
+    "One-call snapshot of the CREAIT business: priorities, off-track Rocks, overdue To-Dos, high-priority Issues, KPIs. Use this first when asked 'what's going on'.",
+    ccDashboardInput,
+    instrument("cc_dashboard", ccDashboard as never) as never,
+  );
+  server.tool(
+    "cc_list_rocks",
+    "List quarterly Rocks. Defaults to current quarter; pass quarter='2026-Q3' or include_all_quarters=true.",
+    ccListRocksInput,
+    instrument("cc_list_rocks", ccListRocks),
+  );
+  server.tool(
+    "cc_create_rock",
+    "Create a new 90-day Rock. Defaults to company-type for current quarter. Be SMART — pass smart_specific/smart_measurable/smart_relevant when possible.",
+    ccCreateRockInput,
+    instrument("cc_create_rock", ccCreateRock),
+  );
+  server.tool(
+    "cc_set_rock_status",
+    "Log a weekly Green/Yellow/Red status update on a Rock. Use Red when off-track, Yellow when at risk.",
+    ccSetRockStatusInput,
+    instrument("cc_set_rock_status", ccSetRockStatus),
+  );
+  server.tool(
+    "cc_list_todos",
+    "List To-Dos. filter='open' (default), 'overdue', 'done', 'all'.",
+    ccListTodosInput,
+    instrument("cc_list_todos", ccListTodos),
+  );
+  server.tool(
+    "cc_create_todo",
+    "Create a 7-day To-Do commitment. Optional owner_id (team_members.id UUID) and explicit due_date.",
+    ccCreateTodoInput,
+    instrument("cc_create_todo", ccCreateTodo),
+  );
+  server.tool(
+    "cc_complete_todo",
+    "Mark a To-Do done by id.",
+    ccCompleteTodoInput,
+    instrument("cc_complete_todo", ccCompleteTodo),
+  );
+  server.tool(
+    "cc_list_issues",
+    "List IDS issues. long_term=false (default) for current-week, true for parked long-term issues.",
+    ccListIssuesInput,
+    instrument("cc_list_issues", ccListIssues),
+  );
+  server.tool(
+    "cc_create_issue",
+    "Add an IDS issue (problem, decision, or risk). Priority 1-10, defaults to 5. long_term=true to park for Quarterly Planning.",
+    ccCreateIssueInput,
+    instrument("cc_create_issue", ccCreateIssue),
+  );
+  server.tool(
+    "cc_add_win",
+    "Log a Win to the Level 10 wins feed.",
+    ccAddWinInput,
+    instrument("cc_add_win", ccAddWin),
+  );
+  server.tool(
+    "cc_add_headline",
+    "Capture a one-sentence Headline (customer/employee/market/general). Surfaces in next L10.",
+    ccAddHeadlineInput,
+    instrument("cc_add_headline", ccAddHeadline),
+  );
+  server.tool(
+    "cc_list_kpis",
+    "Return the Scorecard KPIs with current value vs target.",
+    ccListKpisInput,
+    instrument("cc_list_kpis", ccListKpis),
   );
 
   return server;
