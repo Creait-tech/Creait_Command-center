@@ -6,6 +6,7 @@ import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Sidebar } from "@/components/dashboard/sidebar";
 import { Topbar } from "@/components/dashboard/topbar";
 import { ChatWidgetHost } from "@/components/dashboard/chat-widget-host";
+import { CommandPalette } from "@/components/dashboard/command-palette";
 
 type DashboardShellProps = {
   children: React.ReactNode;
@@ -38,6 +39,7 @@ export function DashboardShell({ children }: DashboardShellProps) {
       </div>
 
       <ChatWidgetHost />
+      <CommandPalette />
     </div>
   );
 }

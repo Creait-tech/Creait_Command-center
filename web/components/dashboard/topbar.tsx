@@ -2,14 +2,19 @@
 
 import * as React from "react";
 import { usePathname } from "next/navigation";
-import { Bell, Menu, Zap } from "lucide-react";
+import { Menu, Command } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { NotificationsBell } from "@/components/dashboard/notifications-bell";
+import { QuickAddButton } from "@/components/dashboard/quick-add-button";
 
 const PAGE_TITLES: Record<string, string> = {
   "/command-center": "Command Center",
   "/level-10": "Level 10 Meeting",
+  "/meetings": "Meeting History",
+  "/rocks": "Rocks",
+  "/todos": "To-Dos",
   "/initiatives": "Initiatives",
   "/team": "Team Scorecard",
   "/recruiting": "Recruiting",
@@ -19,11 +24,12 @@ const PAGE_TITLES: Record<string, string> = {
   "/research": "Research",
   "/comms": "Comms Hub",
   "/agents": "Agent Center",
+  "/quarterly": "Quarterly Planning",
+  "/settings": "Settings",
 };
 
 function getPageTitle(pathname: string): string {
   if (PAGE_TITLES[pathname]) return PAGE_TITLES[pathname];
-  // Match deepest known prefix
   const entry = Object.entries(PAGE_TITLES).find(([href]) =>
     pathname.startsWith(`${href}/`)
   );
@@ -39,6 +45,11 @@ type TopbarProps = {
 export function Topbar({ className, onMobileMenuClick }: TopbarProps) {
   const pathname = usePathname();
   const title = getPageTitle(pathname);
+  const [mac, setMac] = React.useState(true);
+
+  React.useEffect(() => {
+    setMac(typeof navigator !== "undefined" && /Mac/i.test(navigator.platform));
+  }, []);
 
   return (
     <header
@@ -65,18 +76,22 @@ export function Topbar({ className, onMobileMenuClick }: TopbarProps) {
       </div>
 
       <div className="flex items-center gap-1.5">
-        <Button
-          variant="ghost"
-          size="sm"
-          className="hidden sm:inline-flex"
-          aria-label="Quick Run"
+        <button
+          type="button"
+          onClick={() => {
+            window.dispatchEvent(new KeyboardEvent("keydown", { key: "k", metaKey: mac, ctrlKey: !mac }));
+          }}
+          className="hidden sm:flex items-center gap-1.5 rounded-md border border-border bg-[color:var(--color-brand-slate)]/40 px-2 py-1 text-xs text-muted-foreground hover:text-foreground hover:border-[color:var(--color-brand-electric)] transition-colors"
+          aria-label="Open command palette"
         >
-          <Zap className="size-3.5" />
-          Quick Run
-        </Button>
-        <Button variant="ghost" size="icon-sm" aria-label="Notifications">
-          <Bell className="size-4" />
-        </Button>
+          <Command className="size-3" />
+          Search
+          <kbd className="ml-1 rounded border border-border px-1 text-[10px] font-mono">
+            {mac ? "⌘" : "Ctrl"}K
+          </kbd>
+        </button>
+        <QuickAddButton />
+        <NotificationsBell />
       </div>
     </header>
   );

@@ -1,14 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown, ChevronUp, Circle, CheckCircle2, AlertCircle } from "lucide-react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import { toast } from "sonner";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
+import { UnstickButton } from "./unstick-button";
 import type {
   Rock,
   RockMilestone,
@@ -160,6 +160,11 @@ export function RockCard({ rock, milestones, latestStatus, members, onUpdated }:
             <span className="text-xs text-muted-foreground ml-2">
               {new Date(latestStatus.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
             </span>
+          )}
+          {(latestStatus?.status === "yellow" || latestStatus?.status === "red" || rock.status === "off_track") && (
+            <div className="ml-auto">
+              <UnstickButton rockId={rock.id} rockTitle={rock.title} />
+            </div>
           )}
         </div>
 

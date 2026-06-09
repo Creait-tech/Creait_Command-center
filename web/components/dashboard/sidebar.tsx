@@ -46,6 +46,7 @@ const NAV_SECTIONS: NavSection[] = [
       { href: "/command-center", label: "Command Center", icon: LayoutDashboard },
       { href: "/level-10", label: "Level 10 Meeting", icon: CalendarCheck },
       { href: "/meetings", label: "Meeting History", icon: History },
+      { href: "/quarterly", label: "Quarterly Planning", icon: CalendarCheck },
       { href: "/rocks", label: "Rocks (Quarterly)", icon: Mountain },
       { href: "/todos", label: "To-Dos", icon: CheckSquare },
       { href: "/initiatives", label: "Initiatives", icon: Target },

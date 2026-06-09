@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/select";
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
+import { PeopleAnalyzer } from "./people-analyzer";
 import type {
   TeamMember,
   TeamSeat,
@@ -212,6 +213,13 @@ export function SeatsBoard({ members, seats, assignments }: Props) {
               </Card>
             );
           })}
+        </div>
+      )}
+
+      {seats.length > 0 && (
+        <div className="pt-2">
+          <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground mb-2">People Analyzer</p>
+          <PeopleAnalyzer members={members} seats={seats} assignments={assignments} />
         </div>
       )}
 

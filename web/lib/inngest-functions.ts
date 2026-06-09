@@ -3,6 +3,7 @@ import { loadMcpTools } from '@/lib/mcp-client'
 import { runSkill } from '@/lib/skills-engine'
 import { createServiceClient } from '@/lib/supabase/server'
 import { tavilySearch, type TavilyResult } from '@/lib/tavily'
+import { sendEmail, markdownToEmailHtml } from '@/lib/email'
 
 /**
  * Inngest functions for the CREAIT Command Center.
@@ -114,7 +115,27 @@ export const dailyBriefing = inngest.createFunction(
         },
       ),
     )
-    return { runId: result.runId, outputLength: result.output.length }
+
+    // Email Maurice the briefing if RESEND is wired and DAILY_BRIEFING_TO is set.
+    const emailRes = await step.run('email-briefing', async () => {
+      const to = process.env.DAILY_BRIEFING_TO ?? process.env.MAURICE_EMAIL
+      if (!to) return { skipped: 'DAILY_BRIEFING_TO not set' }
+      const today = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })
+      const html = `
+        <div style="font-family:Inter,system-ui,sans-serif;max-width:640px;margin:0 auto;padding:24px;background:#0a0e1a;color:#f1f5f9">
+          <h1 style="color:#3b82f6;font-size:22px;margin:0 0 8px 0">CREAIT Daily Briefing</h1>
+          <p style="color:#94a3b8;font-size:13px;margin:0 0 24px 0">${today}</p>
+          <div style="color:#f1f5f9;font-size:14px">${markdownToEmailHtml(result.output)}</div>
+          <hr style="border:none;border-top:1px solid #2a3447;margin:24px 0">
+          <p style="color:#94a3b8;font-size:11px">
+            Full dashboard: <a href="https://cc.getcreait.com/command-center" style="color:#3b82f6">cc.getcreait.com</a>
+          </p>
+        </div>
+      `
+      return sendEmail({ to, subject: `CREAIT Briefing — ${today}`, html })
+    })
+
+    return { runId: result.runId, outputLength: result.output.length, email: emailRes }
   },
 )
 
