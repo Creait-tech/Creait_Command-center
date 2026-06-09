@@ -13,11 +13,17 @@ const STORAGE_KEY = "creait.model";
 const DEFAULT_MODEL = "claude-sonnet-4-6";
 
 export const MODELS = [
-  { id: "claude-sonnet-4-6", label: "Claude Sonnet 4.6" },
-  { id: "claude-opus-4-7", label: "Claude Opus 4.7" },
-  { id: "claude-haiku-4-5", label: "Claude Haiku 4.5" },
-  { id: "gpt-5", label: "GPT-5" },
-  { id: "gemini-3-pro", label: "Gemini 3 Pro" },
+  // Frontier (direct providers)
+  { id: "claude-sonnet-4-6", label: "Claude Sonnet 4.6", tier: "frontier" },
+  { id: "claude-opus-4-7", label: "Claude Opus 4.7", tier: "frontier" },
+  { id: "claude-haiku-4-5", label: "Claude Haiku 4.5", tier: "frontier" },
+  { id: "gpt-5", label: "GPT-5", tier: "frontier" },
+  { id: "gemini-3-pro", label: "Gemini 3 Pro", tier: "frontier" },
+  // OSS / cheap tier via OpenRouter — 5-15× cheaper, great for bulk work
+  { id: "openrouter/kimi-k2", label: "Kimi K2", tier: "openrouter" },
+  { id: "openrouter/deepseek-v3", label: "DeepSeek V3", tier: "openrouter" },
+  { id: "openrouter/llama-3.3-70b", label: "Llama 3.3 70B", tier: "openrouter" },
+  { id: "openrouter/gemini-flash", label: "Gemini Flash", tier: "openrouter" },
 ] as const;
 
 export type ModelId = (typeof MODELS)[number]["id"];
@@ -76,7 +82,16 @@ export function ModelSelector({ className, size = "sm" }: ModelSelectorProps) {
         <SelectValue placeholder="Model" />
       </SelectTrigger>
       <SelectContent>
-        {MODELS.map((m) => (
+        {MODELS.filter((m) => m.tier === "frontier").map((m) => (
+          <SelectItem key={m.id} value={m.id}>
+            {m.label}
+          </SelectItem>
+        ))}
+        <div className="border-t border-border my-1 mx-2" />
+        <div className="px-2 py-1 text-[10px] uppercase tracking-wider text-muted-foreground">
+          OpenRouter (cheap)
+        </div>
+        {MODELS.filter((m) => m.tier === "openrouter").map((m) => (
           <SelectItem key={m.id} value={m.id}>
             {m.label}
           </SelectItem>

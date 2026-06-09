@@ -1,68 +1,95 @@
 import { anthropic } from '@ai-sdk/anthropic'
-import { openai } from '@ai-sdk/openai'
+import { openai, createOpenAI } from '@ai-sdk/openai'
 import { google } from '@ai-sdk/google'
+
+/**
+ * OpenRouter: OpenAI-compatible. We reuse `@ai-sdk/openai`'s `createOpenAI`
+ * with the OpenRouter base URL. No extra package install needed.
+ */
+const openrouter = createOpenAI({
+  baseURL: 'https://openrouter.ai/api/v1',
+  apiKey: process.env.OPENROUTER_API_KEY ?? '',
+  // OpenRouter analytics — surfaces in their dashboard if you set HTTP-Referer + X-Title
+  headers: {
+    'HTTP-Referer': 'https://cc.getcreait.com',
+    'X-Title': 'CREAIT Command Center',
+  },
+})
 
 /**
  * Model registry for the CREAIT Command Center.
  *
  * Keys are the IDs surfaced to the UI and stored in user prefs. Values are
- * AI SDK v6 LanguageModel instances. Add a new model by mapping a stable
- * ID -> provider call here, and the rest of the chat plumbing will pick it up.
+ * AI SDK v6 LanguageModel instances.
  *
- * Google: `gemini-3-pro` aliases to the currently-supported preview variant
- * `gemini-3-pro-preview` so the public ID stays stable as Google promotes it.
+ * Frontier tier (direct providers — billed individually):
+ *   anthropic, openai, google
  *
- * ---------------------------------------------------------------------------
- * Phase 4 TODO — OSS routing via Vercel AI Gateway
- * ---------------------------------------------------------------------------
- * Once `pnpm add @ai-sdk/gateway` is in, register cheap OSS models so the
- * long-running background agents (Tech Watch Crawler, YouTube Research, etc.)
- * can fan out without burning Anthropic credit. Suggested entries:
- *
- *   import { gateway } from '@ai-sdk/gateway'
- *   'kimi-k2':        gateway('moonshotai/kimi-k2'),
- *   'deepseek-v3':    gateway('deepseek/deepseek-v3'),
- *   'llama-3-3-70b':  gateway('meta/llama-3.3-70b'),
- *
- * Routing rule: if `AI_GATEWAY_API_KEY` is set, prefer the gateway entry;
- * else fall back to the direct provider entries below. Cost rates in
- * skills-engine.ts will need matching rows for these IDs.
- * ---------------------------------------------------------------------------
+ * OSS / cheap tier (via OpenRouter — one bill, 200+ models, ~10× cheaper):
+ *   moonshotai/kimi-k2  — Kimi K2 (frontier-class, very low cost)
+ *   deepseek/deepseek-v3.1 — DeepSeek (best per-dollar reasoning)
+ *   meta-llama/llama-3.3-70b — Llama 3.3 70B (open, fast)
+ *   google/gemini-2.0-flash-001 — Gemini Flash (cheap + multimodal)
  */
 export const MODEL_MAP = {
+  // Anthropic frontier
   'claude-sonnet-4-6': anthropic('claude-sonnet-4-6'),
   'claude-opus-4-7': anthropic('claude-opus-4-7'),
   'claude-haiku-4-5': anthropic('claude-haiku-4-5'),
+  // OpenAI
   'gpt-5': openai('gpt-5'),
+  // Google
   'gemini-3-pro': google('gemini-3-pro-preview'),
+  // OpenRouter — OSS + multi-provider cheap tier
+  'openrouter/kimi-k2': openrouter('moonshotai/kimi-k2'),
+  'openrouter/deepseek-v3': openrouter('deepseek/deepseek-chat-v3-0324'),
+  'openrouter/llama-3.3-70b': openrouter('meta-llama/llama-3.3-70b-instruct'),
+  'openrouter/gemini-flash': openrouter('google/gemini-2.0-flash-001'),
 } as const
 
 export type ModelId = keyof typeof MODEL_MAP
 
 export const DEFAULT_MODEL: ModelId = 'claude-sonnet-4-6'
 
-/**
- * Provider routing for each model ID. Used by `assertModelKeyAvailable` to
- * point at the right env var when a key is missing.
- */
-const MODEL_PROVIDER: Record<ModelId, 'anthropic' | 'openai' | 'google'> = {
+type Provider = 'anthropic' | 'openai' | 'google' | 'openrouter'
+
+const MODEL_PROVIDER: Record<ModelId, Provider> = {
   'claude-sonnet-4-6': 'anthropic',
   'claude-opus-4-7': 'anthropic',
   'claude-haiku-4-5': 'anthropic',
   'gpt-5': 'openai',
   'gemini-3-pro': 'google',
+  'openrouter/kimi-k2': 'openrouter',
+  'openrouter/deepseek-v3': 'openrouter',
+  'openrouter/llama-3.3-70b': 'openrouter',
+  'openrouter/gemini-flash': 'openrouter',
 }
 
-const PROVIDER_ENV_VAR: Record<'anthropic' | 'openai' | 'google', string> = {
+const PROVIDER_ENV_VAR: Record<Provider, string> = {
   anthropic: 'ANTHROPIC_API_KEY',
   openai: 'OPENAI_API_KEY',
   google: 'GOOGLE_GENERATIVE_AI_API_KEY',
+  openrouter: 'OPENROUTER_API_KEY',
 }
 
-const PROVIDER_LABEL: Record<'anthropic' | 'openai' | 'google', string> = {
+const PROVIDER_LABEL: Record<Provider, string> = {
   anthropic: 'Anthropic',
   openai: 'OpenAI',
   google: 'Google',
+  openrouter: 'OpenRouter',
+}
+
+/** Friendly labels for the UI model selector. */
+export const MODEL_LABELS: Record<ModelId, string> = {
+  'claude-sonnet-4-6': 'Claude Sonnet 4.6',
+  'claude-opus-4-7': 'Claude Opus 4.7',
+  'claude-haiku-4-5': 'Claude Haiku 4.5',
+  'gpt-5': 'GPT-5',
+  'gemini-3-pro': 'Gemini 3 Pro',
+  'openrouter/kimi-k2': 'Kimi K2 (OpenRouter)',
+  'openrouter/deepseek-v3': 'DeepSeek V3 (OpenRouter)',
+  'openrouter/llama-3.3-70b': 'Llama 3.3 70B (OpenRouter)',
+  'openrouter/gemini-flash': 'Gemini Flash (OpenRouter)',
 }
 
 /**
@@ -74,9 +101,7 @@ export function resolveModel(id: string | undefined) {
   return MODEL_MAP[key] ?? MODEL_MAP[DEFAULT_MODEL]
 }
 
-/**
- * Return true if `id` is a known model in the registry.
- */
+/** Return true if `id` is a known model in the registry. */
 export function isKnownModel(id: string | undefined): id is ModelId {
   return typeof id === 'string' && id in MODEL_MAP
 }
