@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { getActiveOrgId } from "@/lib/active-org";
 import { StrategyPage } from "@/components/strategy/strategy-page";
 import type {
   Strategy,
@@ -11,31 +12,32 @@ export const dynamic = "force-dynamic";
 
 export default async function Page() {
   const supabase = await createClient();
+  const orgId = await getActiveOrgId();
 
   const [strategyRes, platformsRes, insightsRes, betsRes] = await Promise.all([
     supabase
       .from("strategy")
       .select("*")
-      .eq("org_id", "creait")
+      .eq("org_id", orgId)
       .maybeSingle(),
     supabase
       .from("media_platforms")
       .select("*")
-      .eq("org_id", "creait")
+      .eq("org_id", orgId)
       .eq("active", true)
       .order("sort_order", { ascending: true })
       .order("created_at", { ascending: true }),
     supabase
       .from("advisor_insights")
       .select("*")
-      .eq("org_id", "creait")
+      .eq("org_id", orgId)
       .order("occurred_at", { ascending: false, nullsFirst: false })
       .order("created_at", { ascending: false })
       .limit(20),
     supabase
       .from("strategic_bets")
       .select("*")
-      .eq("org_id", "creait")
+      .eq("org_id", orgId)
       .order("sort_order", { ascending: true })
       .order("created_at", { ascending: false }),
   ]);

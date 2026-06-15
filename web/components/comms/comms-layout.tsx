@@ -62,9 +62,10 @@ function computeAnalytics(messages: Message[]) {
 
 export interface CommsLayoutProps {
   initialMessages: Message[];
+  orgId: string;
 }
 
-function CommsLayoutInner({ initialMessages }: CommsLayoutProps) {
+function CommsLayoutInner({ initialMessages, orgId }: CommsLayoutProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const selectedMsgId = searchParams.get("msg");
@@ -87,7 +88,7 @@ function CommsLayoutInner({ initialMessages }: CommsLayoutProps) {
       const { data } = await supabase
         .from("messages")
         .select("*")
-        .eq("org_id", "creait")
+        .eq("org_id", orgId)
         .order("priority_score", { ascending: false })
         .order("received_at", { ascending: false })
         .limit(200);
@@ -97,14 +98,14 @@ function CommsLayoutInner({ initialMessages }: CommsLayoutProps) {
       .channel("messages-realtime")
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "messages", filter: "org_id=eq.creait" },
+        { event: "*", schema: "public", table: "messages", filter: `org_id=eq.${orgId}` },
         refetch,
       )
       .subscribe();
     return () => {
       void supabase.removeChannel(channel);
     };
-  }, []);
+  }, [orgId]);
 
   const filtered = useMemo(() => applyFilter(messages, filter), [messages, filter]);
   const selectedMessage = useMemo(

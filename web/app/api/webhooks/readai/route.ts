@@ -6,6 +6,7 @@ import type { Json } from '@/lib/supabase/types'
 export const runtime = 'nodejs'
 export const maxDuration = 120
 
+// TODO: derive org_id from webhook payload once Read.ai supports multi-tenant
 const ORG_ID = 'creait'
 const SKILL_NAME = 'Meeting Debrief'
 

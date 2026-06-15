@@ -91,9 +91,10 @@ function describeCron(cron: string | null): string {
 interface Props {
   initialAgents: Agent[];
   initialRunHistory: RunHistory[];
+  orgId: string;
 }
 
-export function ActiveAgentsTab({ initialAgents, initialRunHistory }: Props) {
+export function ActiveAgentsTab({ initialAgents, initialRunHistory, orgId }: Props) {
   const [agents, setAgents] = useState<Agent[]>(initialAgents);
   const [runs, setRuns] = useState<RunHistory[]>(initialRunHistory);
   const [openLogs, setOpenLogs] = useState<Record<string, boolean>>({});
@@ -110,7 +111,7 @@ export function ActiveAgentsTab({ initialAgents, initialRunHistory }: Props) {
           event: "UPDATE",
           schema: "public",
           table: "agents",
-          filter: "org_id=eq.creait",
+          filter: `org_id=eq.${orgId}`,
         },
         (payload) => {
           const next = payload.new as Agent;
@@ -126,7 +127,7 @@ export function ActiveAgentsTab({ initialAgents, initialRunHistory }: Props) {
           event: "INSERT",
           schema: "public",
           table: "run_history",
-          filter: "org_id=eq.creait",
+          filter: `org_id=eq.${orgId}`,
         },
         (payload) => setRuns((prev) => [payload.new as RunHistory, ...prev]),
       )
@@ -135,7 +136,7 @@ export function ActiveAgentsTab({ initialAgents, initialRunHistory }: Props) {
       void supabase.removeChannel(agentsChannel);
       void supabase.removeChannel(runsChannel);
     };
-  }, []);
+  }, [orgId]);
 
   if (agents.length === 0) {
     return (

@@ -22,6 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
+import { useActiveOrgId } from "@/lib/use-active-org";
 import { cn } from "@/lib/utils";
 import { PeopleAnalyzer } from "./people-analyzer";
 import type {
@@ -255,6 +256,7 @@ function SeatEditorDialog({
   onOpenChange: (open: boolean) => void;
   seat: TeamSeat | null;
 }) {
+  const orgId = useActiveOrgId();
   const [title, setTitle] = useState(seat?.title ?? "");
   const [description, setDescription] = useState(seat?.description ?? "");
   const [respText, setRespText] = useState(
@@ -306,7 +308,7 @@ function SeatEditorDialog({
       }
     } else {
       const { error } = await supabase.from("cc_team_seats").insert({
-        org_id: "creait",
+        org_id: orgId,
         title: title.trim(),
         description: description.trim() || null,
         responsibilities,

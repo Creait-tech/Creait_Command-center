@@ -27,6 +27,7 @@ interface Props {
   initialAgents?: Agent[];
   initialRunHistory: RunHistory[];
   initialRunStatsMap: Record<string, SkillRunStats>;
+  orgId: string;
 }
 
 function AgentsTabsInner({
@@ -34,6 +35,7 @@ function AgentsTabsInner({
   initialAgents,
   initialRunHistory,
   initialRunStatsMap,
+  orgId,
 }: Props) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -50,7 +52,7 @@ function AgentsTabsInner({
     void supabase
       .from("agents")
       .select("*")
-      .eq("org_id", "creait")
+      .eq("org_id", orgId)
       .order("created_at", { ascending: true })
       .then(({ data }) => {
         if (cancelled) return;
@@ -59,7 +61,7 @@ function AgentsTabsInner({
     return () => {
       cancelled = true;
     };
-  }, [initialAgents]);
+  }, [initialAgents, orgId]);
 
   function setTab(v: string) {
     const p = new URLSearchParams(searchParams.toString());
@@ -79,7 +81,7 @@ function AgentsTabsInner({
         <SkillsGrid skills={initialSkills} runStatsMap={initialRunStatsMap} />
       </TabsContent>
       <TabsContent value="agents" className="mt-4">
-        <ActiveAgentsTab initialAgents={agents} initialRunHistory={initialRunHistory} />
+        <ActiveAgentsTab initialAgents={agents} initialRunHistory={initialRunHistory} orgId={orgId} />
       </TabsContent>
       <TabsContent value="scheduled" className="mt-4">
         <Card>
@@ -87,7 +89,7 @@ function AgentsTabsInner({
         </Card>
       </TabsContent>
       <TabsContent value="history" className="mt-4">
-        <RunHistoryTable initialRuns={initialRunHistory} skills={initialSkills} />
+        <RunHistoryTable initialRuns={initialRunHistory} skills={initialSkills} orgId={orgId} />
       </TabsContent>
     </Tabs>
   );

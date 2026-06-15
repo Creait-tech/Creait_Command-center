@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
+import { useActiveOrgId } from "@/lib/use-active-org";
 import type { Kpi } from "@/lib/supabase/types";
 
 interface ScoreboardProps {
@@ -189,6 +190,7 @@ function KpiCard({ kpi, onSave }: KpiCardProps) {
 }
 
 export function Scoreboard({ initialKpis }: ScoreboardProps) {
+  const orgId = useActiveOrgId();
   const [kpis, setKpis] = useState<Kpi[]>(sortKpis(initialKpis));
 
   useEffect(() => {
@@ -198,7 +200,7 @@ export function Scoreboard({ initialKpis }: ScoreboardProps) {
       const { data } = await supabase
         .from("kpis")
         .select("*")
-        .eq("org_id", "creait")
+        .eq("org_id", orgId)
         .order("sort_order", { ascending: true });
       if (data) setKpis(sortKpis(data as Kpi[]));
     }
@@ -211,7 +213,7 @@ export function Scoreboard({ initialKpis }: ScoreboardProps) {
           event: "*",
           schema: "public",
           table: "kpis",
-          filter: "org_id=eq.creait",
+          filter: `org_id=eq.${orgId}`,
         },
         refetch
       )
@@ -220,7 +222,7 @@ export function Scoreboard({ initialKpis }: ScoreboardProps) {
     return () => {
       void supabase.removeChannel(channel);
     };
-  }, []);
+  }, [orgId]);
 
   async function handleSave(id: string, newValue: number) {
     const supabase = createClient();

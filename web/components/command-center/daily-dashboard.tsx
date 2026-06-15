@@ -5,6 +5,7 @@ import Link from "next/link";
 import { CheckSquare, Mountain, MessageSquareWarning, ArrowRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
+import { useActiveOrgId } from "@/lib/use-active-org";
 import { cn } from "@/lib/utils";
 import type { Todo, Rock, IdsItem, RockStatusUpdate } from "@/lib/supabase/types";
 
@@ -17,6 +18,7 @@ interface State {
 }
 
 export function DailyDashboard() {
+  const orgId = useActiveOrgId();
   const [state, setState] = useState<State | null>(null);
 
   useEffect(() => {
@@ -29,14 +31,14 @@ export function DailyDashboard() {
         supabase
           .from("cc_todos")
           .select("*")
-          .eq("org_id", "creait")
+          .eq("org_id", orgId)
           .eq("done", false)
           .order("due_date", { ascending: true, nullsFirst: false })
           .limit(20),
         supabase
           .from("cc_rocks")
           .select("*")
-          .eq("org_id", "creait")
+          .eq("org_id", orgId)
           .not("status", "in", "(complete,dropped)")
           .order("sort_order"),
         supabase
@@ -47,7 +49,7 @@ export function DailyDashboard() {
         supabase
           .from("ids_items")
           .select("*")
-          .eq("org_id", "creait")
+          .eq("org_id", orgId)
           .in("status", ["open", "discussing"])
           .order("priority", { ascending: false })
           .limit(5),
@@ -112,7 +114,7 @@ export function DailyDashboard() {
     return () => {
       void supabase.removeChannel(ch);
     };
-  }, []);
+  }, [orgId]);
 
   if (!state) {
     return (

@@ -23,6 +23,7 @@ type Filter = "all" | "open" | "done" | "overdue";
 interface Props {
   initialTodos: Todo[];
   members: TeamMember[];
+  orgId: string;
 }
 
 function isOverdue(t: Todo): boolean {
@@ -34,7 +35,7 @@ function defaultDueDate(): string {
   return new Date(Date.now() + 7 * 86_400_000).toISOString().slice(0, 10);
 }
 
-export function TodosView({ initialTodos, members }: Props) {
+export function TodosView({ initialTodos, members, orgId }: Props) {
   const [todos, setTodos] = useState<Todo[]>(initialTodos);
   const [filter, setFilter] = useState<Filter>("open");
   const [newTitle, setNewTitle] = useState("");
@@ -47,12 +48,12 @@ export function TodosView({ initialTodos, members }: Props) {
       .channel("cc-todos-realtime")
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "cc_todos", filter: "org_id=eq.creait" },
+        { event: "*", schema: "public", table: "cc_todos", filter: `org_id=eq.${orgId}` },
         async () => {
           const { data } = await supabase
             .from("cc_todos")
             .select("*")
-            .eq("org_id", "creait")
+            .eq("org_id", orgId)
             .order("done")
             .order("due_date", { nullsFirst: false });
           if (data) setTodos(data as Todo[]);
@@ -62,7 +63,7 @@ export function TodosView({ initialTodos, members }: Props) {
     return () => {
       void supabase.removeChannel(ch);
     };
-  }, []);
+  }, [orgId]);
 
   const filtered = useMemo(() => {
     switch (filter) {
@@ -88,7 +89,7 @@ export function TodosView({ initialTodos, members }: Props) {
     if (!newTitle.trim()) return;
     const supabase = createClient();
     const { error } = await supabase.from("cc_todos").insert({
-      org_id: "creait",
+      org_id: orgId,
       title: newTitle.trim(),
       owner_id: newOwnerId || null,
       due_date: newDue || null,

@@ -13,6 +13,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
+import { useActiveOrgId } from "@/lib/use-active-org";
 import type { MediaPlatform } from "@/lib/supabase/types";
 
 interface MediaPlatformsProps {
@@ -53,6 +54,7 @@ function formatFollowers(n: number): string {
 }
 
 export function MediaPlatforms({ platforms, onChange }: MediaPlatformsProps) {
+  const orgId = useActiveOrgId();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [draft, setDraft] = useState<DraftPlatform>(EMPTY_DRAFT);
   const [saving, setSaving] = useState(false);
@@ -83,7 +85,7 @@ export function MediaPlatforms({ platforms, onChange }: MediaPlatformsProps) {
       platforms.reduce((max, p) => Math.max(max, p.sort_order), -1) + 1;
 
     const payload = {
-      org_id: "creait",
+      org_id: orgId,
       name: draft.name.trim(),
       platform: draft.platform || null,
       handle: draft.handle.trim() || null,

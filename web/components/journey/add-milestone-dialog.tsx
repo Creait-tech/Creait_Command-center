@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
+import { useActiveOrgId } from "@/lib/use-active-org";
 import { toast } from "sonner";
 
 interface Props {
@@ -27,6 +28,7 @@ export function AddMilestoneDialog({
   nextSortOrder,
   onAdded,
 }: Props) {
+  const orgId = useActiveOrgId();
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [durationDays, setDurationDays] = useState("7");
@@ -39,7 +41,7 @@ export function AddMilestoneDialog({
     const supabase = createClient();
     const parsedDuration = parseInt(durationDays, 10);
     const { error } = await supabase.from("journey_milestones").insert({
-      org_id: "creait",
+      org_id: orgId,
       name: name.trim(),
       description: description.trim() || null,
       sort_order: nextSortOrder,

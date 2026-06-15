@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { getActiveOrgId } from "@/lib/active-org";
 import { AgentsTabs } from "@/components/agents/agents-tabs";
 import { buildRunStatsMap } from "@/components/agents/skill-utils";
 import type { Skill, RunHistory } from "@/lib/supabase/types";
@@ -7,16 +8,17 @@ export const dynamic = "force-dynamic";
 
 export default async function AgentsPage() {
   const supabase = await createClient();
+  const orgId = await getActiveOrgId();
   const [skillsResult, historyResult] = await Promise.all([
     supabase
       .from("skills")
       .select("*")
-      .eq("org_id", "creait")
+      .eq("org_id", orgId)
       .order("created_at", { ascending: false }),
     supabase
       .from("run_history")
       .select("*")
-      .eq("org_id", "creait")
+      .eq("org_id", orgId)
       .order("created_at", { ascending: false })
       .limit(50),
   ]);
@@ -32,7 +34,7 @@ export default async function AgentsPage() {
           Run skills manually, review run history, manage agentic workflows.
         </p>
       </div>
-      <AgentsTabs initialSkills={skills} initialRunHistory={runHistory} initialRunStatsMap={runStatsMap} />
+      <AgentsTabs initialSkills={skills} initialRunHistory={runHistory} initialRunStatsMap={runStatsMap} orgId={orgId} />
     </div>
   );
 }

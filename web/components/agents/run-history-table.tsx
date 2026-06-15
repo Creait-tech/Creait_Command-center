@@ -72,9 +72,10 @@ function cutoffDate(days: string): Date | null {
 interface Props {
   initialRuns: RunHistory[];
   skills: Skill[];
+  orgId: string;
 }
 
-export function RunHistoryTable({ initialRuns, skills }: Props) {
+export function RunHistoryTable({ initialRuns, skills, orgId }: Props) {
   const [runs, setRuns] = useState<RunHistory[]>(initialRuns);
   const [trigger, setTrigger] = useState<"all" | RunTrigger>("all");
   const [status, setStatus] = useState<"all" | RunStatus>("all");
@@ -89,14 +90,14 @@ export function RunHistoryTable({ initialRuns, skills }: Props) {
       .channel("run-history-inserts")
       .on(
         "postgres_changes",
-        { event: "INSERT", schema: "public", table: "run_history", filter: "org_id=eq.creait" },
+        { event: "INSERT", schema: "public", table: "run_history", filter: `org_id=eq.${orgId}` },
         (payload) => setRuns((prev) => [payload.new as RunHistory, ...prev]),
       )
       .subscribe();
     return () => {
       void supabase.removeChannel(channel);
     };
-  }, []);
+  }, [orgId]);
 
   const filtered = useMemo(() => {
     const cutoff = cutoffDate(dateRange);

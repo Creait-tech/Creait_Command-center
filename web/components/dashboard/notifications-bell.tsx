@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
+import { useActiveOrgId } from "@/lib/use-active-org";
 import { cn } from "@/lib/utils";
 import type { Todo, IdsItem, RockStatusUpdate, Rock } from "@/lib/supabase/types";
 
@@ -26,6 +27,7 @@ function isOverdue(t: Todo): boolean {
 }
 
 export function NotificationsBell() {
+  const orgId = useActiveOrgId();
   const [bundle, setBundle] = useState<Bundle>({ overdueTodos: [], redRocks: [], topIssues: [] });
   const [open, setOpen] = useState(false);
 
@@ -35,10 +37,10 @@ export function NotificationsBell() {
 
     async function refetch() {
       const [todosRes, rocksRes, statusesRes, issuesRes] = await Promise.all([
-        supabase.from("cc_todos").select("*").eq("org_id", "creait").eq("done", false).order("due_date", { nullsFirst: false }),
-        supabase.from("cc_rocks").select("*").eq("org_id", "creait").in("status", ["on_track", "off_track"]).order("sort_order"),
+        supabase.from("cc_todos").select("*").eq("org_id", orgId).eq("done", false).order("due_date", { nullsFirst: false }),
+        supabase.from("cc_rocks").select("*").eq("org_id", orgId).in("status", ["on_track", "off_track"]).order("sort_order"),
         supabase.from("cc_rock_status_updates").select("*").order("created_at", { ascending: false }).limit(200),
-        supabase.from("ids_items").select("*").eq("org_id", "creait").eq("is_long_term", false).neq("status", "solved").neq("status", "dropped").gte("priority", 7).order("priority", { ascending: false }).limit(5),
+        supabase.from("ids_items").select("*").eq("org_id", orgId).eq("is_long_term", false).neq("status", "solved").neq("status", "dropped").gte("priority", 7).order("priority", { ascending: false }).limit(5),
       ]);
       if (!mounted) return;
       const todos = (todosRes.data as Todo[] | null) ?? [];
@@ -60,17 +62,17 @@ export function NotificationsBell() {
     void refetch();
     const channel = supabase
       .channel("notifications-bell")
-      .on("postgres_changes", { event: "*", schema: "public", table: "cc_todos", filter: "org_id=eq.creait" }, refetch)
-      .on("postgres_changes", { event: "*", schema: "public", table: "cc_rocks", filter: "org_id=eq.creait" }, refetch)
+      .on("postgres_changes", { event: "*", schema: "public", table: "cc_todos", filter: `org_id=eq.${orgId}` }, refetch)
+      .on("postgres_changes", { event: "*", schema: "public", table: "cc_rocks", filter: `org_id=eq.${orgId}` }, refetch)
       .on("postgres_changes", { event: "*", schema: "public", table: "cc_rock_status_updates" }, refetch)
-      .on("postgres_changes", { event: "*", schema: "public", table: "ids_items", filter: "org_id=eq.creait" }, refetch)
+      .on("postgres_changes", { event: "*", schema: "public", table: "ids_items", filter: `org_id=eq.${orgId}` }, refetch)
       .subscribe();
 
     return () => {
       mounted = false;
       void supabase.removeChannel(channel);
     };
-  }, []);
+  }, [orgId]);
 
   const totalCount = bundle.overdueTodos.length + bundle.redRocks.length + bundle.topIssues.length;
   const hasAny = totalCount > 0;

@@ -22,6 +22,7 @@ interface TeamViewProps {
   kpis: MemberKpi[];
   seats: TeamSeat[];
   assignments: SeatAssignment[];
+  orgId: string;
 }
 
 function sortMembers(list: TeamMember[]): TeamMember[] {
@@ -33,6 +34,7 @@ function TeamViewInner({
   kpis: initialKpis,
   seats: initialSeats,
   assignments: initialAssignments,
+  orgId,
 }: TeamViewProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -53,7 +55,7 @@ function TeamViewInner({
       const { data } = await supabase
         .from("team_members")
         .select("*")
-        .eq("org_id", "creait")
+        .eq("org_id", orgId)
         .eq("status", "active")
         .order("full_name", { ascending: true });
       if (data) setMembers(sortMembers(data as TeamMember[]));
@@ -77,7 +79,7 @@ function TeamViewInner({
       const { data } = await supabase
         .from("cc_team_seats")
         .select("*")
-        .eq("org_id", "creait")
+        .eq("org_id", orgId)
         .order("sort_order");
       if (data) setSeats(data as TeamSeat[]);
     }
@@ -91,7 +93,7 @@ function TeamViewInner({
 
     const membersChannel = supabase
       .channel("team-members-realtime")
-      .on("postgres_changes", { event: "*", schema: "public", table: "team_members", filter: "org_id=eq.creait" }, refetchMembers)
+      .on("postgres_changes", { event: "*", schema: "public", table: "team_members", filter: `org_id=eq.${orgId}` }, refetchMembers)
       .subscribe();
     const kpisChannel = supabase
       .channel("member-kpis-realtime")
@@ -99,7 +101,7 @@ function TeamViewInner({
       .subscribe();
     const seatsChannel = supabase
       .channel("cc-team-seats-realtime")
-      .on("postgres_changes", { event: "*", schema: "public", table: "cc_team_seats", filter: "org_id=eq.creait" }, refetchSeats)
+      .on("postgres_changes", { event: "*", schema: "public", table: "cc_team_seats", filter: `org_id=eq.${orgId}` }, refetchSeats)
       .subscribe();
     const assignmentsChannel = supabase
       .channel("cc-seat-assignments-realtime")

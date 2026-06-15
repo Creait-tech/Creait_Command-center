@@ -19,6 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
+import { useActiveOrgId } from "@/lib/use-active-org";
 import type { Timeframe } from "@/lib/supabase/types";
 
 interface AddGoalDialogProps {
@@ -49,6 +50,7 @@ export function AddGoalDialog({
   defaultTimeframe,
   onSuccess,
 }: AddGoalDialogProps) {
+  const orgId = useActiveOrgId();
   const [form, setForm] = useState<FormState>({
     title: "",
     description: "",
@@ -74,7 +76,7 @@ export function AddGoalDialog({
 
     const supabase = createClient();
     const { error: dbError } = await supabase.from("goals").insert({
-      org_id: "creait",
+      org_id: orgId,
       title: form.title.trim(),
       description: form.description.trim() || null,
       timeframe: form.timeframe,

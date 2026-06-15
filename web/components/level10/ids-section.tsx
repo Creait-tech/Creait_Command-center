@@ -28,6 +28,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
+import { useActiveOrgId } from "@/lib/use-active-org";
 import { cn } from "@/lib/utils";
 import type { IdsItem, IdsStatus } from "@/lib/supabase/types";
 
@@ -174,6 +175,7 @@ function IdsColumn({ column, label, accent, items, onToggleLongTerm, onDelete }:
 }
 
 export function IdsSection({ initialItems, meetingId }: IdsSectionProps) {
+  const orgId = useActiveOrgId();
   const [items, setItems] = useState<IdsItem[]>(sortItems(initialItems));
   const [bucket, setBucket] = useState<Bucket>("short");
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -197,7 +199,7 @@ export function IdsSection({ initialItems, meetingId }: IdsSectionProps) {
       const { data } = await supabase
         .from("ids_items")
         .select("*")
-        .eq("org_id", "creait")
+        .eq("org_id", orgId)
         .neq("status", "dropped")
         .order("priority", { ascending: false })
         .order("created_at", { ascending: false })
@@ -206,12 +208,12 @@ export function IdsSection({ initialItems, meetingId }: IdsSectionProps) {
     }
     const channel = supabase
       .channel("ids-items-realtime")
-      .on("postgres_changes", { event: "*", schema: "public", table: "ids_items", filter: "org_id=eq.creait" }, refetch)
+      .on("postgres_changes", { event: "*", schema: "public", table: "ids_items", filter: `org_id=eq.${orgId}` }, refetch)
       .subscribe();
     return () => {
       void supabase.removeChannel(channel);
     };
-  }, []);
+  }, [orgId]);
 
   const shortItems = items.filter((i) => !i.is_long_term);
   const longItems = items.filter((i) => i.is_long_term);
@@ -286,7 +288,7 @@ export function IdsSection({ initialItems, meetingId }: IdsSectionProps) {
     setError(null);
     const supabase = createClient();
     const { error: dbError } = await supabase.from("ids_items").insert({
-      org_id: "creait",
+      org_id: orgId,
       meeting_id: meetingId,
       title: title.trim(),
       description: description.trim() || null,

@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { getActiveOrgId } from "@/lib/active-org";
 import { QuarterlyWalker } from "@/components/quarterly/quarterly-walker";
 import type { Rock, IdsItem, Strategy } from "@/lib/supabase/types";
 
@@ -24,14 +25,15 @@ function previousQuarter(): string {
 
 export default async function QuarterlyPage() {
   const supabase = await createClient();
+  const orgId = await getActiveOrgId();
   const thisQ = currentQuarter();
   const prevQ = previousQuarter();
 
   const [thisRocksRes, prevRocksRes, longIssuesRes, strategyRes] = await Promise.all([
-    supabase.from("cc_rocks").select("*").eq("org_id", "creait").eq("quarter", thisQ).order("sort_order"),
-    supabase.from("cc_rocks").select("*").eq("org_id", "creait").eq("quarter", prevQ).order("sort_order"),
-    supabase.from("ids_items").select("*").eq("org_id", "creait").eq("is_long_term", true).neq("status", "solved").neq("status", "dropped").order("priority", { ascending: false }),
-    supabase.from("strategy").select("*").eq("org_id", "creait").maybeSingle(),
+    supabase.from("cc_rocks").select("*").eq("org_id", orgId).eq("quarter", thisQ).order("sort_order"),
+    supabase.from("cc_rocks").select("*").eq("org_id", orgId).eq("quarter", prevQ).order("sort_order"),
+    supabase.from("ids_items").select("*").eq("org_id", orgId).eq("is_long_term", true).neq("status", "solved").neq("status", "dropped").order("priority", { ascending: false }),
+    supabase.from("strategy").select("*").eq("org_id", orgId).maybeSingle(),
   ]);
 
   const thisRocks = (thisRocksRes.data as Rock[] | null) ?? [];

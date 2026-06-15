@@ -34,6 +34,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
+import { useActiveOrgId } from "@/lib/use-active-org";
 
 type QuickKind = "todo" | "issue" | "headline" | "win" | "rock";
 
@@ -54,6 +55,7 @@ function defaultDue(): string {
 }
 
 export function QuickAddButton() {
+  const orgId = useActiveOrgId();
   const [openKind, setOpenKind] = useState<QuickKind | null>(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -78,28 +80,28 @@ export function QuickAddButton() {
     switch (openKind) {
       case "todo": {
         const res = await supabase.from("cc_todos").insert({
-          org_id: "creait", title: title.trim(), description: description.trim() || null, due_date: dueDate || null,
+          org_id: orgId, title: title.trim(), description: description.trim() || null, due_date: dueDate || null,
         });
         error = res.error;
         break;
       }
       case "issue": {
         const res = await supabase.from("ids_items").insert({
-          org_id: "creait", title: title.trim(), description: description.trim() || null, status: "open", priority,
+          org_id: orgId, title: title.trim(), description: description.trim() || null, status: "open", priority,
         });
         error = res.error;
         break;
       }
       case "headline": {
         const res = await supabase.from("cc_headlines").insert({
-          org_id: "creait", text: title.trim(), category: headlineCategory,
+          org_id: orgId, text: title.trim(), category: headlineCategory,
         });
         error = res.error;
         break;
       }
       case "win": {
         const res = await supabase.from("wins").insert({
-          org_id: "creait", title: title.trim(), description: description.trim() || null,
+          org_id: orgId, title: title.trim(), description: description.trim() || null,
         });
         error = res.error;
         break;
@@ -107,7 +109,7 @@ export function QuickAddButton() {
       case "rock": {
         const q = currentQuarter();
         const res = await supabase.from("cc_rocks").insert({
-          org_id: "creait", title: title.trim(), description: description.trim() || null,
+          org_id: orgId, title: title.trim(), description: description.trim() || null,
           rock_type: "company", quarter: q, status: "on_track", due_date: quarterEnd(q), sort_order: 0,
         });
         error = res.error;

@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { getActiveOrgId } from "@/lib/active-org";
 import { CompanyPrioritiesBar } from "@/components/command-center/company-priorities-bar";
 import { TimeHorizonColumns } from "@/components/command-center/time-horizon-columns";
 import { DailyDashboard } from "@/components/command-center/daily-dashboard";
@@ -8,18 +9,19 @@ export const dynamic = "force-dynamic";
 
 export default async function CommandCenterPage() {
   const supabase = await createClient();
+  const orgId = await getActiveOrgId();
 
   const [prioritiesResult, goalsResult] = await Promise.all([
     supabase
       .from("company_priorities")
       .select("*")
-      .eq("org_id", "creait")
+      .eq("org_id", orgId)
       .neq("status", "dropped")
       .order("sort_order", { ascending: true }),
     supabase
       .from("goals")
       .select("*")
-      .eq("org_id", "creait")
+      .eq("org_id", orgId)
       .order("sort_order", { ascending: true }),
   ]);
 

@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { Textarea } from "@/components/ui/textarea";
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
+import { useActiveOrgId } from "@/lib/use-active-org";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -41,6 +42,7 @@ function fmt(sec: number): string {
 }
 
 export function RunMeetingModal({ open, onOpenChange }: Props) {
+  const orgId = useActiveOrgId();
   const [meetingId, setMeetingId] = useState<string | null>(null);
   const [activeIdx, setActiveIdx] = useState(0);
   const [elapsed, setElapsed] = useState<number[]>(Array(SECTIONS.length).fill(0));
@@ -91,7 +93,7 @@ export function RunMeetingModal({ open, onOpenChange }: Props) {
     const { data, error } = await supabase
       .from("meetings")
       .insert({
-        org_id: "creait",
+        org_id: orgId,
         title: `L10 — ${today.toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" })}`,
         meeting_type: "level_10",
         scheduled_at: today.toISOString(),
@@ -124,7 +126,7 @@ export function RunMeetingModal({ open, onOpenChange }: Props) {
     const supabase = createClient();
     const due = new Date(Date.now() + 7 * 86_400_000).toISOString().slice(0, 10);
     const { error } = await supabase.from("cc_todos").insert({
-      org_id: "creait",
+      org_id: orgId,
       meeting_id: meetingId,
       title: newTodo.trim(),
       due_date: due,
@@ -140,7 +142,7 @@ export function RunMeetingModal({ open, onOpenChange }: Props) {
     if (!newHeadline.trim() || !meetingId) return;
     const supabase = createClient();
     const { error } = await supabase.from("cc_headlines").insert({
-      org_id: "creait",
+      org_id: orgId,
       meeting_id: meetingId,
       category: "general",
       text: newHeadline.trim(),
@@ -156,7 +158,7 @@ export function RunMeetingModal({ open, onOpenChange }: Props) {
     if (!newIssue.trim() || !meetingId) return;
     const supabase = createClient();
     const { error } = await supabase.from("ids_items").insert({
-      org_id: "creait",
+      org_id: orgId,
       meeting_id: meetingId,
       title: newIssue.trim(),
       status: "open",

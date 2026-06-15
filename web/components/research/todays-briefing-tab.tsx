@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
+import { useActiveOrgId } from "@/lib/use-active-org";
 import type { ResearchBriefing } from "@/lib/supabase/types";
 
 const FAKE_STEPS = [
@@ -23,6 +24,7 @@ interface Props {
 }
 
 export function TodaysBriefingTab({ initialBriefing }: Props) {
+  const orgId = useActiveOrgId();
   const [briefing, setBriefing] = useState<ResearchBriefing | null>(initialBriefing);
   const [running, setRunning] = useState(false);
   const [step, setStep] = useState(0);
@@ -34,12 +36,12 @@ export function TodaysBriefingTab({ initialBriefing }: Props) {
       .from("skills")
       .select("id")
       .or("name.eq.Daily Intelligence Briefing,name.eq.Daily Briefing")
-      .eq("org_id", "creait")
+      .eq("org_id", orgId)
       .limit(1)
       .then(({ data }) => {
         if (data && data.length > 0) setSkillId((data[0] as { id: string }).id);
       });
-  }, []);
+  }, [orgId]);
 
   useEffect(() => {
     if (!running) return;
@@ -68,7 +70,7 @@ export function TodaysBriefingTab({ initialBriefing }: Props) {
       const { data } = await supabase
         .from("research_briefings")
         .select("*")
-        .eq("org_id", "creait")
+        .eq("org_id", orgId)
         .eq("briefing_type", "daily")
         .eq("briefing_date", today)
         .order("created_at", { ascending: false })
@@ -81,7 +83,7 @@ export function TodaysBriefingTab({ initialBriefing }: Props) {
         // Skill ran but didn't persist a briefing row — show raw output as ephemeral display
         setBriefing({
           id: "ephemeral",
-          org_id: "creait",
+          org_id: orgId,
           title: "Today's Briefing",
           briefing_type: "daily",
           content: json.output ?? "",

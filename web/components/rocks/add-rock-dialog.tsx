@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
+import { useActiveOrgId } from "@/lib/use-active-org";
 import type { RockType, TeamMember } from "@/lib/supabase/types";
 
 interface Props {
@@ -27,6 +28,7 @@ function quarterEnd(quarter: string): string {
 }
 
 export function AddRockDialog({ open, onOpenChange, defaultQuarter, members }: Props) {
+  const orgId = useActiveOrgId();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [rockType, setRockType] = useState<RockType>("company");
@@ -55,7 +57,7 @@ export function AddRockDialog({ open, onOpenChange, defaultQuarter, members }: P
     setSubmitting(true);
     const supabase = createClient();
     const { error } = await supabase.from("cc_rocks").insert({
-      org_id: "creait",
+      org_id: orgId,
       title: title.trim(),
       description: description.trim() || null,
       rock_type: rockType,

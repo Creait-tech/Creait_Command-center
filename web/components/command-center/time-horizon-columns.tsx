@@ -19,6 +19,7 @@ import {
 import { GoalCard } from "./goal-card";
 import { AddGoalDialog } from "./add-goal-dialog";
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
+import { useActiveOrgId } from "@/lib/use-active-org";
 import type { Goal, Subtask, Timeframe } from "@/lib/supabase/types";
 
 interface TimeHorizonColumnsProps {
@@ -44,6 +45,7 @@ export function TimeHorizonColumns({
   goals: initialGoals,
   subtasks: initialSubtasks,
 }: TimeHorizonColumnsProps) {
+  const orgId = useActiveOrgId();
   const [goals, setGoals] = useState<Goal[]>(sortGoals(initialGoals));
   const [subtasks, setSubtasks] = useState<Subtask[]>(initialSubtasks);
   const [addDialogTimeframe, setAddDialogTimeframe] = useState<Timeframe>("week");
@@ -61,7 +63,7 @@ export function TimeHorizonColumns({
       const { data } = await supabase
         .from("goals")
         .select("*")
-        .eq("org_id", "creait")
+        .eq("org_id", orgId)
         .order("sort_order", { ascending: true });
       if (data) setGoals(sortGoals(data as Goal[]));
     }
@@ -78,7 +80,7 @@ export function TimeHorizonColumns({
       .channel("goals-realtime")
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "goals", filter: "org_id=eq.creait" },
+        { event: "*", schema: "public", table: "goals", filter: `org_id=eq.${orgId}` },
         refetchGoals
       )
       .subscribe();
@@ -96,7 +98,7 @@ export function TimeHorizonColumns({
       void supabase.removeChannel(goalsChannel);
       void supabase.removeChannel(subtasksChannel);
     };
-  }, []);
+  }, [orgId]);
 
   async function handleSubtaskToggle(subtaskId: string, done: boolean, goalId: string) {
     const supabase = createClient();

@@ -8,14 +8,12 @@ import {
   DEFAULT_MODEL,
   resolveModel,
 } from '@/lib/ai'
+import { getActiveOrgId } from '@/lib/active-org'
 import { buildSystemPrompt } from '@/lib/context-builder'
 import { loadMcpTools } from '@/lib/mcp-client'
 
 export const runtime = 'nodejs'
 export const maxDuration = 60
-
-// Phase 1: single org. Multi-org lands in Phase 3.
-const ORG_ID = 'creait'
 
 const bodySchema = z.object({
   // `UIMessage[]` shape from the AI SDK — we trust the structure at runtime
@@ -60,8 +58,10 @@ export async function POST(req: Request) {
       )
     }
 
+    const orgId = await getActiveOrgId()
+
     const [system, modelMessages, tools] = await Promise.all([
-      buildSystemPrompt(ORG_ID, pageContext),
+      buildSystemPrompt(orgId, pageContext),
       convertToModelMessages(messages as UIMessage[]),
       loadMcpTools(),
     ])

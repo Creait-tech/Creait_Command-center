@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { getActiveOrgId } from "@/lib/active-org";
 import { MeetingsList } from "@/components/meetings/meetings-list";
 import type { Meeting, MeetingRating } from "@/lib/supabase/types";
 
@@ -6,12 +7,13 @@ export const dynamic = "force-dynamic";
 
 export default async function MeetingsPage() {
   const supabase = await createClient();
+  const orgId = await getActiveOrgId();
 
   const [meetingsRes, ratingsRes] = await Promise.all([
     supabase
       .from("meetings")
       .select("*")
-      .eq("org_id", "creait")
+      .eq("org_id", orgId)
       .order("scheduled_at", { ascending: false, nullsFirst: false })
       .order("created_at", { ascending: false })
       .limit(100),

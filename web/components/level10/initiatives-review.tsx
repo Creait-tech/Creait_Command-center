@@ -16,6 +16,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
+import { useActiveOrgId } from "@/lib/use-active-org";
 import { cn } from "@/lib/utils";
 import type { Initiative, InitiativeStatus } from "@/lib/supabase/types";
 
@@ -51,6 +52,7 @@ function sortInitiatives(items: Initiative[]): Initiative[] {
 export function InitiativesReview({
   initialInitiatives,
 }: InitiativesReviewProps) {
+  const orgId = useActiveOrgId();
   const [initiatives, setInitiatives] = useState<Initiative[]>(
     sortInitiatives(initialInitiatives)
   );
@@ -67,7 +69,7 @@ export function InitiativesReview({
       const { data } = await supabase
         .from("initiatives")
         .select("*")
-        .eq("org_id", "creait")
+        .eq("org_id", orgId)
         .not("status", "in", "(dropped,complete)")
         .order("created_at", { ascending: false })
         .limit(20);
@@ -82,7 +84,7 @@ export function InitiativesReview({
           event: "*",
           schema: "public",
           table: "initiatives",
-          filter: "org_id=eq.creait",
+          filter: `org_id=eq.${orgId}`,
         },
         refetch
       )
@@ -91,7 +93,7 @@ export function InitiativesReview({
     return () => {
       void supabase.removeChannel(channel);
     };
-  }, []);
+  }, [orgId]);
 
   function openEscalate(initiative: Initiative) {
     setEscalateTarget(initiative);
@@ -119,7 +121,7 @@ export function InitiativesReview({
 
     const supabase = createClient();
     const { error: dbError } = await supabase.from("ids_items").insert({
-      org_id: "creait",
+      org_id: orgId,
       title: escalateTitle.trim(),
       description: escalateDescription.trim() || null,
       status: "open",

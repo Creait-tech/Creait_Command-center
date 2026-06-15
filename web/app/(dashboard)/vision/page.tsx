@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { getActiveOrgId } from "@/lib/active-org";
 import { VisionTabs } from "@/components/vision/vision-tabs";
 import type { Strategy, Rock, IdsItem } from "@/lib/supabase/types";
 
@@ -12,20 +13,21 @@ function currentQuarter(): string {
 
 export default async function VisionPage() {
   const supabase = await createClient();
+  const orgId = await getActiveOrgId();
   const quarter = currentQuarter();
 
   const [strategyRes, rocksRes, issuesRes] = await Promise.all([
-    supabase.from("strategy").select("*").eq("org_id", "creait").maybeSingle(),
+    supabase.from("strategy").select("*").eq("org_id", orgId).maybeSingle(),
     supabase
       .from("cc_rocks")
       .select("*")
-      .eq("org_id", "creait")
+      .eq("org_id", orgId)
       .eq("quarter", quarter)
       .order("sort_order"),
     supabase
       .from("ids_items")
       .select("*")
-      .eq("org_id", "creait")
+      .eq("org_id", orgId)
       .eq("is_long_term", true)
       .neq("status", "solved")
       .neq("status", "dropped")

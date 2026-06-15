@@ -12,6 +12,7 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
+import { useActiveOrgId } from "@/lib/use-active-org";
 import { cn } from "@/lib/utils";
 import type { Message, MessageStatus, MessageSource } from "@/lib/supabase/types";
 
@@ -41,6 +42,7 @@ export interface DraftReplyPanelProps {
 }
 
 export function DraftReplyPanel({ message, onMessageUpdated }: DraftReplyPanelProps) {
+  const orgId = useActiveOrgId();
   const [draftText, setDraftText] = useState(message.draft_reply ?? "");
   const [generating, setGenerating] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
@@ -56,12 +58,12 @@ export function DraftReplyPanel({ message, onMessageUpdated }: DraftReplyPanelPr
       .from("skills")
       .select("id")
       .or("name.eq.Draft Message Reply,name.eq.Draft Reply")
-      .eq("org_id", "creait")
+      .eq("org_id", orgId)
       .limit(1)
       .then(({ data }) => {
         if (data && data.length > 0) setSkillId((data[0] as { id: string }).id);
       });
-  }, []);
+  }, [orgId]);
 
   const updateStatus = useCallback(
     async (status: MessageStatus, extra: Partial<Message> = {}) => {

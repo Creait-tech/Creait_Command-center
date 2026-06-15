@@ -12,6 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
+import { useActiveOrgId } from "@/lib/use-active-org";
 import type { CompanyPriority } from "@/lib/supabase/types";
 import { cn } from "@/lib/utils";
 
@@ -22,6 +23,7 @@ interface CompanyPrioritiesBarProps {
 export function CompanyPrioritiesBar({
   priorities: initialPriorities,
 }: CompanyPrioritiesBarProps) {
+  const orgId = useActiveOrgId();
   const [priorities, setPriorities] = useState<CompanyPriority[]>(initialPriorities);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [title, setTitle] = useState("");
@@ -39,13 +41,13 @@ export function CompanyPrioritiesBar({
           event: "*",
           schema: "public",
           table: "company_priorities",
-          filter: "org_id=eq.creait",
+          filter: `org_id=eq.${orgId}`,
         },
         async () => {
           const { data } = await supabase
             .from("company_priorities")
             .select("*")
-            .eq("org_id", "creait")
+            .eq("org_id", orgId)
             .neq("status", "dropped")
             .order("sort_order", { ascending: true });
           if (data) setPriorities(data as CompanyPriority[]);
@@ -56,7 +58,7 @@ export function CompanyPrioritiesBar({
     return () => {
       void supabase.removeChannel(channel);
     };
-  }, []);
+  }, [orgId]);
 
   async function handleAdd(e: React.FormEvent) {
     e.preventDefault();
@@ -71,7 +73,7 @@ export function CompanyPrioritiesBar({
         : 0;
 
     const { error: dbError } = await supabase.from("company_priorities").insert({
-      org_id: "creait",
+      org_id: orgId,
       title: title.trim(),
       sort_order: nextOrder,
       status: "active",

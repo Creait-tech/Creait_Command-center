@@ -19,6 +19,7 @@ import {
 import { InitiativeCard } from "./initiative-card";
 import { AddInitiativeDialog } from "./add-initiative-dialog";
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
+import { useActiveOrgId } from "@/lib/use-active-org";
 import { cn } from "@/lib/utils";
 import type { Initiative, InitiativeTask } from "@/lib/supabase/types";
 
@@ -65,6 +66,7 @@ export function InitiativesView({
   initiatives: initialInitiatives,
   tasks: initialTasks,
 }: InitiativesViewProps) {
+  const orgId = useActiveOrgId();
   const [initiatives, setInitiatives] =
     useState<InitiativeWithDepartment[]>(initialInitiatives);
   const [tasks, setTasks] = useState<InitiativeTask[]>(initialTasks);
@@ -87,7 +89,7 @@ export function InitiativesView({
       const { data } = await supabase
         .from("initiatives")
         .select("*")
-        .eq("org_id", "creait")
+        .eq("org_id", orgId)
         .neq("status", "dropped")
         .order("department", { ascending: true })
         .order("created_at", { ascending: false });
@@ -110,7 +112,7 @@ export function InitiativesView({
           event: "*",
           schema: "public",
           table: "initiatives",
-          filter: "org_id=eq.creait",
+          filter: `org_id=eq.${orgId}`,
         },
         refetchInitiatives
       )
@@ -129,7 +131,7 @@ export function InitiativesView({
       void supabase.removeChannel(initiativesChannel);
       void supabase.removeChannel(tasksChannel);
     };
-  }, []);
+  }, [orgId]);
 
   // Build tab set: defaults + any extra departments that appear in data.
   const tabs = useMemo(() => {

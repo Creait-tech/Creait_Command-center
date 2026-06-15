@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { getActiveOrgId } from "@/lib/active-org";
 import { RocksView } from "@/components/rocks/rocks-view";
 import type {
   Rock,
@@ -17,13 +18,14 @@ function currentQuarter(): string {
 
 export default async function RocksPage() {
   const supabase = await createClient();
+  const orgId = await getActiveOrgId();
   const quarter = currentQuarter();
 
   const [rocksRes, milestonesRes, statusRes, membersRes] = await Promise.all([
     supabase
       .from("cc_rocks")
       .select("*")
-      .eq("org_id", "creait")
+      .eq("org_id", orgId)
       .order("quarter", { ascending: false })
       .order("sort_order", { ascending: true }),
     supabase
@@ -37,7 +39,7 @@ export default async function RocksPage() {
     supabase
       .from("team_members")
       .select("*")
-      .eq("org_id", "creait")
+      .eq("org_id", orgId)
       .eq("status", "active")
       .order("full_name"),
   ]);

@@ -18,6 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
+import { useActiveOrgId } from "@/lib/use-active-org";
 import type { TeamMember, TeamRole, TeamStatus } from "@/lib/supabase/types";
 
 interface AddMemberDialogProps {
@@ -61,6 +62,7 @@ export function AddMemberDialog({
   onOpenChange,
   onCreated,
 }: AddMemberDialogProps) {
+  const orgId = useActiveOrgId();
   const [form, setForm] = useState<FormState>(EMPTY);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -82,7 +84,7 @@ export function AddMemberDialog({
     const { data, error: dbError } = await supabase
       .from("team_members")
       .insert({
-        org_id: "creait",
+        org_id: orgId,
         full_name: form.full_name.trim(),
         email: form.email.trim() || null,
         role: form.role,

@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
+import { useActiveOrgId } from "@/lib/use-active-org";
 import type { Win } from "@/lib/supabase/types";
 
 interface WinsFeedProps {
@@ -27,6 +28,7 @@ function sortWins(wins: Win[]): Win[] {
 }
 
 export function WinsFeed({ initialWins, meetingId }: WinsFeedProps) {
+  const orgId = useActiveOrgId();
   const [wins, setWins] = useState<Win[]>(sortWins(initialWins));
   const [dialogOpen, setDialogOpen] = useState(false);
   const [title, setTitle] = useState("");
@@ -42,13 +44,13 @@ export function WinsFeed({ initialWins, meetingId }: WinsFeedProps) {
         ? supabase
             .from("wins")
             .select("*")
-            .eq("org_id", "creait")
+            .eq("org_id", orgId)
             .eq("meeting_id", meetingId)
             .order("created_at", { ascending: false })
         : supabase
             .from("wins")
             .select("*")
-            .eq("org_id", "creait")
+            .eq("org_id", orgId)
             .order("created_at", { ascending: false })
             .limit(20);
 
@@ -64,7 +66,7 @@ export function WinsFeed({ initialWins, meetingId }: WinsFeedProps) {
           event: "*",
           schema: "public",
           table: "wins",
-          filter: "org_id=eq.creait",
+          filter: `org_id=eq.${orgId}`,
         },
         refetchWins
       )
@@ -73,7 +75,7 @@ export function WinsFeed({ initialWins, meetingId }: WinsFeedProps) {
     return () => {
       void supabase.removeChannel(channel);
     };
-  }, [meetingId]);
+  }, [meetingId, orgId]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -87,7 +89,7 @@ export function WinsFeed({ initialWins, meetingId }: WinsFeedProps) {
     const supabase = createClient();
     const today = new Date().toISOString().slice(0, 10);
     const { error: dbError } = await supabase.from("wins").insert({
-      org_id: "creait",
+      org_id: orgId,
       meeting_id: meetingId,
       title: title.trim(),
       description: description.trim() || null,

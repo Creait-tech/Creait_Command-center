@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { getActiveOrgId } from "@/lib/active-org";
 import { TeamView } from "@/components/team/team-view";
 import type {
   TeamMember,
@@ -11,18 +12,19 @@ export const dynamic = "force-dynamic";
 
 export default async function TeamPage() {
   const supabase = await createClient();
+  const orgId = await getActiveOrgId();
 
   const [membersResult, seatsResult, assignmentsResult] = await Promise.all([
     supabase
       .from("team_members")
       .select("*")
-      .eq("org_id", "creait")
+      .eq("org_id", orgId)
       .eq("status", "active")
       .order("full_name", { ascending: true }),
     supabase
       .from("cc_team_seats")
       .select("*")
-      .eq("org_id", "creait")
+      .eq("org_id", orgId)
       .order("sort_order", { ascending: true }),
     supabase
       .from("cc_seat_assignments")
@@ -58,6 +60,7 @@ export default async function TeamPage() {
         kpis={kpis}
         seats={seats}
         assignments={assignments}
+        orgId={orgId}
       />
     </div>
   );

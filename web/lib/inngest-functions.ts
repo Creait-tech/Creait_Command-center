@@ -19,6 +19,7 @@ import { sendEmail, markdownToEmailHtml } from '@/lib/email'
  * Phase 1/2 hardcodes org_id = 'creait'. Multi-org lands in Phase 3.
  */
 
+// TODO: per-org Inngest events (background jobs have no Clerk session)
 const ORG_ID = 'creait'
 
 // ---------------------------------------------------------------------------

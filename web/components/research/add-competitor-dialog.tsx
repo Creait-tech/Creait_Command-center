@@ -11,6 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
+import { useActiveOrgId } from "@/lib/use-active-org";
 import { toast } from "sonner";
 
 interface Props {
@@ -20,6 +21,7 @@ interface Props {
 }
 
 export function AddCompetitorDialog({ open, onOpenChange, onAdded }: Props) {
+  const orgId = useActiveOrgId();
   const [name, setName] = useState("");
   const [url, setUrl] = useState("");
   const [category, setCategory] = useState("");
@@ -31,7 +33,7 @@ export function AddCompetitorDialog({ open, onOpenChange, onAdded }: Props) {
     setSubmitting(true);
     const supabase = createClient();
     const { error } = await supabase.from("competitors").insert({
-      org_id: "creait",
+      org_id: orgId,
       name: name.trim(),
       url: url.trim() || null,
       category: category.trim() || null,

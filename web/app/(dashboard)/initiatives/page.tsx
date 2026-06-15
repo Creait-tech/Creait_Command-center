@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { getActiveOrgId } from "@/lib/active-org";
 import {
   InitiativesView,
   type InitiativeWithDepartment,
@@ -9,11 +10,12 @@ export const dynamic = "force-dynamic";
 
 export default async function InitiativesPage() {
   const supabase = await createClient();
+  const orgId = await getActiveOrgId();
 
   const { data: initiativesData } = await supabase
     .from("initiatives")
     .select("*")
-    .eq("org_id", "creait")
+    .eq("org_id", orgId)
     .neq("status", "dropped")
     .order("department", { ascending: true })
     .order("created_at", { ascending: false });

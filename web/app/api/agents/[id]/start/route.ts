@@ -1,13 +1,11 @@
 import { auth } from '@clerk/nextjs/server'
 
+import { getActiveOrgId } from '@/lib/active-org'
 import { inngest } from '@/lib/inngest'
 import { createServiceClient } from '@/lib/supabase/server'
 
 export const runtime = 'nodejs'
 export const maxDuration = 30
-
-// Phase 1/2/3: single org. Multi-org lands later.
-const ORG_ID = 'creait'
 
 /**
  * Map each known agent name to the canonical cron-event name we dispatch
@@ -44,12 +42,13 @@ export async function POST(
       return jsonError('Missing agent id', 400)
     }
 
+    const orgId = await getActiveOrgId()
     const supabase = createServiceClient()
     const { data: agent, error } = await supabase
       .from('agents')
       .select('id, name, status')
       .eq('id', id)
-      .eq('org_id', ORG_ID)
+      .eq('org_id', orgId)
       .maybeSingle()
 
     if (error) {

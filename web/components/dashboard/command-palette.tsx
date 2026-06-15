@@ -32,6 +32,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
+import { useActiveOrgId } from "@/lib/use-active-org";
 
 type ResultKind = "rock" | "todo" | "issue" | "headline" | "win" | "contact";
 
@@ -73,6 +74,7 @@ const KIND_META: Record<ResultKind, { label: string; icon: LucideIcon; color: st
 
 export function CommandPalette() {
   const router = useRouter();
+  const orgId = useActiveOrgId();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
@@ -105,18 +107,18 @@ export function CommandPalette() {
       });
     }, 200);
     return () => clearTimeout(t);
-  }, [query]);
+  }, [query, orgId]);
 
   async function runSearch(q: string): Promise<SearchResult[]> {
     const supabase = createClient();
     const like = `%${q}%`;
     const limit = 6;
     const [rocks, todos, issues, headlines, wins] = await Promise.all([
-      supabase.from("cc_rocks").select("id,title,quarter,status").eq("org_id", "creait").ilike("title", like).limit(limit),
-      supabase.from("cc_todos").select("id,title,done,due_date").eq("org_id", "creait").ilike("title", like).limit(limit),
-      supabase.from("ids_items").select("id,title,priority,status").eq("org_id", "creait").ilike("title", like).limit(limit),
-      supabase.from("cc_headlines").select("id,text,category,created_at").eq("org_id", "creait").ilike("text", like).limit(limit),
-      supabase.from("wins").select("id,title,win_date").eq("org_id", "creait").ilike("title", like).limit(limit),
+      supabase.from("cc_rocks").select("id,title,quarter,status").eq("org_id", orgId).ilike("title", like).limit(limit),
+      supabase.from("cc_todos").select("id,title,done,due_date").eq("org_id", orgId).ilike("title", like).limit(limit),
+      supabase.from("ids_items").select("id,title,priority,status").eq("org_id", orgId).ilike("title", like).limit(limit),
+      supabase.from("cc_headlines").select("id,text,category,created_at").eq("org_id", orgId).ilike("text", like).limit(limit),
+      supabase.from("wins").select("id,title,win_date").eq("org_id", orgId).ilike("title", like).limit(limit),
     ]);
 
     const out: SearchResult[] = [];

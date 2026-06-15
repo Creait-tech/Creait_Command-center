@@ -31,6 +31,7 @@ import {
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
+import { useActiveOrgId } from "@/lib/use-active-org";
 import type { StrategicBet, StrategicBetStatus } from "@/lib/supabase/types";
 
 interface StrategicBetsProps {
@@ -134,6 +135,7 @@ function BetCard({ bet }: { bet: StrategicBet }) {
 }
 
 export function StrategicBets({ bets, onChange }: StrategicBetsProps) {
+  const orgId = useActiveOrgId();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [draft, setDraft] = useState<DraftBet>(EMPTY_DRAFT);
   const [saving, setSaving] = useState(false);
@@ -165,7 +167,7 @@ export function StrategicBets({ bets, onChange }: StrategicBetsProps) {
       bets.reduce((max, b) => Math.max(max, b.sort_order), -1) + 1;
 
     const payload = {
-      org_id: "creait",
+      org_id: orgId,
       title: draft.title.trim(),
       hypothesis: draft.hypothesis.trim() || null,
       evidence: draft.evidence.trim() || null,

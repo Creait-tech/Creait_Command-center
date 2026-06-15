@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
+import { useActiveOrgId } from "@/lib/use-active-org";
 import { ModelSelector, useSelectedModel } from "@/components/dashboard/model-selector";
 import type { ResearchBriefing } from "@/lib/supabase/types";
 
@@ -17,6 +18,7 @@ interface Props {
 }
 
 export function DeepResearchTab({ archive }: Props) {
+  const orgId = useActiveOrgId();
   const [topic, setTopic] = useState("");
   const [model] = useSelectedModel();
   const [running, setRunning] = useState(false);
@@ -30,12 +32,12 @@ export function DeepResearchTab({ archive }: Props) {
       .from("skills")
       .select("id")
       .or("name.eq.Deep Research,name.eq.Research Topic")
-      .eq("org_id", "creait")
+      .eq("org_id", orgId)
       .limit(1)
       .then(({ data }) => {
         if (data && data.length > 0) setSkillId((data[0] as { id: string }).id);
       });
-  }, []);
+  }, [orgId]);
 
   async function handleRun() {
     if (!topic.trim() || !skillId) return;
@@ -64,7 +66,7 @@ export function DeepResearchTab({ archive }: Props) {
     const { data, error } = await supabase
       .from("research_briefings")
       .insert({
-        org_id: "creait",
+        org_id: orgId,
         title,
         briefing_type: "deep_research",
         content: output,

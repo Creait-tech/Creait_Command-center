@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { getActiveOrgId } from "@/lib/active-org";
 import { Level10Tabs } from "@/components/level10/level10-tabs";
 import { StartMeetingButton } from "@/components/level10/start-meeting-button";
 import type {
@@ -13,12 +14,13 @@ export const dynamic = "force-dynamic";
 
 export default async function Level10Page() {
   const supabase = await createClient();
+  const orgId = await getActiveOrgId();
 
   // Step 1: Get the most recent meeting (we need its id for wins-by-meeting).
   const meetingResult = await supabase
     .from("meetings")
     .select("*")
-    .eq("org_id", "creait")
+    .eq("org_id", orgId)
     .order("scheduled_at", { ascending: false, nullsFirst: false })
     .order("created_at", { ascending: false })
     .limit(1);
@@ -31,13 +33,13 @@ export default async function Level10Page() {
     ? supabase
         .from("wins")
         .select("*")
-        .eq("org_id", "creait")
+        .eq("org_id", orgId)
         .eq("meeting_id", latestMeeting.id)
         .order("created_at", { ascending: false })
     : supabase
         .from("wins")
         .select("*")
-        .eq("org_id", "creait")
+        .eq("org_id", orgId)
         .order("created_at", { ascending: false })
         .limit(20);
 
@@ -47,12 +49,12 @@ export default async function Level10Page() {
       supabase
         .from("kpis")
         .select("*")
-        .eq("org_id", "creait")
+        .eq("org_id", orgId)
         .order("sort_order", { ascending: true }),
       supabase
         .from("ids_items")
         .select("*")
-        .eq("org_id", "creait")
+        .eq("org_id", orgId)
         .in("status", ["open", "discussing", "solved"])
         .order("priority", { ascending: false })
         .order("created_at", { ascending: false })
@@ -60,7 +62,7 @@ export default async function Level10Page() {
       supabase
         .from("initiatives")
         .select("*")
-        .eq("org_id", "creait")
+        .eq("org_id", orgId)
         .not("status", "in", "(dropped,complete)")
         .order("created_at", { ascending: false })
         .limit(20),

@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { getActiveOrgId } from "@/lib/active-org";
 import { TodosView } from "@/components/todos/todos-view";
 import type { Todo, TeamMember } from "@/lib/supabase/types";
 
@@ -6,19 +7,20 @@ export const dynamic = "force-dynamic";
 
 export default async function TodosPage() {
   const supabase = await createClient();
+  const orgId = await getActiveOrgId();
 
   const [todosRes, membersRes] = await Promise.all([
     supabase
       .from("cc_todos")
       .select("*")
-      .eq("org_id", "creait")
+      .eq("org_id", orgId)
       .order("done", { ascending: true })
       .order("due_date", { ascending: true, nullsFirst: false })
       .order("created_at", { ascending: false }),
     supabase
       .from("team_members")
       .select("*")
-      .eq("org_id", "creait")
+      .eq("org_id", orgId)
       .eq("status", "active")
       .order("full_name"),
   ]);
@@ -34,7 +36,7 @@ export default async function TodosPage() {
           EOS 7-day commitments. Captured during Level 10 meetings, owned by a person, due in 7 days unless changed.
         </p>
       </div>
-      <TodosView initialTodos={todos} members={members} />
+      <TodosView initialTodos={todos} members={members} orgId={orgId} />
     </div>
   );
 }

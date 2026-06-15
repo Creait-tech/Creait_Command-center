@@ -1,11 +1,10 @@
 import { auth } from '@clerk/nextjs/server'
 import { z } from 'zod'
 
+import { getActiveOrgId } from '@/lib/active-org'
 import { createServiceClient } from '@/lib/supabase/server'
 
 export const runtime = 'nodejs'
-
-const ORG_ID = 'creait'
 
 const patchSchema = z
   .object({
@@ -21,7 +20,7 @@ const patchSchema = z
 
 /**
  * GET /api/skills/[id] — fetch a single skill for editing in the UI. Scoped
- * to org 'creait' for Phase 1/2.
+ * to the active Clerk organization slug.
  */
 export async function GET(
   _req: Request,
@@ -34,12 +33,13 @@ export async function GET(
     const { id } = await ctx.params
     if (!isUuid(id)) return jsonError('Invalid skill id', 400)
 
+    const orgId = await getActiveOrgId()
     const supabase = createServiceClient()
     const { data, error } = await supabase
       .from('skills')
       .select('*')
       .eq('id', id)
-      .eq('org_id', ORG_ID)
+      .eq('org_id', orgId)
       .maybeSingle()
 
     if (error) return jsonError(error.message, 500)
@@ -82,12 +82,13 @@ export async function PATCH(
       )
     }
 
+    const orgId = await getActiveOrgId()
     const supabase = createServiceClient()
     const { data, error } = await supabase
       .from('skills')
       .update({ ...parsed.data, updated_at: new Date().toISOString() })
       .eq('id', id)
-      .eq('org_id', ORG_ID)
+      .eq('org_id', orgId)
       .select('*')
       .maybeSingle()
 

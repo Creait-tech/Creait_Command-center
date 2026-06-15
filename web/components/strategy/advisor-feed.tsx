@@ -14,6 +14,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
+import { useActiveOrgId } from "@/lib/use-active-org";
 import type { AdvisorInsight } from "@/lib/supabase/types";
 
 interface AdvisorFeedProps {
@@ -53,6 +54,7 @@ function formatWhen(ts: string | null): string {
 }
 
 export function AdvisorFeed({ insights, onChange }: AdvisorFeedProps) {
+  const orgId = useActiveOrgId();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [draft, setDraft] = useState<DraftInsight>(EMPTY_DRAFT);
   const [saving, setSaving] = useState(false);
@@ -80,7 +82,7 @@ export function AdvisorFeed({ insights, onChange }: AdvisorFeedProps) {
 
     const supabase = createClient();
     const payload = {
-      org_id: "creait",
+      org_id: orgId,
       advisor_name: draft.advisor_name.trim() || null,
       insight: draft.insight.trim(),
       category: draft.category.trim() || null,
@@ -115,7 +117,7 @@ export function AdvisorFeed({ insights, onChange }: AdvisorFeedProps) {
         : titleSource);
 
     const { error: insertError } = await supabase.from("initiatives").insert({
-      org_id: "creait",
+      org_id: orgId,
       title,
       description: insight.insight,
       status: "on_track",

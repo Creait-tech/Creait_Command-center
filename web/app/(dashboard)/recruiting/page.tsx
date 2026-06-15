@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { getActiveOrgId } from "@/lib/active-org";
 import { RecruitingBoard } from "@/components/recruiting/recruiting-board";
 import type { Candidate } from "@/lib/supabase/types";
 
@@ -6,11 +7,12 @@ export const dynamic = "force-dynamic";
 
 export default async function RecruitingPage() {
   const supabase = await createClient();
+  const orgId = await getActiveOrgId();
 
   const { data: candidatesData } = await supabase
     .from("candidates")
     .select("*")
-    .eq("org_id", "creait")
+    .eq("org_id", orgId)
     .order("stage", { ascending: true })
     .order("sort_order", { ascending: true });
 
@@ -27,7 +29,7 @@ export default async function RecruitingPage() {
         </p>
       </div>
 
-      <RecruitingBoard initialCandidates={candidates} />
+      <RecruitingBoard initialCandidates={candidates} orgId={orgId} />
     </div>
   );
 }

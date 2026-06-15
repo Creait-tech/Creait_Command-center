@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
+import { useActiveOrgId } from "@/lib/use-active-org";
 import type { CandidateStage } from "@/lib/supabase/types";
 
 interface AddCandidateDialogProps {
@@ -66,6 +67,7 @@ export function AddCandidateDialog({
   onOpenChange,
   onSuccess,
 }: AddCandidateDialogProps) {
+  const orgId = useActiveOrgId();
   const [form, setForm] = useState<FormState>(EMPTY_FORM);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -86,7 +88,7 @@ export function AddCandidateDialog({
 
     const supabase = createClient();
     const { error: dbError } = await supabase.from("candidates").insert({
-      org_id: "creait",
+      org_id: orgId,
       full_name: form.full_name.trim(),
       email: form.email.trim() || null,
       phone: form.phone.trim() || null,

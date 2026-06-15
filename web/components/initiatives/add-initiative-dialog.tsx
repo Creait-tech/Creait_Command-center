@@ -19,6 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
+import { useActiveOrgId } from "@/lib/use-active-org";
 import type { InitiativeStatus } from "@/lib/supabase/types";
 
 interface AddInitiativeDialogProps {
@@ -60,6 +61,7 @@ export function AddInitiativeDialog({
   defaultDepartment,
   departmentOptions,
 }: AddInitiativeDialogProps) {
+  const orgId = useActiveOrgId();
   const [form, setForm] = useState<FormState>(emptyForm(defaultDepartment));
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -87,7 +89,7 @@ export function AddInitiativeDialog({
 
     const supabase = createClient();
     const { error: dbError } = await supabase.from("initiatives").insert({
-      org_id: "creait",
+      org_id: orgId,
       title: form.title.trim(),
       description: form.description.trim() || null,
       department: form.department,

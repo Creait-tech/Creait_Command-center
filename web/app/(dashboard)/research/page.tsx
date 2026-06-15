@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { getActiveOrgId } from "@/lib/active-org";
 import { ResearchTabs } from "@/components/research/research-tabs";
 import type { ResearchBriefing, Competitor, TechWatchItem } from "@/lib/supabase/types";
 
@@ -6,6 +7,7 @@ export const dynamic = "force-dynamic";
 
 export default async function ResearchPage() {
   const supabase = await createClient();
+  const orgId = await getActiveOrgId();
   const today = new Date().toISOString().slice(0, 10);
   const cutoff = new Date(Date.now() - 14 * 86_400_000).toISOString();
   const archiveCutoff = new Date(Date.now() - 30 * 86_400_000).toISOString();
@@ -14,7 +16,7 @@ export default async function ResearchPage() {
     supabase
       .from("research_briefings")
       .select("*")
-      .eq("org_id", "creait")
+      .eq("org_id", orgId)
       .eq("briefing_type", "daily")
       .eq("briefing_date", today)
       .order("created_at", { ascending: false })
@@ -22,20 +24,20 @@ export default async function ResearchPage() {
     supabase
       .from("research_briefings")
       .select("*")
-      .eq("org_id", "creait")
+      .eq("org_id", orgId)
       .gte("created_at", archiveCutoff)
       .order("briefing_date", { ascending: false })
       .limit(50),
     supabase
       .from("competitors")
       .select("*")
-      .eq("org_id", "creait")
+      .eq("org_id", orgId)
       .eq("watch_type", "tech_watch")
       .order("name", { ascending: true }),
     supabase
       .from("tech_watch_items")
       .select("*")
-      .eq("org_id", "creait")
+      .eq("org_id", orgId)
       .gte("created_at", cutoff)
       .order("published_at", { ascending: false })
       .limit(200),

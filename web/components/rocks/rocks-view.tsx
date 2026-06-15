@@ -11,6 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
+import { useActiveOrgId } from "@/lib/use-active-org";
 import { RockCard } from "./rock-card";
 import { AddRockDialog } from "./add-rock-dialog";
 import type {
@@ -35,6 +36,7 @@ export function RocksView({
   members,
   currentQuarter,
 }: Props) {
+  const orgId = useActiveOrgId();
   const [rocks, setRocks] = useState<Rock[]>(initialRocks);
   const [milestones, setMilestones] = useState<RockMilestone[]>(initialMilestones);
   const [statusUpdates, setStatusUpdates] = useState<RockStatusUpdate[]>(initialStatus);
@@ -72,12 +74,12 @@ export function RocksView({
       .channel("rocks-realtime")
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "cc_rocks", filter: "org_id=eq.creait" },
+        { event: "*", schema: "public", table: "cc_rocks", filter: `org_id=eq.${orgId}` },
         async () => {
           const { data } = await supabase
             .from("cc_rocks")
             .select("*")
-            .eq("org_id", "creait")
+            .eq("org_id", orgId)
             .order("sort_order");
           if (data) setRocks(data as Rock[]);
         },
@@ -103,7 +105,7 @@ export function RocksView({
     return () => {
       void supabase.removeChannel(ch);
     };
-  }, []);
+  }, [orgId]);
 
   function handleRockUpdated(updated: Rock) {
     setRocks((p) => p.map((r) => (r.id === updated.id ? updated : r)));

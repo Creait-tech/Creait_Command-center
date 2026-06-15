@@ -20,6 +20,7 @@ import type { Candidate, CandidateStage } from "@/lib/supabase/types";
 
 interface RecruitingBoardProps {
   initialCandidates: Candidate[];
+  orgId: string;
 }
 
 interface StageDef {
@@ -157,7 +158,7 @@ function Leaderboard({ candidates }: { candidates: Candidate[] }) {
   );
 }
 
-export function RecruitingBoard({ initialCandidates }: RecruitingBoardProps) {
+export function RecruitingBoard({ initialCandidates, orgId }: RecruitingBoardProps) {
   const [candidates, setCandidates] = useState<Candidate[]>(initialCandidates);
   const [addOpen, setAddOpen] = useState(false);
   const [detailId, setDetailId] = useState<string | null>(null);
@@ -176,7 +177,7 @@ export function RecruitingBoard({ initialCandidates }: RecruitingBoardProps) {
       const { data } = await supabase
         .from("candidates")
         .select("*")
-        .eq("org_id", "creait")
+        .eq("org_id", orgId)
         .order("stage", { ascending: true })
         .order("sort_order", { ascending: true });
       if (data) setCandidates(data as Candidate[]);
@@ -190,7 +191,7 @@ export function RecruitingBoard({ initialCandidates }: RecruitingBoardProps) {
           event: "*",
           schema: "public",
           table: "candidates",
-          filter: "org_id=eq.creait",
+          filter: `org_id=eq.${orgId}`,
         },
         refetch
       )
@@ -199,7 +200,7 @@ export function RecruitingBoard({ initialCandidates }: RecruitingBoardProps) {
     return () => {
       void supabase.removeChannel(channel);
     };
-  }, []);
+  }, [orgId]);
 
   // Group candidates by stage, preserving sort_order then created_at.
   const byStage = useMemo(() => {

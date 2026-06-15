@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { getActiveOrgId } from "@/lib/active-org";
 import { JourneyView } from "@/components/journey/journey-view";
 import type {
   JourneyMilestone,
@@ -9,11 +10,12 @@ export const dynamic = "force-dynamic";
 
 export default async function JourneyPage() {
   const supabase = await createClient();
+  const orgId = await getActiveOrgId();
 
   const { data: milestonesData } = await supabase
     .from("journey_milestones")
     .select("*")
-    .eq("org_id", "creait")
+    .eq("org_id", orgId)
     .order("sort_order", { ascending: true });
 
   const milestones: JourneyMilestone[] =

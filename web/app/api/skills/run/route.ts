@@ -1,13 +1,11 @@
 import { auth } from '@clerk/nextjs/server'
 import { z } from 'zod'
 
+import { getActiveOrgId } from '@/lib/active-org'
 import { runSkill } from '@/lib/skills-engine'
 
 export const runtime = 'nodejs'
 export const maxDuration = 300
-
-// Phase 1/2: single org. Multi-org lands in Phase 3.
-const ORG_ID = 'creait'
 
 const bodySchema = z.object({
   skillId: z.string().uuid('skillId must be a UUID'),
@@ -43,9 +41,10 @@ export async function POST(req: Request) {
     }
 
     const { skillId, input } = parsed.data
+    const orgId = await getActiveOrgId()
 
     const result = await runSkill(skillId, input ?? {}, {
-      orgId: ORG_ID,
+      orgId,
       triggeredBy: userId,
       trigger: 'manual',
     })
