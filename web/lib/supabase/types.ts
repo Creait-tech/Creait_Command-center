@@ -601,6 +601,42 @@ export interface SeatAssignment {
 }
 
 // =============================================================================
+// AI Workspace — Claude-Projects-style persistent threads
+// =============================================================================
+
+export interface WorkspaceProject {
+  id: string;
+  org_id: string;
+  name: string;
+  description: string | null;
+  system_prompt: string | null;
+  preferred_model: string;
+  emoji: string | null;
+  archived: boolean;
+  pinned: boolean;
+  attached_files: Json;
+  tags: Json;
+  created_by_user_id: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export type WorkspaceMessageRole = "user" | "assistant" | "system" | "tool";
+
+export interface WorkspaceMessage {
+  id: string;
+  project_id: string;
+  role: WorkspaceMessageRole;
+  content: string;
+  tool_calls: Json | null;
+  model: string | null;
+  input_tokens: number | null;
+  output_tokens: number | null;
+  cost_usd: number | null;
+  created_at: string;
+}
+
+// =============================================================================
 // Database shape (standard Supabase generated layout)
 // =============================================================================
 
@@ -658,6 +694,8 @@ export interface Database {
       cc_meeting_ratings: Table<MeetingRating>;
       cc_team_seats: Table<TeamSeat>;
       cc_seat_assignments: Table<SeatAssignment>;
+      cc_workspace_projects: Table<WorkspaceProject>;
+      cc_workspace_messages: Table<WorkspaceMessage>;
     };
     Views: { [_ in never]: never };
     Functions: { [_ in never]: never };

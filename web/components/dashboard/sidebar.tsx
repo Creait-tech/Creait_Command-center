@@ -20,6 +20,7 @@ import {
   Search,
   MessageSquare,
   Bot,
+  Sparkles,
   Settings,
   type LucideIcon,
 } from "lucide-react";
@@ -60,6 +61,7 @@ const NAV_SECTIONS: NavSection[] = [
   {
     title: "Agentic OS",
     items: [
+      { href: "/workspace", label: "AI Workspace", icon: Sparkles },
       { href: "/research", label: "Research", icon: Search },
       { href: "/comms", label: "Comms Hub", icon: MessageSquare },
       { href: "/agents", label: "Agent Center", icon: Bot },
