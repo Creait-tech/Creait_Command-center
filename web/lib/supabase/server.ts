@@ -1,18 +1,30 @@
 import { createServerClient } from "@supabase/ssr";
 import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
+import { auth } from "@clerk/nextjs/server";
 
 import type { Database } from "./types";
 
 /**
- * Server-side Supabase client bound to the current request's cookies.
- * Use inside server components, route handlers, and server actions.
- * RLS is enforced — caller must have a valid Clerk session whose JWT
- * exposes the `org_id` claim used by the policies.
+ * Server-side Supabase client for the current request.
+ *
+ * Two modes (controlled by USE_CLERK_THIRD_PARTY_AUTH env var):
+ *
+ *   true  → Pull Clerk session token (template: 'supabase') and pass it
+ *           as Authorization Bearer to Supabase. Supabase verifies via
+ *           Clerk's JWKS (requires Third-Party Auth → Clerk to be
+ *           configured in the Supabase dashboard). This is the
+ *           production multi-org path: the JWT's `org_id` claim is what
+ *           our RLS `org_isolation` policy checks.
+ *
+ *   false → Legacy cookie-based path. Anon key only; relies on the
+ *           `phase1_creait_open` permissive policy. Default while we
+ *           transition; flip env var to true once Maurice enables
+ *           Third-Party Auth → Clerk in Supabase.
+ *
+ * Either path returns a typed Database client.
  */
 export async function createClient() {
-  const cookieStore = await cookies();
-
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
@@ -22,6 +34,31 @@ export async function createClient() {
     );
   }
 
+  const useClerkJwt = process.env.USE_CLERK_THIRD_PARTY_AUTH === "true";
+
+  if (useClerkJwt) {
+    let accessToken: string | null = null;
+    try {
+      const { getToken } = await auth();
+      accessToken = await getToken({ template: "supabase" });
+    } catch {
+      accessToken = null; // unauth'd requests fall through to anon
+    }
+
+    return createSupabaseClient<Database>(url, key, {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false,
+        detectSessionInUrl: false,
+      },
+      global: accessToken
+        ? { headers: { Authorization: `Bearer ${accessToken}` } }
+        : undefined,
+    });
+  }
+
+  // Legacy cookie path — Phase 1/2/3 default
+  const cookieStore = await cookies();
   return createServerClient<Database>(url, key, {
     cookies: {
       getAll() {
@@ -33,9 +70,7 @@ export async function createClient() {
             cookieStore.set(name, value, options);
           });
         } catch {
-          // Called from a server component where cookies cannot be mutated.
-          // Safe to ignore — middleware will refresh the session on the next
-          // request.
+          // Server component cannot mutate cookies; middleware refreshes.
         }
       },
     },
@@ -63,4 +98,30 @@ export function createServiceClient() {
       persistSession: false,
     },
   });
+}
+
+/**
+ * Read the current Clerk-issued JWT claims (org_id, sub, email, name).
+ * Returns null when unauthenticated or when Clerk session token unavailable.
+ * Used by server components/actions that need to scope writes to the
+ * active org without going through Supabase RLS.
+ */
+export async function getOrgContext(): Promise<{
+  orgId: string | null;
+  userId: string | null;
+  email: string | null;
+  name: string | null;
+} | null> {
+  try {
+    const { userId, orgSlug, sessionClaims } = await auth();
+    if (!userId) return null;
+    return {
+      orgId: orgSlug ?? null,
+      userId,
+      email: (sessionClaims as { email?: string } | null)?.email ?? null,
+      name: (sessionClaims as { name?: string } | null)?.name ?? null,
+    };
+  } catch {
+    return null;
+  }
 }

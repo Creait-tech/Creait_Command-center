@@ -54,6 +54,13 @@ import {
   ccAddHeadline, ccAddHeadlineInput,
   ccListKpis, ccListKpisInput,
 } from "./tools/command-center.js";
+import {
+  ccMemorySet, ccMemorySetInput,
+  ccMemoryGet, ccMemoryGetInput,
+  ccMemorySearch, ccMemorySearchInput,
+  ccMemoryList, ccMemoryListInput,
+  ccMemoryDelete, ccMemoryDeleteInput,
+} from "./tools/memory.js";
 
 const PORT = Number(process.env.PORT ?? 8080);
 const TOKEN = process.env.MCP_TOKEN ?? "";
@@ -70,6 +77,8 @@ const TOOL_NAMES = [
   "cc_list_todos", "cc_create_todo", "cc_complete_todo",
   "cc_list_issues", "cc_create_issue",
   "cc_add_win", "cc_add_headline", "cc_list_kpis",
+  // Cross-org memory
+  "cc_memory_set", "cc_memory_get", "cc_memory_search", "cc_memory_list", "cc_memory_delete",
 ];
 
 /** Wrap a tool handler with stopwatch + log line. */
@@ -226,6 +235,38 @@ function buildMcpServer(): McpServer {
     "Return the Scorecard KPIs with current value vs target.",
     ccListKpisInput,
     instrument("cc_list_kpis", ccListKpis),
+  );
+
+  // Cross-org memory — Maurice's brain across all his businesses
+  server.tool(
+    "cc_memory_set",
+    "Remember something. scope='personal' for cross-org user memory (default), 'org' for org-specific, 'shared' for cross-org-but-user-scoped. Provide key for upsert behavior.",
+    ccMemorySetInput,
+    instrument("cc_memory_set", ccMemorySet as never) as never,
+  );
+  server.tool(
+    "cc_memory_get",
+    "Fetch a memory by id, or by (scope + namespace + key).",
+    ccMemoryGetInput,
+    instrument("cc_memory_get", ccMemoryGet as never) as never,
+  );
+  server.tool(
+    "cc_memory_search",
+    "Full-text search across memory content. Use this to recall relevant context before answering — e.g. 'did Maurice ever decide X' or 'what does he prefer for Y'.",
+    ccMemorySearchInput,
+    instrument("cc_memory_search", ccMemorySearch as never) as never,
+  );
+  server.tool(
+    "cc_memory_list",
+    "List recent memories in a scope/namespace, newest first. Defaults: 25 results.",
+    ccMemoryListInput,
+    instrument("cc_memory_list", ccMemoryList as never) as never,
+  );
+  server.tool(
+    "cc_memory_delete",
+    "Delete a memory by id, or by (scope + namespace + key).",
+    ccMemoryDeleteInput,
+    instrument("cc_memory_delete", ccMemoryDelete as never) as never,
   );
 
   return server;

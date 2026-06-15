@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { NotificationsBell } from "@/components/dashboard/notifications-bell";
 import { QuickAddButton } from "@/components/dashboard/quick-add-button";
+import { OrganizationSwitcher } from "@clerk/nextjs";
 
 const PAGE_TITLES: Record<string, string> = {
   "/command-center": "Command Center",
@@ -90,6 +91,18 @@ export function Topbar({ className, onMobileMenuClick }: TopbarProps) {
             {mac ? "⌘" : "Ctrl"}K
           </kbd>
         </button>
+        <OrganizationSwitcher
+          hidePersonal
+          afterCreateOrganizationUrl="/onboarding/seed"
+          afterSelectOrganizationUrl="/command-center"
+          appearance={{
+            elements: {
+              rootBox: "hidden sm:flex",
+              organizationSwitcherTrigger:
+                "px-2 py-1 rounded-md border border-border bg-[color:var(--color-brand-slate)]/40 hover:border-[color:var(--color-brand-electric)] text-xs",
+            },
+          }}
+        />
         <QuickAddButton />
         <NotificationsBell />
       </div>
