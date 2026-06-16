@@ -115,4 +115,42 @@
   body {
     @apply bg-background text-foreground antialiased;
   }
+
+  /* Keyboard accessibility — always show a visible focus ring (CRITICAL a11y).
+     Mouse clicks don't trigger :focus-visible, so this doesn't add noise. */
+  :focus-visible {
+    outline: 2px solid var(--color-brand-electric);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* Clickable affordance: real buttons/links/role=button get a pointer cursor. */
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  a[href],
+  summary,
+  label[for] {
+    cursor: pointer;
+  }
+
+  /* Tabular figures for data: KPI values, costs, durations, ratings, counts.
+     Prevents column jitter when numbers change. Apply via `tabular-nums` class. */
+  .tabular-nums,
+  [data-numeric] {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+  }
+
+  /* Respect the OS "reduce motion" setting — disables decorative animation
+     for users with vestibular sensitivity (CRITICAL a11y). */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
 }
