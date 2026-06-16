@@ -601,6 +601,20 @@ export interface SeatAssignment {
 }
 
 // =============================================================================
+// KPI history — time-series snapshots for trend charts
+// Prefixed `cc_*` to avoid colliding with the other app on this Supabase
+// project. References the existing `kpis` table.
+// =============================================================================
+
+export interface KpiHistory {
+  id: string;
+  kpi_id: string;
+  org_id: string;
+  value: number;
+  recorded_at: string;
+}
+
+// =============================================================================
 // AI Workspace — Claude-Projects-style persistent threads
 // =============================================================================
 
@@ -696,6 +710,8 @@ export interface Database {
       cc_seat_assignments: Table<SeatAssignment>;
       cc_workspace_projects: Table<WorkspaceProject>;
       cc_workspace_messages: Table<WorkspaceMessage>;
+      // KPI history
+      cc_kpi_history: Table<KpiHistory>;
     };
     Views: { [_ in never]: never };
     Functions: { [_ in never]: never };

@@ -1,5 +1,5 @@
 import { inngest } from '@/lib/inngest'
-import { loadMcpTools } from '@/lib/mcp-client'
+import { callMcpTool, extractMcpJson } from '@/lib/mcp-client'
 import { runSkill } from '@/lib/skills-engine'
 import { createServiceClient } from '@/lib/supabase/server'
 import { tavilySearch, type TavilyResult } from '@/lib/tavily'
@@ -46,37 +46,47 @@ async function getSkillId(name: string): Promise<string | null> {
   return (data?.id as string | undefined) ?? null
 }
 
+
 /**
- * Call a single MCP tool by name with arguments and return the parsed JSON
- * result. Returns `null` if the tool isn't available (MCP server down or the
- * specific tool isn't registered).
+ * Snapshot every KPI for an org into `cc_kpi_history` so trend charts have a
+ * time-series to draw. Reads the current `kpis` rows and inserts one history
+ * row per KPI with its current value. Covers manually-edited KPIs (which never
+ * flow through ghlSync) so their history accumulates too.
+ *
+ * Best-effort — logs and returns a count rather than throwing, so a history
+ * failure never breaks the sync that produced the values.
  */
-async function callMcpTool(
-  name: string,
-  args: Record<string, unknown>,
-): Promise<unknown | null> {
-  const tools = await loadMcpTools()
-  const tool = tools[name]
-  if (!tool) {
-    console.warn(`[inngest] MCP tool "${name}" not available`)
-    return null
-  }
-  const execute = tool.execute
-  if (typeof execute !== 'function') {
-    console.warn(`[inngest] MCP tool "${name}" has no execute function`)
-    return null
-  }
+export async function snapshotKpis(orgId: string): Promise<{ inserted: number }> {
   try {
-    // dynamicTool's execute has signature `(input, options) => result`
-    // We pass an empty options object since we don't need toolCallId etc.
-    const result = await execute(args, {
-      toolCallId: `cron-${Date.now()}`,
-      messages: [],
-    } as never)
-    return result
+    const supabase = createServiceClient()
+    const { data, error } = await supabase
+      .from('kpis')
+      .select('id, value')
+      .eq('org_id', orgId)
+    if (error) {
+      console.error('[inngest] snapshotKpis read failed:', error.message)
+      return { inserted: 0 }
+    }
+    const rows = (data ?? [])
+      .filter(
+        (k): k is { id: string; value: number } =>
+          typeof k.id === 'string' &&
+          typeof k.value === 'number' &&
+          !Number.isNaN(k.value),
+      )
+      .map((k) => ({ kpi_id: k.id, org_id: orgId, value: k.value }))
+    if (rows.length === 0) return { inserted: 0 }
+    const { error: insertError } = await supabase
+      .from('cc_kpi_history')
+      .insert(rows)
+    if (insertError) {
+      console.error('[inngest] snapshotKpis insert failed:', insertError.message)
+      return { inserted: 0 }
+    }
+    return { inserted: rows.length }
   } catch (err) {
-    console.error(`[inngest] MCP tool "${name}" threw:`, err)
-    return null
+    console.error('[inngest] snapshotKpis threw:', err)
+    return { inserted: 0 }
   }
 }
 
@@ -397,63 +407,52 @@ export const ghlSync = inngest.createFunction(
           results.push({ name, updated: false })
           continue
         }
-        const { error } = await supabase
+        const { data: updatedRow, error } = await supabase
           .from('kpis')
           .update({ value, last_synced_at: nowIso })
           .eq('org_id', ORG_ID)
           .eq('name', name)
+          .select('id')
+          .maybeSingle()
         if (error) {
           console.error(
             `[inngest] kpi update for "${name}" failed:`,
             error.message,
           )
           results.push({ name, updated: false })
-        } else {
-          results.push({ name, updated: true })
+          continue
         }
+
+        // Capture a history point alongside the value update so trend charts
+        // accumulate. Best-effort: a history failure must not fail the sync.
+        const kpiId = updatedRow?.id as string | undefined
+        if (kpiId) {
+          const { error: historyError } = await supabase
+            .from('cc_kpi_history')
+            .insert({ kpi_id: kpiId, org_id: ORG_ID, value })
+          if (historyError) {
+            console.error(
+              `[inngest] kpi history insert for "${name}" failed:`,
+              historyError.message,
+            )
+          }
+        }
+        results.push({ name, updated: true })
       }
       return results
     })
 
-    return { applied }
+    // Also snapshot the full KPI set so manually-updated KPIs (which never
+    // flow through the GHL update loop above) accrue history too.
+    const snapshot = await step.run('snapshot-kpis', () => snapshotKpis(ORG_ID))
+
+    return { applied, snapshot }
   },
 )
 
 // ---------------------------------------------------------------------------
 // MCP result parsing helpers
 // ---------------------------------------------------------------------------
-
-/**
- * MCP tool calls return `{ content: [{type:'text', text:'...'}] }` by spec.
- * We try to parse the first text part as JSON and fall back to the structured
- * `structuredContent` field if present.
- */
-function extractMcpJson(result: unknown): unknown {
-  if (result == null || typeof result !== 'object') return null
-  const obj = result as Record<string, unknown>
-  if (obj.structuredContent && typeof obj.structuredContent === 'object') {
-    return obj.structuredContent
-  }
-  const content = obj.content
-  if (Array.isArray(content)) {
-    for (const part of content) {
-      if (
-        part &&
-        typeof part === 'object' &&
-        (part as { type?: string }).type === 'text' &&
-        typeof (part as { text?: string }).text === 'string'
-      ) {
-        const text = (part as { text: string }).text
-        try {
-          return JSON.parse(text)
-        } catch {
-          return text
-        }
-      }
-    }
-  }
-  return null
-}
 
 function countItems(result: unknown): number {
   const parsed = extractMcpJson(result)

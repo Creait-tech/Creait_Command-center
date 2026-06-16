@@ -6,6 +6,7 @@ import type {
   Meeting,
   Win,
   Kpi,
+  KpiHistory,
   IdsItem,
   Initiative,
 } from "@/lib/supabase/types";
@@ -43,36 +44,53 @@ export default async function Level10Page() {
         .order("created_at", { ascending: false })
         .limit(20);
 
-  const [winsResult, kpisResult, idsResult, initiativesResult] =
-    await Promise.all([
-      winsQuery,
-      supabase
-        .from("kpis")
-        .select("*")
-        .eq("org_id", orgId)
-        .order("sort_order", { ascending: true }),
-      supabase
-        .from("ids_items")
-        .select("*")
-        .eq("org_id", orgId)
-        .in("status", ["open", "discussing", "solved"])
-        .order("priority", { ascending: false })
-        .order("created_at", { ascending: false })
-        .limit(50),
-      supabase
-        .from("initiatives")
-        .select("*")
-        .eq("org_id", orgId)
-        .not("status", "in", "(dropped,complete)")
-        .order("created_at", { ascending: false })
-        .limit(20),
-    ]);
+  const thirtyDaysAgoIso = new Date(
+    Date.now() - 30 * 24 * 60 * 60 * 1000
+  ).toISOString();
+
+  const [
+    winsResult,
+    kpisResult,
+    idsResult,
+    initiativesResult,
+    kpiHistoryResult,
+  ] = await Promise.all([
+    winsQuery,
+    supabase
+      .from("kpis")
+      .select("*")
+      .eq("org_id", orgId)
+      .order("sort_order", { ascending: true }),
+    supabase
+      .from("ids_items")
+      .select("*")
+      .eq("org_id", orgId)
+      .in("status", ["open", "discussing", "solved"])
+      .order("priority", { ascending: false })
+      .order("created_at", { ascending: false })
+      .limit(50),
+    supabase
+      .from("initiatives")
+      .select("*")
+      .eq("org_id", orgId)
+      .not("status", "in", "(dropped,complete)")
+      .order("created_at", { ascending: false })
+      .limit(20),
+    supabase
+      .from("cc_kpi_history")
+      .select("*")
+      .eq("org_id", orgId)
+      .gte("recorded_at", thirtyDaysAgoIso)
+      .order("recorded_at", { ascending: true }),
+  ]);
 
   const wins: Win[] = (winsResult.data as Win[] | null) ?? [];
   const kpis: Kpi[] = (kpisResult.data as Kpi[] | null) ?? [];
   const idsItems: IdsItem[] = (idsResult.data as IdsItem[] | null) ?? [];
   const initiatives: Initiative[] =
     (initiativesResult.data as Initiative[] | null) ?? [];
+  const kpiHistory: KpiHistory[] =
+    (kpiHistoryResult.data as KpiHistory[] | null) ?? [];
 
   return (
     <div className="flex flex-col gap-6 p-6">
@@ -90,6 +108,7 @@ export default async function Level10Page() {
         meetingId={latestMeeting?.id ?? null}
         wins={wins}
         kpis={kpis}
+        kpiHistory={kpiHistory}
         idsItems={idsItems}
         initiatives={initiatives}
       />

@@ -73,6 +73,88 @@ export function clearMcpToolCache(): void {
   cache = null
 }
 
+/**
+ * Call a single MCP tool by name with arguments and return the RAW MCP result
+ * (the `{ content: [...], isError?: boolean }` envelope as returned by the
+ * tool's `execute`). Returns `null` only when the tool can't be invoked at all
+ * — i.e. the MCP server is unreachable, the tool isn't registered, or the
+ * invocation threw. A tool that ran but reported a logical failure still
+ * resolves to its result object with `isError: true`; callers should inspect
+ * the envelope (see `mcpResultIsError` / `extractMcpJson`).
+ */
+export async function callMcpTool(
+  name: string,
+  args: Record<string, unknown>,
+): Promise<unknown | null> {
+  const tools = await loadMcpTools()
+  const tool = tools[name]
+  if (!tool) {
+    console.warn(`[mcp-client] tool "${name}" not available`)
+    return null
+  }
+  const execute = tool.execute
+  if (typeof execute !== 'function') {
+    console.warn(`[mcp-client] tool "${name}" has no execute function`)
+    return null
+  }
+  try {
+    // dynamicTool's execute has signature `(input, options) => result`. We pass
+    // a minimal options object since we don't need toolCallId / messages here.
+    const result = await execute(args, {
+      toolCallId: `direct-${Date.now()}`,
+      messages: [],
+    } as never)
+    return result
+  } catch (err) {
+    console.error(`[mcp-client] tool "${name}" threw:`, err)
+    return null
+  }
+}
+
+/**
+ * Returns true when an MCP result envelope reported a logical failure
+ * (`isError: true`). A `null` result (tool not invokable) is also treated as
+ * an error so callers can branch on a single condition.
+ */
+export function mcpResultIsError(result: unknown): boolean {
+  if (result == null) return true
+  if (typeof result !== 'object') return false
+  return (result as { isError?: boolean }).isError === true
+}
+
+/**
+ * MCP tool calls return `{ content: [{ type: 'text', text: '...' }] }` by
+ * spec. Parse the first text part as JSON (falling back to the raw string),
+ * or use the structured `structuredContent` field when present. Returns `null`
+ * when nothing parseable is found.
+ */
+export function extractMcpJson(result: unknown): unknown {
+  if (result == null || typeof result !== 'object') return null
+  const obj = result as Record<string, unknown>
+  if (obj.structuredContent && typeof obj.structuredContent === 'object') {
+    return obj.structuredContent
+  }
+  const content = obj.content
+  if (Array.isArray(content)) {
+    for (const part of content) {
+      if (
+        part &&
+        typeof part === 'object' &&
+        (part as { type?: string }).type === 'text' &&
+        typeof (part as { text?: string }).text === 'string'
+      ) {
+        const text = (part as { text: string }).text
+        try {
+          return JSON.parse(text)
+        } catch {
+          return text
+        }
+      }
+    }
+  }
+  return null
+}
+
 async function fetchAndWrapTools(
   url: string,
   token: string,

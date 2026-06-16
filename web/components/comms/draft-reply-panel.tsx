@@ -36,6 +36,12 @@ const SOURCE_COLORS: Record<MessageSource, string> = {
 
 const SNOOZE_OPTIONS = ["1 hour", "4 hours", "Tomorrow 9am", "Next Monday 9am"];
 
+/** Response shapes returned by POST /api/comms/send. */
+type SendResponse =
+  | { ok: true; channel: MessageSource }
+  | { ok: false; needsSetup?: "gmail" | "linkedin"; message: string }
+  | { error: string };
+
 export interface DraftReplyPanelProps {
   message: Message;
   onMessageUpdated: (updated: Message) => void;
@@ -151,10 +157,43 @@ export function DraftReplyPanel({ message, onMessageUpdated }: DraftReplyPanelPr
   async function handleSend() {
     setActionLoading(true);
     try {
-      await updateStatus("replied", { draft_reply: draftText, replied_at: new Date().toISOString() });
-      toast.info("Marked replied. Outbound send integration ships Phase 3.");
-    } catch {
-      toast.error("Failed to mark replied");
+      const res = await fetch("/api/comms/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messageId: message.id, replyText: draftText }),
+      });
+      const json = (await res.json()) as SendResponse;
+
+      // Transport-level / validation failures (non-2xx with { error })
+      if (!res.ok || "error" in json) {
+        const errMessage =
+          "error" in json ? json.error : "Failed to send reply";
+        toast.error(errMessage);
+        return;
+      }
+
+      if (json.ok) {
+        const now = new Date().toISOString();
+        // Reflect the send locally — the server already persisted this.
+        onMessageUpdated({
+          ...message,
+          status: "replied",
+          draft_reply: draftText,
+          replied_at: now,
+          updated_at: now,
+        });
+        toast.success(`Sent via ${SOURCE_LABELS[json.channel]}`);
+        return;
+      }
+
+      // ok: false — either a known-not-configured channel or no send path.
+      if (json.needsSetup) {
+        toast.warning(json.message);
+      } else {
+        toast.error(json.message);
+      }
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to send reply");
     } finally {
       setActionLoading(false);
     }

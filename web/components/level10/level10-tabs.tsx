@@ -10,6 +10,7 @@ import { IdsSection } from "./ids-section";
 import type {
   Win,
   Kpi,
+  KpiHistory,
   IdsItem,
   Initiative,
 } from "@/lib/supabase/types";
@@ -18,6 +19,7 @@ interface Level10TabsProps {
   meetingId: string | null;
   wins: Win[];
   kpis: Kpi[];
+  kpiHistory: KpiHistory[];
   idsItems: IdsItem[];
   initiatives: Initiative[];
 }
@@ -29,6 +31,7 @@ function Level10TabsInner({
   meetingId,
   wins,
   kpis,
+  kpiHistory,
   idsItems,
   initiatives,
 }: Level10TabsProps) {
@@ -63,7 +66,7 @@ function Level10TabsInner({
         <WinsFeed initialWins={wins} meetingId={meetingId} />
       </TabsContent>
       <TabsContent value="scoreboard" className="mt-4">
-        <Scoreboard initialKpis={kpis} />
+        <Scoreboard initialKpis={kpis} initialHistory={kpiHistory} />
       </TabsContent>
       <TabsContent value="initiatives" className="mt-4">
         <InitiativesReview initialInitiatives={initiatives} />

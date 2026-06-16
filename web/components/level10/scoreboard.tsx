@@ -1,17 +1,37 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { Check, X, Info } from "lucide-react";
+import { useState, useEffect, useRef, useMemo } from "react";
+import { Check, X, Info, TrendingUp, ChevronDown } from "lucide-react";
 import { toast } from "sonner";
+import {
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+} from "recharts";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
 import { useActiveOrgId } from "@/lib/use-active-org";
-import type { Kpi } from "@/lib/supabase/types";
+import type { Kpi, KpiHistory } from "@/lib/supabase/types";
 
 interface ScoreboardProps {
   initialKpis: Kpi[];
+  initialHistory: KpiHistory[];
+}
+
+// A single charted point. `value` is the KPI value; `recorded_at` is the ISO
+// timestamp; `t` is the epoch ms used for ordering.
+interface TrendPoint {
+  t: number;
+  recorded_at: string;
+  value: number;
 }
 
 function formatKpiValue(value: number, unit: string | null): string {
@@ -47,6 +67,12 @@ function formatRelative(value: string | null): string {
   return new Date(value).toLocaleDateString();
 }
 
+function formatAxisDate(value: string): string {
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return "";
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+}
+
 function sortKpis(kpis: Kpi[]): Kpi[] {
   return [...kpis].sort((a, b) => {
     if (a.sort_order !== b.sort_order) return a.sort_order - b.sort_order;
@@ -54,16 +80,167 @@ function sortKpis(kpis: Kpi[]): Kpi[] {
   });
 }
 
+// Group raw history rows by kpi_id, sorted ascending by time, into chartable
+// points. Built once per history change so cards can look up by id cheaply.
+function groupHistory(history: KpiHistory[]): Map<string, TrendPoint[]> {
+  const byKpi = new Map<string, TrendPoint[]>();
+  for (const row of history) {
+    const t = new Date(row.recorded_at).getTime();
+    if (Number.isNaN(t)) continue;
+    const value = Number(row.value);
+    if (Number.isNaN(value)) continue;
+    const point: TrendPoint = { t, recorded_at: row.recorded_at, value };
+    const existing = byKpi.get(row.kpi_id);
+    if (existing) {
+      existing.push(point);
+    } else {
+      byKpi.set(row.kpi_id, [point]);
+    }
+  }
+  for (const points of byKpi.values()) {
+    points.sort((a, b) => a.t - b.t);
+  }
+  return byKpi;
+}
+
+interface TrendTooltipProps {
+  active?: boolean;
+  payload?: Array<{ payload: TrendPoint }>;
+  unit: string | null;
+}
+
+function TrendTooltip({ active, payload, unit }: TrendTooltipProps) {
+  if (!active || !payload || payload.length === 0) return null;
+  const point = payload[0].payload;
+  return (
+    <div className="rounded-md border border-[color:var(--color-brand-fog)] bg-[#0a0e1a] px-2.5 py-1.5 text-xs shadow-lg">
+      <p className="font-semibold text-foreground">
+        {formatKpiValue(point.value, unit)}
+      </p>
+      <p className="text-[color:var(--color-brand-mist)]">
+        {new Date(point.recorded_at).toLocaleString("en-US", {
+          month: "short",
+          day: "numeric",
+          hour: "numeric",
+          minute: "2-digit",
+        })}
+      </p>
+    </div>
+  );
+}
+
+interface SparklineProps {
+  points: TrendPoint[];
+}
+
+function Sparkline({ points }: SparklineProps) {
+  // Stable gradient id per render set so multiple sparklines don't collide.
+  const gradientId = useRef(
+    `spark-${Math.random().toString(36).slice(2, 9)}`
+  ).current;
+
+  return (
+    <div className="h-[60px] w-full" aria-hidden="true">
+      <ResponsiveContainer width="100%" height="100%">
+        <AreaChart
+          data={points}
+          margin={{ top: 4, right: 2, bottom: 0, left: 2 }}
+        >
+          <defs>
+            <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
+              <stop
+                offset="0%"
+                stopColor="var(--color-brand-electric)"
+                stopOpacity={0.35}
+              />
+              <stop
+                offset="100%"
+                stopColor="var(--color-brand-electric)"
+                stopOpacity={0.02}
+              />
+            </linearGradient>
+          </defs>
+          <Area
+            type="monotone"
+            dataKey="value"
+            stroke="var(--color-brand-electric)"
+            strokeWidth={1.75}
+            fill={`url(#${gradientId})`}
+            dot={false}
+            isAnimationActive={false}
+          />
+        </AreaChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
+
+interface TrendChartProps {
+  points: TrendPoint[];
+  unit: string | null;
+}
+
+function TrendChart({ points, unit }: TrendChartProps) {
+  return (
+    <div className="h-[220px] w-full">
+      <ResponsiveContainer width="100%" height="100%">
+        <LineChart
+          data={points}
+          margin={{ top: 8, right: 12, bottom: 4, left: 4 }}
+        >
+          <CartesianGrid
+            strokeDasharray="3 3"
+            stroke="var(--color-brand-fog)"
+            vertical={false}
+          />
+          <XAxis
+            dataKey="recorded_at"
+            tickFormatter={formatAxisDate}
+            tick={{ fill: "var(--color-brand-mist)", fontSize: 11 }}
+            stroke="var(--color-brand-fog)"
+            minTickGap={24}
+          />
+          <YAxis
+            tick={{ fill: "var(--color-brand-mist)", fontSize: 11 }}
+            stroke="var(--color-brand-fog)"
+            width={48}
+            tickFormatter={(v: number) =>
+              v.toLocaleString("en-US", { maximumFractionDigits: 0 })
+            }
+          />
+          <Tooltip
+            content={<TrendTooltip unit={unit} />}
+            cursor={{ stroke: "var(--color-brand-fog)", strokeWidth: 1 }}
+          />
+          <Line
+            type="monotone"
+            dataKey="value"
+            stroke="var(--color-brand-electric)"
+            strokeWidth={2}
+            dot={{ r: 2, fill: "var(--color-brand-electric)" }}
+            activeDot={{ r: 4 }}
+            isAnimationActive={false}
+          />
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
+
 interface KpiCardProps {
   kpi: Kpi;
+  points: TrendPoint[];
   onSave: (id: string, newValue: number) => Promise<void>;
 }
 
-function KpiCard({ kpi, onSave }: KpiCardProps) {
+function KpiCard({ kpi, points, onSave }: KpiCardProps) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState<string>(String(kpi.value));
   const [saving, setSaving] = useState(false);
+  const [showTrend, setShowTrend] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const hasTrend = points.length >= 2;
 
   useEffect(() => {
     if (editing && inputRef.current) {
@@ -178,6 +355,43 @@ function KpiCard({ kpi, onSave }: KpiCardProps) {
           )}
         </div>
 
+        {/* Sparkline / empty trend state */}
+        {hasTrend ? (
+          <Sparkline points={points} />
+        ) : (
+          <div className="h-[60px] w-full flex items-center justify-center rounded-md border border-dashed border-[color:var(--color-brand-fog)]">
+            <span className="text-[11px] text-[color:var(--color-brand-mist)]">
+              No trend yet
+            </span>
+          </div>
+        )}
+
+        {/* Trend expand toggle */}
+        <button
+          type="button"
+          onClick={() => setShowTrend((v) => !v)}
+          disabled={!hasTrend}
+          aria-expanded={showTrend}
+          className="flex items-center gap-1 text-[11px] font-medium text-[color:var(--color-brand-mist)] enabled:hover:text-[color:var(--color-brand-electric)] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+        >
+          <TrendingUp className="size-3" />
+          Trend
+          <ChevronDown
+            className={`size-3 transition-transform ${
+              showTrend ? "rotate-180" : ""
+            }`}
+          />
+        </button>
+
+        {showTrend && hasTrend && (
+          <div className="pt-1">
+            <p className="text-[10px] uppercase tracking-wider text-[color:var(--color-brand-mist)] mb-1">
+              Last 30 days
+            </p>
+            <TrendChart points={points} unit={kpi.unit} />
+          </div>
+        )}
+
         <div className="flex items-center justify-between text-xs text-muted-foreground">
           <span className="capitalize">{kpi.source}</span>
           <span title="Auto-syncs hourly">
@@ -189,14 +403,17 @@ function KpiCard({ kpi, onSave }: KpiCardProps) {
   );
 }
 
-export function Scoreboard({ initialKpis }: ScoreboardProps) {
+export function Scoreboard({ initialKpis, initialHistory }: ScoreboardProps) {
   const orgId = useActiveOrgId();
   const [kpis, setKpis] = useState<Kpi[]>(sortKpis(initialKpis));
+  const [history, setHistory] = useState<KpiHistory[]>(initialHistory);
+
+  const historyByKpi = useMemo(() => groupHistory(history), [history]);
 
   useEffect(() => {
     const supabase = createClient();
 
-    async function refetch() {
+    async function refetchKpis() {
       const { data } = await supabase
         .from("kpis")
         .select("*")
@@ -205,8 +422,21 @@ export function Scoreboard({ initialKpis }: ScoreboardProps) {
       if (data) setKpis(sortKpis(data as Kpi[]));
     }
 
+    async function refetchHistory() {
+      const thirtyDaysAgoIso = new Date(
+        Date.now() - 30 * 24 * 60 * 60 * 1000
+      ).toISOString();
+      const { data } = await supabase
+        .from("cc_kpi_history")
+        .select("*")
+        .eq("org_id", orgId)
+        .gte("recorded_at", thirtyDaysAgoIso)
+        .order("recorded_at", { ascending: true });
+      if (data) setHistory(data as KpiHistory[]);
+    }
+
     const channel = supabase
-      .channel("kpis-realtime")
+      .channel("scoreboard-realtime")
       .on(
         "postgres_changes",
         {
@@ -215,7 +445,17 @@ export function Scoreboard({ initialKpis }: ScoreboardProps) {
           table: "kpis",
           filter: `org_id=eq.${orgId}`,
         },
-        refetch
+        refetchKpis
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "cc_kpi_history",
+          filter: `org_id=eq.${orgId}`,
+        },
+        refetchHistory
       )
       .subscribe();
 
@@ -246,6 +486,17 @@ export function Scoreboard({ initialKpis }: ScoreboardProps) {
       toast.error(`Failed to update: ${error.message}`);
       return;
     }
+
+    // Record a manual history point so the trend chart reflects the edit
+    // immediately rather than waiting for the next hourly snapshot. Best-effort:
+    // a history failure must not surface as a value-save failure.
+    const { error: historyError } = await supabase
+      .from("cc_kpi_history")
+      .insert({ kpi_id: id, org_id: orgId, value: newValue });
+    if (historyError) {
+      console.error("KPI history insert failed:", historyError.message);
+    }
+
     toast.success("KPI updated");
   }
 
@@ -260,7 +511,12 @@ export function Scoreboard({ initialKpis }: ScoreboardProps) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
       {kpis.map((kpi) => (
-        <KpiCard key={kpi.id} kpi={kpi} onSave={handleSave} />
+        <KpiCard
+          key={kpi.id}
+          kpi={kpi}
+          points={historyByKpi.get(kpi.id) ?? []}
+          onSave={handleSave}
+        />
       ))}
     </div>
   );
