@@ -1,0 +1,71 @@
+# Client: Asia- Quantum Wealth Network
+
+CREAIT client. Second-brain namespace: creait/clients/asia-quantum-wealth-network
+
+## All source documents
+- .claude/launch.json
+- .playwright-mcp/console-2026-04-22T05-10-58-426Z.log
+- .playwright-mcp/console-2026-05-18T02-15-49-814Z.log
+- .playwright-mcp/console-2026-05-18T02-21-31-915Z.log
+- .playwright-mcp/console-2026-05-18T14-45-00-600Z.log
+- .playwright-mcp/console-2026-05-18T17-16-47-565Z.log
+- .playwright-mcp/page-2026-04-21T21-08-14-405Z.png
+- .playwright-mcp/page-2026-04-22T05-10-59-887Z.yml
+- .playwright-mcp/page-2026-05-18T02-15-51-021Z.yml
+- .playwright-mcp/page-2026-05-18T02-21-33-384Z.yml
+- .playwright-mcp/page-2026-05-18T04-07-48-668Z.png
+- .playwright-mcp/page-2026-05-18T17-16-49-032Z.yml
+- ASIA-CALL-PREP-Apr28.md
+- ASIA-CALL-PREP-Apr28.pdf
+- April28-Review-Prep.md
+- Asia - QWN/0. Brand/0. QWN Logo Palette_V2 (2) copy 2.jpg
+- Asia - QWN/0. Brand/QWN_Brand_Voice_Guide_v3.1.pdf
+- Asia - QWN/0. NOTES.docx
+- Asia - QWN/1-2. Lead Nurture-Onboarding/1. QWN_GHL_CRM_Framework.docx
+- Asia - QWN/1-2. Lead Nurture-Onboarding/2. QWS Founder Onboarding Pipeline SOP.docx.pdf
+- Asia - QWN/1-2. Lead Nurture-Onboarding/Member_Partner Intake Surveys.docx.pdf
+- Asia - QWN/3. Community Build/Community Design-20260413T204034Z-3-001.zip
+- Asia - QWN/3. Community Build/Customer 5 year Journey (1).png
+- Asia - QWN/3. Community Build/Final LeadMag Legacy Checklist.pdf
+- Asia - QWN/Call 1 - 04.06.26 439pm .wav
+- Asia - QWN/Call 2 - 04.08.26 810pm .wav
+- Asia - QWN/Call 3 - 04.10.26 1002pm .wav
+- BUILD-STATUS.md
+- EVERYTHING-ELSE-MAP.md
+- EVERYTHING-ELSE-MAP.pdf
+- GHL-Setup-Guide.md
+- MASTER-CHECKLIST.md
+- MASTER-CHECKLIST.pdf
+- MP2-Custom-Fields-Spec.md
+- QW-90Day-Course-Automation-Copy.md
+- QW-Dashboard-Phase-Emails.md
+- QW-Founder-Journey-Email-Sequences.md
+- QWN-Process-Visual.html
+- QWN-Workflow-Build-Manual.md
+- QWS-Email-Templates-GHL.md
+- SMS-WIRING-RECIPE.md
+- WORKFLOW-AUDIT-Apr28.md
+- forms/client-intake.html
+- intake-form/WEBHOOK-MAPPING.md
+- intake-form/qws-intake-form.html
+- quantumwealth-homepage-full.png
+- quantumwealth-schedule.png
+- qwn-landing-page.html
+- screenshots/operator-dropdown.png
+- screenshots/pipeline-dropdown.png
+- screenshots/status-dropdown.png
+- screenshots/wf10-trigger.png
+- screenshots/wf6-error.png
+- screenshots/wf8-empty-after-reload.png
+- website/.gitignore
+- website/.vercel/README.txt
+- website/.vercel/project.json
+- website/disclaimer.html
+- website/images/_unused-hero-stock.jpg
+- website/images/dual.jpg
+- website/images/gap.jpg
+- website/images/office.jpg
+- website/index.html
+- website/privacy.html
+- website/qws-homepage.html
+- website/terms.html

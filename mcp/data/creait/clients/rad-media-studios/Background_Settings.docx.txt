@@ -1,0 +1,10 @@
+Background Settings
+	•	Background Style: Apply a full-width section background using a CSS linear-gradient.
+	•	Gradient Colors: The gradient should transition smoothly from a deep, rich solid black (#000000) on the far left to a dark, muted plum/magenta (#2A1A2A or similar dark purple) on the far right.
+	•	Mobile Optimization: On mobile screens (breakpoints under 768px), change the gradient direction so it fades from black at the top to dark purple at the bottom (linear-gradient(180deg, #000000 0%, #2A1A2A 100%)) to match the vertical stacking of the content.
+The Image Feature (Grid 7-12, Center-Right Aligned)
+	•	Container Block: Create a Box component or Div with a defined maximum width and height (e.g., max-width: 500px, height: 600px) and very soft rounded corners (border-radius: 40px). Set the background of this container to a clean, flat medium-grey (#A0A0A0) to simulate the studio backdrop.
+	•	Image Element: Insert the provided headshot image inside this grey container. Set the image to object-fit: cover or crop it closely to her portrait, starting from the mid-chest area and extending to the top of her natural curly hair, framed neatly to highlight her smile. Ensure the background of the image itself is transparent or smoothly blends into the grey container.
+	•	Styling: Center the container within the right column grid. Ensure there is luxury negative space (padding/margin) around the portrait container so it breathes.
+	•	Mobile Optimization: On mobile screens, force the image container to stack below the text content. Change the width to 100% (or width: 90vw for padding) and allow the height to adjust automatically (height: auto) while maintaining the 40px border radius and the centered alignment. Add a margin-top: 40px to separate it from the text above it.
+

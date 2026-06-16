@@ -635,6 +635,37 @@ export interface WorkspaceProject {
   updated_at: string;
 }
 
+export type CcClientStatus =
+  | "lead"
+  | "onboarding"
+  | "active"
+  | "paused"
+  | "churned"
+  | "complete";
+
+export type CcClientHealth = "green" | "yellow" | "red";
+
+export interface CcClient {
+  id: string;
+  org_id: string;
+  name: string;
+  contact_name: string | null;
+  email: string | null;
+  phone: string | null;
+  company: string | null;
+  status: CcClientStatus;
+  tier: string | null;
+  mrr: number | null;
+  start_date: string | null;
+  brain_path: string | null;
+  notes: string | null;
+  health: CcClientHealth;
+  ghl_location_id: string | null;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+}
+
 export type WorkspaceMessageRole = "user" | "assistant" | "system" | "tool";
 
 export interface WorkspaceMessage {
@@ -710,6 +741,7 @@ export interface Database {
       cc_seat_assignments: Table<SeatAssignment>;
       cc_workspace_projects: Table<WorkspaceProject>;
       cc_workspace_messages: Table<WorkspaceMessage>;
+      cc_clients: Table<CcClient>;
       // KPI history
       cc_kpi_history: Table<KpiHistory>;
     };

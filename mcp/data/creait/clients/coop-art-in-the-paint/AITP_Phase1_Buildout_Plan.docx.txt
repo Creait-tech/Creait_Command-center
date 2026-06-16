@@ -1,0 +1,389 @@
+
+CREAiT OS
+Phase 1 Build Plan
+Art In The Paint  |  Digital Foundation & Automation
+
+CLIENT
+Art In The Paint
+PLATFORM
+CREAiT OS (GHL)
+PHASE
+1 of 3 — Foundation
+TIMELINE
+Weeks 1–4
+
+
+OVERVIEW
+
+This document is the complete buildout plan for Phase 1 of the CREAiT OS installation for Art In The Paint. It covers every deliverable, the GoHighLevel configuration steps, copy and automation logic, and the exact order of execution from day one through launch.
+
+Phase 1 has one goal: make Art In The Paint's digital presence work as hard as their real-world work. When a corporate sponsor, city official, or grant reviewer lands on the site, they should immediately understand what the organization does, trust it, and have a clear way to take the next step — automatically handled by the system.
+
+
+DELIVERABLES AT A GLANCE
+
+DELIVERABLE
+WHAT IT DOES
+WEEK
+Sub-Account Setup
+Configure CREAiT OS environment for AITP
+1
+Website — 6 Pages
+Full redesign of artinthepaint.com
+1–2
+Lead Capture Forms
+3 forms: Sponsor, Partner/School, Donor
+2
+CRM Pipelines
+2 pipelines: Sponsorship + Community Partner
+2
+Email Automations
+3 sequences: Sponsor, Partner, Donor
+3
+AI Chat Agent
+FAQ bot trained on AITP content
+3
+Reputation Workflow
+Auto-request reviews from activated contacts
+4
+Reporting Dashboard
+Weekly snapshot of leads + pipeline activity
+4
+
+
+WEEK 1 — SUB-ACCOUNT SETUP & WEBSITE BUILD
+
+
+1A
+Sub-Account Configuration
+
+Account Setup Checklist
+	•	Create sub-account: Art In The Paint
+	•	Set timezone: Eastern (Atlanta, GA)
+	•	Upload AITP logo and brand assets
+	•	Set brand colors (pull from artinthepaint.com / Instagram)
+	•	Add business contact info: org name, address, phone, email, Instagram @artinthepaintorg
+	•	Connect custom domain: artinthepaint.com (or subdomain if site is on GHL)
+	•	Connect email sending domain (verify DNS)
+	•	Set up AITP team user(s) — Coop + any staff needing access
+	•	Configure notification emails and mobile app for Coop
+
+1B
+Website — Page Architecture
+
+Build 6 pages inside GHL's website builder. Each page has a specific job.
+
+PAGE
+URL
+PRIMARY JOB
+Home
+/
+Instantly communicate who AITP is + drive action
+About
+/about
+Tell the origin story. Build trust.
+Programs
+/programs
+Explain Heritage Courts, BALL, Policy at Play, GoodGain
+Partner With Us
+/partner
+Capture sponsors, city partners, CSR inquiries
+Donate
+/donate
+Capture donor leads + link to donation platform
+Contact
+/contact
+General inquiries — school, media, org partners
+
+Home Page — Section Breakdown
+Build these sections in order from top to bottom:
+
+	•	Hero — Full-width headline, 1 subline, 2 CTA buttons (Partner With Us / Learn More)
+	•	Social Proof Bar — Logos of Adidas, Snipes, Invest Atlanta + "50+ Courts Transformed" stat
+	•	Mission Statement — 2 sentences max. Bold. Centered.
+	•	Programs Overview — 4 cards: Heritage Courts / B.A.L.L. / Policy at Play / GoodGain with icon + 1-line description
+	•	Impact Stats — 3 numbers: 50+ Courts, 70+ Murals, Thousands of Youth Served
+	•	Testimonial or Quote — Pull from Coop or a community partner
+	•	Partner CTA Block — "Ready to invest in your community?" + Partner form embed or CTA to /partner
+	•	Footer — Contact info, Instagram link (@artinthepaintorg), donate button
+
+Suggested Hero Copy (Home Page)
+We Turn Neglected Spaces Into
+Community Power.
+
+Art In The Paint transforms public spaces into vibrant community hubs — combining art, athletics, and technology to activate youth and build safer neighborhoods.
+
+
+WEEK 2 — LEAD CAPTURE FORMS & CRM PIPELINES
+
+
+2A
+Lead Capture Forms
+
+Build 3 forms in GHL. Each form routes to its own pipeline stage and triggers its own automation sequence.
+
+Form 1 — Corporate Sponsor / Partner Inquiry
+Embed on /partner page. This is the highest-value lead form.
+
+	•	First Name, Last Name (required)
+	•	Organization / Company Name (required)
+	•	Title / Role (required)
+	•	Email (required)
+	•	Phone (optional)
+	•	How did you hear about Art In The Paint? (dropdown: Referral / Event / Instagram / Google / Other)
+	•	What type of partnership are you interested in? (multi-select: Court Sponsorship / B.A.L.L. Program / GoodGain / Brand Activation / Other)
+	•	Tell us about your organization and goals (text area)
+	•	CTA Button: "Submit — Let's Build Together"
+
+Form 2 — School / Community Organization Inquiry
+Embed on /contact page and /programs page.
+
+	•	First Name, Last Name (required)
+	•	Organization Name (required)
+	•	Your Role (required)
+	•	Email (required)
+	•	Phone (optional)
+	•	Which program are you interested in? (dropdown: Heritage Courts / B.A.L.L. Program / Policy at Play / GoodGain / General Inquiry)
+	•	Tell us about your community or school (text area)
+	•	CTA Button: "Submit — Let's Connect"
+
+Form 3 — Donor / Supporter Lead
+Embed on /donate page. Goal is to capture intent and follow up personally before sending to a donation platform.
+
+	•	First Name, Last Name (required)
+	•	Email (required)
+	•	Phone (optional)
+	•	I want to support (multi-select: Court Revitalization / Youth Programming / GoodGain Development / Wherever It's Needed Most)
+	•	Message (optional)
+	•	CTA Button: "I Want To Help"
+
+2B
+CRM Pipelines
+
+Pipeline 1 — Sponsorship & Corporate Partners
+STAGE
+WHAT HAPPENS HERE
+New Inquiry
+Form submitted → contact created → auto email sequence starts
+Contacted
+Coop or team has responded or called
+
+Proposal Sent
+Sponsorship deck or proposal delivered
+In Negotiation
+Active back-and-forth on scope + terms
+
+Closed — Won
+Deal confirmed. Tag: Active Sponsor
+Closed — Lost
+Not moving forward. Note reason.
+
+
+Pipeline 2 — Community Partners (Schools / Orgs)
+STAGE
+WHAT HAPPENS HERE
+New Inquiry
+Form submitted → contact created → auto email starts
+Intro Call Scheduled
+First discovery call booked
+
+Needs Assessment
+Gathering info on space, community, program fit
+Proposal Sent
+Court activation or program proposal delivered
+
+Active Partner
+Project confirmed and underway
+Completed
+Project done. Follow up for case study.
+
+
+
+WEEK 3 — EMAIL AUTOMATIONS & AI CHAT AGENT
+
+
+3A
+Email Automation Sequences
+
+All sequences are built inside GHL Workflows. Each is triggered by its corresponding form submission and moves contacts through nurture until they're ready for a real conversation.
+
+Sequence 1 — Corporate Sponsor Nurture (7 Emails)
+EMAIL
+SEND TIME
+CONTENT
+1
+Immediately
+Welcome + confirmation. "We received your inquiry. Here's what we do and why it matters." Link to /programs.
+2
+Day 2
+The problem. Paint a picture of underinvested spaces and disconnected youth. Build urgency for what AITP is solving.
+3
+Day 4
+The solution. Walk them through the infrastructure model — Places, People, Policy, GoodGain.
+4
+Day 7
+Social proof. 50+ courts. Adidas. Snipes. Invest Atlanta. Real outcomes, real numbers.
+5
+Day 10
+GoodGain opportunity. Position the fintech layer as a unique corporate engagement play — not just charity.
+6
+Day 14
+World Cup 2026 angle. Atlanta is in the spotlight. Frame this as the moment to make a public commitment to the community.
+7
+Day 18
+Direct ask. "Are you ready to be part of this?" Book a call CTA.
+
+Sequence 2 — School / Community Partner Nurture (4 Emails)
+EMAIL
+SEND TIME
+CONTENT
+1
+Immediately
+Confirmation + gratitude. Tell them what happens next. Set the expectation for a discovery call.
+2
+Day 3
+How it works. Walk through what a partnership looks like from kickoff to transformation.
+3
+Day 7
+FAQ answers. Answer the top 5 questions directly in the email body. (Cost, timeline, role, sustainability, impact)
+4
+Day 12
+Book a call. Clear CTA. "15 minutes. Let's figure out if this is a fit."
+
+Sequence 3 — Donor Nurture (4 Emails)
+EMAIL
+SEND TIME
+CONTENT
+1
+Immediately
+Thank you for your interest. Tell the impact story — one court, one community, one life changed.
+2
+Day 3
+Show them where the money goes. Program breakdown, not budget jargon.
+3
+Day 7
+Introduce GoodGain. Help them see they're not just donating — they're building infrastructure.
+4
+Day 12
+Give them the link. Simple ask. Donate now or schedule a conversation.
+
+3B
+AI Chat Agent — CREAiT OS Bot
+
+Configure the AI chat widget in GHL (Bot/Conversations AI). Train it using AITP's onboarding form content, FAQ questions, and program descriptions.
+
+Bot Persona
+Bot Name
+Courtside — Powered by Art In The Paint
+Tone
+Warm, confident, community-first. No jargon. Speaks like a knowledgeable community member.
+Greeting
+"Hey! I'm Courtside. I can tell you about our programs, how to partner with us, or what it takes to transform a space in your community. What do you need?"
+
+Bot Training — FAQ Topics to Cover
+	•	How much does it cost to transform a space?
+	•	What kind of impact can we expect from a partnership?
+	•	How long does a project take from start to finish?
+	•	What is our role as a corporate sponsor?
+	•	How do you keep the space active long-term?
+	•	What is GoodGain and how does it work?
+	•	How do we get started?
+	•	Can we partner if we're outside Atlanta?
+
+Bot Escalation Rules
+	•	If visitor asks about pricing → Collect name + email → Route to Sponsorship pipeline (New Inquiry)
+	•	If visitor is a school or community org → Route to Community Partner pipeline
+	•	If visitor wants to donate → Link to /donate page
+	•	If visitor mentions "media" or "press" → Collect info and tag as Media Inquiry
+	•	All collected contacts → Automatically added to CRM with tag: "Chat Lead"
+
+
+WEEK 4 — REPUTATION WORKFLOW & REPORTING DASHBOARD
+
+
+4A
+Reputation Workflow
+
+Trigger: Contact moves to "Active Partner" or "Active Sponsor" stage in CRM. The system sends an automated request asking for a Google Review or testimonial.
+
+Workflow Steps
+	•	Contact reaches Active stage in pipeline
+	•	Wait 3 days (give them time to experience the partnership)
+	•	Send SMS: "[First Name], working with your team has been meaningful work. If you have 60 seconds, we'd love a Google review. [link]"
+	•	If no action in 5 days → Send follow-up email with same request and a testimonial form option
+
+4B
+Reporting Dashboard
+
+Build a snapshot report inside GHL to give Coop a weekly view of what's happening in the system. Set to deliver every Monday morning.
+
+METRIC
+WHAT IT TELLS YOU
+New Leads This Week
+How many people submitted a form or chatted
+Leads by Source
+Referral vs Instagram vs Google vs Event
+
+Pipeline Stage Counts
+How many contacts in each stage of each pipeline
+Emails Opened / Clicked
+Which nurture sequences are performing
+
+Chat Bot Conversations
+Volume and most common questions asked
+Deals Moved / Won
+Progress in the sponsorship pipeline
+
+
+
+SEO & DISCOVERABILITY
+
+
+These are the minimum SEO configurations to complete before site goes live. Art In The Paint's primary lead sources include Google Search — so this matters.
+
+PAGE
+RECOMMENDED TITLE TAG & META DESCRIPTION
+Home
+Title: Art In The Paint | Community Transformation Through Art, Sports & Tech | Meta: AITP transforms public spaces into vibrant community hubs across Atlanta and beyond.
+About
+Title: Our Story | Art In The Paint | Meta: Learn how Art In The Paint got started and why the People, Places, Policy framework is changing communities.
+
+Programs
+Title: Programs | Heritage Courts, BALL, GoodGain | Art In The Paint | Meta: Explore our programs — from court revitalization to youth-powered digital rewards.
+Partner
+Title: Partner With Us | Corporate Sponsorship | Art In The Paint | Meta: Invest in community infrastructure. Partner with Art In The Paint for brand activation and real social impact.
+
+Donate
+Title: Support the Movement | Donate | Art In The Paint | Meta: Your support builds courts, activates youth, and funds the next generation of community leaders.
+
+Additional SEO Steps
+	•	Submit sitemap to Google Search Console after launch
+	•	Set up Google Business Profile for Art In The Paint (Atlanta)
+	•	Add schema markup for Organization type on home page
+	•	Ensure all images have alt text pulled from program descriptions
+	•	Internal link: every program page links to /partner and /donate
+
+
+4-WEEK LAUNCH TIMELINE
+
+
+WEEK
+FOCUS
+KEY DELIVERABLES
+Week 1
+Setup + Website
+Sub-account configured, domain connected, all 6 website pages built and drafted
+Week 2
+Forms + CRM
+3 forms live, 2 pipelines configured, all contacts routing correctly
+Week 3
+Automation + Bot
+3 email sequences active, AI chat agent live and tested
+Week 4
+Reputation + QA
+Review workflow active, dashboard live, full QA pass, site goes live
+
+Built by CREAiT LLC  |  Atlanta, GA
+info@creait.tech  |  getcreait.com
+This is a confidential client build plan. For questions, contact CREAiT directly.
+

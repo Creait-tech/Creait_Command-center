@@ -153,4 +153,25 @@
       scroll-behavior: auto !important;
     }
   }
+
+  /* Data figures: monospace + tabular for dashboard metrics (KPIs, costs,
+     timers). Mono gives the precise "analytics console" feel the design
+     system recommends, without loading an extra font (uses Geist Mono). */
+  .font-data {
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+    letter-spacing: -0.01em;
+  }
+
+  /* Subtle electric glow for hero metrics + primary CTAs (OLED "minimal
+     glow" effect). Restrained — depth, not decoration. */
+  .glow-electric {
+    box-shadow:
+      0 0 0 1px color-mix(in oklab, var(--color-brand-electric) 40%, transparent),
+      0 0 24px -8px color-mix(in oklab, var(--color-brand-electric) 55%, transparent);
+  }
+  .glow-electric-text {
+    text-shadow: 0 0 18px color-mix(in oklab, var(--color-brand-electric) 45%, transparent);
+  }
 }

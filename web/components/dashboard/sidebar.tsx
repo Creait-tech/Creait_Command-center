@@ -22,6 +22,7 @@ import {
   Bot,
   Sparkles,
   Settings,
+  Building2,
   type LucideIcon,
 } from "lucide-react";
 
@@ -54,6 +55,7 @@ const NAV_SECTIONS: NavSection[] = [
       { href: "/team", label: "Team Scorecard", icon: Users },
       { href: "/recruiting", label: "Recruiting", icon: UserPlus },
       { href: "/journey", label: "Client Journey", icon: Route },
+      { href: "/clients", label: "Clients", icon: Building2 },
       { href: "/strategy", label: "Strategy", icon: Compass },
       { href: "/vision", label: "Vision", icon: Eye },
     ],

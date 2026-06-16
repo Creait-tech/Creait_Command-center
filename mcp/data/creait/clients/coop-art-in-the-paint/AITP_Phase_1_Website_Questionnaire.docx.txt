@@ -1,0 +1,178 @@
+Website Onboarding Questionnaire
+Art In The Paint  |  Phase 1 Website Build
+
+Complete this questionnaire so we can build your new website. The more detail you give us, the faster and more accurately we can build. Most questions take one or two sentences.
+Delivery begins the moment we receive this back. Target: site live within 7 days.
+Section 1: About Your Organization
+1. What is the full legal name of your organization?
+ 
+
+2. Write a one-sentence description of what Art In The Paint does.
+This becomes the first thing people read on your site. Keep it simple.
+ 
+
+3. What is your mission statement?
+If you don’t have one written down, describe in 2–3 sentences why the organization exists.
+ 
+
+4. What are the top 3 things you want a first-time visitor to know about your organization?
+Think: what would you say in 30 seconds to a new sponsor?
+ 
+
+5. What programs or initiatives does Art In The Paint currently run?
+List them by name with a one-line description of each.
+ 
+
+6. What is your primary geographic focus?
+Example: Atlanta, multiple US cities, international, etc.
+ 
+
+7. How many sports spaces have you renovated to date?
+We’ll feature this as a key impact stat.
+ 
+
+8. How many countries have you worked in?
+ 
+
+
+Section 2: Audience & Goals
+9. Who is the primary audience for this website?
+Examples: corporate sponsors, grant reviewers, parents, schools, community members, general public.
+ 
+
+10. What is the #1 action you want a visitor to take after visiting the site?
+Examples: fill out a partnership form, donate, sign up for a program, contact you.
+ 
+
+11. What types of organizations or people do you want to attract as partners or sponsors?
+Be specific. Corporate brands? Local businesses? School districts? Government agencies?
+ 
+
+12. Do you currently have an email list or contact database?
+If yes, approximately how many contacts? What tool do you use to manage them?
+ 
+
+13. Are there any upcoming deadlines, events, or funding cycles that make the website urgent?
+This helps us prioritize what goes live first.
+ 
+
+Section 3: Content & Media
+14. Do you have a logo file? If yes, please provide it.
+Preferred formats: PNG or SVG with transparent background.
+ 
+
+15. Do you have brand colors you want us to use?
+If yes, list the hex codes or describe the colors. If not, we’ll propose a palette.
+ 
+
+16. Do you have professional photos of your work, events, or team?
+If yes, send them as a shared folder link (Google Drive, Dropbox, etc.). High-resolution preferred.
+ 
+
+17. Do you have any existing written content we should reuse?
+Examples: an “About Us” section, program descriptions, impact reports, press coverage links.
+ 
+
+18. Are there any videos about your organization we should embed?
+YouTube or Vimeo links work best.
+ 
+
+19. Do you have testimonials, quotes, or endorsements from partners, sponsors, or community members?
+Even informal ones work. We’ll format them professionally.
+ 
+
+
+Section 4: Website Pages
+We’ll build the following pages by default. Let us know if you want to add, remove, or rename any of them.
+
+Page
+Purpose
+Home
+Hero messaging, mission overview, impact stats, call to action
+About
+Organization story, team, history, countries served
+Programs
+List of current programs with descriptions
+Impact
+Stats, photos, testimonials, renovated spaces
+Partners
+How to partner or sponsor, contact form
+Contact
+General inquiry form, email, phone, social links
+
+20. Do you want any additional pages beyond the ones listed above?
+Examples: Events, News/Blog, Donate, Volunteer, Good Gain platform info.
+ 
+
+21. Is there a website you’ve seen that you love the look and feel of?
+Doesn’t have to be in your industry. Just a vibe or style you’re drawn to. Share the URL.
+ 
+
+
+Section 5: Automations & Lead Capture
+Your new site comes with automated lead capture and CRM. These questions help us set it up correctly.
+
+22. When a potential sponsor fills out your contact form, what should happen next?
+Example: send them a thank-you email, schedule a call, send a one-pager, notify your team.
+ 
+
+23. Do you have a one-pager, brochure, or info packet you send to prospective partners?
+If yes, send it. We can automate delivery to new leads.
+ 
+
+24. Who on your team should receive notifications when a new lead comes in?
+Name and email for each person.
+ 
+
+25. Do you currently have a way for people to donate online?
+If yes, share the link. We’ll integrate it into the site.
+ 
+
+26. Do you want an AI chatbot on the site to answer common visitor questions?
+If yes, list the top 5–10 questions visitors typically ask.
+ 
+
+Section 6: Technical & Access
+27. Do you currently own a domain name? If yes, what is it?
+Example: artinthepaint.com
+ 
+
+28. Where is your domain registered?
+Examples: GoDaddy, Namecheap, Google Domains. If you’re not sure, we can figure it out.
+ 
+
+29. Do you have access to the login credentials for your current website hosting?
+We’ll need this to point the domain to the new site.
+ 
+
+30. Do you have a Google Business Profile?
+If yes, share the email associated with it. If not, we can help set one up.
+ 
+
+31. List all social media accounts with links.
+Instagram, Facebook, Twitter/X, LinkedIn, YouTube, TikTok, etc.
+ 
+
+
+Section 7: Final Details
+32. Is there anything about the current website that you want to keep?
+A specific page, section, photo, or piece of content.
+ 
+
+33. Is there anything about the current website you definitely want removed or changed?
+ 
+
+34. What is the single most important outcome you want from this new website?
+One sentence. What does success look like 90 days from now?
+ 
+
+35. Anything else we should know?
+Additional context, deadlines, special requests, or ideas you haven’t mentioned yet.
+ 
+
+
+Send completed questionnaire to:
+info@creait.tech
+Or share a Google Drive folder with all assets to the same email.
+
+CREAiT LLC  |  creait.space

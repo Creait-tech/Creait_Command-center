@@ -1,0 +1,151 @@
+Tab 1
+Hi Rhavynn,
+Here are the notes and action items from our meeting:
+
+Your Action Items:
+Website:
+	•	Request HTML code from Lovable for GPT integration and paste on Google Doc for CREAIT Team - save here  <iframe src="https://radgpt.lovable.app" width="100%" height="800" frameborder="0"></iframe>
+
+	•	Upload 4 photos of actors you've worked with in the shared folder: Actors Headshots- ANTAVIA LAUREN, BRIAN JORDAN, JR, ANTHONY E. WILLIAMS, LAUREN BUGLOLI 
+	•	
+	•	
+	•	
+	•	
+	•	Delegate domain access to info@creait.tech - Follow these instructions: https://www.godaddy.com/en/help/invite-a-delegate-to-access-my-godaddy-account-12376
+	•	
+Content & Copy:
+	•	Copywriting for email sequences and automated funnels
+Website welcome email: 
+Subject: Welcome to the RADical Creative Collective 
+Greeting: Hey Superstar,
+First of all — welcome! You didn’t just sign up for another email list. You just said “yes” to
+being part of a community of actors, artists, and creatives who are ready to transform their lives and their craft.
+
+Here’s the thing: I believe you are here on purpose. You could’ve been scrolling Instagram,
+binge-watching Netflix, or reorganizing your sock drawer (no judgment), but instead, you chose to connect with something that feeds your artistry. That says a lot about where you’re headed.
+
+Every month, you’ll get an email from me that’s part inspiration, part practical strategy, and part loving push to keep you moving forward — even on the days you’d rather hide under the covers. I’ll share stories from my 15+ years in casting, directing, producing, and teaching, plus behind-the-scenes insights that don’t always make it to social media or the podcast.
+
+Here’s what you can expect from these newsletters:
+Encouragement when the industry feels heavy.
+Clarity on how to grow as an actor and as a human.
+Action steps that keep you from just thinking about your dreams and actually living
+them.
+And yes, the occasional woo woo moment (because I believe in both the craft and the
+calling).
+This is your space to be reminded:
+You are not too late.
+You are not too much.
+And you are absolutely capable of telling stories that change lives — starting with your own.
+So, welcome. Pull up a chair. Breathe. You’re in the right place.
+
+Take Flight,
+
+Rhavynn 
+Host of the ActUp Podcast
+Award-Winning Producer, Director &amp; Casting Director
+
+P.S. If you haven’t yet, hit reply and tell me where you are in your artistic journey. I’d love to
+hear from you — yes, you.
+
+	•	Details for the lead magnet content (the assessment/questionnaire mentioned)
+BIGGER THAN A TITLE:
+The Self-Trust Assessment for People Who Were Made for More
+Discover the exact pattern that's been keeping you from the life you're capable of.
+
+THE QUESTIONS & SCORING
+1. When you imagine doing the thing you really want to do, what stops you first?
+	•	A) I worry what people will think → Pretender
+	•	B) I tell myself I'm not ready yet → Performer
+	•	C) I don't have the support or resources around me → Prisoner
+	•	D) I don't actually believe I deserve it → Provider
+2. How do you typically show up for others vs. yourself?
+	•	A) I give everyone else my best and save my leftovers for me → Provider
+	•	B) I show up great publicly but fall apart privately → Pretender
+	•	C) I'm ready for everyone else's dreams but stuck on my own → Prisoner
+	•	D) I perform confidence but feel like a fraud inside → Pretender
+3. When was the last time you fully trusted yourself?
+	•	A) Honestly? I'm not sure I ever have → Prisoner
+	•	B) I used to, but something happened → Provider
+	•	C) I trust myself for others, never for me → Provider
+	•	D) I trust my skills but not my worth → Performer
+4. When opportunity shows up, what's your first instinct?
+	•	A) I shrink back and let it pass → Prisoner
+	•	B) I say yes but secretly hope it falls through → Pretender
+	•	C) I look around to see if anyone else thinks I deserve it → Performer
+	•	D) I go for it but spend the whole time waiting to be exposed → Pretender
+5. What does your inner voice sound like most days?
+	•	A) A strict parent who needs everything perfect before moving → Performer
+	•	B) A martyr who reminds me how much I've sacrificed for others → Provider
+	•	C) A prisoner who says "people like me don't get to do that" → Prisoner
+	•	D) An imposter who says "they're going to find out you're faking" → Pretender
+6. When someone gives you a genuine compliment, you:
+	•	A) Deflect it immediately and redirect to someone else → Provider
+	•	B) Accept it graciously but privately don't believe it → Pretender
+	•	C) Feel guilty like you don't deserve it yet → Performer
+	•	D) Wonder what they want from you → Prisoner
+7. Your dream is sitting right in front of you. What's the most honest reason you haven't grabbed it?
+	•	A) I'm waiting until I'm more prepared → Performer
+	•	B) I'm waiting until my family is taken care of first → Provider
+	•	C) I'm waiting for someone with authority to tell me I'm ready → Prisoner
+	•	D) I'm waiting to feel like I actually belong there → Pretender
+8. What would trusting yourself fully actually cost you?
+	•	A) The version of me everyone depends on → Provider
+	•	B) My excuse for why I haven't done it yet → Performer
+	•	C) The comfort of staying invisible → Prisoner
+	•	D) The story I've been telling myself about why I can't → Pretender
+
+SCORING
+Tally which letter appears most. The archetype with the most answers wins.
+Mostly A's or B's split evenly? You're a Provider-Pretender blend — you sacrifice yourself AND perform confidence. That combination is exhausting and we need to talk immediately.
+Tie between any two? You get a blend result — lead with the dominant archetype but acknowledge the secondary.
+
+THE FOUR ARCHETYPES
+ THE PERFORMER "You're not holding back because you're not ready. You're holding back because ready feels safer than real." Your excellence has become your cage. You've confused being good with being free. → Next Step: Book a Freedom Session ($397)
+ THE PROVIDER "You've been so busy being everything to everyone that you forgot you're someone too." Self-abandonment is not love. It's a slow disappearing act dressed up as responsibility. → Next Step: The Unlock Virtual Intensive ($97)
+ THE PRISONER "You're not stuck because of where you are. You're stuck because you keep asking permission to leave." The permission you're waiting for was never coming from them. It was always yours to give. → Next Step: The Unlock Virtual Intensive ($97)
+ THE PRETENDER "You're not a fraud. But you've been faking confidence for so long you've forgotten what the real thing feels like." Imposter syndrome isn't about your competence. It's about your disconnection from yourself. → Next Step: Book a Freedom Session ($397) 
+
+NOW — HERE'S HOW TO BUILD IT:
+For the quiz platform use Interact (tryinteract.com). It's built specifically for personality quizzes, integrates directly with email platforms like Mailchimp or ConvertKit, and automatically delivers the right result page to the right person. No coding required.
+For building it with AI — yes, use AI but strategically. Here's exactly what to do:
+Take this entire document and paste it into ChatGPT or Claude with this prompt:
+"I'm building a personality quiz on Interact. Using the questions, answers, archetypes and result descriptions below, help me write the full result pages, a compelling quiz intro, and a 3 email welcome sequence for each archetype. Keep the voice direct, warm, and permission-giving. The brand is Bigger Than a Title by Rhavynn Drummer."
+That one prompt will save you 10 hours of work.
+For the email sequence use ConvertKit or Flodesk. Flodesk is more beautiful and better for your brand aesthetic. ConvertKit is more powerful for segmentation. Since you have four archetypes you'll want each one to receive a different email sequence — Flodesk handles that elegantly.
+
+	•	
+	•	
+Project Submission Feature:
+	•	Video Sales Letter (VSL) explaining:
+	•	Project submission process and qualifications (Black culture, relationships, ROM-coms; television and microfilms only)
+	•	Rhavynn's responsibilities when working with submitters
+	•	Legal disclaimers (regarding high volume of submissions and protection against idea theft claims)
+	•	Decision on whether to proceed with this feature after consideration
+	•	
+Workshop/Offering Details:
+	•	Finalized pricing structure (especially if implementing Maurice's suggestion to double one-on-one pricing)
+	•	Free: The Self-Trust Assessment — free always, forever. This is your list builder.
+	•	$97 — The Unlock: Virtual Self-Trust Intensive You already know something is holding you back. This 3-hour virtual experience names it, confronts it, and gives you the tools to move past it — from wherever you are in the world. This is where the work begins.
+	•	Payment link: https://link.getcreait.com/payment-link/69b8e343f35c540e14832e19
+	•	
+	•	
+	•	$349 — The Freedom Session: One-on-One with Rhavynn This one hour of radical honesty. No pretending. Just you, Rhavynn, and the breakthrough you've been circling for years. Walk in holding back. Walk out knowing exactly what's next.
+	•	Payment link: https://link.getcreait.com/payment-link/69b8e369f35c540e14832e1a
+	•	
+	•	
+	•	$597 — The Audacity Intensive: Live In Person Experience One day. In person. Full transformation. This immersive 8-hour experience is for the person who is done playing small and ready to embody the fullest, most powerful version of themselves. Atlanta will never feel the same — and neither will you. (audition required)
+	•	Payment Link: https://link.getcreait.com/payment-link/69b8e384942c7dd36efd0b21
+	•	
+	•	
+	•	Suggested: Details on the new monthly recurring revenue model being considered (4-week virtual offering)
+	•	Information about the competition format for in-person events (if implementing the breakout group concept)
+	•	
+Update CRM Business Profile Information:
+	•	Logo - RAD LOGO
+	•	
+	•	Branded business email - info@radmediastudios.com
+	•	Complete business profile details for the CRM system
+	•	Add team members and role permissions - Alexandria has been added 
+	•	
+The website structure seems mostly planned out (workshops section, podcast, notes/resources, project submission landing page), but the actual content and copy for these sections is the primary missing piece.

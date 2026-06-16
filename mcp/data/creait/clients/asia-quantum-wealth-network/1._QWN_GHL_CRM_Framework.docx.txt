@@ -1,0 +1,427 @@
+
+🚀
+QUANTUM WEALTH NETWORK
+Go High Level CRM — Master Build Framework
+CREATE Team Implementation Brief
+Prepared for the CREATE Team  |  April 2026
+Q-Pilot: Your AI Navigation System  |  "Your rocket is waiting. Your universe is limitless. Learn to fly."
+
+
+OVERVIEW & GUIDING PRINCIPLES
+
+This document is the complete implementation brief for the Quantum Wealth Network (QWN) CRM build in Go High Level. It is organized into five Mini Projects, each representing a distinct system to be built and activated. The CREATE team should treat each Mini Project as a self-contained build module with clear inputs, outputs, and advancement logic.
+
+THE LANGUAGE OF THE MISSION
+QWN is not a service firm — it is a movement. Every touchpoint, pipeline stage, email, and automation inside GHL must reflect that. The people we serve are not simply 'clients.' They are Founders and Members. Founders are the business clients of Quantum Wealth Strategies (the Financial Services arm of QWN) who have an active bookkeeping and financial services relationship. Members are participants in the broader Quantum Wealth Network community. Every Founder is also a Member. Language throughout the build should always honor the journey: they are Captains of their financial journey, and this platform is Mission Control.
+
+The QWN Universe Theme
+All language, naming, and tone inside the GHL system should echo the Quantum Wealth Adventure framework. Core metaphors to embed throughout:
+	•	Rocket Ship = the Founder's or Member's financial vehicle — their business, their wealth journey
+	•	Fuel = Financial health and smart decision-making
+	•	Hangar (Planet Zero) = Where every Founder begins — intake, diagnostic, discovery
+	•	Mission Control = The QWN platform and support team
+	•	Q-Pilot = The AI avatar and automation engine that guides Founders and Members through every stage. Q-Pilot is both a chatbot and a voice agent, and it is the unified persona for all automated touchpoints, reminders, nudges, and AI-assisted guidance inside the platform.
+	•	The Three Galaxies = The progression of the wealth journey: THEORY (Galaxy 1), STRATEGY (Galaxy 2), NETWORK (Galaxy 3)
+	•	North Star = The ultimate legacy milestone — the end of the 5-Year Journey
+
+Audience Hierarchy
+Designation
+Who They Are
+Access & Relationship
+Founder
+Active client of QWS with a signed bookkeeping/CFO services engagement
+Full community + service pipeline access. Also a Member by default.
+Member
+Community participant — not yet or not currently a Founder
+Community, Mini Jumpstart, QWT curriculum, Book & Media Lounge
+Founding Partner
+First-wave approved professionals in the QWN partner network
+Partner portal, referral tracking, co-marketing materials, directory listing
+Network Partner
+Approved professionals in the standard partner tier
+Partner portal, directory listing, referral access
+
+
+
+MINI PROJECT 1  LEAD NURTURING & PIPELINE BUILD
+🚀  Clearing the Hangar. Getting every Founder launch-ready.
+
+Purpose
+Build a clean, structured pipeline in GHL that moves warm leads from first contact to Active Founder status. This includes a one-time contact cleanup and a fully automated nurture sequence that uses Q-Pilot as the touchpoint voice.
+
+1A. Contact Database Cleanup
+The existing contact database will be exported from the previous GHL account and imported into the new instance. The CREATE team is responsible for this cleanup using available automation/enrichment tools.
+
+Cleanup tasks:
+	•	Import exported contacts into new GHL instance
+	•	Use GHL enrichment or connected tools to fill in missing data fields: email, phone, business name, service type, lead source (where detectable)
+	•	Add notes field for any context that cannot be auto-populated
+	•	Apply appropriate pipeline stage tag (see Stage Definitions below) based on current relationship status
+	•	Remove duplicates and archive any clearly dead contacts
+
+1B. Pipeline Stage Definitions
+The QWS client pipeline uses six stages. All stage names in GHL should match exactly as defined below.
+
+Stage
+Label
+Status / Description
+Key Requirements to Advance
+Stage 0
+Warm Lead
+Contact has expressed interest, inquired about services, or been referred. Discovery call not yet scheduled.
+Schedule discovery call OR complete Client Intake Form
+Stage 1
+Pre-Onboarding (Awaiting Docs)
+Discovery call complete. SOW/pricing scoped. Engagement Letter sent but not yet signed.
+Signed Engagement Letter received. Contract on file.
+Stage 2
+Onboarding Kick off (Setup/access)
+Engagement Letter signed. Collecting documents and setting up QuickBooks access.
+Move forward once All required docs received. QB access granted. Ready for educational series.
+Stage 3
+Onboarding
+Document setup complete. Founder moving through the 4-part educational series.
+All 4 educational series modules completed or scheduled.
+Stage 4
+Active Founder
+Fully onboarded. Monthly service relationship active. Engaged with the QWN community.
+Ongoing — monthly retainer active, SOW fulfilled.
+Stage 5
+Paused — Needs Follow-Up
+Service paused, communication dropped, or Founder unresponsive. Requires re-engagement.
+Q-Pilot re-engagement sequence triggered. Awaiting response.
+
+1C. Entry Points — How a Lead Enters the Pipeline
+A contact becomes a Stage 0 Warm Lead when any of the following occurs:
+	•	They schedule a discovery call (via GHL calendar booking link)
+	•	They submit an inquiry (form fill, DM, email, or referral notification)
+	•	They complete the Client Intake Form independently (signals readiness to move quickly)
+
+Q-PILOT NOTE
+When a new contact enters Stage 0, Q-Pilot sends an automated welcome message via email introducing the QWN mission and confirming next steps. The tone should feel personal and warm — not transactional. Example subject line: 'Your rocket is sitting on the launchpad, [First Name]. Let's talk.'
+
+1D. Nurture Sequence — Warm Lead (Stage 0)
+Goal: Move the warm lead to book a discovery call or complete the intake form within 14 days.
+
+Day
+Channel
+From
+Action / Message Intent
+Day 1
+Email
+Q-Pilot
+Welcome + next steps. Introduce QWN, share discovery call booking link or intake form. Warm, mission-driven tone.
+Day 3
+SMS
+Q-Pilot
+Short friendly nudge. 'Still thinking it over? Your spot is open.' + booking link.
+Day 5
+Email
+Q-Pilot
+Value email — share what Founders are saying, or a brief explanation of the Profit First approach. Build credibility.
+Day 8
+SMS
+Q-Pilot
+Check-in text. Personal tone. 'Want me to send you more info first?' with a simple yes/no reply option.
+Day 12
+Email
+Q-Pilot
+Final outreach email. Light urgency — 'We only take on a limited number of new Founders each month.'
+Day 14
+SMS
+Q-Pilot
+Last touch. 'No pressure — just didn't want to lose touch. We're here when you're ready.' + link.
+
+
+MINI PROJECT 2  FOUNDER ONBOARDING PROCESS
+🚀  Fueling the rocket before it leaves the hangar.
+
+Purpose
+Once a lead signs their Engagement Letter (Stage 1), they begin the formal onboarding process. Onboarding runs through Stages 1–3 and is complete when all documents are received, QuickBooks is set up, and the 4-part educational series is finished. Only then does a Founder become Active (Stage 4). During this educational 4-part series, we'll also be working on any initial clean-ups that we'll need to do as they transition into the Active client stage.
+
+2A. Onboarding Flow Overview
+The onboarding process has two phases before the educational series:
+
+Phase 1 — Stage 1: Contract & Agreement
+	•	Trigger: Discovery call completed, SOW scoped, Engagement Letter sent
+	•	GHL automation sends Engagement Letter via DocuSign or equivalent
+	•	Q-Pilot follows up via email + SMS if unsigned after 3 days
+	•	On signature: contact auto-advances to Stage 2 + triggers document collection sequence
+
+Phase 2 — Stage 2: Document Collection & QB Setup
+Stage 2 is a gate. The Founder cannot advance to Stage 3 until ALL required items below are confirmed received:
+	•	Signed Engagement Letter / Contract (Stage 1 exit criterion, confirmed again)
+	•	Business entity documents (LLC/Corp/etc.)
+	•	Bank statements (as required by scope)
+	•	QuickBooks Online access granted to QWS team
+	•	Tax returns or prior financials (if cleanup is in scope)
+
+GHL BUILD NOTE
+Build a Stage 2 checklist inside the contact record or as a GHL task list. Each item should be checkable. Q-Pilot sends automated reminders for any outstanding item every 3–4 days until all boxes are checked. Once all items are marked complete, the system auto-tags the contact as 'Ready for Orientation' and notifies the internal team to advance them to Stage 3.
+
+Phase 3 — Stage 3: The 4-Part Educational Series
+The educational series is currently delivered live by John and will transition to a self-paced pre-recorded course hosted inside the QWN community. For now, the GHL pipeline should support both delivery modes.
+
+The 4 modules are:
+	•	Orientation: Welcome to Quantum Wealth Network. How the community and club works. The big picture of what being a Founder means. Introduction to Q-Pilot and Mission Control.
+	•	Business Foundations 101: Core concepts every business owner needs — entity structure, separation of personal and business finances, foundational financial literacy.
+	•	Profit First Setup: Introduction to the Profit First methodology. How QWS implements it. What the Founder needs to understand and do on their end.
+	•	Fractional CFO Strategy: The difference between accounting and finance. What the next level of service looks like. Painting the picture of where the Founder is going.
+
+GHL should track completion of each module. Q-Pilot sends a congratulatory message after each module completion and a prompt to schedule the next session or access the next module.
+
+STAGE 4 ACTIVATION
+When all 4 modules are marked complete, the contact auto-advances to Stage 4 (Active Founder). A welcome-to-the-crew message is sent from Q-Pilot: 'You've cleared the hangar. Your rocket is airworthy. Welcome to the crew, [First Name].' This moment should feel like a celebration.
+
+
+MINI PROJECT 3  COMMUNITY BUILD
+🚀  Launching the fleet. Building the universe Founders and Members live in.
+
+Purpose
+The QWN Community is the living world inside the platform. It is where Founders and Members grow, learn, connect, and progress along their wealth journey. It contains four primary components.
+
+3A. The Mini Jumpstart Series
+A free or low-barrier mini-course designed to introduce the QWN methodology and attract Members before they become Founders.
+
+Build requirements:
+	•	Hosted inside the GHL community / course module
+	•	Short-form, accessible content — designed to be completed in one sitting or across a few days
+	•	John will provide content from existing keynote/presentation slides
+	•	Q-Pilot introduces each module with a short orientation message
+	•	Completion triggers an invitation to schedule a discovery call or learn more about Founder membership
+	•	GHL tag applied on completion: 'Jumpstart Complete — Warm Lead'
+
+THEME NOTE
+Each module in the Jumpstart Series should be named using the space/journey metaphor. Examples: 'Pre-Flight Check,' 'Ignition Sequence,' 'First Launch.' Final naming to be approved by John.
+
+3B. The Book & Media Lounge
+A curated resource library available to all Members and Founders. Think Mission Control's reading room — the intelligence hub.
+
+Content categories:
+	•	Book recommendations (aligned with QWN themes — financial literacy, mindset, business strategy, legacy building)
+	•	Podcast episodes — QWN-produced and curated third-party episodes
+	•	Articles — published pieces, thought leadership, QWN blog content
+	•	Other media — videos, interviews, external resources
+
+Build requirements:
+	•	Hosted inside GHL community or as an embedded page/section
+	•	Organized by category with a simple navigation structure
+	•	New additions announced to Members via Q-Pilot notification
+	•	No submission or request feature needed at this stage — curated library only
+
+3C. The Full Quantum Wealth Theory (QWT) Course + 90-Day Automation
+The full QWT curriculum is the flagship educational offering of QWN. It represents the complete customer journey through the three galaxies. 
+
+Build requirements:
+	•	Full course hosted inside GHL community course module
+	•	Curriculum structure to be provided by John (exists in full form)
+	•	Self-paced with module unlock logic (or open access — confirm with John)
+
+90-Day Q-Pilot Automation Workflow:
+Once a Member or Founder begins the QWT course, Q-Pilot activates a 90-day nudge campaign designed to drive completion. This is a drip sequence of email + SMS touchpoints spaced to maintain engagement without overwhelming.
+
+Timeframe
+Trigger / Milestone
+Channel
+Q-Pilot Message Intent
+Day 1
+Course enrollment
+Email
+Welcome aboard. You're the new Captain of your financial vehicle. Here's your flight plan for the next 90 days.
+Day 3
+No module started
+SMS
+Gentle nudge. 'Your rocket's been sitting on the launchpad. Ready to fire the engines?'
+Day 7
+Module 1 complete (or not)
+Email
+Celebrate completion OR re-engage if stuck. Acknowledge the milestone or offer help.
+Day 14
+Check-in
+SMS
+Quick pulse check. 'How's your flight going? Any turbulence? Q-Pilot is here.'
+Day 21
+Progress check
+Email
+Midpoint encouragement. Share a resource from the Book & Media Lounge relevant to where they are.
+Day 30
+30-day milestone
+Email + SMS
+Celebrate 30 days. Reflect on progress. Reinforce the why behind the journey.
+Day 45
+Check-in
+SMS
+Short and personal. 'You're past the halfway point. Don't stop now.'
+Day 60
+60-day milestone
+Email
+Deep dive encouragement. Reconnect to the North Star vision — legacy, freedom, what they're building.
+Day 75
+Check-in
+SMS
+Final push. 'The finish line is closer than the starting line. You've got this.'
+Day 90
+Course complete or final push
+Email + SMS
+Completion celebration OR re-enrollment offer. Q-Pilot delivers a personal message from Mission Control.
+
+3D. The 5-Year Journey — Legacy Roadmap (Zero to Legacy)
+The 5-Year Journey is the overarching customer journey map that shows Founders and Members the full arc of their customer journey — from where they begin to where they are going. It is the visual and narrative backbone of the QWN universe.
+
+Journey Phases (based on QWN framework — to be finalized with John):
+	•	Survival → Stability → Strategy → Stewardship → Legacy
+
+Capital Corner Roadmap phases that map to this journey:
+	•	Foundation
+	•	Credit Readiness
+	•	Structure & Strategy
+	•	Growth
+	•	Mindset & Legacy
+	•	Protection
+	•	Sovereignty
+
+Build requirements for this phase:
+	•	Create a visual roadmap inside the GHL community — a milestone map that Members/Founders can see and track their position on
+	•	Each milestone corresponds to a level of completion, skill unlock, or achievement in the QWT curriculum or services engagement
+	•	Specific milestones, labels, and advancement logic to be finalized in the next working session with John
+	•	Q-Pilot celebrates each milestone when reached — sending a personalized message acknowledging the Members progress
+
+DESIGN NOTE
+This roadmap should feel epic. It is the story of their transformation. Consider a visual that mirrors the three-galaxy universe — Members can see where they started, where they are, and what awaits. Final design execution to align with QWN brand guide.
+
+
+MINI PROJECT 4  PARTNER PORTAL
+🚀  Recruiting the crew. Building the fleet of aligned professionals.
+
+Purpose
+The Partner Portal is the intake, management, and engagement hub for financial professionals and aligned service providers who want to be part of the Quantum Wealth Network ecosystem. Partners serve as crew members in the QWN universe — specialists who support Captains on their journey.
+
+4A. Partner Application Flow
+Entry into the partner network begins with the formal application process:
+	•	Prospective partner discovers QWN (via John, events, social media, referral, or website)
+	•	They complete the QWN Partner Application (full survey — already built, see Intake Surveys document)
+	•	Application is submitted and triggers an internal notification to the review team (John / ACE / Monica)
+	•	Partner Evaluation Rubric scoring is completed by the review team (5 categories, 25 points max)
+	•	Decision is logged and partner is moved to the appropriate pipeline stage
+
+4B. Partner Scoring Rubric
+The following scoring rubric is used internally. All partner applications should be evaluated and scored before a response is sent.
+
+Category
+What to Look For
+Score (1–5)
+Credentials & Experience
+Licensed/certified, years in practice, client volume — are they qualified?
+__ / 5
+Client Profile Alignment
+Do they serve the same people QWN serves? First-gen, entrepreneurs, underserved communities?
+__ / 5
+Mission Alignment
+Do their survey answers feel genuine or performative?
+__ / 5
+Community Commitment
+Do they have a track record of serving beyond a transactional capacity?
+__ / 5
+Partnership Capacity
+Can they actually take referrals? Are they showing up as a collaborator or just a service provider?
+__ / 5
+
+Scoring thresholds:
+	•	18–25 points: Strong candidate — initiate outreach immediately
+	•	12–17 points: Potential fit — schedule a discovery conversation
+	•	Under 12 points: Hold for future consideration
+
+GHL BUILD NOTE
+Build the scoring rubric as an internal GHL form or task associated with each partner contact record. John reviews each application and scores it. The score should be visible in the contact record and trigger the appropriate follow-up pipeline stage.
+
+4C. Partner Tiers
+Tier
+Description
+Benefits & Access
+Founding Partner
+First-wave partners who join during the founding period of the QWN partner network. Priority access and recognition.
+Featured directory placement, co-marketing, speaking opportunities, referral pipeline access, branded Founding Partner designation
+Network Partner
+Standard tier for approved professionals joining after the founding window
+Partner directory listing, referral access, community visibility, QWN co-branding materials
+
+4D. Partner Portal Features (GHL Build)
+	•	Partner application intake form (from existing survey — replicate in GHL)
+	•	Internal scoring rubric attached to each partner contact record
+	•	Partner pipeline with stages: Applied → Under Review → Approved → Active → Inactive
+	•	Partner directory (searchable by specialty/discipline) — visible to Members and Founders
+	•	Co-marketing materials library — downloadable assets for active partners
+	•	Referral tracking — partners can submit referrals; referrals are linked back to partner contact
+	•	Q-Pilot welcome sequence for newly approved partners
+
+
+MINI PROJECT 5  QUANTUM WEALTH DASHBOARD
+🚀  Your financial cockpit. Reading the instruments before you fly.
+
+Purpose
+The Quantum Wealth Dashboard is a budget and financial awareness tool — a cockpit display for Founders and Members. It is designed to give users a clear, real-time picture of their financial position. In the QWN universe, this is the instrument panel of your rocket ship.
+
+PHASE 2 BUILD
+The full technical specification and feature set of the Quantum Wealth Dashboard will be finalized in the next working phase. The CREATE team should be aware of this component and its intended role, but full build requirements are TBD pending John's detailed spec.
+
+What We Know (Phase 1 Scoping)
+	•	Budget calculator / financial snapshot tool
+	•	Core inputs will include income, expenses, debts, savings, and financial goals
+	•	Q-Pilot will interface with the dashboard — reading results and offering guidance or next-step prompts
+	•	May be a GHL-native build (form/survey-based) or an embedded tool — to be confirmed
+	•	Accessible to both Founders and Members
+
+The dashboard is the instrument panel metaphor brought to life. When a Captain logs their numbers, Q-Pilot reads the gauges and says: 'Your fuel is at 40%. Here's how to increase your flow rate.' The language should always map back to the mission.
+
+
+Q-PILOT — MISSION CONTROL AI
+The voice, guide, and automation engine of the Quantum Wealth Network
+
+Who Q-Pilot Is
+Q-Pilot is the AI avatar and automation persona for the entire QWN platform. Every automated touchpoint — every email, text, chatbot response, and voice interaction — is delivered as Q-Pilot. Q-Pilot is not a tool. It is a crew member. It speaks with authority, warmth, and clarity. It never condescends. It never overwhelms. It guides.
+
+Q-Pilot is:
+	•	A chatbot inside the GHL community platform — answering FAQs, guiding navigation, supporting Founders and Members
+	•	A voice agent — for call flows, appointment reminders, or audio touchpoints
+	•	The delivery voice for all automated sequences: nurture, onboarding, 90-day QWT journey, partner onboarding, milestone celebrations, re-engagement
+	•	The dashboard co-pilot — interpreting financial inputs and surfacing next steps
+
+Q-Pilot Tone Guidelines
+	•	Speaks directly and confidently — no filler, no fluff
+	•	Anchored in the space/journey metaphor — uses the language of captains, rockets, fuel, galaxies naturally but not forcefully
+	•	Warm and human — feels like a trusted advisor, not a chatbot
+	•	Always forward-focused — every message moves the Captain toward the next milestone
+	•	Celebrates wins, acknowledges challenges, never shames or lectures
+
+FOR THE CREATE TEAM
+Q-Pilot will have a custom avatar (visual design TBD — to be provided by John). When building all automation sequences, name the sender 'Q-Pilot' and write copy in Q-Pilot's voice. All emails should carry the Q-Pilot signature. SMS messages should open with 'Q-Pilot here —' or similar. The avatar will be attached once the visual brand guide is shared.
+
+
+IMPLEMENTATION NOTES FOR THE CREATE TEAM
+
+Brand & Visual Standards
+	•	John will provide the complete brand guide with color codes, typography, and design templates
+	•	All GHL pages, pipelines, course covers, community headers, and email templates should be built to match the brand guide
+	•	The QWN universe / space theme should be reflected in naming, language, and where appropriate, visual design throughout
+	•	Q-Pilot avatar to be attached to all automation personas once delivered
+
+AI Automation (CREATE Team Advantage)
+Unlike the 15X build, the CREATE team build includes the AI automation layer. Q-Pilot is not just a named persona — it is the active AI layer integrated throughout. The CREATE team should build automation sequences with the understanding that Q-Pilot will be upgraded with AI capabilities over time. All naming, tagging, and persona infrastructure should be built to support that evolution.
+
+Pending Items — Needed from John Before Full Build
+	•	QWT Full Curriculum outline (complete — to be shared)
+	•	Keynote/presentation slides for Mini Jumpstart Series content
+	•	Brand guide with color codes and visual identity
+	•	Q-Pilot avatar design or design brief
+	•	5-Year Journey milestone labels and definitions (to be finalized in next session)
+	•	Quantum Wealth Dashboard detailed specification (Phase 2)
+
+Questions to Confirm Before Build Begins
+	•	Should the Mini Jumpstart Series be gated (free opt-in) or open to anyone in the community?
+	•	Should the QWT full course be open-access once enrolled, or should modules unlock sequentially?
+	•	For the Partner Directory — should it be visible to the public/website, or only to logged-in Members and Founders?
+	•	Does Q-Pilot need a separate email domain/sending address, or does it send from an existing QWN domain?
+
+
+"Your rocket is waiting. Your universe is limitless. Learn to fly."
+Quantum Wealth Network  |  Q-Pilot: Mission Control AI  |  April 2026

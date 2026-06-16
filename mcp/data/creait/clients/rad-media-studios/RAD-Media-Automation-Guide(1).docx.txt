@@ -1,0 +1,230 @@
+
+
+CREAIT OS
+Automation Systems Guide
+
+Prepared for
+Rhavynn Drummer  |  RAD Media Studios
+
+Website + Light Automation Package
+Delivered by Creait  |  info@creait.tech
+
+March 2026
+Welcome to Your Automation Engine
+Rhavynn, this guide walks you through the 13 automation workflows that have been built and published inside your CREAIT OS sub-account. These systems are designed to run in the background so you can focus on coaching, creating, and connecting with your audience.
+Every workflow is live and ready to go. This document explains what each one does, when it fires, and what you can expect to happen automatically.
+
+How Your Automations Work
+Your automations are organized into three categories: lead nurture sequences, operational workflows, and internal notifications. They all live inside the RAD Media Automations folder in your Automation tab.
+Triggers are the events that start a workflow (someone fills out a form, makes a purchase, books a session, etc.). Actions are what happens next (emails get sent, tags get applied, pipeline opportunities get created, and you get notified).
+
+Workflow Overview
+Here is a quick-reference table of all 13 workflows:
+
+Workflow
+Trigger
+What It Does
+WF1: Newsletter Welcome
+Form submitted (Newsletter)
+Tags contact as newsletter-subscriber, sends branded welcome email
+WF2: Archetype Router
+Quiz completed
+Reads archetype tag, routes contact into the correct nurture sequence (WF3-WF6)
+WF3: Performer Nurture
+Routed from WF2
+Sends 3-email sequence over several days with Performer-specific content
+WF4: Provider Nurture
+Routed from WF2
+Sends 3-email sequence with Provider-specific content and The Unlock CTA
+WF5: Prisoner Nurture
+Routed from WF2
+Sends 3-email sequence with Prisoner-specific content and The Unlock CTA
+WF6: Pretender Nurture
+Routed from WF2
+Sends 3-email sequence with Pretender-specific content and Freedom Session CTA
+WF7: Workshop Registration
+Workshop form submitted
+Tags contact, creates Workshop pipeline opportunity, sends confirmation email
+WF8: Workshop Reminders
+Timed before workshop
+Sends automated reminder emails leading up to the workshop date
+WF9: Booking Confirmation
+1:1 session booked
+Sends branded booking confirmation email for coaching sessions
+WF10: Project Submission
+Project form submitted
+Tags contact, creates Project Submissions pipeline opportunity, sends auto-reply
+WF11: Support Intake
+Support form submitted
+Tags contact, creates Support pipeline opportunity, sends auto-reply, notifies you
+WF12: Daily Support Digest
+Daily schedule (morning)
+Sends you a daily internal email reminder to check open support tickets
+WF13: Purchase Confirmation
+Order submitted
+Tags contact, creates 1:1 Coaching pipeline opportunity (Won), sends confirmation email, notifies you
+
+Detailed Workflow Breakdowns
+WF1: Newsletter Welcome
+Purpose: When someone subscribes to your newsletter, this workflow instantly welcomes them and tags them for future segmentation.
+Trigger: Newsletter form submission
+What happens:
+	•	Contact is tagged as newsletter-subscriber
+	•	A branded welcome email is sent from Rhavynn Drummer (info@radmediastudios.com)
+	•	Contact enters your lead nurture pipeline
+
+WF2: Quiz Completed — Archetype Router
+Purpose: This is the brain of your archetype system. When someone completes your assessment quiz, this workflow reads which archetype tag they received and routes them to the correct email nurture sequence.
+Trigger: Quiz/assessment completed
+Routing logic:
+	•	archetype-performer tag → routes to WF3
+	•	archetype-provider tag → routes to WF4
+	•	archetype-prisoner tag → routes to WF5
+	•	archetype-pretender tag → routes to WF6
+
+WF3–WF6: Archetype Nurture Sequences
+Purpose: Each archetype gets a tailored 3-email sequence that speaks directly to their mindset, challenges, and aspirations. These emails build trust, demonstrate your understanding of their world, and guide them toward the right offer.
+Archetype
+Email Theme
+CTA Offer
+Workflow
+Performer
+Visibility, alignment, living on purpose
+Freedom Session ($349)
+WF3: Performer Nurture
+Pretender
+Authenticity, dropping the mask, real freedom
+Freedom Session ($349)
+WF6: Pretender Nurture
+Provider
+Self-worth, boundaries, receiving support
+The Unlock ($97)
+WF4: Provider Nurture
+Prisoner
+Breaking free, reclaiming power, first steps
+The Unlock ($97)
+WF5: Prisoner Nurture
+
+Each sequence sends 3 emails spaced out over several days. Email 1 builds rapport and validates their experience. Email 2 deepens the connection and introduces the transformation. Email 3 presents the offer with a clear call to action.
+All emails use your branded template with the purple gradient header, gold accents, and Georgia serif font.
+
+WF7: Workshop Registration
+Purpose: When someone registers for a workshop, this workflow confirms their registration, tags them appropriately, and creates a trackable opportunity in your Workshop Registration pipeline.
+What happens:
+	•	Contact is tagged with offering-workshop and pipeline-workshop
+	•	An opportunity is created in the Workshop Registration pipeline
+	•	A branded confirmation email is sent with workshop details
+
+WF8: Workshop Reminders
+Purpose: Automated reminder emails are sent leading up to the workshop date to reduce no-shows and keep registrants engaged and excited.
+
+WF9: 1:1 Booking Confirmation
+Purpose: When a client books a 1:1 coaching session, this workflow sends them a branded confirmation email so they know their session is locked in.
+
+WF10: Project Submission
+Purpose: When someone submits a project through your intake form, this workflow handles everything automatically.
+What happens:
+	•	Contact is tagged with project-submission and pipeline-project
+	•	An opportunity is created in the Project Submissions pipeline (Submitted stage)
+	•	A branded auto-reply email confirms their submission was received
+
+WF11: Support Intake
+Purpose: When a client or prospect submits a support request, this workflow creates a trackable support ticket, notifies you immediately, and sends the contact a confirmation that their request was received.
+What happens:
+	•	Contact is tagged with support-request and pipeline-support
+	•	An opportunity is created in the Support pipeline (New stage)
+	•	A branded auto-reply email is sent to the contact
+	•	You receive an internal notification email with the contact details
+
+WF12: Daily Support Digest
+Purpose: Every morning, this workflow sends you an internal email reminding you to check your Support pipeline for any open tickets that need attention. This ensures nothing falls through the cracks.
+
+WF13: Purchase Confirmation
+Purpose: When a customer makes a purchase through your store, this workflow handles the full post-purchase experience.
+What happens:
+	•	Contact is tagged with pipeline-coaching
+	•	An opportunity is created in the 1:1 Coaching pipeline (Booked stage, status: Won)
+	•	A branded purchase confirmation email is sent to the customer
+	•	You receive an internal notification email with the buyer details
+
+Your Pipelines at a Glance
+Your automations feed into five pipelines that help you track every contact from first touch to resolution:
+
+Pipeline
+Stages
+Fed By
+1:1 Coaching
+Lead → Booked → Completed → Follow-Up
+WF13: Purchase Confirmation
+Lead Nurture
+Managed via tags and workflows
+WF1, WF2, WF3–WF6
+Project Submissions
+Submitted → Under Review → Fit / Not a Fit → Archived
+WF10: Project Submission
+Support
+New → Needs Reply → Waiting → Resolved
+WF11: Support Intake
+Workshop Registration
+Managed via workflow
+WF7: Workshop Registration
+
+Tag Reference
+Tags are how your system identifies and segments contacts. Here are the tags your automations use:
+
+Tag
+Applied When
+newsletter-subscriber
+Contact subscribes via newsletter form
+archetype-performer
+Quiz result: Performer
+archetype-pretender
+Quiz result: Pretender
+archetype-provider
+Quiz result: Provider
+archetype-prisoner
+Quiz result: Prisoner
+pipeline-coaching
+Contact makes a purchase (WF13)
+pipeline-workshop
+Contact registers for a workshop (WF7)
+pipeline-project
+Contact submits a project (WF10)
+pipeline-support
+Contact submits a support request (WF11)
+offering-workshop
+Workshop registration
+offering-freedom-session
+Applied to Performer/Pretender leads
+offering-the-unlock
+Applied to Provider/Prisoner leads
+project-submission
+Project form submission
+support-request
+Support form submission
+
+Email Branding
+Every customer-facing email uses a consistent branded template:
+
+	•	Header: Purple gradient background with gold "RAD Media Studios" title
+	•	Body: White background, Georgia serif font, warm and personal tone
+	•	CTA Buttons: Purple background with gold text
+	•	Footer: Light gray with unsubscribe link
+	•	Sent from: Rhavynn Drummer (info@radmediastudios.com)
+
+Next Steps
+Your automation engine is fully built and live. Here are a few things to keep in mind:
+
+	•	Test your forms. Submit a test entry through each form (newsletter, quiz, workshop, project, support) to verify the full workflow fires correctly.
+	•	Check your pipelines. After testing, visit Opportunities to confirm that pipeline cards are being created in the right stages.
+	•	Review your emails. Check the test emails in your inbox to make sure the branding, copy, and links all look right.
+	•	Set your custom values. Make sure your checkout links are set in Settings > Custom Values (linksfreedomcheckout and linksunlockcheckout).
+	•	Drive traffic. Once everything checks out, start sending people to your assessment quiz and newsletter signup. The system handles the rest.
+
+Questions or Support
+If anything needs adjusting or you have questions about how a workflow behaves, reach out anytime:
+
+Creait Team
+Email: info@Creait.tech
+
+

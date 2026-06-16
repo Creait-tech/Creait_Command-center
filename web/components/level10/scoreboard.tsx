@@ -342,7 +342,7 @@ function KpiCard({ kpi, points, onSave }: KpiCardProps) {
             <button
               type="button"
               onClick={startEdit}
-              className="text-3xl font-bold leading-none tabular-nums hover:text-[color:var(--color-brand-electric)] transition-colors cursor-text text-left"
+              className="text-3xl font-bold leading-none font-data hover:text-[color:var(--color-brand-electric)] hover:glow-electric-text transition-colors cursor-text text-left"
               aria-label={`Edit value for ${kpi.name}`}
             >
               {formatKpiValue(kpi.value, kpi.unit)}

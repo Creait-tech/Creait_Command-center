@@ -1,0 +1,114 @@
+# Client: Rad Media Studios
+
+CREAIT client. Second-brain namespace: creait/clients/rad-media-studios
+
+## All source documents
+- AshaelaRhavynn Podcast AI Acceleration’ Strategy Session.pdf
+- RAD MEDIA - RHAYVYN DRUMMER/Background Settings.docx
+- RAD MEDIA - RHAYVYN DRUMMER/RAD-Media-Automation-Guide(1).docx
+- RAD MEDIA - RHAYVYN DRUMMER/RAD-Media-Automation-Guide.docx
+- RAD MEDIA - RHAYVYN DRUMMER/RHAVYNN DRUMMER — WEBSITE + LIGHT AUTOMATION PACKAGE.docx
+- RAD MEDIA - RHAYVYN DRUMMER/[SHARED] RAD MEDIA ASSESTS/CAS05497.JPG
+- RAD MEDIA - RHAYVYN DRUMMER/[SHARED] RAD MEDIA ASSESTS/CAS05503 2.JPG
+- RAD MEDIA - RHAYVYN DRUMMER/[SHARED] RAD MEDIA ASSESTS/DSC00156.JPG
+- RAD MEDIA - RHAYVYN DRUMMER/[SHARED] RAD MEDIA ASSESTS/IMG_1933.JPG
+- RAD MEDIA - RHAYVYN DRUMMER/[SHARED] RAD MEDIA ASSESTS/IMG_8135.jpg
+- RAD MEDIA - RHAYVYN DRUMMER/[SHARED] RAD MEDIA ASSESTS/IMG_9155.JPG
+- RAD MEDIA - RHAYVYN DRUMMER/[SHARED] RAD MEDIA ASSESTS/RAD Media x Creait.docx
+- RAD MEDIA - RHAYVYN DRUMMER/[SHARED] RAD MEDIA ASSESTS/Tezza-6789.JPG
+- RAD MEDIA - RHAYVYN DRUMMER/[SHARED] RAD MEDIA ASSESTS/image00005.JPG
+- RAD MEDIA - RHAYVYN DRUMMER/[SHARED] RAD MEDIA ASSESTS/image00007.JPG
+- RAD MEDIA - RHAYVYN DRUMMER/[SHARED] RAD MEDIA ASSESTS/image00041.JPG
+- RAD MEDIA - RHAYVYN DRUMMER/[SHARED] RAD MEDIA ASSESTS/image00042.JPG
+- RAD MEDIA - RHAYVYN DRUMMER/[SHARED] RAD MEDIA ASSESTS/image00048.JPG
+- RAD MEDIA - RHAYVYN DRUMMER/[SHARED] RAD MEDIA ASSESTS/image00087.JPG
+- RAD MEDIA - RHAYVYN DRUMMER/[SHARED] RAD MEDIA ASSESTS/image00091.JPG
+- RAD MEDIA - RHAYVYN DRUMMER/actor.png
+- Rad-media-studios/.git/HEAD
+- Rad-media-studios/.git/config
+- Rad-media-studios/.git/description
+- Rad-media-studios/.git/index
+- Rad-media-studios/.git/index.lock
+- Rad-media-studios/.git/packed-refs
+- Rad-media-studios/.gitignore
+- Rad-media-studios/.vercel/README.txt
+- Rad-media-studios/.vercel/project.json
+- Rad-media-studios/app/globals.css
+- Rad-media-studios/app/layout.tsx
+- Rad-media-studios/app/page.tsx
+- Rad-media-studios/components.json
+- Rad-media-studios/components/assessment-cta.tsx
+- Rad-media-studios/components/contact.tsx
+- Rad-media-studios/components/final-cta.tsx
+- Rad-media-studios/components/footer.tsx
+- Rad-media-studios/components/hero.tsx
+- Rad-media-studios/components/loader.tsx
+- Rad-media-studios/components/navbar.tsx
+- Rad-media-studios/components/origin-story.tsx
+- Rad-media-studios/components/podcast.tsx
+- Rad-media-studios/components/projects.tsx
+- Rad-media-studios/components/services.tsx
+- Rad-media-studios/components/split-section.tsx
+- Rad-media-studios/components/stats.tsx
+- Rad-media-studios/components/theme-provider.tsx
+- Rad-media-studios/components/workshop.tsx
+- Rad-media-studios/hooks/use-in-view.ts
+- Rad-media-studios/hooks/use-mobile.ts
+- Rad-media-studios/hooks/use-toast.ts
+- Rad-media-studios/lib/utils.ts
+- Rad-media-studios/next.config.mjs
+- Rad-media-studios/package.json
+- Rad-media-studios/postcss.config.mjs
+- Rad-media-studios/public/apple-icon.png
+- Rad-media-studios/public/favicon.png
+- Rad-media-studios/public/icon-dark-32x32.png
+- Rad-media-studios/public/icon-light-32x32.png
+- Rad-media-studios/public/icon.svg
+- Rad-media-studios/public/placeholder-logo.png
+- Rad-media-studios/public/placeholder-logo.svg
+- Rad-media-studios/public/placeholder-user.jpg
+- Rad-media-studios/public/placeholder.jpg
+- Rad-media-studios/public/placeholder.svg
+- Rad-media-studios/scripts/send-assessment-sample.js
+- Rad-media-studios/styles/globals.css
+- Rad-media-studios/tsconfig.json
+- Website Notes.eml
+- obRiEQsOG1Z/.gitignore
+- obRiEQsOG1Z/app/globals.css
+- obRiEQsOG1Z/app/layout.tsx
+- obRiEQsOG1Z/app/page.tsx
+- obRiEQsOG1Z/components.json
+- obRiEQsOG1Z/components/assessment-cta.tsx
+- obRiEQsOG1Z/components/contact.tsx
+- obRiEQsOG1Z/components/final-cta.tsx
+- obRiEQsOG1Z/components/footer.tsx
+- obRiEQsOG1Z/components/hero.tsx
+- obRiEQsOG1Z/components/loader.tsx
+- obRiEQsOG1Z/components/navbar.tsx
+- obRiEQsOG1Z/components/origin-story.tsx
+- obRiEQsOG1Z/components/podcast.tsx
+- obRiEQsOG1Z/components/projects.tsx
+- obRiEQsOG1Z/components/services.tsx
+- obRiEQsOG1Z/components/split-section.tsx
+- obRiEQsOG1Z/components/stats.tsx
+- obRiEQsOG1Z/components/theme-provider.tsx
+- obRiEQsOG1Z/hooks/use-in-view.ts
+- obRiEQsOG1Z/hooks/use-mobile.ts
+- obRiEQsOG1Z/hooks/use-toast.ts
+- obRiEQsOG1Z/lib/utils.ts
+- obRiEQsOG1Z/next-env.d.ts
+- obRiEQsOG1Z/next.config.mjs
+- obRiEQsOG1Z/package.json
+- obRiEQsOG1Z/postcss.config.mjs
+- obRiEQsOG1Z/public/apple-icon.png
+- obRiEQsOG1Z/public/icon-dark-32x32.png
+- obRiEQsOG1Z/public/icon-light-32x32.png
+- obRiEQsOG1Z/public/icon.svg
+- obRiEQsOG1Z/public/placeholder-logo.png
+- obRiEQsOG1Z/public/placeholder-logo.svg
+- obRiEQsOG1Z/public/placeholder-user.jpg
+- obRiEQsOG1Z/public/placeholder.jpg
+- obRiEQsOG1Z/public/placeholder.svg
+- obRiEQsOG1Z/scripts/send-assessment-sample.js
+- obRiEQsOG1Z/styles/globals.css
+- obRiEQsOG1Z/tsconfig.json
