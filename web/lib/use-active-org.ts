@@ -2,14 +2,14 @@
 import { useOrganization } from "@clerk/nextjs";
 
 /**
- * Read the active org_id (Clerk organization slug) from the browser.
- * Returns the slug (e.g. "creait", "trembly-bald") or the fallback if
- * no active org is loaded yet (during initial render or auth transition).
- *
- * Use in client components for mutations and realtime channel filters
- * that need to scope to the active workspace.
+ * Active workspace id (Clerk **organization ID**, e.g. "org_3Ef1Yc...").
+ * We key data on the stable org id, not the slug (slugs can carry random
+ * suffixes and aren't renamable on this instance). Matches the server
+ * helper getActiveOrgId() and the JWT `org_id` claim ({{org.id}}).
  */
-export function useActiveOrgId(fallback: string = "creait"): string {
+export const CREAIT_ORG_ID = "org_3Ef1YcutwEZFZHEMLwhF57jbEEh";
+
+export function useActiveOrgId(fallback: string = CREAIT_ORG_ID): string {
   const { organization } = useOrganization();
-  return organization?.slug ?? fallback;
+  return organization?.id ?? fallback;
 }

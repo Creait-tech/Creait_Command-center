@@ -13,9 +13,9 @@ export const dynamic = "force-dynamic";
  * Idempotent: re-running for an already-seeded org is a no-op.
  */
 export default async function OnboardingSeedPage() {
-  const { userId, orgSlug, sessionClaims } = await auth();
+  const { userId, orgId, orgSlug, sessionClaims } = await auth();
   if (!userId) redirect("/sign-in");
-  if (!orgSlug) {
+  if (!orgId) {
     // No active org — Clerk should have redirected here only after creation.
     redirect("/command-center");
   }
@@ -27,7 +27,7 @@ export default async function OnboardingSeedPage() {
     "Owner";
   const email = user?.primaryEmailAddress?.emailAddress ?? null;
   const orgName =
-    (sessionClaims as { org_name?: string } | null)?.org_name ?? orgSlug;
+    (sessionClaims as { org_name?: string } | null)?.org_name ?? orgSlug ?? orgId;
 
   const supabase = createServiceClient();
 
@@ -35,12 +35,12 @@ export default async function OnboardingSeedPage() {
   const { count } = await supabase
     .from("company_priorities")
     .select("id", { count: "exact", head: true })
-    .eq("org_id", orgSlug);
+    .eq("org_id", orgId);
 
   if ((count ?? 0) > 0) {
     return (
       <SeedConfirm
-        orgSlug={orgSlug}
+        orgSlug={orgSlug ?? orgId}
         orgName={orgName}
         alreadySeeded
         seeded={null}
@@ -54,7 +54,7 @@ export default async function OnboardingSeedPage() {
     { title: "Hit your revenue target", sort_order: 1 },
     { title: "Ship your most important product or offer", sort_order: 2 },
     { title: "Build your team or process", sort_order: 3 },
-  ].map((p) => ({ ...p, org_id: orgSlug, status: "active" as const }));
+  ].map((p) => ({ ...p, org_id: orgId, status: "active" as const }));
 
   // Seed 5 default KPIs (zero values — owner connects real data later)
   const kpiInserts = [
@@ -65,7 +65,7 @@ export default async function OnboardingSeedPage() {
     { name: "New Contacts 7d", unit: "count", source: "manual" },
   ].map((k, i) => ({
     ...k,
-    org_id: orgSlug,
+    org_id: orgId,
     value: 0,
     target: null,
     sort_order: i,
@@ -81,7 +81,7 @@ export default async function OnboardingSeedPage() {
 
   // Seed founder as the first team member (admin)
   const teamInsert = {
-    org_id: orgSlug,
+    org_id: orgId,
     clerk_user_id: userId,
     full_name: fullName,
     email,
@@ -104,7 +104,7 @@ export default async function OnboardingSeedPage() {
 
   return (
     <SeedConfirm
-      orgSlug={orgSlug}
+      orgSlug={orgSlug ?? orgId}
       orgName={orgName}
       alreadySeeded={false}
       seeded={seeded}

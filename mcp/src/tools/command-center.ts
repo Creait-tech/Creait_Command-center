@@ -9,7 +9,7 @@
 import { z } from "zod";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
-const ORG_ID = "creait";
+const ORG_ID = process.env.DEFAULT_ORG_ID ?? "org_3Ef1YcutwEZFZHEMLwhF57jbEEh";
 
 function client(): SupabaseClient {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL ?? process.env.SUPABASE_URL ?? "";

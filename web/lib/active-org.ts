@@ -2,18 +2,21 @@ import "server-only";
 import { auth } from "@clerk/nextjs/server";
 
 /**
- * Resolve the active org_id for the current request from Clerk's session.
- * Returns the Clerk organization slug (e.g. "creait", "trembly-bald").
- * Falls back to the provided default if no active org (unauthenticated
- * routes, webhook handlers without a user session, etc.).
+ * The canonical workspace identifier is the Clerk **organization ID**
+ * (e.g. "org_3Ef1Yc..."), NOT the slug. Clerk org slugs can carry random
+ * suffixes and can't be renamed on this instance, so we key all data on the
+ * stable, immutable org id. Matches the JWT template's `org_id` claim
+ * ({{org.id}}) that Supabase RLS reads via auth.jwt().
  *
- * Used by every server component / route handler that needs to scope
- * Supabase queries to the active workspace.
+ * CREAIT's org id is the default fallback for unauthenticated server
+ * contexts (webhooks, cron) that operate on the primary workspace.
  */
-export async function getActiveOrgId(fallback: string = "creait"): Promise<string> {
+export const CREAIT_ORG_ID = "org_3Ef1YcutwEZFZHEMLwhF57jbEEh";
+
+export async function getActiveOrgId(fallback: string = CREAIT_ORG_ID): Promise<string> {
   try {
-    const { orgSlug } = await auth();
-    return orgSlug ?? fallback;
+    const { orgId } = await auth();
+    return orgId ?? fallback;
   } catch {
     return fallback;
   }

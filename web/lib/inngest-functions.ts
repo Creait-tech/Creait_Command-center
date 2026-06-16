@@ -4,6 +4,7 @@ import { runSkill } from '@/lib/skills-engine'
 import { createServiceClient } from '@/lib/supabase/server'
 import { tavilySearch, type TavilyResult } from '@/lib/tavily'
 import { sendEmail, markdownToEmailHtml } from '@/lib/email'
+import { CREAIT_ORG_ID } from '@/lib/active-org'
 
 /**
  * Inngest functions for the CREAIT Command Center.
@@ -16,11 +17,12 @@ import { sendEmail, markdownToEmailHtml } from '@/lib/email'
  *     manual escape hatch + lets Vercel's UTC cron config back up
  *     Inngest's scheduler.
  *
- * Phase 1/2 hardcodes org_id = 'creait'. Multi-org lands in Phase 3.
+ * Background jobs have no Clerk session, so they run against the primary
+ * CREAIT workspace by its stable Clerk org id.
  */
 
-// TODO: per-org Inngest events (background jobs have no Clerk session)
-const ORG_ID = 'creait'
+// TODO: per-org Inngest events (fan out one job per org for true multi-tenant)
+const ORG_ID = CREAIT_ORG_ID
 
 // ---------------------------------------------------------------------------
 // Helpers

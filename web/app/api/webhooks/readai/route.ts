@@ -1,13 +1,15 @@
 import { verifyReadAiSignature } from '@/lib/readai-signature'
 import { runSkill } from '@/lib/skills-engine'
 import { createServiceClient } from '@/lib/supabase/server'
+import { CREAIT_ORG_ID } from '@/lib/active-org'
 import type { Json } from '@/lib/supabase/types'
 
 export const runtime = 'nodejs'
 export const maxDuration = 120
 
-// TODO: derive org_id from webhook payload once Read.ai supports multi-tenant
-const ORG_ID = 'creait'
+// TODO: derive org_id from webhook payload once Read.ai supports multi-tenant.
+// Until then, Read.ai meetings land in the primary CREAIT workspace.
+const ORG_ID = CREAIT_ORG_ID
 const SKILL_NAME = 'Meeting Debrief'
 
 /**

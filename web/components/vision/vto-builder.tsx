@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
+import { useActiveOrgId } from "@/lib/use-active-org";
 import { cn } from "@/lib/utils";
 import type { Strategy, VtoData, Rock, IdsItem } from "@/lib/supabase/types";
 
@@ -25,6 +26,7 @@ function parseVto(strategy: Strategy | null): VtoData {
 }
 
 export function VtoBuilder({ strategy, rocks, issues, quarter }: Props) {
+  const orgId = useActiveOrgId();
   const [vto, setVto] = useState<VtoData>(parseVto(strategy));
   const [strategyId, setStrategyId] = useState<string | null>(strategy?.id ?? null);
 
@@ -46,7 +48,7 @@ export function VtoBuilder({ strategy, rocks, issues, quarter }: Props) {
     } else {
       const { data, error } = await supabase
         .from("strategy")
-        .insert({ org_id: "creait", vto: next })
+        .insert({ org_id: orgId, vto: next })
         .select()
         .single();
       if (error) toast.error(error.message);
