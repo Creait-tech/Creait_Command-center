@@ -207,35 +207,171 @@ async function sendViaGhl(
 }
 
 /**
- * Gmail send path. Google OAuth isn't configured yet, so this returns a
- * structured `needsSetup` state instead of failing. Once
- * GOOGLE_OAUTH_CLIENT_ID / GOOGLE_OAUTH_CLIENT_SECRET are provided, replace
- * the guard below with a real Gmail API send (users.messages.send) and the
- * surrounding route already records the reply on success.
+ * Gmail send path. Uses the per-org refresh token stored in `cc_oauth_tokens`
+ * (connected via /api/auth/google/start) to mint a short-lived access token,
+ * then POSTs an RFC 2822 message to the Gmail API users.messages.send endpoint.
+ *
+ * Never throws — always resolves to a SendResult so the route can surface a
+ * structured outcome (needsSetup, send-failed detail, or ok).
  */
 async function sendGmail(
   message: Message,
   replyText: string,
 ): Promise<SendResult> {
-  const clientId = process.env.GOOGLE_OAUTH_CLIENT_ID
-  const clientSecret = process.env.GOOGLE_OAUTH_CLIENT_SECRET
+  try {
+    const clientId = process.env.GOOGLE_OAUTH_CLIENT_ID
+    const clientSecret = process.env.GOOGLE_OAUTH_CLIENT_SECRET
 
-  if (!clientId || !clientSecret) {
+    // 1. OAuth app credentials must be configured.
+    if (!clientId || !clientSecret) {
+      return {
+        ok: false,
+        needsSetup: 'gmail',
+        message:
+          'Gmail send requires Google OAuth — configure GOOGLE_OAUTH_CLIENT_ID/SECRET',
+      }
+    }
+
+    // 2. The org must have connected a Gmail account (refresh token on file).
+    const supabase = createServiceClient()
+    const { data: tokenRow, error: tokenErr } = await supabase
+      .from('cc_oauth_tokens')
+      .select('refresh_token,email')
+      .eq('org_id', message.org_id)
+      .eq('provider', 'google')
+      .maybeSingle()
+
+    if (tokenErr || !tokenRow || !tokenRow.refresh_token) {
+      return {
+        ok: false,
+        needsSetup: 'gmail',
+        message:
+          'Gmail not connected — connect it in Settings → Integrations',
+      }
+    }
+
+    // 3. Exchange the refresh token for a fresh access token.
+    const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
+      method: 'POST',
+      headers: { 'content-type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        client_id: clientId,
+        client_secret: clientSecret,
+        refresh_token: tokenRow.refresh_token,
+        grant_type: 'refresh_token',
+      }).toString(),
+    })
+
+    if (!tokenRes.ok) {
+      return {
+        ok: false,
+        message: 'Gmail auth refresh failed — reconnect Gmail in Settings',
+      }
+    }
+
+    const tokenJson = (await tokenRes.json()) as { access_token?: string }
+    const accessToken = tokenJson.access_token
+    if (!accessToken) {
+      return {
+        ok: false,
+        message: 'Gmail auth refresh failed — reconnect Gmail in Settings',
+      }
+    }
+
+    // 4. Determine the recipient.
+    const recipient = message.contact_handle
+    if (!recipient || !recipient.includes('@')) {
+      return { ok: false, message: 'No email address on this contact' }
+    }
+
+    // 5. Build the RFC 2822 message.
+    const fromEmail = tokenRow.email
+    const subject = buildReplySubject(message.subject)
+
+    const headers: string[] = []
+    if (fromEmail) headers.push(`From: ${fromEmail}`)
+    headers.push(`To: ${recipient}`)
+    headers.push(`Subject: ${subject}`)
+    headers.push('Content-Type: text/plain; charset="UTF-8"')
+    headers.push('MIME-Version: 1.0')
+    if (message.source_id) {
+      // Best-effort threading on the Gmail side.
+      headers.push(`In-Reply-To: ${message.source_id}`)
+      headers.push(`References: ${message.source_id}`)
+    }
+
+    const rfc2822 = `${headers.join('\r\n')}\r\n\r\n${replyText}`
+    const raw = base64UrlEncode(rfc2822)
+
+    // 6. Send via Gmail API.
+    const body: { raw: string; threadId?: string } = { raw }
+    if (message.thread_id) body.threadId = message.thread_id
+
+    const sendRes = await fetch(
+      'https://gmail.googleapis.com/gmail/v1/users/me/messages/send',
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify(body),
+      },
+    )
+
+    if (sendRes.ok) {
+      return { ok: true, channel: 'gmail' }
+    }
+
+    // 7. Parse and surface the error detail.
+    const detail = await extractGmailError(sendRes)
+    return { ok: false, message: `Gmail send failed: ${detail}` }
+  } catch (err) {
     return {
       ok: false,
-      needsSetup: 'gmail',
-      message:
-        'Gmail send requires Google OAuth — configure GOOGLE_OAUTH_CLIENT_ID/SECRET',
+      message: `Gmail send failed: ${
+        err instanceof Error ? err.message : 'unexpected error'
+      }`,
     }
   }
+}
 
-  // Creds exist — fail loudly rather than silently no-op'ing. The Gmail API
-  // wiring (token exchange + users.messages.send) lands when OAuth is set up.
-  throw new Error(
-    `Gmail send not implemented: OAuth credentials are present but the ` +
-      `Gmail API send path has not been wired yet ` +
-      `(message=${message.id}, replyLength=${replyText.length}).`,
-  )
+/**
+ * Build a "Re:"-prefixed reply subject without doubling the prefix.
+ */
+function buildReplySubject(subject: string | null): string {
+  if (!subject) return 'Re: your message'
+  return /^re:/i.test(subject.trim()) ? subject : `Re: ${subject}`
+}
+
+/**
+ * Base64url-encode a UTF-8 string for the Gmail API `raw` field
+ * (base64 → +→- /→_ → strip padding).
+ */
+function base64UrlEncode(input: string): string {
+  return Buffer.from(input, 'utf8')
+    .toString('base64')
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=+$/, '')
+}
+
+/**
+ * Pull a human-readable detail out of a failed Gmail API response.
+ */
+async function extractGmailError(res: Response): Promise<string> {
+  try {
+    const json = (await res.json()) as {
+      error?: { message?: string } | string
+    }
+    if (json && typeof json.error === 'object' && json.error?.message) {
+      return json.error.message
+    }
+    if (typeof json.error === 'string') return json.error
+    return `HTTP ${res.status}`
+  } catch {
+    return `HTTP ${res.status}`
+  }
 }
 
 /**

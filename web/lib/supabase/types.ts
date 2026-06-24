@@ -681,6 +681,27 @@ export interface CcClientJourney {
   updated_at: string;
 }
 
+// =============================================================================
+// OAuth tokens — per-org provider credentials for outbound sends (Gmail).
+// Prefixed `cc_*`. RLS-enabled with NO policies: only the service-role client
+// (which bypasses RLS) ever reads/writes this table. `refresh_token` must never
+// be exposed to a browser/client query.
+// =============================================================================
+
+export type OAuthProvider = "google";
+
+export interface CcOAuthToken {
+  id: string;
+  org_id: string;
+  provider: OAuthProvider;
+  email: string | null;
+  refresh_token: string;
+  scopes: string | null;
+  connected_by: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 export type WorkspaceMessageRole = "user" | "assistant" | "system" | "tool";
 
 export interface WorkspaceMessage {
@@ -758,6 +779,8 @@ export interface Database {
       cc_workspace_messages: Table<WorkspaceMessage>;
       cc_clients: Table<CcClient>;
       cc_client_journey: Table<CcClientJourney>;
+      // OAuth tokens (Gmail send)
+      cc_oauth_tokens: Table<CcOAuthToken>;
       // KPI history
       cc_kpi_history: Table<KpiHistory>;
     };

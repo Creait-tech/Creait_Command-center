@@ -1,15 +1,44 @@
 "use client";
 
-import { useState } from "react";
-import { Copy, Check, Video, Database, Bot, MessageSquare, AlertCircle } from "lucide-react";
+import { Suspense, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { Copy, Check, Video, Database, Bot, Mail, MessageSquare, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { Button, buttonVariants } from "@/components/ui/button";
 
 interface Props {
   readaiSecret: string;
   mcpUrl: string;
+  /** Connected Gmail address, or null when Gmail isn't connected for this org. */
+  gmailConnectedEmail: string | null;
+}
+
+/** Human-readable copy for the `?gmail=...` callback status param. */
+const GMAIL_NOTICES: Record<string, { ok: boolean; text: string }> = {
+  connected: { ok: true, text: "Gmail connected. Replies from /comms will now send via Gmail." },
+  denied: { ok: false, text: "Gmail connection was cancelled or denied." },
+  no_refresh: { ok: false, text: "Google didn't return a refresh token. Try connecting again." },
+  missing_config: { ok: false, text: "Google OAuth isn't configured (missing GOOGLE_OAUTH_CLIENT_ID/SECRET)." },
+  error: { ok: false, text: "Something went wrong connecting Gmail. Please try again." },
+};
+
+function GmailNotice() {
+  const status = useSearchParams().get("gmail");
+  if (!status) return null;
+  const notice = GMAIL_NOTICES[status];
+  if (!notice) return null;
+  return (
+    <div
+      className={
+        notice.ok
+          ? "rounded-md border border-[color:var(--color-brand-success)]/40 bg-[color:var(--color-brand-success)]/10 px-3 py-2 text-xs text-[color:var(--color-brand-success)]"
+          : "rounded-md border border-[color:var(--color-brand-warning)]/40 bg-[color:var(--color-brand-warning)]/10 px-3 py-2 text-xs text-[color:var(--color-brand-warning)]"
+      }
+    >
+      {notice.text}
+    </div>
+  );
 }
 
 function CopyButton({ value, label }: { value: string; label?: string }) {
@@ -60,12 +89,64 @@ function MaskedField({ label, value, masked = true }: { label: string; value: st
   );
 }
 
-export function IntegrationsPanel({ readaiSecret, mcpUrl }: Props) {
+export function IntegrationsPanel({ readaiSecret, mcpUrl, gmailConnectedEmail }: Props) {
   const readaiUrl = "https://cc.getcreait.com/api/webhooks/readai";
   const testCurl = `curl -X POST -H "Authorization: Bearer ${readaiSecret || "<READAI_WEBHOOK_SECRET>"}" -H "Content-Type: application/json" -d '{"meeting":{"id":"test-001","title":"Test from curl","start_time":"${new Date().toISOString()}"},"transcript":{"text":"Maurice mentioned MRR is up 12%. John raised concern about Asia QWN delivery."}}' ${readaiUrl}`;
 
+  const gmailConnected = Boolean(gmailConnectedEmail);
+
   return (
     <div className="space-y-6">
+      <Suspense fallback={null}>
+        <GmailNotice />
+      </Suspense>
+
+      {/* Gmail send */}
+      <Card>
+        <CardContent className="pt-4 space-y-4">
+          <div className="flex items-start gap-3">
+            <div className="size-9 rounded-lg bg-[color:var(--color-brand-electric)]/15 flex items-center justify-center shrink-0">
+              <Mail className="size-4 text-[color:var(--color-brand-electric)]" />
+            </div>
+            <div className="flex-1">
+              <h3 className="font-semibold">Gmail (send replies from /comms)</h3>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Connect a Google account so the &ldquo;Approve &amp; Send&rdquo; button on Gmail-sourced
+                messages delivers the reply via the Gmail API. We only request the
+                <code className="mx-1">gmail.send</code> scope.
+              </p>
+            </div>
+          </div>
+
+          {gmailConnected ? (
+            <div className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-[color:var(--color-brand-success)]/40 bg-[color:var(--color-brand-success)]/10 px-3 py-2">
+              <div className="flex items-center gap-2 text-xs">
+                <Check className="size-3.5 text-[color:var(--color-brand-success)]" />
+                <span>
+                  Connected as{" "}
+                  <strong className="text-foreground">{gmailConnectedEmail}</strong>
+                </span>
+              </div>
+              <a
+                href="/api/auth/google/start"
+                className="text-xs text-[color:var(--color-brand-electric)] hover:underline"
+              >
+                Reconnect
+              </a>
+            </div>
+          ) : (
+            <div className="flex items-center gap-3">
+              <a href="/api/auth/google/start" className={buttonVariants({ size: "sm" })}>
+                Connect Gmail
+              </a>
+              <span className="text-xs text-muted-foreground">
+                Not connected — Gmail replies will show a setup notice until connected.
+              </span>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
       {/* Read.ai */}
       <Card>
         <CardContent className="pt-4 space-y-4">
@@ -172,12 +253,6 @@ export function IntegrationsPanel({ readaiSecret, mcpUrl }: Props) {
             </div>
           </div>
           <ul className="text-xs space-y-2">
-            <li className="flex items-start gap-2">
-              <MessageSquare className="size-3.5 mt-0.5 text-muted-foreground shrink-0" />
-              <div>
-                <strong className="text-foreground">Gmail send</strong> from /comms (Approve & Send button) — needs Google OAuth flow + google-auth-library config.
-              </div>
-            </li>
             <li className="flex items-start gap-2">
               <MessageSquare className="size-3.5 mt-0.5 text-muted-foreground shrink-0" />
               <div>
