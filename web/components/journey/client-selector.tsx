@@ -7,37 +7,38 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-// Phase 3 placeholder roster — Phase 4 will pull from GHL contacts.
-const PLACEHOLDER_CLIENTS = [
-  "Asia (QWN)",
-  "Coop (AITP)",
-  "Dustin (Phillip Grandison)",
-  "Rad Media Studios",
-  "Sabrina",
-  "Thomas (Adult Game Night)",
-] as const;
+import type { CcClient } from "@/lib/supabase/types";
 
 interface Props {
+  clients: CcClient[];
   value: string | null;
-  onChange: (clientName: string) => void;
+  onChange: (clientId: string) => void;
 }
 
-export function ClientSelector({ value, onChange }: Props) {
+export function ClientSelector({ clients, value, onChange }: Props) {
   return (
     <Select
       value={value ?? ""}
       onValueChange={(v) => typeof v === "string" && v && onChange(v)}
     >
-      <SelectTrigger className="w-64">
+      <SelectTrigger className="w-72">
         <SelectValue placeholder="Select a client…" />
       </SelectTrigger>
       <SelectContent>
-        {PLACEHOLDER_CLIENTS.map((c) => (
-          <SelectItem key={c} value={c}>
-            {c}
-          </SelectItem>
-        ))}
+        {clients.length === 0 ? (
+          <div className="px-2 py-1.5 text-xs text-muted-foreground">
+            No clients yet
+          </div>
+        ) : (
+          clients.map((c) => (
+            <SelectItem key={c.id} value={c.id}>
+              {c.name}
+              {c.company && c.company !== c.name ? (
+                <span className="text-muted-foreground"> · {c.company}</span>
+              ) : null}
+            </SelectItem>
+          ))
+        )}
       </SelectContent>
     </Select>
   );

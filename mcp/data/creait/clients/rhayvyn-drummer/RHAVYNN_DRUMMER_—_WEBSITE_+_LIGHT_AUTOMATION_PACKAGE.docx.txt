@@ -1,0 +1,134 @@
+PACKAGE
+
+RHAVYNN DRUMMER — WEBSITE + LIGHT AUTOMATION PACKAGE
+1. Core Website (Single-Page Foundation)
+Purpose: One calm home base for her audience
+Built sections:
+	•	Hero (clear message + primary CTA)
+	•	Email list sign-up (primary action)
+	•	1:1 coaching section (booking CTA)
+	•	Workshops section (free + paid)
+	•	Act UP Podcast section (latest episode)
+	•	About Me (trust + credibility)
+	•	Project idea submission form
+	•	Footer with help + contact links
+Design requirements:
+	•	Feminine, clean, modern
+	•	Purple, gold, white
+	•	Easy to scan
+	•	Mobile-first
+	•	Built to expand later (no rebuild)
+
+2. Email List Connection
+Purpose: Capture and nurture her audience
+	•	Connect site forms to her existing email platform
+	•	Create:
+	•	Main newsletter signup
+	•	Workshop-specific signup (if needed)
+	•	Auto-confirmation email:
+	•	“You’re in. Here’s what to expect.”
+
+3. 1:1 Booking Setup
+Purpose: Reduce back-and-forth and confusion
+	•	Connect booking tool (Calendly/Acuity/etc.)
+	•	Embed or link from site
+	•	Booking confirmation email includes:
+	•	Date/time
+	•	How to prepare
+	•	Reschedule/cancel instructions
+	•	Support link
+
+4. Workshop Flow (Free + Paid)
+Purpose: Smooth experience, fewer questions
+	•	Workshop display on site:
+	•	Title
+	•	Date
+	•	Free or paid
+	•	Register button
+	•	Confirmation emails include:
+	•	What happens next
+	•	Where links will be sent
+	•	Support contact
+	•	Reminder emails:
+	•	24 hours before
+	•	1 hour before
+
+5. Podcast Integration
+Purpose: Keep content visible without extra work
+	•	Featured “Latest Episode” section
+	•	Pull from YouTube or link manually
+	•	Simple swap process for new episodes
+
+6. Project Submission System
+Purpose: Capture ideas without inbox chaos
+	•	Simple form with:
+	•	Name
+	•	Email
+	•	Idea summary
+	•	Optional link
+	•	Auto-reply:
+	•	“Thanks for sharing. If it’s a fit, we’ll follow up.”
+	•	Submissions routed to one inbox or CRM
+
+7. Support + Help System (Light Automation)
+Purpose: Lower anxiety for her and her audience
+One door in:
+	•	Support email or form (no DMs)
+Auto-response:
+	•	“We received this. We reply within 48 hours.”
+Support lanes:
+	•	Booking
+	•	Workshops
+	•	Podcast
+	•	Payment
+	•	Project ideas
+	•	Other
+Each lane:
+	•	Tagged
+	•	Auto-help sent first
+	•	Escalated only if needed
+
+8. Support Hub Page (Website)
+Purpose: Prevent questions before they happen
+Includes:
+	•	Booking help
+	•	Workshop help
+	•	Payment help
+	•	Contact form
+
+9. Internal Organization (CREAIT OS)
+Purpose: No bottlenecks
+	•	CRM pipeline for support:
+	•	New → Needs reply → Waiting → Resolved
+	•	Daily digest of open items
+	•	Clear response windows (2x/day)
+
+10. Handoff + Future-Proofing
+Purpose: Growth without rebuild
+	•	Built so ads, partnerships, and traffic can plug in later
+	•	Clear upgrade path:
+	•	Deeper automation
+	•	Marketing integrations
+	•	Investor-facing pages
+	•	Micro-film rollout
+
+What is intentionally NOT included (for now)
+This keeps scope clean:
+	•	Advanced funnels
+	•	Paid ads setup
+	•	Complex automations
+	•	Multi-page site
+	•	Investor deck or portal
+(All can be layered later.)
+
+Bottom line
+This package gives Rhavynn:
+	•	Clarity
+	•	Calm
+	•	One home for everything
+	•	A system that grows with her instead of fighting her
+If you want, I can turn this into:
+	•	A client-facing scope doc
+	•	A checklist for your team
+	•	Or a timeline from intake → launch
+

@@ -4,6 +4,7 @@ import { JourneyView } from "@/components/journey/journey-view";
 import type {
   JourneyMilestone,
   JourneyDeliverable,
+  CcClient,
 } from "@/lib/supabase/types";
 
 export const dynamic = "force-dynamic";
@@ -33,6 +34,14 @@ export default async function JourneyPage() {
       (deliverablesData as JourneyDeliverable[] | null) ?? [];
   }
 
+  const { data: clientsData } = await supabase
+    .from("cc_clients")
+    .select("*")
+    .eq("org_id", orgId)
+    .order("name", { ascending: true });
+
+  const clients: CcClient[] = (clientsData as CcClient[] | null) ?? [];
+
   return (
     <div className="flex flex-col gap-6 p-6">
       <div>
@@ -43,7 +52,11 @@ export default async function JourneyPage() {
         </p>
       </div>
 
-      <JourneyView milestones={milestones} deliverables={deliverables} />
+      <JourneyView
+        milestones={milestones}
+        deliverables={deliverables}
+        clients={clients}
+      />
     </div>
   );
 }

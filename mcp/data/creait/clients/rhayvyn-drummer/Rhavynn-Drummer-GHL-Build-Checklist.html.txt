@@ -1,0 +1,84 @@
+Rhavynn Drummer — GHL Build Checklist
+CREAIT OS Full System Setup • Website + Light Automation Package
+
+0 of 0 completed
+0%
+PIPELINE
+TAG
+CUSTOM FIELD
+WORKFLOW
+FORM
+EMAIL TEMPLATE
+CALENDAR
+PRODUCT
+PENDING FROM CLIENT
+⚙️
+1. Account & Business Profile Setup
+
+▾
+BUSINESS PROFILE
+
+Set business name: RAD Media Studios
+
+Set business email: info@radmediastudios.com DONE
+
+Upload logo — RAD Logo DONE
+
+Complete full business profile (address, phone, timezone, etc.) PENDING FROM CLIENT
+
+Team member added: Alexandria — verify role permissions DONE
+DOMAIN & TECHNICAL
+
+Domain delegated to info@creait.tech via GoDaddy DONE
+
+Connect custom domain to GHL site/funnel builder
+
+Configure sending domain for emails (SPF/DKIM/DMARC)
+🔀
+2. Pipelines & Opportunity Stages
+
+▾
+🏷️
+3. Tags
+
+▾
+💎
+4. Custom Values
+
+▾
+📋
+5. Custom Fields (Contact)
+
+▾
+💰
+6. Products & Offers
+
+▾
+📅
+7. Calendars & Booking
+
+▾
+📝
+8. Forms & Surveys
+
+▾
+✉️
+9. Email Templates
+
+▾
+⚡
+10. Automations / Workflows
+
+▾
+🌐
+11. Website Build (Single-Page)
+
+▾
+⏳
+12. Pending from Client (Rhavynn)
+
+▾
+🚫
+13. Intentionally NOT Included (Phase 1)
+
+▾

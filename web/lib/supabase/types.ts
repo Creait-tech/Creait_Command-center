@@ -666,6 +666,21 @@ export interface CcClient {
   updated_at: string;
 }
 
+// Per-client journey progress — one row per (client, deliverable).
+// Tracks whether a given client has completed a template deliverable.
+export interface CcClientJourney {
+  id: string;
+  org_id: string;
+  client_id: string;
+  deliverable_id: string;
+  milestone_id: string | null;
+  done: boolean;
+  completed_at: string | null;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 export type WorkspaceMessageRole = "user" | "assistant" | "system" | "tool";
 
 export interface WorkspaceMessage {
@@ -742,6 +757,7 @@ export interface Database {
       cc_workspace_projects: Table<WorkspaceProject>;
       cc_workspace_messages: Table<WorkspaceMessage>;
       cc_clients: Table<CcClient>;
+      cc_client_journey: Table<CcClientJourney>;
       // KPI history
       cc_kpi_history: Table<KpiHistory>;
     };

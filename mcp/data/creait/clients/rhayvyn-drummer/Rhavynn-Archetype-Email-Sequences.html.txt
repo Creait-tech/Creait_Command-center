@@ -1,0 +1,128 @@
+Bigger Than a Title
+Self-Trust Assessment — Complete Email Sequence System • 17 Emails Total
+Overview
+The Performer
+The Provider
+The Prisoner
+The Pretender
+Flow + Logic
+Sequence Architecture
+How it works: A contact takes the Self-Trust Assessment (8 questions). Their answers are scored to determine their dominant archetype. They immediately receive a Result Email with their archetype diagnosis. Then over the next 8 days, they receive a 3-email nurture sequence tailored to their archetype — each building toward the right offer.
+Sequence Overview — All 17 Emails
+#
+Email
+Subject Line (Primary)
+Timing
+CTA
+R1
+Performer Result
+Your result: The Performer
+Immediate
+Book Freedom Session ($349)
+P1
+Performer Nurture 1
+The cage nobody sees
+Day 2
+Soft — read blog/reflect
+P2
+Performer Nurture 2
+What if "ready" never comes?
+Day 5
+Freedom Session ($349)
+P3
+Performer Nurture 3
+This is your permission slip
+Day 8
+Freedom Session ($349) — final
+R2
+Provider Result
+Your result: The Provider
+Immediate
+Join The Unlock ($97)
+V1
+Provider Nurture 1
+You forgot you're someone too
+Day 2
+Soft — reflect
+V2
+Provider Nurture 2
+Sacrifice is not the same as love
+Day 5
+The Unlock ($97)
+V3
+Provider Nurture 3
+What happens when you finally choose you
+Day 8
+The Unlock ($97) — final
+R3
+Prisoner Result
+Your result: The Prisoner
+Immediate
+Join The Unlock ($97)
+S1
+Prisoner Nurture 1
+The permission was always yours
+Day 2
+Soft — reflect
+S2
+Prisoner Nurture 2
+You don't need anyone to say go
+Day 5
+The Unlock ($97)
+S3
+Prisoner Nurture 3
+This is what leaving the cage looks like
+Day 8
+The Unlock ($97) — final
+R4
+Pretender Result
+Your result: The Pretender
+Immediate
+Book Freedom Session ($349)
+T1
+Pretender Nurture 1
+You're not a fraud
+Day 2
+Soft — reflect
+T2
+Pretender Nurture 2
+The mask is heavier than you think
+Day 5
+Freedom Session ($349)
+T3
+Pretender Nurture 3
+What does real confidence feel like?
+Day 8
+Freedom Session ($349) — final
+B1
+Blend Result (Provider-Pretender)
+Your result: a pattern only the brave see
+Immediate
+Dual — Unlock ($97) + Freedom ($349)
+Performance Benchmarks
+Metric
+Result Emails
+Nurture 1 (Day 2)
+Nurture 2 (Day 5)
+Nurture 3 (Day 8)
+Open Rate
+60-75%
+40-55%
+35-45%
+30-40%
+Click Rate
+15-25%
+5-10%
+8-15%
+10-18%
+Conversion
+3-6%
+—
+2-4%
+3-6%
+Unsubscribe
+<0.3%
+<0.5%
+<0.5%
+<0.8%
+Why these are high: Quiz-based email sequences significantly outperform standard opt-in sequences because the recipient just invested time and emotional energy into self-discovery. They're primed to engage. The result email is essentially a personalized diagnosis — open rates above 60% are typical for this format.
