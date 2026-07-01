@@ -155,11 +155,19 @@ export function extractMcpJson(result: unknown): unknown {
   return null
 }
 
+function normalizeMcpEndpoint(url: string): URL {
+  const endpoint = new URL(url)
+  if (endpoint.pathname === '/' || endpoint.pathname === '') {
+    endpoint.pathname = '/mcp'
+  }
+  return endpoint
+}
+
 async function fetchAndWrapTools(
   url: string,
   token: string,
 ): Promise<Record<string, Tool>> {
-  const transport = new StreamableHTTPClientTransport(new URL(url), {
+  const transport = new StreamableHTTPClientTransport(normalizeMcpEndpoint(url), {
     requestInit: {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -228,7 +236,7 @@ function wrapMcpTool(
 }
 
 async function connectFresh(url: string, token: string): Promise<Client> {
-  const transport = new StreamableHTTPClientTransport(new URL(url), {
+  const transport = new StreamableHTTPClientTransport(normalizeMcpEndpoint(url), {
     requestInit: {
       headers: {
         Authorization: `Bearer ${token}`,
