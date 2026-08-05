@@ -58,8 +58,23 @@ export interface CompanyPriority {
   updated_at: string;
 }
 
+/**
+ * EOS meeting system types, plus the legacy non-EOS values kept so historical
+ * rows stay valid. Mirrors the CHECK constraint in
+ * supabase/migrations/0002_meeting_types.sql — keep the two in sync.
+ * Agenda templates live in lib/meeting-agendas.ts.
+ */
 export type MeetingType =
+  // EOS meeting system
   | "level_10"
+  | "quarterly"
+  | "annual"
+  | "quarterly_conversation"
+  | "same_page"
+  | "huddle"
+  | "financial"
+  | "state_of_company"
+  // legacy / non-EOS
   | "client"
   | "internal"
   | "sales"

@@ -11,28 +11,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
 import { useActiveOrgId } from "@/lib/use-active-org";
 import { cn } from "@/lib/utils";
+import { getAgenda, agendaBudgetSec, type MeetingType } from "@/lib/meeting-agendas";
 
 interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  /** Which EOS meeting to run. Defaults to the weekly Level 10. */
+  meetingType?: MeetingType;
 }
-
-interface Section {
-  key: string;
-  label: string;
-  budgetSec: number;
-  description: string;
-}
-
-const SECTIONS: Section[] = [
-  { key: "segue",     label: "Segue",                budgetSec: 5 * 60,  description: "Each person: 1 personal + 1 business good news. Stay connected." },
-  { key: "scorecard", label: "Scorecard",            budgetSec: 5 * 60,  description: "Each KPI: on-track or off-track. NO discussion. Off-track → Issue." },
-  { key: "rocks",     label: "Rock Review",          budgetSec: 5 * 60,  description: "Each Rock owner: on-track or off-track. NO discussion. Off-track → Issue." },
-  { key: "headlines", label: "Customer/Employee Headlines", budgetSec: 5 * 60, description: "One-sentence updates. If needs discussion → Issue." },
-  { key: "todos",     label: "To-Do Review",         budgetSec: 5 * 60,  description: "Done / not done. Carry over or drop to Issues." },
-  { key: "ids",       label: "IDS — Identify, Discuss, Solve", budgetSec: 60 * 60, description: "Top 3 issues. Identify root cause → discuss → solve forever." },
-  { key: "conclude",  label: "Conclude",             budgetSec: 5 * 60,  description: "Recap To-Dos. Everyone rates the meeting 1-10. Target ≥ 8." },
-];
 
 function fmt(sec: number): string {
   if (sec < 0) sec = 0;
@@ -41,8 +27,11 @@ function fmt(sec: number): string {
   return `${m}:${String(s).padStart(2, "0")}`;
 }
 
-export function RunMeetingModal({ open, onOpenChange }: Props) {
+export function RunMeetingModal({ open, onOpenChange, meetingType = "level_10" }: Props) {
   const orgId = useActiveOrgId();
+  const agenda = getAgenda(meetingType);
+  const SECTIONS = agenda.sections;
+  const totalBudgetSec = agendaBudgetSec(agenda);
   const [meetingId, setMeetingId] = useState<string | null>(null);
   const [activeIdx, setActiveIdx] = useState(0);
   const [elapsed, setElapsed] = useState<number[]>(Array(SECTIONS.length).fill(0));
@@ -68,8 +57,9 @@ export function RunMeetingModal({ open, onOpenChange }: Props) {
       setRating(null);
       setRatingComment("");
     }
+    // Agendas differ in length, so switching type must reset the timer array too.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open]);
+  }, [open, meetingType]);
 
   // Timer
   useEffect(() => {
@@ -94,8 +84,8 @@ export function RunMeetingModal({ open, onOpenChange }: Props) {
       .from("meetings")
       .insert({
         org_id: orgId,
-        title: `L10 — ${today.toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" })}`,
-        meeting_type: "level_10",
+        title: `${agenda.titlePrefix} — ${today.toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" })}`,
+        meeting_type: agenda.type,
         scheduled_at: today.toISOString(),
         source: "manual",
       })
@@ -108,7 +98,7 @@ export function RunMeetingModal({ open, onOpenChange }: Props) {
     if (data) {
       setMeetingId((data as { id: string }).id);
       setRunning(true);
-      toast.success("Meeting started. Segue first — share good news.");
+      toast.success(`${agenda.label} started — ${SECTIONS[0].label} first.`);
     }
   }
 
@@ -201,7 +191,8 @@ export function RunMeetingModal({ open, onOpenChange }: Props) {
     onOpenChange(false);
   }
 
-  const section = SECTIONS[activeIdx];
+  // activeIdx can outrun a shorter agenda if the type changes mid-flight.
+  const section = SECTIONS[activeIdx] ?? SECTIONS[0];
   const elapsedHere = elapsed[activeIdx] ?? 0;
   const pct = Math.min(100, Math.round((elapsedHere / section.budgetSec) * 100));
   const overBudget = elapsedHere > section.budgetSec;
@@ -212,11 +203,12 @@ export function RunMeetingModal({ open, onOpenChange }: Props) {
       <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center justify-between gap-2">
-            <span>Level 10 Meeting</span>
-            <span className="text-xs font-normal text-muted-foreground">
-              Total: {fmt(totalElapsed)} / 90:00
+            <span>{agenda.label}</span>
+            <span className="text-xs font-normal text-muted-foreground tabular-nums">
+              Total: {fmt(totalElapsed)} / {fmt(totalBudgetSec)}
             </span>
           </DialogTitle>
+          <p className="text-xs text-muted-foreground">{agenda.cadence} · {agenda.purpose}</p>
         </DialogHeader>
 
         {/* Section nav strip */}
