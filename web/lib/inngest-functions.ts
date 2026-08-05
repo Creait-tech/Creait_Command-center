@@ -963,6 +963,36 @@ function classifySource(url: string): 'news' | 'blog' | 'hiring' | 'social' | 'o
 }
 
 // ---------------------------------------------------------------------------
+// GHL webhook relay
+// ---------------------------------------------------------------------------
+
+/**
+ * Turns the hourly GHL sync into a near-real-time one.
+ *
+ * GHL workflows POST to /api/webhooks/ghl whenever something changes
+ * (contact created, opportunity moved, payment received, ...). That route
+ * fires one `ghl/changed` event per webhook. A busy hour in GHL can mean
+ * dozens of webhooks, so this debounces: wait until the events go quiet
+ * for 2 minutes, then trigger ONE `cron/ghl-sync` run. The sync logic
+ * itself stays in `ghlSync` — single source of truth.
+ */
+export const ghlChangeRelay = inngest.createFunction(
+  {
+    id: 'ghl-change-relay',
+    name: 'GHL Change Relay',
+    debounce: { period: '2m' },
+    triggers: [{ event: 'ghl/changed' }],
+  },
+  async ({ event, step }) => {
+    await step.sendEvent('trigger-ghl-sync', {
+      name: 'cron/ghl-sync',
+      data: { triggeredBy: 'webhook', summary: event.data?.summary ?? null },
+    })
+    return { relayed: true }
+  },
+)
+
+// ---------------------------------------------------------------------------
 // Registered functions
 // ---------------------------------------------------------------------------
 
@@ -972,6 +1002,7 @@ export const functions = [
   weeklySummary,
   goalCheck,
   ghlSync,
+  ghlChangeRelay,
   youtubeResearch,
   recruitingMonitor,
   clientHealth,
