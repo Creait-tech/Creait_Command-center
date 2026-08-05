@@ -135,7 +135,7 @@ export const dailyBriefing = inngest.createFunction(
       if (!to) return { skipped: 'DAILY_BRIEFING_TO not set' }
       const today = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })
       const html = `
-        <div style="font-family:Inter,system-ui,sans-serif;max-width:640px;margin:0 auto;padding:24px;background:#0a0e1a;color:#f1f5f9">
+        <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;max-width:640px;margin:0 auto;padding:24px;background:#0a0e1a;color:#f1f5f9">
           <h1 style="color:#3b82f6;font-size:22px;margin:0 0 8px 0">CREAIT Daily Briefing</h1>
           <p style="color:#94a3b8;font-size:13px;margin:0 0 24px 0">${today}</p>
           <div style="color:#f1f5f9;font-size:14px">${markdownToEmailHtml(result.output)}</div>
