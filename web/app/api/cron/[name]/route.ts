@@ -17,6 +17,7 @@ const ALLOWED_NAMES = new Set([
   'goal-check',
   'weekly-summary',
   'ghl-sync',
+  'zoom-sync',
   // Phase 3 long-running agents
   'youtube-research',
   'recruiting-monitor',

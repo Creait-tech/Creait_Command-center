@@ -14,6 +14,7 @@ const PAGE_TITLES: Record<string, string> = {
   "/command-center": "Command Center",
   "/level-10": "Level 10 Meeting",
   "/meetings": "Meeting History",
+  "/war-room": "War Room",
   "/rocks": "Rocks",
   "/todos": "To-Dos",
   "/initiatives": "Initiatives",

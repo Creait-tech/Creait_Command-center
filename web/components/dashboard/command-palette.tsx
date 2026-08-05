@@ -11,6 +11,7 @@ import {
   CommandItem,
 } from "@/components/ui/command";
 import {
+  Brain,
   Mountain,
   CheckSquare,
   MessageCircleQuestion,
@@ -48,6 +49,7 @@ const PAGES: { label: string; href: string; icon: LucideIcon }[] = [
   { label: "Command Center", href: "/command-center", icon: LayoutDashboard },
   { label: "Level 10 Meeting", href: "/level-10", icon: CalendarCheck },
   { label: "Meeting History", href: "/meetings", icon: History },
+  { label: "War Room", href: "/war-room", icon: Brain },
   { label: "Rocks (Quarterly)", href: "/rocks", icon: Mountain },
   { label: "Quarterly Planning", href: "/quarterly", icon: CalendarCheck },
   { label: "To-Dos", href: "/todos", icon: CheckSquare },

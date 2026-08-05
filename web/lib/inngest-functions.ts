@@ -963,6 +963,33 @@ function classifySource(url: string): 'news' | 'blog' | 'hiring' | 'social' | 'o
 }
 
 // ---------------------------------------------------------------------------
+// Zoom → War Room sync
+// ---------------------------------------------------------------------------
+
+/**
+ * Daily pull of Zoom cloud recordings + transcripts into `meetings` (the
+ * War Room). No-ops gracefully until the Zoom Server-to-Server OAuth env
+ * vars are configured — see lib/zoom-sync.ts.
+ */
+export const zoomSync = inngest.createFunction(
+  {
+    id: 'zoom-sync',
+    name: 'Zoom Sync',
+    triggers: [
+      { cron: 'TZ=America/New_York 0 6 * * *' },
+      { event: 'cron/zoom-sync' },
+    ],
+  },
+  async ({ step }) => {
+    const { zoomConfigured, syncZoomRecordings } = await import('@/lib/zoom-sync')
+    if (!zoomConfigured()) {
+      return { skipped: 'Zoom S2S env vars not configured' }
+    }
+    return step.run('sync-zoom-recordings', () => syncZoomRecordings(7))
+  },
+)
+
+// ---------------------------------------------------------------------------
 // GHL webhook relay
 // ---------------------------------------------------------------------------
 
@@ -1003,6 +1030,7 @@ export const functions = [
   goalCheck,
   ghlSync,
   ghlChangeRelay,
+  zoomSync,
   youtubeResearch,
   recruitingMonitor,
   clientHealth,
