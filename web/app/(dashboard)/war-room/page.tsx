@@ -77,9 +77,10 @@ export default async function WarRoomPage({
     query = query.eq("meeting_type", type as NonNullable<Meeting["meeting_type"]>);
   }
   if (q) {
-    const term = q.replace(/[%_,()]/g, " ").trim();
+    // PostgREST `or=` strings use * as the ilike wildcard (not %).
+    const term = q.replace(/[%_,()*]/g, " ").trim();
     query = query.or(
-      `title.ilike.%${term}%,summary.ilike.%${term}%,transcript.ilike.%${term}%`,
+      `title.ilike.*${term}*,summary.ilike.*${term}*,transcript.ilike.*${term}*`,
     );
   }
 
