@@ -375,28 +375,48 @@ export const ghlSync = inngest.createFunction(
       const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
         .toISOString()
 
-      const [contactsRes, opportunitiesRes, conversationsRes] =
+      const PAGE_CAP = 100 // hard ceiling in mcp/src/tools/ghl.ts — no cursor
+
+      const [contactsRes, opportunitiesRes, conversationsRes, mrr] =
         await Promise.all([
           callMcpTool('ghl_get_contacts', {
             createdAfter: sevenDaysAgo,
-            limit: 100,
+            limit: PAGE_CAP,
           }),
-          callMcpTool('ghl_get_opportunities', { limit: 100 }),
+          callMcpTool('ghl_get_opportunities', { limit: PAGE_CAP }),
           callMcpTool('ghl_get_conversations', {
             updatedAfter: sevenDaysAgo,
-            limit: 100,
+            limit: PAGE_CAP,
           }),
+          mrrFromActiveClients(ORG_ID),
         ])
 
-      const newContacts7d = countItems(contactsRes)
-      const { activeDeals, mrr } = summarizeOpportunities(opportunitiesRes)
-      const conversations7d = countItems(conversationsRes)
+      const contacts = countItems(contactsRes, PAGE_CAP)
+      const conversations = countItems(conversationsRes, PAGE_CAP)
+      const { activeDeals, openPipelineValue } =
+        summarizeOpportunities(opportunitiesRes)
+      const dealsSaturated = activeDeals >= PAGE_CAP
+
+      for (const [name, s] of [
+        ['New Contacts 7d', contacts.saturated],
+        ['Conversations 7d', conversations.saturated],
+        ['Active Deals', dealsSaturated],
+      ] as const) {
+        if (s) {
+          console.warn(
+            `[inngest] "${name}" hit the ${PAGE_CAP}-row MCP ceiling — the true count is higher. Skipping the write rather than reporting a floor as a total.`,
+          )
+        }
+      }
 
       return [
-        { name: 'New Contacts 7d', value: newContacts7d },
-        { name: 'Active Deals', value: activeDeals },
+        // A saturated count is a floor, not a measurement. Writing it would put
+        // a number on the scoreboard that cannot be compared to its target.
+        { name: 'New Contacts 7d', value: contacts.saturated ? null : contacts.count },
+        { name: 'Conversations 7d', value: conversations.saturated ? null : conversations.count },
+        { name: 'Active Deals', value: dealsSaturated ? null : activeDeals },
+        { name: 'Open Pipeline Value', value: openPipelineValue },
         { name: 'MRR', value: mrr },
-        { name: 'Conversations 7d', value: conversations7d },
       ]
     })
 
@@ -456,25 +476,46 @@ export const ghlSync = inngest.createFunction(
 // MCP result parsing helpers
 // ---------------------------------------------------------------------------
 
-function countItems(result: unknown): number {
+/**
+ * The MCP GHL tools hard-cap every list at 100 rows and expose no cursor, so a
+ * returned array of exactly `limit` means "at least this many", never "exactly
+ * this many". Callers get `saturated` so a floor is never written to the
+ * scoreboard as if it were a total — that is what produced three KPIs all
+ * reading exactly 100.
+ */
+function countItems(
+  result: unknown,
+  limit: number,
+): { count: number; saturated: boolean } {
   const parsed = extractMcpJson(result)
-  if (parsed == null) return 0
-  if (Array.isArray(parsed)) return parsed.length
-  if (typeof parsed === 'object') {
+  if (parsed == null) return { count: 0, saturated: false }
+
+  // A server-reported total is authoritative and never saturated.
+  if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
     const obj = parsed as Record<string, unknown>
-    if (typeof obj.total === 'number') return obj.total
-    if (typeof obj.count === 'number') return obj.count
-    if (Array.isArray(obj.items)) return obj.items.length
-    if (Array.isArray(obj.contacts)) return obj.contacts.length
-    if (Array.isArray(obj.opportunities)) return obj.opportunities.length
-    if (Array.isArray(obj.conversations)) return obj.conversations.length
+    if (typeof obj.total === 'number') return { count: obj.total, saturated: false }
+    if (typeof obj.count === 'number') return { count: obj.count, saturated: false }
   }
-  return 0
+
+  const arr = pickArray(parsed)
+  return { count: arr.length, saturated: arr.length >= limit }
+}
+
+/** Pull the row array out of whichever shape the MCP tool returned. */
+function pickArray(parsed: unknown): unknown[] {
+  if (Array.isArray(parsed)) return parsed
+  if (parsed && typeof parsed === 'object') {
+    const obj = parsed as Record<string, unknown>
+    for (const key of ['items', 'contacts', 'opportunities', 'conversations']) {
+      if (Array.isArray(obj[key])) return obj[key] as unknown[]
+    }
+  }
+  return []
 }
 
 function summarizeOpportunities(result: unknown): {
   activeDeals: number
-  mrr: number
+  openPipelineValue: number
 } {
   const parsed = extractMcpJson(result)
   let items: Array<Record<string, unknown>> = []
@@ -492,18 +533,43 @@ function summarizeOpportunities(result: unknown): {
   }
 
   let activeDeals = 0
-  let mrr = 0
+  let openPipelineValue = 0
   for (const item of items) {
     const status = String(item.status ?? '').toLowerCase()
-    if (status !== 'won' && status !== 'lost' && status !== 'abandoned') {
-      activeDeals++
-    }
+    const isOpen =
+      status !== 'won' && status !== 'lost' && status !== 'abandoned'
+    if (!isOpen) continue
+    activeDeals++
+    // Only open deals count toward pipeline. Summing won and lost as well is
+    // what produced a $5,015,685 "MRR" — the all-time gross of every
+    // opportunity the account has ever held.
     const value = Number(item.monetaryValue ?? item.value ?? 0)
-    if (!Number.isNaN(value)) {
-      mrr += value
-    }
+    if (Number.isFinite(value)) openPipelineValue += value
   }
-  return { activeDeals, mrr: Number(mrr.toFixed(2)) }
+  return { activeDeals, openPipelineValue: Number(openPipelineValue.toFixed(2)) }
+}
+
+/**
+ * True monthly recurring revenue — the sum of `mrr` across active clients.
+ * Pipeline value is not MRR: one is a forecast of deals that may never close,
+ * the other is money that arrives every month whether anyone sells anything.
+ */
+async function mrrFromActiveClients(orgId: string): Promise<number | null> {
+  const supabase = createServiceClient()
+  const { data, error } = await supabase
+    .from('cc_clients')
+    .select('mrr')
+    .eq('org_id', orgId)
+    .eq('status', 'active')
+  if (error) {
+    console.error('[inngest] mrr from cc_clients failed:', error.message)
+    return null
+  }
+  const total = (data ?? []).reduce(
+    (sum, row) => sum + Number((row as { mrr: number | null }).mrr ?? 0),
+    0,
+  )
+  return Number(total.toFixed(2))
 }
 
 // ---------------------------------------------------------------------------
