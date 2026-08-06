@@ -784,16 +784,50 @@ export const clientHealth = inngest.createFunction(
 
     await step.run('insert-flags', async () => {
       const supabase = createServiceClient()
-      const rows = flagged.map((f) => ({
-        org_id: ORG_ID,
-        source: 'other' as const,
-        direction: 'inbound' as const,
-        contact_name: 'Client Health Agent',
-        subject: `Client health: ${f.name}`,
-        body: `Client health agent flagged ${f.name}: ${f.reason}`,
-        status: 'unread' as const,
-        priority_score: 70,
-      }))
+
+      // One open alert per contact — not one per run. This job runs daily, so
+      // a blind insert re-flags the same stale contacts every day and buries
+      // real client messages in the Comms hub. Key on a deterministic
+      // source_id and skip contacts that already have an unresolved flag;
+      // once the operator reads/archives it, a later run can flag again.
+      const sourceIds = flagged.map((f) => `client-health:${f.name}`)
+      const { data: existing, error: existingErr } = await supabase
+        .from('messages')
+        .select('source_id')
+        .eq('org_id', ORG_ID)
+        .in('source_id', sourceIds)
+        .eq('status', 'unread')
+
+      if (existingErr) {
+        console.error(
+          '[inngest] client-health dedupe lookup failed:',
+          existingErr.message,
+        )
+        return
+      }
+
+      const alreadyFlagged = new Set(
+        ((existing as Array<{ source_id: string | null }> | null) ?? [])
+          .map((row) => row.source_id)
+          .filter((id): id is string => Boolean(id)),
+      )
+
+      const rows = flagged
+        .filter((f) => !alreadyFlagged.has(`client-health:${f.name}`))
+        .map((f) => ({
+          org_id: ORG_ID,
+          source: 'other' as const,
+          source_id: `client-health:${f.name}`,
+          direction: 'inbound' as const,
+          contact_name: 'Client Health Agent',
+          subject: `Client health: ${f.name}`,
+          body: `Client health agent flagged ${f.name}: ${f.reason}`,
+          status: 'unread' as const,
+          priority_score: 70,
+        }))
+
+      if (rows.length === 0) return
+
       const { error } = await supabase.from('messages').insert(rows)
       if (error) {
         console.error('[inngest] client-health insert failed:', error.message)
