@@ -29,7 +29,7 @@ const openrouter = createOpenAI({
  *   moonshotai/kimi-k2  — Kimi K2 (frontier-class, very low cost)
  *   deepseek/deepseek-v3.1 — DeepSeek (best per-dollar reasoning)
  *   meta-llama/llama-3.3-70b — Llama 3.3 70B (open, fast)
- *   google/gemini-2.0-flash-001 — Gemini Flash (cheap + multimodal)
+ *   google/gemini-2.5-flash — Gemini Flash (cheap + multimodal)
  */
 export const MODEL_MAP = {
   // Anthropic frontier
@@ -44,7 +44,8 @@ export const MODEL_MAP = {
   'openrouter/kimi-k2': openrouter('moonshotai/kimi-k2'),
   'openrouter/deepseek-v3': openrouter('deepseek/deepseek-chat-v3-0324'),
   'openrouter/llama-3.3-70b': openrouter('meta-llama/llama-3.3-70b-instruct'),
-  'openrouter/gemini-flash': openrouter('google/gemini-2.0-flash-001'),
+  // gemini-2.0-flash-001 was delisted from OpenRouter; 2.5-flash is the stable successor
+  'openrouter/gemini-flash': openrouter('google/gemini-2.5-flash'),
 } as const
 
 export type ModelId = keyof typeof MODEL_MAP
