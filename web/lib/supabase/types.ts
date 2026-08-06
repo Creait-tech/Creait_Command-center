@@ -825,6 +825,36 @@ export interface WorkspaceMessage {
 }
 
 // =============================================================================
+// Dashboard AI Assistant chat history — persistent threads for the floating
+// widget. Scoped per (org, clerk user). Mirrors
+// supabase/migrations/phase13_chat_history.sql.
+// =============================================================================
+
+export type CcChatRole = "user" | "assistant";
+
+export interface CcChatConversation {
+  id: string;
+  org_id: string;
+  clerk_user_id: string;
+  title: string;
+  /** Route slug the conversation started on, e.g. "command-center". */
+  page_context: string | null;
+  model: string | null;
+  last_message_at: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CcChatMessage {
+  id: string;
+  conversation_id: string;
+  org_id: string;
+  role: CcChatRole;
+  content: string;
+  created_at: string;
+}
+
+// =============================================================================
 // Database shape (standard Supabase generated layout)
 // =============================================================================
 
@@ -894,6 +924,9 @@ export interface Database {
       cc_oauth_tokens: Table<CcOAuthToken>;
       // KPI history
       cc_kpi_history: Table<KpiHistory>;
+      // Dashboard AI Assistant chat history
+      cc_chat_conversations: Table<CcChatConversation>;
+      cc_chat_messages: Table<CcChatMessage>;
     };
     Views: { [_ in never]: never };
     Functions: { [_ in never]: never };
