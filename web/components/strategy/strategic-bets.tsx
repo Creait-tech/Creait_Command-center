@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, GripVertical } from "lucide-react";
+import { Plus, GripVertical, Dice5 } from "lucide-react";
 import {
   DndContext,
   PointerSensor,
@@ -29,6 +29,7 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
+import { FeatureEmptyState } from "@/components/empty-states/feature-empty-state";
 import { cn } from "@/lib/utils";
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
 import { useActiveOrgId } from "@/lib/use-active-org";
@@ -223,17 +224,31 @@ export function StrategicBets({ bets, onChange }: StrategicBetsProps) {
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-end">
-        <Button size="sm" onClick={openDialog}>
-          <Plus className="size-3.5" />
-          Add Bet
-        </Button>
-      </div>
+      {bets.length > 0 && (
+        <div className="flex justify-end">
+          <Button size="sm" onClick={openDialog}>
+            <Plus className="size-3.5" />
+            Add Bet
+          </Button>
+        </div>
+      )}
 
       {bets.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-[color:var(--color-brand-fog)] flex items-center justify-center h-32 text-sm text-muted-foreground">
-          No strategic bets recorded yet.
-        </div>
+        <FeatureEmptyState
+          icon={<Dice5 className="size-5" />}
+          title="No strategic bets recorded"
+          description="A bet is a belief the plan depends on, written down before you find out whether it was right: the hypothesis, the evidence so far, and whether it is still exploring, being validated, or committed. Writing them down is what stops a quarter of work resting on an assumption nobody remembers making."
+          useWhen={[
+            "You just made a call the whole quarter depends on — write it down while the reasoning is fresh.",
+            "Evidence arrives that moves a bet from exploring to validating, or kills it outright.",
+            "Quarterly planning — re-read every committed bet and ask whether it still holds.",
+          ]}
+          action={{
+            label: "Record the first bet",
+            onClick: openDialog,
+            icon: <Plus className="size-3.5" />,
+          }}
+        />
       ) : (
         <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
           <SortableContext items={ids} strategy={verticalListSortingStrategy}>

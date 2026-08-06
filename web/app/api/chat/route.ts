@@ -1,12 +1,13 @@
 import { auth } from '@clerk/nextjs/server'
-import { convertToModelMessages, streamText, stepCountIs } from 'ai'
+import { convertToModelMessages, stepCountIs } from 'ai'
 import type { UIMessage } from 'ai'
 import { z } from 'zod'
 
 import {
   assertModelKeyAvailable,
   DEFAULT_MODEL,
-  resolveModel,
+  describeFallback,
+  streamWithFallback,
 } from '@/lib/ai'
 import { getActiveOrgId } from '@/lib/active-org'
 import { buildSystemPrompt } from '@/lib/context-builder'
@@ -49,6 +50,11 @@ export async function POST(req: Request) {
     const { messages, model, pageContext } = parsed.data
     const modelId = model ?? DEFAULT_MODEL
 
+    // Unconfigured provider (e.g. no GOOGLE_GENERATIVE_AI_API_KEY) is a setup
+    // mistake, not an outage — fail fast with the clear message instead of
+    // silently answering as a different model. Providers that ARE configured
+    // but broken (no credit, rate limited, revoked key) are handled downstream
+    // by the fallback chain.
     try {
       assertModelKeyAvailable(modelId)
     } catch (err) {
@@ -65,17 +71,29 @@ export async function POST(req: Request) {
       convertToModelMessages(messages as UIMessage[]),
       loadMcpTools(),
     ])
-    const resolvedModel = resolveModel(modelId)
-
-    const result = streamText({
-      model: resolvedModel,
+    const { result, fallback } = streamWithFallback({
+      model: modelId,
       system,
       messages: modelMessages,
       tools,
       stopWhen: stepCountIs(8),
+      onFinish: () => {
+        if (fallback.fellBack) {
+          console.warn(
+            `[api/chat] "${fallback.requestedModel}" unavailable — served by ` +
+              `"${fallback.servedModel}". ${describeFallback(fallback)}`,
+          )
+        }
+      },
     })
 
     return result.toUIMessageStreamResponse({
+      // Tell the widget which model actually answered so the UI can show it.
+      messageMetadata: () => ({
+        model: fallback.servedModel ?? fallback.requestedModel,
+        requestedModel: fallback.requestedModel,
+        fellBack: fallback.fellBack,
+      }),
       onError: (error) => {
         console.error('[api/chat] stream error', error)
         if (error instanceof Error) return error.message

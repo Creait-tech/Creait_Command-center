@@ -12,7 +12,10 @@ import { auth } from "@clerk/nextjs/server";
 
 import { createClient } from "@/lib/supabase/server";
 import { getActiveOrgId } from "@/lib/active-org";
-import { INDICATORS } from "@/lib/assessment-instrument";
+import {
+  INDICATORS,
+  normalizeOverlapFactor,
+} from "@/lib/assessment-instrument";
 import type {
   AssessmentStatus,
   CcAssessment,
@@ -74,6 +77,16 @@ function revalidate(id?: string) {
     revalidatePath(`/assessments/${id}`);
     revalidatePath(`/assessments/${id}/report`);
   }
+}
+
+/**
+ * Indicator scores and opportunity edits fire dozens of times during a live
+ * scoring session and change nothing on the list card or the workbench (which
+ * holds its own state). Busting only the report keeps the printed deliverable
+ * fresh without a full page refetch behind every click.
+ */
+function revalidateReport(id: string) {
+  revalidatePath(`/assessments/${id}/report`);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -174,9 +187,10 @@ export async function updateAssessment(
       .filter(Boolean);
   }
   if (patch.overlap_factor !== undefined) {
-    const factor = num(patch.overlap_factor);
-    update.overlap_factor =
-      factor !== null && factor > 0 && factor <= 1 ? factor : 0.7;
+    // Out-of-range input silently becomes the default rather than inflating
+    // (>1) or zeroing (<=0) the portfolio. The workbench re-renders from the
+    // returned row so the input always shows what was actually stored.
+    update.overlap_factor = normalizeOverlapFactor(patch.overlap_factor);
   }
 
   const supabase = await createClient();
@@ -195,10 +209,16 @@ export async function updateAssessment(
 
 /**
  * Plan items are edited one at a time, often in rapid succession at the end of
- * a session. Sending the whole array from the client raced: a second write
- * built from pre-first-write state silently dropped the earlier item. These two
- * actions read the current array on the server and write the mutation, so each
- * item survives regardless of how fast they arrive.
+ * a session — and often by two founders on the same engagement at once.
+ *
+ * A read-modify-write round trip only survives a single editor: two callers
+ * both read the same array and the second write silently discards the first
+ * item. Both mutations therefore run inside Postgres (migration 0005), where
+ * the row lock serializes them and nothing can be lost or reordered.
+ *
+ * The read-modify-write path below is kept only as a fallback for a database
+ * that has not had 0005 applied yet, so a missing migration degrades to the
+ * old behaviour instead of breaking the 90-day plan outright.
  */
 function currentPlanItems(value: unknown): string[] {
   if (!Array.isArray(value)) return [];
@@ -208,7 +228,16 @@ function currentPlanItems(value: unknown): string[] {
     .filter(Boolean);
 }
 
-async function writePlanItems(
+/** PostgREST reports a missing function as PGRST202 (schema-cache miss). */
+function isMissingFunction(error: { code?: string; message?: string }): boolean {
+  return (
+    error.code === "PGRST202" ||
+    error.code === "42883" ||
+    /could not find the function|does not exist/i.test(error.message ?? "")
+  );
+}
+
+async function writePlanItemsFallback(
   id: string,
   orgId: string,
   mutate: (items: string[]) => string[]
@@ -248,7 +277,29 @@ export async function appendPlanItem(
   const trimmed = item.trim();
   if (!trimmed) return { ok: false, error: "Plan item is empty" };
 
-  return writePlanItems(id, ctx.orgId, (items) => [...items, trimmed]);
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .rpc("cc_assessment_plan_append", {
+      p_id: id,
+      p_org: ctx.orgId,
+      p_item: trimmed,
+    })
+    .select("*")
+    .maybeSingle();
+
+  if (error) {
+    if (isMissingFunction(error)) {
+      return writePlanItemsFallback(id, ctx.orgId, (items) => [
+        ...items,
+        trimmed,
+      ]);
+    }
+    return { ok: false, error: error.message };
+  }
+  if (!data) return { ok: false, error: "Assessment not found" };
+
+  revalidate(id);
+  return { ok: true, data: { assessment: data as CcAssessment } };
 }
 
 export async function removePlanItem(
@@ -259,16 +310,34 @@ export async function removePlanItem(
   const ctx = await requireOrg();
   if ("error" in ctx) return { ok: false, error: ctx.error };
 
-  return writePlanItems(id, ctx.orgId, (items) => {
-    // Prefer the exact index when it still holds the expected text; fall back
-    // to removing the first text match so a concurrent insert can't delete the
-    // wrong line.
-    if (items[index] === item) {
-      return items.filter((_, i) => i !== index);
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .rpc("cc_assessment_plan_remove", {
+      p_id: id,
+      p_org: ctx.orgId,
+      p_item: item,
+      p_index: Number.isInteger(index) ? index : -1,
+    })
+    .select("*")
+    .maybeSingle();
+
+  if (error) {
+    if (isMissingFunction(error)) {
+      return writePlanItemsFallback(id, ctx.orgId, (items) => {
+        // Prefer the exact index when it still holds the expected text; fall
+        // back to the first text match so a concurrent insert can't delete the
+        // wrong line.
+        if (items[index] === item) return items.filter((_, i) => i !== index);
+        const match = items.indexOf(item);
+        return match === -1 ? items : items.filter((_, i) => i !== match);
+      });
     }
-    const match = items.indexOf(item);
-    return match === -1 ? items : items.filter((_, i) => i !== match);
-  });
+    return { ok: false, error: error.message };
+  }
+  if (!data) return { ok: false, error: "Assessment not found" };
+
+  revalidate(id);
+  return { ok: true, data: { assessment: data as CcAssessment } };
 }
 
 export async function deleteAssessment(id: string): Promise<ActionResult> {
@@ -307,12 +376,18 @@ export async function upsertIndicatorScore(input: {
     return { ok: false, error: `Unknown indicator: ${input.indicator_key}` };
   }
 
-  const score =
-    input.score === null || input.score === undefined
-      ? null
-      : Math.trunc(input.score);
-  if (score !== null && (score < 0 || score > 4)) {
-    return { ok: false, error: "Score must be 0–4" };
+  // Math.trunc(NaN) is NaN, and NaN fails both comparisons below — an
+  // unguarded NaN would serialize into the row and poison every pillar
+  // average. Reject anything that isn't a finite 0–4.
+  let score: number | null = null;
+  if (input.score !== null && input.score !== undefined) {
+    if (!Number.isFinite(input.score)) {
+      return { ok: false, error: "Score must be 0–4" };
+    }
+    score = Math.trunc(input.score);
+    if (score < 0 || score > 4) {
+      return { ok: false, error: "Score must be 0–4" };
+    }
   }
   const evidence = input.evidence_confidence ?? "unknown";
   if (!EVIDENCE.includes(evidence)) {
@@ -340,7 +415,7 @@ export async function upsertIndicatorScore(input: {
   );
 
   if (error) return { ok: false, error: error.message };
-  revalidate(input.assessment_id);
+  revalidateReport(input.assessment_id);
   return { ok: true };
 }
 
@@ -412,7 +487,44 @@ export async function saveOpportunity(
 
   const { data, error } = await query;
   if (error) return { ok: false, error: error.message };
-  revalidate(input.assessment_id);
+  if (!data) return { ok: false, error: "Opportunity not found" };
+  revalidateReport(input.assessment_id);
+  return { ok: true, data: { opportunity: data as CcAssessmentOpportunity } };
+}
+
+/**
+ * Narrow toggle for the "In report" checkbox. The workbench used to re-send
+ * the whole opportunity from client state, which meant a stale row in the
+ * browser could overwrite figures another editor had just saved. This touches
+ * one column and nothing else.
+ */
+export async function setOpportunityIncluded(
+  id: string,
+  assessmentId: string,
+  include: boolean
+): Promise<ActionResult<{ opportunity: CcAssessmentOpportunity }>> {
+  const ctx = await requireOrg();
+  if ("error" in ctx) return { ok: false, error: ctx.error };
+
+  const supabase = await createClient();
+  if (!(await ownAssessment(supabase, assessmentId, ctx.orgId))) {
+    return { ok: false, error: "Assessment not found" };
+  }
+
+  const { data, error } = await supabase
+    .from("cc_assessment_opportunities")
+    .update({
+      include_in_report: Boolean(include),
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", id)
+    .eq("assessment_id", assessmentId)
+    .select("*")
+    .maybeSingle();
+
+  if (error) return { ok: false, error: error.message };
+  if (!data) return { ok: false, error: "Opportunity not found" };
+  revalidateReport(assessmentId);
   return { ok: true, data: { opportunity: data as CcAssessmentOpportunity } };
 }
 
@@ -435,6 +547,6 @@ export async function deleteOpportunity(
     .eq("assessment_id", assessmentId);
 
   if (error) return { ok: false, error: error.message };
-  revalidate(assessmentId);
+  revalidateReport(assessmentId);
   return { ok: true };
 }

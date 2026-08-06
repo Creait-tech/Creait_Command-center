@@ -929,7 +929,26 @@ export interface Database {
       cc_chat_messages: Table<CcChatMessage>;
     };
     Views: { [_ in never]: never };
-    Functions: { [_ in never]: never };
+    Functions: {
+      /**
+       * Atomic 90-day plan-item mutations (migration 0005). The JSONB array
+       * is mutated under a row lock so concurrent editors can't drop an item.
+       * Both return the full updated cc_assessments row.
+       */
+      cc_assessment_plan_append: {
+        Args: { p_id: string; p_org: string; p_item: string };
+        Returns: CcAssessment[];
+      };
+      cc_assessment_plan_remove: {
+        Args: {
+          p_id: string;
+          p_org: string;
+          p_item: string;
+          p_index: number;
+        };
+        Returns: CcAssessment[];
+      };
+    };
     Enums: { [_ in never]: never };
     CompositeTypes: { [_ in never]: never };
   };

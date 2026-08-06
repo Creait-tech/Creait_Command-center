@@ -1,18 +1,16 @@
 "use client";
 
-import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Timeline } from "./timeline";
 import { ClientSelector } from "./client-selector";
-import { createBrowserClient } from "@/lib/supabase/client";
-import { useActiveOrgId } from "@/lib/use-active-org";
+import { fetchClientJourney, setDeliverableDone } from "@/app/(dashboard)/journey/actions";
 import { toast } from "sonner";
 import type {
   JourneyMilestone,
   JourneyDeliverable,
   CcClient,
-  CcClientJourney,
 } from "@/lib/supabase/types";
 
 interface JourneyViewProps {
@@ -24,8 +22,14 @@ interface JourneyViewProps {
 const VALID_VIEWS = ["template", "client"] as const;
 type ValidView = (typeof VALID_VIEWS)[number];
 
-/** Map keyed by deliverable_id → that client's progress row. */
-export type ClientProgressMap = Record<string, CcClientJourney>;
+/** The only progress facts the timeline actually renders. */
+export interface DeliverableProgress {
+  done: boolean;
+  completedAt: string | null;
+}
+
+/** Map keyed by deliverable_id → that client's progress. */
+export type ClientProgressMap = Record<string, DeliverableProgress>;
 
 function JourneyViewInner({
   milestones,
@@ -34,7 +38,6 @@ function JourneyViewInner({
 }: JourneyViewProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const orgId = useActiveOrgId();
   const rawView = searchParams.get("view");
   const activeView: ValidView = (VALID_VIEWS as readonly string[]).includes(
     rawView ?? "",
@@ -45,6 +48,11 @@ function JourneyViewInner({
   const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
   const [progress, setProgress] = useState<ClientProgressMap>({});
   const [loadingProgress, setLoadingProgress] = useState(false);
+  const [pendingIds, setPendingIds] = useState<Set<string>>(new Set());
+
+  // Guards against a slow response for a previously-selected client landing
+  // after the operator has already switched to a different one.
+  const requestSeq = useRef(0);
 
   const selectedClient = useMemo(
     () => clients.find((c) => c.id === selectedClientId) ?? null,
@@ -57,122 +65,83 @@ function JourneyViewInner({
     router.replace(`/journey?${params.toString()}`, { scroll: false });
   }
 
-  // Load this client's journey rows whenever the selection changes.
   const loadProgress = useCallback(async (clientId: string) => {
+    const seq = ++requestSeq.current;
     setLoadingProgress(true);
-    const supabase = createBrowserClient();
-    const { data, error } = await supabase
-      .from("cc_client_journey")
-      .select("*")
-      .eq("client_id", clientId);
+    const result = await fetchClientJourney(clientId);
+    if (seq !== requestSeq.current) return; // superseded
     setLoadingProgress(false);
-    if (error) {
-      toast.error(error.message);
+    if (!result.ok) {
+      toast.error(result.error);
       return;
     }
-    const rows = (data as CcClientJourney[] | null) ?? [];
     const map: ClientProgressMap = {};
-    for (const row of rows) {
-      map[row.deliverable_id] = row;
+    for (const row of result.data) {
+      map[row.deliverable_id] = {
+        done: row.done,
+        completedAt: row.completed_at,
+      };
     }
     setProgress(map);
   }, []);
 
+  // Load this client's journey rows whenever the selection changes. Progress is
+  // cleared first so one client's ticks never flash on another's timeline.
   useEffect(() => {
-    if (activeView !== "client" || !selectedClientId) {
-      setProgress({});
-      return;
-    }
+    requestSeq.current++;
+    setProgress({});
+    setPendingIds(new Set());
+    if (activeView !== "client" || !selectedClientId) return;
     void loadProgress(selectedClientId);
   }, [activeView, selectedClientId, loadProgress]);
 
-  // Realtime: keep this client's progress fresh across tabs/sessions.
-  useEffect(() => {
-    if (activeView !== "client" || !selectedClientId) return;
-    const supabase = createBrowserClient();
-    const channel = supabase
-      .channel(`cc_client_journey:${selectedClientId}`)
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "cc_client_journey",
-          filter: `client_id=eq.${selectedClientId}`,
-        },
-        () => {
-          void loadProgress(selectedClientId);
-        },
-      )
-      .subscribe();
-    return () => {
-      void supabase.removeChannel(channel);
-    };
-  }, [activeView, selectedClientId, loadProgress]);
-
-  // Toggle a deliverable's done state for the selected client via manual upsert.
   const toggleDeliverable = useCallback(
     async (deliverable: JourneyDeliverable, nextDone: boolean) => {
       if (!selectedClientId) return;
-      const existing = progress[deliverable.id];
+
+      const previous = progress[deliverable.id];
       const completedAt = nextDone ? new Date().toISOString() : null;
 
       // Optimistic update.
-      setProgress((prev) => {
-        const base: CcClientJourney =
-          prev[deliverable.id] ??
-          ({
-            id: `optimistic-${deliverable.id}`,
-            org_id: orgId,
-            client_id: selectedClientId,
-            deliverable_id: deliverable.id,
-            milestone_id: deliverable.milestone_id,
-            done: nextDone,
-            completed_at: completedAt,
-            notes: null,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-          } as CcClientJourney);
-        return {
-          ...prev,
-          [deliverable.id]: {
-            ...base,
-            done: nextDone,
-            completed_at: completedAt,
-          },
-        };
+      setProgress((prev) => ({
+        ...prev,
+        [deliverable.id]: { done: nextDone, completedAt },
+      }));
+      setPendingIds((prev) => new Set(prev).add(deliverable.id));
+
+      const result = await setDeliverableDone({
+        clientId: selectedClientId,
+        deliverableId: deliverable.id,
+        done: nextDone,
       });
 
-      const supabase = createBrowserClient();
-      if (existing && !existing.id.startsWith("optimistic-")) {
-        const { error } = await supabase
-          .from("cc_client_journey")
-          .update({
-            done: nextDone,
-            completed_at: completedAt,
-            updated_at: new Date().toISOString(),
-          })
-          .eq("id", existing.id);
-        if (error) {
-          toast.error(error.message);
-          void loadProgress(selectedClientId);
-        }
-      } else {
-        const { error } = await supabase.from("cc_client_journey").insert({
-          org_id: orgId,
-          client_id: selectedClientId,
-          deliverable_id: deliverable.id,
-          milestone_id: deliverable.milestone_id,
-          done: nextDone,
-          completed_at: completedAt,
+      setPendingIds((prev) => {
+        const next = new Set(prev);
+        next.delete(deliverable.id);
+        return next;
+      });
+
+      if (!result.ok) {
+        toast.error(result.error);
+        // Roll back to exactly what we had, including "no row at all".
+        setProgress((prev) => {
+          const next = { ...prev };
+          if (previous) next[deliverable.id] = previous;
+          else delete next[deliverable.id];
+          return next;
         });
-        if (error) {
-          toast.error(error.message);
-        }
-        void loadProgress(selectedClientId);
+        return;
       }
+
+      setProgress((prev) => ({
+        ...prev,
+        [deliverable.id]: {
+          done: result.data.done,
+          completedAt: result.data.completed_at,
+        },
+      }));
     },
-    [selectedClientId, progress, orgId, loadProgress],
+    [selectedClientId, progress],
   );
 
   // Overall journey completion % for the selected client.
@@ -181,6 +150,17 @@ function JourneyViewInner({
     const done = deliverables.filter((d) => progress[d.id]?.done).length;
     return Math.round((done / deliverables.length) * 100);
   }, [deliverables, progress]);
+
+  const doneCount = useMemo(
+    () => deliverables.filter((d) => progress[d.id]?.done).length,
+    [deliverables, progress],
+  );
+
+  const requiredOutstanding = useMemo(
+    () =>
+      deliverables.filter((d) => d.required && !progress[d.id]?.done).length,
+    [deliverables, progress],
+  );
 
   return (
     <Tabs
@@ -224,6 +204,12 @@ function JourneyViewInner({
                         {selectedClient.company}
                       </p>
                     )}
+                  <p className="text-xs text-muted-foreground mt-1 tabular-nums">
+                    {doneCount} of {deliverables.length} deliverables done
+                    {requiredOutstanding > 0 && (
+                      <> · {requiredOutstanding} required outstanding</>
+                    )}
+                  </p>
                 </div>
                 <div className="text-right shrink-0">
                   <p className="text-2xl font-bold tabular-nums text-[color:var(--color-brand-electric)]">
@@ -249,6 +235,7 @@ function JourneyViewInner({
               clientName={selectedClient.name}
               progress={progress}
               loadingProgress={loadingProgress}
+              pendingIds={pendingIds}
               onToggleDeliverable={toggleDeliverable}
             />
           </div>
@@ -259,7 +246,7 @@ function JourneyViewInner({
             </p>
             <p className="text-xs text-muted-foreground mt-2 max-w-md mx-auto">
               Pick a client to track their progress through the customer
-              journey. Checking a deliverable saves to that client's record.
+              journey. Checking a deliverable saves to that client&apos;s record.
             </p>
           </div>
         )}

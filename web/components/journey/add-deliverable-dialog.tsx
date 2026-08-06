@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   Dialog,
   DialogContent,
@@ -12,24 +13,21 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { createBrowserClient as createClient } from "@/lib/supabase/client";
+import { createDeliverable } from "@/app/(dashboard)/journey/actions";
 import { toast } from "sonner";
 
 interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   milestoneId: string | null;
-  nextSortOrder: number;
-  onAdded: () => void;
 }
 
 export function AddDeliverableDialog({
   open,
   onOpenChange,
   milestoneId,
-  nextSortOrder,
-  onAdded,
 }: Props) {
+  const router = useRouter();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [required, setRequired] = useState(true);
@@ -39,24 +37,22 @@ export function AddDeliverableDialog({
     e.preventDefault();
     if (!title.trim() || !milestoneId) return;
     setSubmitting(true);
-    const supabase = createClient();
-    const { error } = await supabase.from("journey_deliverables").insert({
-      milestone_id: milestoneId,
-      title: title.trim(),
-      description: description.trim() || null,
+    const result = await createDeliverable({
+      milestoneId,
+      title,
+      description,
       required,
-      sort_order: nextSortOrder,
     });
     setSubmitting(false);
-    if (error) {
-      toast.error(error.message);
+    if (!result.ok) {
+      toast.error(result.error);
       return;
     }
     setTitle("");
     setDescription("");
     setRequired(true);
     onOpenChange(false);
-    onAdded();
+    router.refresh();
     toast.success("Deliverable added");
   }
 
@@ -75,7 +71,7 @@ export function AddDeliverableDialog({
             <Input
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="e.g. Signed contract"
+              placeholder="e.g. Snapshot loaded into sub-account"
               autoFocus
             />
           </div>

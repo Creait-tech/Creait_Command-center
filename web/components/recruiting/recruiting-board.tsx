@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Plus, Trophy } from "lucide-react";
+import { Plus, Trophy, UserPlus } from "lucide-react";
 import {
   DndContext,
   PointerSensor,
@@ -14,6 +14,7 @@ import {
 import { CandidateCard } from "./candidate-card";
 import { AddCandidateDialog } from "./add-candidate-dialog";
 import { CandidateDetailModal } from "./candidate-detail-modal";
+import { FeatureEmptyState } from "@/components/empty-states/feature-empty-state";
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 import type { Candidate, CandidateStage } from "@/lib/supabase/types";
@@ -162,6 +163,7 @@ export function RecruitingBoard({ initialCandidates, orgId }: RecruitingBoardPro
   const [candidates, setCandidates] = useState<Candidate[]>(initialCandidates);
   const [addOpen, setAddOpen] = useState(false);
   const [detailId, setDetailId] = useState<string | null>(null);
+  const [forceBoard, setForceBoard] = useState(false);
 
   const sensors = useSensors(
     // Distance threshold lets plain clicks fall through to onClick on the card.
@@ -290,47 +292,71 @@ export function RecruitingBoard({ initialCandidates, orgId }: RecruitingBoardPro
     );
   }
 
+  const isEmpty = candidates.length === 0;
+  const showBoard = !isEmpty || forceBoard;
+
   return (
     <>
-      {/* Action bar */}
-      <div className="flex items-center justify-between gap-3 flex-wrap">
-        <p className="text-xs text-muted-foreground">
-          {candidates.length}{" "}
-          {candidates.length === 1 ? "candidate" : "candidates"} in pipeline
-        </p>
-        <button
-          onClick={() => setAddOpen(true)}
-          className="inline-flex items-center gap-1.5 rounded-md bg-[color:var(--color-brand-electric)] px-3 py-1.5 text-xs font-semibold text-[color:var(--color-brand-charcoal)] hover:brightness-110 transition"
-        >
-          <Plus className="size-3.5" />
-          Add Candidate
-        </button>
-      </div>
+      {/* Action bar — the empty state carries its own primary action. */}
+      {showBoard && (
+        <div className="flex items-center justify-between gap-3 flex-wrap">
+          <p className="text-xs text-muted-foreground">
+            {candidates.length}{" "}
+            {candidates.length === 1 ? "candidate" : "candidates"} in pipeline
+          </p>
+          <button
+            onClick={() => setAddOpen(true)}
+            className="inline-flex items-center gap-1.5 rounded-md bg-[color:var(--color-brand-electric)] px-3 py-1.5 text-xs font-semibold text-[color:var(--color-brand-charcoal)] hover:brightness-110 transition"
+          >
+            <Plus className="size-3.5" />
+            Add Candidate
+          </button>
+        </div>
+      )}
 
-      <div className="flex gap-6">
-        <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
-          <div className="flex-1 min-w-0">
-            {candidates.length === 0 && (
-              <div className="mb-4 rounded-lg border border-dashed border-[color:var(--color-brand-fog)] p-4 text-center text-sm text-muted-foreground">
-                No candidates yet — add your first prospect.
+      {isEmpty && (
+        <FeatureEmptyState
+          icon={<UserPlus className="size-5" />}
+          title="No one is in the hiring pipeline — and that is the correct state today"
+          description="This board tracks a person from first contact to signed offer: Applied → Screening → Interview → Offer → Hired, plus a source leaderboard so you learn which channel actually produces hires. CREAIT is four co-founders on a flat structure, so nothing lives here yet."
+          useWhen={[
+            "A seat on the Accountability Chart has no right person in it — a GWC minus you cannot coach out.",
+            "Headcount needs to go past four, or MRR clears $10K and the founders stop being the delivery team.",
+            "You are pipelining someone speculatively — a contractor, a referral, a future hire worth remembering.",
+          ]}
+          action={{
+            label: "Add the first candidate",
+            onClick: () => setAddOpen(true),
+            icon: <Plus className="size-3.5" />,
+          }}
+          secondaryAction={{
+            label: forceBoard ? "Hide the board" : "Show the empty board",
+            onClick: () => setForceBoard((v) => !v),
+          }}
+          footnote="Nothing is seeded here on purpose. Placeholder candidates would be fake people in a system of record — add someone real or leave it empty."
+        />
+      )}
+
+      {showBoard && (
+        <div className="flex gap-6">
+          <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
+            <div className="flex-1 min-w-0">
+              <div className="flex gap-3 overflow-x-auto pb-2 lg:gap-4">
+                {STAGES.map((stage) => (
+                  <Column
+                    key={stage.key}
+                    stage={stage}
+                    candidates={byStage[stage.key]}
+                    onCardClick={(c) => setDetailId(c.id)}
+                  />
+                ))}
               </div>
-            )}
-
-            <div className="flex gap-3 overflow-x-auto pb-2 lg:gap-4">
-              {STAGES.map((stage) => (
-                <Column
-                  key={stage.key}
-                  stage={stage}
-                  candidates={byStage[stage.key]}
-                  onCardClick={(c) => setDetailId(c.id)}
-                />
-              ))}
             </div>
-          </div>
 
-          <Leaderboard candidates={candidates} />
-        </DndContext>
-      </div>
+            <Leaderboard candidates={candidates} />
+          </DndContext>
+        </div>
+      )}
 
       <AddCandidateDialog open={addOpen} onOpenChange={setAddOpen} />
 

@@ -1,10 +1,11 @@
 import { inngest } from '@/lib/inngest'
-import { callMcpTool, extractMcpJson } from '@/lib/mcp-client'
+import { callMcpTool, extractMcpJson, mcpResultIsError } from '@/lib/mcp-client'
 import { runSkill } from '@/lib/skills-engine'
 import { createServiceClient } from '@/lib/supabase/server'
 import { tavilySearch, type TavilyResult } from '@/lib/tavily'
 import { sendEmail, markdownToEmailHtml } from '@/lib/email'
 import { CREAIT_ORG_ID } from '@/lib/active-org'
+import type { MessageDirection, MessageSource } from '@/lib/supabase/types'
 
 /**
  * Inngest functions for the CREAIT Command Center.
@@ -152,10 +153,430 @@ export const dailyBriefing = inngest.createFunction(
   },
 )
 
+// ---------------------------------------------------------------------------
+// Comms ingestion (GHL conversations → messages)
+// ---------------------------------------------------------------------------
+
+/**
+ * Conversations are fetched newest-first, so this is "the N most recently
+ * active conversations", not "the first N GHL happens to return". At a 15-min
+ * cadence 200 is far more than a quarter-hour of real activity across an
+ * account with ~2.1k conversations.
+ */
+const COMMS_INGEST_FETCH_LIMIT = 200
+
+/**
+ * How far back a conversation's last message may be and still be ingested.
+ * Bounds the first run: without it the initial sweep would backfill months of
+ * dormant threads into the inbox as if they were new.
+ */
+const COMMS_INGEST_LOOKBACK_DAYS = 30
+
+/** GHL email bodies carry entire quoted threads. Store a readable slice. */
+const COMMS_INGEST_MAX_BODY_CHARS = 4000
+
+/** The GHL channels the Comms Hub can both display and reply through. */
+type GhlMessageSource = Extract<MessageSource, 'ghl_sms' | 'ghl_email' | 'ghl_dm'>
+
+/**
+ * `lastMessageType` → `messages.source`. Only conversational channels earn a
+ * row: TYPE_CALL / TYPE_NO_SHOW / TYPE_ACTIVITY_* carry no repliable text and
+ * would be inbox noise (16 of the first 100 conversations in the live account
+ * are TYPE_NO_SHOW with an empty body).
+ */
+const GHL_TYPE_TO_SOURCE: Record<string, GhlMessageSource> = {
+  TYPE_SMS: 'ghl_sms',
+  TYPE_CUSTOM_SMS: 'ghl_sms',
+  TYPE_CUSTOM_PROVIDER_SMS: 'ghl_sms',
+  TYPE_EMAIL: 'ghl_email',
+  TYPE_CUSTOM_EMAIL: 'ghl_email',
+  TYPE_CUSTOM_PROVIDER_EMAIL: 'ghl_email',
+  TYPE_WHATSAPP: 'ghl_dm',
+  TYPE_FACEBOOK: 'ghl_dm',
+  TYPE_INSTAGRAM: 'ghl_dm',
+  TYPE_GMB: 'ghl_dm',
+  TYPE_LIVE_CHAT: 'ghl_dm',
+  TYPE_WEBCHAT: 'ghl_dm',
+}
+
+/** A GHL conversation mapped onto the `messages` shape, pre-scoring. */
+interface CommsCandidate {
+  source: GhlMessageSource
+  source_id: string
+  thread_id: string
+  contact_name: string | null
+  contact_handle: string | null
+  direction: MessageDirection
+  body: string
+  received_at: string
+  received_ms: number
+  unread_count: number
+}
+
+/**
+ * Comms ingest — every 15 minutes. Pulls the most recently active GHL
+ * conversations through the MCP server and upserts them into `messages` so
+ * the Comms Hub is an actual inbox rather than a bot-alert log.
+ *
+ * Idempotency (the whole point): every row is keyed on a deterministic
+ * `source_id` of `ghl:<conversationId>:<lastMessageDate-epoch-ms>`. The same
+ * conversation state always produces the same key, so re-running — on the
+ * cron, on a webhook relay, or manually via /api/cron/comms-ingest — inserts
+ * nothing new. A blind insert here is what previously flooded this table.
+ *
+ * Scope caveat: `ghl_get_conversations` returns conversation-level rows whose
+ * body is the *last message* preview, not the full thread. One inbox item per
+ * conversation-state is therefore the ceiling of what's ingestable today; a
+ * per-conversation message-fetch MCP tool would raise it.
+ */
+export const commsIngest = inngest.createFunction(
+  {
+    id: 'comms-ingest',
+    name: 'Comms Ingest (GHL)',
+    // Cron and event triggers can fire together. Serializing runs keeps the
+    // read-then-insert dedupe below from racing itself.
+    concurrency: { limit: 1 },
+    triggers: [
+      { cron: 'TZ=America/New_York */15 * * * *' },
+      { event: 'cron/comms-ingest' },
+    ],
+  },
+  async ({ event, step }) => {
+    const overrides = (event?.data ?? {}) as {
+      limit?: unknown
+      lookbackDays?: unknown
+    }
+    const fetchLimit = positiveInt(overrides.limit) ?? COMMS_INGEST_FETCH_LIMIT
+    const lookbackDays =
+      positiveInt(overrides.lookbackDays) ?? COMMS_INGEST_LOOKBACK_DAYS
+
+    const fetched = await step.run('fetch-ghl-conversations', async () => {
+      const result = await callMcpTool('ghl_get_conversations', {
+        limit: fetchLimit,
+      })
+      if (mcpResultIsError(result)) {
+        console.error(
+          '[inngest] comms-ingest: ghl_get_conversations failed:',
+          JSON.stringify(extractMcpJson(result))?.slice(0, 300),
+        )
+        return { candidates: [] as CommsCandidate[], total: null, truncated: false, seen: 0 }
+      }
+
+      const { items, total, truncated } = parseMcpList(result)
+      const cutoffMs = Date.now() - lookbackDays * 86_400_000
+      const candidates: CommsCandidate[] = []
+      for (const item of items) {
+        const candidate = mapGhlConversation(item, cutoffMs)
+        if (candidate) candidates.push(candidate)
+      }
+      return { candidates, total, truncated, seen: items.length }
+    })
+
+    if (fetched.candidates.length === 0) {
+      return {
+        ok: true,
+        fetched: fetched.seen,
+        ingestable: 0,
+        inserted: 0,
+        total: fetched.total,
+      }
+    }
+
+    const written = await step.run('insert-new-messages', async () => {
+      const supabase = createServiceClient()
+
+      // Collapse duplicates inside the batch first (two conversations cannot
+      // share a key, but a defensive Map keeps the `.in()` list clean).
+      const byKey = new Map<string, CommsCandidate>()
+      for (const c of fetched.candidates) byKey.set(c.source_id, c)
+      const keys = [...byKey.keys()]
+
+      const { data: existing, error: existingErr } = await supabase
+        .from('messages')
+        .select('source_id')
+        .eq('org_id', ORG_ID)
+        .in('source_id', keys)
+
+      if (existingErr) {
+        // Fail closed. Inserting without knowing what's already there is how
+        // this table ended up with 580 duplicate rows.
+        console.error(
+          '[inngest] comms-ingest dedupe lookup failed:',
+          existingErr.message,
+        )
+        return { inserted: 0, insertedInbound: 0, skippedExisting: 0 }
+      }
+
+      const known = new Set(
+        ((existing as Array<{ source_id: string | null }> | null) ?? [])
+          .map((row) => row.source_id)
+          .filter((id): id is string => Boolean(id)),
+      )
+
+      const fresh = [...byKey.values()].filter((c) => !known.has(c.source_id))
+      if (fresh.length === 0) {
+        return { inserted: 0, insertedInbound: 0, skippedExisting: known.size }
+      }
+
+      const clientIdentifiers = await loadClientIdentifiers(ORG_ID)
+      const now = Date.now()
+      const rows = fresh.map((c) => {
+        const isInbound = c.direction === 'inbound'
+        return {
+          org_id: ORG_ID,
+          source: c.source,
+          source_id: c.source_id,
+          thread_id: c.thread_id,
+          contact_name: c.contact_name,
+          contact_handle: c.contact_handle,
+          direction: c.direction,
+          subject: null,
+          body: c.body,
+          // Only inbound messages get to demand attention. Messages the team
+          // already sent are filed as answered so they never show up as work.
+          status: isInbound ? ('unread' as const) : ('replied' as const),
+          replied_at: isInbound ? null : c.received_at,
+          priority_score: commsPriorityScore(c, clientIdentifiers, now),
+          received_at: c.received_at,
+        }
+      })
+
+      const { error } = await supabase.from('messages').insert(rows)
+      if (error) {
+        console.error('[inngest] comms-ingest insert failed:', error.message)
+        return { inserted: 0, insertedInbound: 0, skippedExisting: known.size }
+      }
+      return {
+        inserted: rows.length,
+        insertedInbound: rows.filter((r) => r.direction === 'inbound').length,
+        skippedExisting: known.size,
+      }
+    })
+
+    // Ordering: drafting only makes sense once real messages exist, so ingest
+    // chains straight into the sweep when it actually landed something new.
+    // The 2-hourly `comms-sweep` cron stays as the backstop.
+    if (written.insertedInbound > 0) {
+      await step.sendEvent('trigger-comms-sweep', {
+        name: 'cron/comms-sweep',
+        data: { triggeredBy: 'comms-ingest', inbound: written.insertedInbound },
+      })
+    }
+
+    return {
+      ok: true,
+      fetched: fetched.seen,
+      conversationsTotal: fetched.total,
+      truncated: fetched.truncated,
+      ingestable: fetched.candidates.length,
+      ...written,
+    }
+  },
+)
+
+/**
+ * Map one GHL conversation summary onto the `messages` shape. Returns `null`
+ * for anything that shouldn't become an inbox item: a non-conversational
+ * channel, an empty body, an unusable timestamp, or a last message older than
+ * the lookback window.
+ */
+function mapGhlConversation(
+  raw: Record<string, unknown>,
+  cutoffMs: number,
+): CommsCandidate | null {
+  const conversationId = str(raw.id)
+  if (!conversationId) return null
+
+  const source = ghlSourceFromType(raw.lastMessageType)
+  if (!source) return null
+
+  const receivedMs = toEpochMs(raw.lastMessageDate)
+  if (receivedMs === null || receivedMs < cutoffMs) return null
+
+  const body = normalizeBody(raw.lastMessageBody)
+  if (!body) return null
+
+  const email = str(raw.email)
+  const phone = str(raw.phone)
+  const contactHandle = email ?? phone
+
+  return {
+    source,
+    // Deterministic key: same conversation + same last-message timestamp =>
+    // same id, so repeated runs are no-ops and a genuinely new message (which
+    // moves lastMessageDate) becomes a new inbox item.
+    source_id: `ghl:${conversationId}:${receivedMs}`,
+    // The send route replies with `thread_id ?? source_id` as the GHL
+    // conversation id, so this must be the bare conversation id.
+    thread_id: conversationId,
+    contact_name: str(raw.contactName) ?? str(raw.fullName) ?? contactHandle,
+    contact_handle: contactHandle,
+    direction: ghlDirection(raw),
+    body,
+    received_at: new Date(receivedMs).toISOString(),
+    received_ms: receivedMs,
+    unread_count: Math.max(0, Math.trunc(Number(raw.unreadCount ?? 0)) || 0),
+  }
+}
+
+/** `lastMessageType` → source, with a suffix fallback for custom providers. */
+function ghlSourceFromType(value: unknown): GhlMessageSource | null {
+  const type = str(value)?.toUpperCase()
+  if (!type) return null
+  const mapped = GHL_TYPE_TO_SOURCE[type]
+  if (mapped) return mapped
+  // GHL adds custom-provider variants over time (TYPE_CUSTOM_PROVIDER_*).
+  if (type.includes('SMS')) return 'ghl_sms'
+  if (type.includes('EMAIL')) return 'ghl_email'
+  return null
+}
+
+/**
+ * Direction of the conversation's last message. GHL reports it explicitly on
+ * `lastMessageDirection`; the `unreadCount` fallback only exists so ingestion
+ * degrades instead of breaking if the field ever goes missing (GHL only
+ * increments unread for inbound messages). The fallback's failure mode is
+ * deliberately the safe one: an ambiguous message is filed as outbound, which
+ * means it never fabricates work — it can only fail to demand it.
+ */
+function ghlDirection(raw: Record<string, unknown>): MessageDirection {
+  const explicit = (
+    str(raw.lastMessageDirection) ??
+    str(raw.direction) ??
+    ''
+  ).toLowerCase()
+  if (explicit === 'inbound' || explicit === 'outbound') return explicit
+  return Number(raw.unreadCount ?? 0) > 0 ? 'inbound' : 'outbound'
+}
+
+/**
+ * Priority score, 0–100. Deliberately a readable sum rather than a model call
+ * — an operator has to be able to look at a 95 and know why it's a 95.
+ *
+ *   30  baseline (it's a real client message)
+ *  +25  inbound (a human still owes a reply)
+ *  +25  arrived in the last 2h  |  +15 last 24h  |  +5 last 7d
+ *  +15  the contact is an active client in cc_clients
+ *   +5  3 or more unread messages piled up in the thread
+ */
+function commsPriorityScore(
+  candidate: CommsCandidate,
+  clientIdentifiers: Set<string>,
+  nowMs: number,
+): number {
+  let score = 30
+  if (candidate.direction === 'inbound') score += 25
+
+  const ageMs = nowMs - candidate.received_ms
+  if (ageMs < 2 * 3_600_000) score += 25
+  else if (ageMs < 86_400_000) score += 15
+  else if (ageMs < 7 * 86_400_000) score += 5
+
+  if (isKnownClient(candidate, clientIdentifiers)) score += 15
+  if (candidate.unread_count >= 3) score += 5
+
+  return Math.max(0, Math.min(100, score))
+}
+
+function isKnownClient(
+  candidate: CommsCandidate,
+  identifiers: Set<string>,
+): boolean {
+  if (identifiers.size === 0) return false
+  for (const value of [candidate.contact_name, candidate.contact_handle]) {
+    for (const token of identityTokens(value)) {
+      if (identifiers.has(token)) return true
+    }
+  }
+  return false
+}
+
+/**
+ * Normalized match tokens for a name / email / phone. Phones reduce to their
+ * last 10 digits so `+14045551234` and `(404) 555-1234` collide.
+ */
+function identityTokens(value: string | null): string[] {
+  if (!value) return []
+  const trimmed = value.trim().toLowerCase()
+  if (!trimmed) return []
+  const tokens = [trimmed]
+  const digits = trimmed.replace(/\D/g, '')
+  if (digits.length >= 10) tokens.push(digits.slice(-10))
+  return tokens
+}
+
+/** Match tokens for every active client, used to boost their messages. */
+async function loadClientIdentifiers(orgId: string): Promise<Set<string>> {
+  const supabase = createServiceClient()
+  const { data, error } = await supabase
+    .from('cc_clients')
+    .select('name, contact_name, email, phone')
+    .eq('org_id', orgId)
+    .eq('status', 'active')
+  if (error) {
+    console.error('[inngest] comms-ingest client lookup failed:', error.message)
+    return new Set()
+  }
+  const identifiers = new Set<string>()
+  for (const row of (data ?? []) as Array<Record<string, string | null>>) {
+    for (const field of ['name', 'contact_name', 'email', 'phone'] as const) {
+      for (const token of identityTokens(row[field] ?? null)) {
+        identifiers.add(token)
+      }
+    }
+  }
+  return identifiers
+}
+
+/**
+ * Collapse GHL's message body into something storable: strip non-breaking
+ * spaces, cap runaway blank lines, and truncate the quoted-thread tail.
+ */
+function normalizeBody(value: unknown): string | null {
+  const raw = str(value)
+  if (!raw) return null
+  const cleaned = raw
+    .replace(/\u00a0/g, ' ')
+    .replace(/\r\n/g, '\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim()
+  if (!cleaned) return null
+  return cleaned.length > COMMS_INGEST_MAX_BODY_CHARS
+    ? `${cleaned.slice(0, COMMS_INGEST_MAX_BODY_CHARS)}…`
+    : cleaned
+}
+
+/** GHL timestamps are epoch millis; accept ISO strings defensively. */
+function toEpochMs(value: unknown): number | null {
+  if (typeof value === 'number' && Number.isFinite(value)) return Math.trunc(value)
+  if (typeof value === 'string' && value.trim()) {
+    const numeric = Number(value)
+    if (Number.isFinite(numeric)) return Math.trunc(numeric)
+    const parsed = Date.parse(value)
+    if (Number.isFinite(parsed)) return parsed
+  }
+  return null
+}
+
+/** Non-empty trimmed string, or null. */
+function str(value: unknown): string | null {
+  if (typeof value !== 'string') return null
+  const trimmed = value.trim()
+  return trimmed.length > 0 ? trimmed : null
+}
+
+function positiveInt(value: unknown): number | null {
+  const n = Number(value)
+  return Number.isFinite(n) && n > 0 ? Math.trunc(n) : null
+}
+
 /**
  * Comms sweep — every 2 hours during waking hours. Pulls the top 5
  * unreplied messages and drafts replies via the "Draft Reply" skill. Each
  * message gets its own skill run.
+ *
+ * Runs after `commsIngest`, which chains into this function whenever it lands
+ * new inbound mail so drafts are written against real client messages.
  */
 export const commsSweep = inngest.createFunction(
   {
@@ -372,50 +793,57 @@ export const ghlSync = inngest.createFunction(
   },
   async ({ step }) => {
     const updates = await step.run('fetch-ghl-metrics', async () => {
-      const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
-        .toISOString()
+      const sevenDaysAgoMs = Date.now() - 7 * 86_400_000
 
-      const PAGE_CAP = 100 // hard ceiling in mcp/src/tools/ghl.ts — no cursor
+      // The MCP GHL getters paginate internally now, so `limit` is "how much
+      // history to walk", not "all GHL will give us". None of them takes a
+      // server-side date filter, so a rolling-window KPI has to be counted
+      // from the rows themselves — see countWithinWindow.
+      const CONTACTS_SCAN = 1_000
+      const CONVERSATIONS_SCAN = 500
+      const OPPORTUNITIES_SCAN = 2_000
 
       const [contactsRes, opportunitiesRes, conversationsRes, mrr] =
         await Promise.all([
-          callMcpTool('ghl_get_contacts', {
-            createdAfter: sevenDaysAgo,
-            limit: PAGE_CAP,
-          }),
-          callMcpTool('ghl_get_opportunities', { limit: PAGE_CAP }),
-          callMcpTool('ghl_get_conversations', {
-            updatedAfter: sevenDaysAgo,
-            limit: PAGE_CAP,
-          }),
+          callMcpTool('ghl_get_contacts', { limit: CONTACTS_SCAN }),
+          callMcpTool('ghl_get_opportunities', { limit: OPPORTUNITIES_SCAN }),
+          callMcpTool('ghl_get_conversations', { limit: CONVERSATIONS_SCAN }),
           mrrFromActiveClients(ORG_ID),
         ])
 
-      const contacts = countItems(contactsRes, PAGE_CAP)
-      const conversations = countItems(conversationsRes, PAGE_CAP)
-      const { activeDeals, openPipelineValue } =
-        summarizeOpportunities(opportunitiesRes)
-      const dealsSaturated = activeDeals >= PAGE_CAP
+      const contacts = countWithinWindow(contactsRes, 'dateAdded', sevenDaysAgoMs)
+      const conversations = countWithinWindow(
+        conversationsRes,
+        'lastMessageDate',
+        sevenDaysAgoMs,
+      )
+      const deals = summarizeOpportunities(opportunitiesRes)
 
-      for (const [name, s] of [
-        ['New Contacts 7d', contacts.saturated],
-        ['Conversations 7d', conversations.saturated],
-        ['Active Deals', dealsSaturated],
+      for (const [name, exact] of [
+        ['New Contacts 7d', contacts.exact],
+        ['Conversations 7d', conversations.exact],
+        ['Active Deals', deals.exact],
       ] as const) {
-        if (s) {
+        if (!exact) {
           console.warn(
-            `[inngest] "${name}" hit the ${PAGE_CAP}-row MCP ceiling — the true count is higher. Skipping the write rather than reporting a floor as a total.`,
+            `[inngest] "${name}" could not be measured exactly from the scanned page range — the true number is higher. Skipping the write rather than reporting a floor as a total.`,
           )
         }
       }
 
       return [
-        // A saturated count is a floor, not a measurement. Writing it would put
-        // a number on the scoreboard that cannot be compared to its target.
-        { name: 'New Contacts 7d', value: contacts.saturated ? null : contacts.count },
-        { name: 'Conversations 7d', value: conversations.saturated ? null : conversations.count },
-        { name: 'Active Deals', value: dealsSaturated ? null : activeDeals },
-        { name: 'Open Pipeline Value', value: openPipelineValue },
+        // A floor is not a measurement. Writing one would put a number on the
+        // scoreboard that cannot be compared to its target.
+        { name: 'New Contacts 7d', value: contacts.exact ? contacts.count : null },
+        {
+          name: 'Conversations 7d',
+          value: conversations.exact ? conversations.count : null,
+        },
+        { name: 'Active Deals', value: deals.exact ? deals.activeDeals : null },
+        {
+          name: 'Open Pipeline Value',
+          value: deals.exact ? deals.openPipelineValue : null,
+        },
         { name: 'MRR', value: mrr },
       ]
     })
@@ -477,28 +905,64 @@ export const ghlSync = inngest.createFunction(
 // ---------------------------------------------------------------------------
 
 /**
- * The MCP GHL tools hard-cap every list at 100 rows and expose no cursor, so a
- * returned array of exactly `limit` means "at least this many", never "exactly
- * this many". Callers get `saturated` so a floor is never written to the
- * scoreboard as if it were a total — that is what produced three KPIs all
- * reading exactly 100.
+ * Normalized view of a GHL MCP list result.
+ *
+ * The getters return `{ total, count, truncated, items }` — `total` is GHL's
+ * exact population count and `truncated` means the walk stopped short of it.
+ * A bare array is still accepted so a lagging MCP deploy degrades instead of
+ * breaking.
  */
-function countItems(
-  result: unknown,
-  limit: number,
-): { count: number; saturated: boolean } {
+function parseMcpList(result: unknown): {
+  items: Array<Record<string, unknown>>
+  total: number | null
+  truncated: boolean
+} {
   const parsed = extractMcpJson(result)
-  if (parsed == null) return { count: 0, saturated: false }
+  const items = pickArray(parsed).filter(
+    (row): row is Record<string, unknown> =>
+      Boolean(row) && typeof row === 'object' && !Array.isArray(row),
+  )
 
-  // A server-reported total is authoritative and never saturated.
+  let total: number | null = null
+  let truncated = false
   if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
     const obj = parsed as Record<string, unknown>
-    if (typeof obj.total === 'number') return { count: obj.total, saturated: false }
-    if (typeof obj.count === 'number') return { count: obj.count, saturated: false }
+    if (typeof obj.total === 'number') total = obj.total
+    truncated = obj.truncated === true
   }
+  // Holding fewer rows than the population is truncation whether or not the
+  // server labelled it as such.
+  if (!truncated && total !== null && items.length < total) truncated = true
 
-  const arr = pickArray(parsed)
-  return { count: arr.length, saturated: arr.length >= limit }
+  return { items, total, truncated }
+}
+
+/**
+ * Count rows whose `field` timestamp falls at or after `sinceMs`.
+ *
+ * No GHL getter takes a date filter, so rolling-window KPIs are counted from
+ * the returned rows. Rows come back newest-first, so the count is exact as
+ * soon as the walk has stepped past the window — i.e. once at least one row
+ * older than the cutoff appears. If every row scanned is still inside the
+ * window we only hold a floor, and floors never reach the scoreboard.
+ */
+function countWithinWindow(
+  result: unknown,
+  field: string,
+  sinceMs: number,
+): { count: number; exact: boolean } {
+  const { items, total, truncated } = parseMcpList(result)
+  let count = 0
+  let sawOlder = false
+  for (const item of items) {
+    const ts = toEpochMs(item[field])
+    if (ts === null) continue
+    if (ts >= sinceMs) count++
+    else sawOlder = true
+  }
+  // Holding the whole population makes the count exact regardless of ordering.
+  const complete = !truncated && (total === null || items.length >= total)
+  return { count, exact: sawOlder || complete }
 }
 
 /** Pull the row array out of whichever shape the MCP tool returned. */
@@ -513,40 +977,50 @@ function pickArray(parsed: unknown): unknown[] {
   return []
 }
 
+/**
+ * Open-deal rollups. `exact` is false when the scan didn't reach GHL's full
+ * opportunity population — the rollups are computed over fetched rows, so a
+ * short walk yields a floor.
+ */
 function summarizeOpportunities(result: unknown): {
   activeDeals: number
   openPipelineValue: number
+  exact: boolean
 } {
   const parsed = extractMcpJson(result)
-  let items: Array<Record<string, unknown>> = []
-  if (Array.isArray(parsed)) {
-    items = parsed as Array<Record<string, unknown>>
-  } else if (parsed && typeof parsed === 'object') {
-    const candidate = (parsed as { opportunities?: unknown }).opportunities
-    if (Array.isArray(candidate)) {
-      items = candidate as Array<Record<string, unknown>>
-    } else if (Array.isArray((parsed as { items?: unknown }).items)) {
-      items = (parsed as { items: unknown[] }).items as Array<
-        Record<string, unknown>
-      >
-    }
+  const { items, total, truncated } = parseMcpList(result)
+
+  // The MCP tool computes the open-only rollups itself so every consumer
+  // agrees on what "open" means. Derive them locally only if it didn't.
+  let activeDeals: number | null = null
+  let openPipelineValue: number | null = null
+  if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+    const obj = parsed as Record<string, unknown>
+    if (typeof obj.openCount === 'number') activeDeals = obj.openCount
+    if (typeof obj.openValue === 'number') openPipelineValue = obj.openValue
   }
 
-  let activeDeals = 0
-  let openPipelineValue = 0
-  for (const item of items) {
-    const status = String(item.status ?? '').toLowerCase()
-    const isOpen =
-      status !== 'won' && status !== 'lost' && status !== 'abandoned'
-    if (!isOpen) continue
-    activeDeals++
-    // Only open deals count toward pipeline. Summing won and lost as well is
-    // what produced a $5,015,685 "MRR" — the all-time gross of every
-    // opportunity the account has ever held.
-    const value = Number(item.monetaryValue ?? item.value ?? 0)
-    if (Number.isFinite(value)) openPipelineValue += value
+  if (activeDeals === null || openPipelineValue === null) {
+    let deals = 0
+    let value = 0
+    for (const item of items) {
+      const status = String(item.status ?? '').toLowerCase()
+      const isOpen =
+        status !== 'won' && status !== 'lost' && status !== 'abandoned'
+      if (!isOpen) continue
+      deals++
+      // Only open deals count toward pipeline. Summing won and lost as well is
+      // what produced a $5,015,685 "MRR" — the all-time gross of every
+      // opportunity the account has ever held.
+      const amount = Number(item.monetaryValue ?? item.value ?? 0)
+      if (Number.isFinite(amount)) value += amount
+    }
+    activeDeals = deals
+    openPipelineValue = Number(value.toFixed(2))
   }
-  return { activeDeals, openPipelineValue: Number(openPipelineValue.toFixed(2)) }
+
+  const exact = !truncated && (total === null || items.length >= total)
+  return { activeDeals, openPipelineValue, exact }
 }
 
 /**
@@ -1049,6 +1523,13 @@ export const ghlChangeRelay = inngest.createFunction(
       name: 'cron/ghl-sync',
       data: { triggeredBy: 'webhook', summary: event.data?.summary ?? null },
     })
+    // Conversation activity is a GHL change like any other, so the same
+    // doorbell pulls new messages in. `commsIngest` is idempotent, so this is
+    // free when the webhook wasn't about a message.
+    await step.sendEvent('trigger-comms-ingest', {
+      name: 'cron/comms-ingest',
+      data: { triggeredBy: 'webhook' },
+    })
     return { relayed: true }
   },
 )
@@ -1059,6 +1540,7 @@ export const ghlChangeRelay = inngest.createFunction(
 
 export const functions = [
   dailyBriefing,
+  commsIngest,
   commsSweep,
   weeklySummary,
   goalCheck,

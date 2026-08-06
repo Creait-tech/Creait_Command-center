@@ -1,9 +1,10 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Plus } from "lucide-react";
+import { Plus, Users } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { FeatureEmptyState } from "@/components/empty-states/feature-empty-state";
 import {
   Select,
   SelectContent,
@@ -17,9 +18,17 @@ import { MemberDetailSheet } from "./member-detail-sheet";
 import type {
   TeamMember,
   MemberKpi,
+  MemberKpiPeriod,
   TeamRole,
   TeamStatus,
 } from "@/lib/supabase/types";
+
+const PERIOD_SHORT: Record<MemberKpiPeriod, string> = {
+  day: "day",
+  week: "wk",
+  month: "mo",
+  quarter: "qtr",
+};
 
 interface RosterGridProps {
   members: TeamMember[];
@@ -149,10 +158,47 @@ export function RosterGrid({
         </div>
       </div>
 
+      {kpis.length > 0 && (
+        <p className="text-[11px] leading-relaxed text-muted-foreground">
+          Scorecard numbers under each name are that person&rsquo;s KPIs for
+          their seat on the Accountability Chart. Targets come from the quarter
+          plan; values stay at 0 until someone records a real one — a 0 here
+          means &ldquo;not measured yet&rdquo;, not &ldquo;did nothing&rdquo;.
+          Click a card to edit.
+        </p>
+      )}
+
       {filtered.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-[color:var(--color-brand-fog)] flex items-center justify-center h-32 text-sm text-muted-foreground">
-          No members match the current filters.
-        </div>
+        members.length === 0 ? (
+          <FeatureEmptyState
+            icon={<Users className="size-5" />}
+            title="No one on the roster"
+            description="The roster is the people half of the Accountability Chart: who is here, what seat they hold, and the handful of numbers that seat is responsible for each week. Without it the org chart has boxes and the scorecard has no owners."
+            useWhen={[
+              "Someone joins — founder, contractor or hire — and needs a seat and a number.",
+              "You are about to run a Level 10 and every KPI needs a name attached to it.",
+              "Someone leaves and their seat needs reassigning rather than quietly disappearing.",
+            ]}
+            action={{
+              label: "Add the first member",
+              onClick: () => setAddOpen(true),
+              icon: <Plus className="size-3.5" />,
+            }}
+          />
+        ) : (
+          <FeatureEmptyState
+            compact
+            title="No members match the current filters"
+            description="Every member is filtered out by the role or status you picked. Reset the filters to see the full roster."
+            action={{
+              label: "Clear filters",
+              onClick: () => {
+                setRoleFilter("all");
+                setStatusFilter("all");
+              },
+            }}
+          />
+        )
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {filtered.map((m) => {
@@ -217,7 +263,7 @@ export function RosterGrid({
                       </span>
                     </div>
 
-                    {memberKpis.length > 0 && (
+                    {memberKpis.length > 0 ? (
                       <ul className="flex flex-col gap-1.5 border-t border-[color:var(--color-brand-fog)]/50 pt-2">
                         {memberKpis.map((k) => {
                           const pct =
@@ -231,6 +277,10 @@ export function RosterGrid({
                             >
                               <span className="text-muted-foreground truncate">
                                 {k.name}
+                                <span className="opacity-60">
+                                  {" "}
+                                  /{PERIOD_SHORT[k.period]}
+                                </span>
                               </span>
                               <span className="font-medium tabular-nums">
                                 {k.value}
@@ -248,6 +298,10 @@ export function RosterGrid({
                           );
                         })}
                       </ul>
+                    ) : (
+                      <p className="border-t border-[color:var(--color-brand-fog)]/50 pt-2 text-xs text-muted-foreground">
+                        No scorecard KPIs yet — open to add one.
+                      </p>
                     )}
                   </CardContent>
                 </Card>

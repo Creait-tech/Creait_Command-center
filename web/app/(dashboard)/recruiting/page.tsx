@@ -24,8 +24,9 @@ export default async function RecruitingPage() {
       <div>
         <h1 className="text-2xl font-bold">Recruiting</h1>
         <p className="text-sm text-muted-foreground mt-1">
-          Pipeline of every candidate. Drag cards between stages, click any
-          card to open the full profile.
+          {candidates.length === 0
+            ? "Where a hire gets tracked from first contact to signed offer. Nothing open right now."
+            : "Pipeline of every candidate. Drag cards between stages, click any card to open the full profile."}
         </p>
       </div>
 

@@ -43,6 +43,8 @@ interface InitiativeCardProps {
   initiative: InitiativeWithDepartment;
   tasks: InitiativeTask[];
   departmentLabel: string;
+  /** Resolved from team_members; null when unowned or the member is gone. */
+  ownerName: string | null;
   onTaskToggle: (taskId: string, done: boolean, initiativeId: string) => void;
   onAddTask: (initiativeId: string, title: string) => Promise<void> | void;
 }
@@ -68,9 +70,11 @@ const STATUS_LABELS: Record<InitiativeStatus, string> = {
   dropped: "Dropped",
 };
 
-function getInitials(ownerId: string | null): string {
-  if (!ownerId) return "?";
-  return ownerId.slice(0, 2).toUpperCase();
+function getInitials(fullName: string): string {
+  const parts = fullName.trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return "?";
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
 function formatDate(iso: string | null): string | null {
@@ -85,6 +89,7 @@ export function InitiativeCard({
   initiative,
   tasks,
   departmentLabel,
+  ownerName,
   onTaskToggle,
   onAddTask,
 }: InitiativeCardProps) {
@@ -265,15 +270,19 @@ export function InitiativeCard({
 
             {/* Meta row */}
             <div className="flex items-center gap-3 flex-wrap">
-              {initiative.owner_id && (
+              {ownerName ? (
                 <div className="flex items-center gap-1.5">
                   <div className="size-6 rounded-full bg-[color:var(--color-brand-slate)] flex items-center justify-center text-xs font-medium ring-1 ring-[color:var(--color-brand-fog)]">
-                    {getInitials(initiative.owner_id)}
+                    {getInitials(ownerName)}
                   </div>
                   <span className="text-xs text-muted-foreground">
-                    {initiative.owner_id}
+                    {ownerName}
                   </span>
                 </div>
+              ) : (
+                <span className="text-xs text-[color:var(--color-brand-warning)]">
+                  Unassigned
+                </span>
               )}
               {initiative.quarter && (
                 <span className="text-xs text-muted-foreground rounded-full bg-[color:var(--color-brand-slate)]/40 px-2 py-0.5">

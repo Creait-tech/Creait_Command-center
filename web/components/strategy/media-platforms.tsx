@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Users, ExternalLink } from "lucide-react";
+import { Plus, Users, ExternalLink, Radio } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,6 +12,7 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
+import { FeatureEmptyState } from "@/components/empty-states/feature-empty-state";
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
 import { useActiveOrgId } from "@/lib/use-active-org";
 import type { MediaPlatform } from "@/lib/supabase/types";
@@ -112,17 +113,32 @@ export function MediaPlatforms({ platforms, onChange }: MediaPlatformsProps) {
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-end">
-        <Button size="sm" onClick={openDialog}>
-          <Plus className="size-3.5" />
-          Add Platform
-        </Button>
-      </div>
+      {platforms.length > 0 && (
+        <div className="flex justify-end">
+          <Button size="sm" onClick={openDialog}>
+            <Plus className="size-3.5" />
+            Add Platform
+          </Button>
+        </div>
+      )}
 
       {platforms.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-[color:var(--color-brand-fog)] flex items-center justify-center h-32 text-sm text-muted-foreground">
-          No platforms tracked yet.
-        </div>
+        <FeatureEmptyState
+          icon={<Radio className="size-5" />}
+          title="No publishing channels tracked"
+          description="Every place CREAIT publishes, with the handle, the link and the audience size. The free Tuesday class sits at the top of the offer ladder — this is the list of channels that has to fill it, and the audience numbers you are trying to grow."
+          useWhen={[
+            "Before the Tuesday class, to check every channel actually got the invite.",
+            "Deciding where to put media effort — you cannot compare channels you have not written down.",
+            "Handing a channel to someone else and they need the handle and the login trail.",
+          ]}
+          action={{
+            label: "Add the first channel",
+            onClick: openDialog,
+            icon: <Plus className="size-3.5" />,
+          }}
+          footnote="Not seeded: CREAIT's real handles and follower counts are not recorded anywhere in this repo, and inventing them would put fake audience numbers into the system of record. Add each channel with its real figure — 0 is a fine starting number."
+        />
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {platforms.map((p) => (

@@ -21,12 +21,16 @@ import {
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
 import { useActiveOrgId } from "@/lib/use-active-org";
 import type { InitiativeStatus } from "@/lib/supabase/types";
+import type { InitiativeMember } from "./initiatives-view";
+
+const UNASSIGNED = "__unassigned__";
 
 interface AddInitiativeDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   defaultDepartment: string;
   departmentOptions: { key: string; label: string }[];
+  members: InitiativeMember[];
 }
 
 interface FormState {
@@ -36,6 +40,7 @@ interface FormState {
   status: InitiativeStatus;
   quarter: string;
   due_date: string;
+  owner_id: string;
 }
 
 const STATUS_OPTIONS: { value: InitiativeStatus; label: string }[] = [
@@ -52,6 +57,7 @@ function emptyForm(department: string): FormState {
     status: "on_track",
     quarter: "",
     due_date: "",
+    owner_id: UNASSIGNED,
   };
 }
 
@@ -60,6 +66,7 @@ export function AddInitiativeDialog({
   onOpenChange,
   defaultDepartment,
   departmentOptions,
+  members,
 }: AddInitiativeDialogProps) {
   const orgId = useActiveOrgId();
   const [form, setForm] = useState<FormState>(emptyForm(defaultDepartment));
@@ -97,6 +104,7 @@ export function AddInitiativeDialog({
       progress: 0,
       quarter: form.quarter.trim() || null,
       due_date: form.due_date || null,
+      owner_id: form.owner_id === UNASSIGNED ? null : form.owner_id,
     });
 
     setSubmitting(false);
@@ -194,6 +202,31 @@ export function AddInitiativeDialog({
                 </SelectContent>
               </Select>
             </div>
+          </div>
+
+          <div className="space-y-1">
+            <label className="text-xs font-medium text-muted-foreground">
+              Owner
+            </label>
+            <Select
+              value={form.owner_id}
+              onValueChange={(v) => update("owner_id", String(v ?? UNASSIGNED))}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value={UNASSIGNED}>Unassigned</SelectItem>
+                {members.map((m) => (
+                  <SelectItem key={m.id} value={m.id}>
+                    {m.full_name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <p className="text-[11px] text-muted-foreground">
+              One owner, always. EOS rule: one throat to choke.
+            </p>
           </div>
 
           <div className="grid grid-cols-2 gap-3">

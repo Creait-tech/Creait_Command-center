@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   Dialog,
   DialogContent,
@@ -11,24 +12,16 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { createBrowserClient as createClient } from "@/lib/supabase/client";
-import { useActiveOrgId } from "@/lib/use-active-org";
+import { createMilestone } from "@/app/(dashboard)/journey/actions";
 import { toast } from "sonner";
 
 interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  nextSortOrder: number;
-  onAdded: () => void;
 }
 
-export function AddMilestoneDialog({
-  open,
-  onOpenChange,
-  nextSortOrder,
-  onAdded,
-}: Props) {
-  const orgId = useActiveOrgId();
+export function AddMilestoneDialog({ open, onOpenChange }: Props) {
+  const router = useRouter();
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [durationDays, setDurationDays] = useState("7");
@@ -38,27 +31,22 @@ export function AddMilestoneDialog({
     e.preventDefault();
     if (!name.trim()) return;
     setSubmitting(true);
-    const supabase = createClient();
     const parsedDuration = parseInt(durationDays, 10);
-    const { error } = await supabase.from("journey_milestones").insert({
-      org_id: orgId,
-      name: name.trim(),
-      description: description.trim() || null,
-      sort_order: nextSortOrder,
-      default_duration_days: Number.isFinite(parsedDuration)
-        ? parsedDuration
-        : null,
+    const result = await createMilestone({
+      name,
+      description,
+      durationDays: Number.isFinite(parsedDuration) ? parsedDuration : null,
     });
     setSubmitting(false);
-    if (error) {
-      toast.error(error.message);
+    if (!result.ok) {
+      toast.error(result.error);
       return;
     }
     setName("");
     setDescription("");
     setDurationDays("7");
     onOpenChange(false);
-    onAdded();
+    router.refresh();
     toast.success("Milestone added");
   }
 

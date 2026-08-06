@@ -5,7 +5,6 @@ import { ChevronDown, Plus, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
-import { useRouter } from "next/navigation";
 import { AddMilestoneDialog } from "./add-milestone-dialog";
 import { AddDeliverableDialog } from "./add-deliverable-dialog";
 import type { ClientProgressMap } from "./journey-view";
@@ -22,6 +21,8 @@ interface TimelineProps {
   /** Client mode only — keyed by deliverable_id. */
   progress?: ClientProgressMap;
   loadingProgress?: boolean;
+  /** Deliverable ids with a write in flight. */
+  pendingIds?: Set<string>;
   onToggleDeliverable?: (
     deliverable: JourneyDeliverable,
     nextDone: boolean,
@@ -33,6 +34,17 @@ interface NodeData {
   cumulativeDay: number;
 }
 
+interface MilestoneStat {
+  /** Share of all deliverables ticked — drives the progress bar. */
+  pct: number;
+  /**
+   * Every *required* deliverable ticked. `required` is documented as "must be
+   * done before milestone is complete", so completion honours it rather than
+   * demanding the optional ones too.
+   */
+  complete: boolean;
+}
+
 export function Timeline({
   milestones,
   deliverables,
@@ -40,9 +52,9 @@ export function Timeline({
   clientName,
   progress,
   loadingProgress = false,
+  pendingIds,
   onToggleDeliverable,
 }: TimelineProps) {
-  const router = useRouter();
   const [expandedId, setExpandedId] = useState<string | null>(
     milestones[0]?.id ?? null,
   );
@@ -62,18 +74,23 @@ export function Timeline({
     });
   }, [milestones]);
 
-  // Per-milestone completion % for the selected client (client mode only).
-  const milestonePct = useMemo(() => {
-    const map: Record<string, number> = {};
+  // Per-milestone stats for the selected client (client mode only).
+  const milestoneStats = useMemo(() => {
+    const map: Record<string, MilestoneStat> = {};
     if (!isClient || !progress) return map;
     for (const m of milestones) {
       const items = deliverables.filter((d) => d.milestone_id === m.id);
       if (items.length === 0) {
-        map[m.id] = 0;
+        map[m.id] = { pct: 0, complete: false };
         continue;
       }
       const done = items.filter((d) => progress[d.id]?.done).length;
-      map[m.id] = Math.round((done / items.length) * 100);
+      const required = items.filter((d) => d.required);
+      const gating = required.length > 0 ? required : items;
+      map[m.id] = {
+        pct: Math.round((done / items.length) * 100),
+        complete: gating.every((d) => progress[d.id]?.done),
+      };
     }
     return map;
   }, [isClient, progress, milestones, deliverables]);
@@ -92,8 +109,9 @@ export function Timeline({
           {nodes.map((node, idx) => {
             const isExpanded = expandedId === node.milestone.id;
             const isLast = idx === nodes.length - 1;
-            const pct = milestonePct[node.milestone.id] ?? 0;
-            const complete = isClient && pct === 100;
+            const stat = milestoneStats[node.milestone.id];
+            const pct = stat?.pct ?? 0;
+            const complete = isClient && Boolean(stat?.complete);
             return (
               <div key={node.milestone.id} className="flex items-start">
                 <button
@@ -234,14 +252,18 @@ export function Timeline({
                   const checked = isClient
                     ? Boolean(progress?.[d.id]?.done)
                     : false;
+                  const pending = Boolean(pendingIds?.has(d.id));
                   return (
                     <li
                       key={d.id}
-                      className="flex items-start gap-3 rounded-md border border-border/60 bg-background/50 px-3 py-2"
+                      className={cn(
+                        "flex items-start gap-3 rounded-md border border-border/60 bg-background/50 px-3 py-2 transition-opacity",
+                        pending && "opacity-60",
+                      )}
                     >
                       <Checkbox
                         checked={checked}
-                        disabled={!isClient || loadingProgress}
+                        disabled={!isClient || loadingProgress || pending}
                         onCheckedChange={(c) => {
                           if (isClient && onToggleDeliverable) {
                             onToggleDeliverable(d, c === true);
@@ -286,15 +308,11 @@ export function Timeline({
           <AddMilestoneDialog
             open={addMilestoneOpen}
             onOpenChange={setAddMilestoneOpen}
-            nextSortOrder={milestones.length}
-            onAdded={() => router.refresh()}
           />
           <AddDeliverableDialog
             open={addDeliverableFor !== null}
             onOpenChange={(o) => !o && setAddDeliverableFor(null)}
             milestoneId={addDeliverableFor}
-            nextSortOrder={expandedDeliverables.length}
-            onAdded={() => router.refresh()}
           />
         </>
       )}

@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { auth } from "@clerk/nextjs/server";
 
@@ -9,8 +10,9 @@ import {
   EVIDENCE_LABELS,
   formatMoney,
   formatPayback,
+  INDICATORS,
   INDICATORS_BY_PILLAR,
-  MIN_PILLAR_SAMPLE,
+  MIN_REPORT_RESOLVED,
   OVERLAY_FLAGS,
   paybackMonths,
   PILLARS,
@@ -57,8 +59,24 @@ function formatLongDate(d: string | null): string {
   });
 }
 
-// Static stylesheet — no user data ever flows into this string.
+/**
+ * Static stylesheet — no user data ever flows into this string.
+ *
+ * The app shell is hard-coded dark (`<html class="dark">` plus
+ * `color-scheme: dark` in globals.css). A client prints this page, so the
+ * whole subtree is pinned to a light scheme: without that override the print
+ * canvas, the @page margin bands and any UA-styled element render dark and
+ * the PDF comes out as a black rectangle with unreadable text.
+ */
 const REPORT_CSS = `
+  html:has(.report-root) {
+    color-scheme: light;
+    background: #eef1f5;
+  }
+  html:has(.report-root) body {
+    background: #eef1f5;
+    color: #111827;
+  }
   .report-root {
     background: #eef1f5;
     color: #111827;
@@ -69,37 +87,80 @@ const REPORT_CSS = `
   }
   .report-page {
     background: #ffffff;
+    color: #111827;
     max-width: 8.5in;
     margin: 0 auto 24px;
     padding: 56px 64px;
     box-shadow: 0 2px 16px rgba(17, 24, 39, 0.12);
     position: relative;
+    /* Client notes, findings and plan lines are free text — a pasted URL or a
+       long unbroken token must wrap, not run off the printed page. */
+    overflow-wrap: anywhere;
+    word-break: break-word;
   }
-  .practice-watermark {
-    position: fixed;
-    inset: 0;
+  .report-page table { table-layout: fixed; }
+  .report-page td, .report-page th { overflow-wrap: anywhere; }
+  .report-flag {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    pointer-events: none;
-    z-index: 40;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
   }
-  .practice-watermark span {
-    transform: rotate(-28deg);
-    font-size: 110px;
+  /* One watermark per printed sheet. A single position:fixed element only
+     repeats across pages in some browsers, so a practice run could otherwise
+     print pages 2+ with no mark at all. */
+  .is-practice .report-page::after {
+    content: "PRACTICE";
+    position: absolute;
+    top: 45%;
+    left: 0;
+    right: 0;
+    text-align: center;
+    transform: rotate(-24deg);
+    font-size: 96px;
     font-weight: 900;
     letter-spacing: 0.18em;
     color: rgba(139, 92, 246, 0.13);
+    pointer-events: none;
     user-select: none;
-    white-space: nowrap;
+    z-index: 1;
+  }
+  .practice-strip {
+    border: 2px solid #8b5cf6;
+    background: #f5f1ff;
+    color: #5b21b6;
+    border-radius: 8px;
+    padding: 7px 14px;
+    margin-bottom: 18px;
+    font-weight: 800;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    position: relative;
+    z-index: 2;
+  }
+  .draft-strip {
+    border: 2px solid #c2410c;
+    background: #fff5ed;
+    color: #9a3412;
+    border-radius: 8px;
+    padding: 9px 14px;
+    margin-bottom: 18px;
+    font-size: 12.5px;
+    line-height: 1.5;
+    position: relative;
+    z-index: 2;
   }
   @media screen {
     .report-root { padding: 64px 16px 48px; }
   }
   @page { size: letter; margin: 0.55in; }
   @media print {
-    html, body { background: #ffffff !important; }
-    .no-print { display: none !important; }
+    html:has(.report-root), html:has(.report-root) body {
+      background: #ffffff !important;
+      color-scheme: light !important;
+    }
+    .no-print, [data-sonner-toaster] { display: none !important; }
     .report-root { background: #ffffff; padding: 0; }
     .report-page {
       box-shadow: none;
@@ -110,8 +171,49 @@ const REPORT_CSS = `
     }
     .report-page:last-child { break-after: auto; }
     .avoid-break { break-inside: avoid; }
+    /* Never split a table row across a page break, and repeat headers when a
+       table does have to flow onto a second sheet. */
+    .report-page tr { break-inside: avoid; }
+    .report-page thead { display: table-header-group; }
+    .report-page h1, .report-page h2 { break-after: avoid; }
   }
 `;
+
+/**
+ * The browser stamps the document title into the printed page header, so the
+ * generic app title would put "CREAIT Command Center" on top of the client's
+ * PDF. Name the deliverable instead.
+ */
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { userId } = await auth();
+  if (!userId) return { title: "Growth & AI Diagnostic" };
+
+  const { id } = await params;
+  const supabase = await createClient();
+  const orgId = await getActiveOrgId();
+  const { data } = await supabase
+    .from("cc_assessments")
+    .select("client_name, company, is_practice")
+    .eq("id", id)
+    .eq("org_id", orgId)
+    .maybeSingle();
+
+  const row = data as Pick<
+    CcAssessment,
+    "client_name" | "company" | "is_practice"
+  > | null;
+  if (!row) return { title: "Growth & AI Diagnostic" };
+
+  const who = row.company || row.client_name;
+  return {
+    title: `${row.is_practice ? "PRACTICE — " : ""}Growth & AI Diagnostic — ${who}`,
+    robots: { index: false, follow: false },
+  };
+}
 
 export default async function ExecutiveBlueprintPage({
   params,
@@ -168,45 +270,46 @@ export default async function ExecutiveBlueprintPage({
     (o) => o.confidence === "low"
   );
 
+  // Report-readiness. Below the threshold the pillar averages rest on a
+  // handful of indicators and the document reads as an unfinished checklist —
+  // it must say so on the page, not only in the workbench the client never sees.
+  const isDraft = computed.resolvedCount < MIN_REPORT_RESOLVED;
+  const draftNotice = `Draft — ${computed.resolvedCount} of ${INDICATORS.length} indicators resolved (${MIN_REPORT_RESOLVED} required). Scores and figures below are incomplete and this document is not ready to hand to a client.`;
+  const thinPillarLabels = PILLARS.filter((p) => computed.thinPillars[p.key])
+    .map((p) => `${p.label} (${computed.pillarScoredCounts[p.key]} of 10)`)
+    .join(", ");
+
   const blue = "#0284c7";
   const ink = "#111827";
   const muted = "#5b6675";
   const line = "#e4e9f0";
 
+  /** Repeated at the top of every printed page so no sheet can stand alone. */
+  const pageBanners = (
+    <>
+      {assessment.is_practice && (
+        <p className="practice-strip">
+          Practice engagement — not a client deliverable
+        </p>
+      )}
+      {isDraft && <p className="draft-strip">{draftNotice}</p>}
+    </>
+  );
+
   return (
-    <div className="report-root">
+    <div
+      className={`report-root${assessment.is_practice ? " is-practice" : ""}`}
+    >
       <style>{REPORT_CSS}</style>
       <ReportToolbar assessmentId={assessment.id} />
-
-      {assessment.is_practice && (
-        <div className="practice-watermark" aria-hidden>
-          <span>PRACTICE</span>
-        </div>
-      )}
 
       {/* ── Cover ─────────────────────────────────────────────────────── */}
       <section
         className="report-page"
-        style={{ display: "flex", flexDirection: "column", minHeight: "9.5in" }}
+        style={{ display: "flex", flexDirection: "column", minHeight: "9in" }}
       >
-        {assessment.is_practice && (
-          <p
-            style={{
-              border: "2px solid #8b5cf6",
-              color: "#6d28d9",
-              borderRadius: 8,
-              padding: "8px 14px",
-              fontWeight: 700,
-              fontSize: 13,
-              letterSpacing: "0.08em",
-              textTransform: "uppercase",
-              alignSelf: "flex-start",
-            }}
-          >
-            Practice engagement — not a client deliverable
-          </p>
-        )}
-        <div style={{ marginTop: "auto" }}>
+        {pageBanners}
+        <div style={{ marginTop: "auto", position: "relative", zIndex: 2 }}>
           <p style={{ fontSize: 14, fontWeight: 800, letterSpacing: "0.3em", color: blue }}>
             C R E A i T
           </p>

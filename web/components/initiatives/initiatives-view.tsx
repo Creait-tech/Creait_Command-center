@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Plus } from "lucide-react";
+import { Plus, Target } from "lucide-react";
 import {
   DndContext,
   PointerSensor,
@@ -18,10 +18,15 @@ import {
 } from "@dnd-kit/sortable";
 import { InitiativeCard } from "./initiative-card";
 import { AddInitiativeDialog } from "./add-initiative-dialog";
+import { FeatureEmptyState } from "@/components/empty-states/feature-empty-state";
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
 import { useActiveOrgId } from "@/lib/use-active-org";
 import { cn } from "@/lib/utils";
-import type { Initiative, InitiativeTask } from "@/lib/supabase/types";
+import type {
+  Initiative,
+  InitiativeTask,
+  TeamMember,
+} from "@/lib/supabase/types";
 
 // The shared Initiative type pre-dates the phase3 migration that added the
 // `department` column. Extend locally until /lib/supabase/types.ts is regenerated.
@@ -29,9 +34,12 @@ export type InitiativeWithDepartment = Initiative & {
   department: string | null;
 };
 
+export type InitiativeMember = Pick<TeamMember, "id" | "full_name">;
+
 interface InitiativesViewProps {
   initiatives: InitiativeWithDepartment[];
   tasks: InitiativeTask[];
+  members: InitiativeMember[];
 }
 
 // Default department buckets shown even when empty.
@@ -65,6 +73,7 @@ function deptLabel(key: string): string {
 export function InitiativesView({
   initiatives: initialInitiatives,
   tasks: initialTasks,
+  members,
 }: InitiativesViewProps) {
   const orgId = useActiveOrgId();
   const [initiatives, setInitiatives] =
@@ -276,6 +285,15 @@ export function InitiativesView({
 
   const visibleIds = visibleInitiatives.map((i) => i.id);
 
+  const memberNameById = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const m of members) map.set(m.id, m.full_name);
+    return map;
+  }, [members]);
+
+  const activeTabLabel =
+    activeTab === ALL_TAB ? null : deptLabel(activeTab);
+
   return (
     <>
       {/* Tab bar */}
@@ -334,9 +352,38 @@ export function InitiativesView({
         >
           <div className="flex flex-col gap-3 min-h-32">
             {visibleInitiatives.length === 0 ? (
-              <div className="rounded-xl border border-dashed border-[color:var(--color-brand-fog)] flex items-center justify-center h-32 text-sm text-muted-foreground">
-                No initiatives in this department yet.
-              </div>
+              initiatives.length === 0 ? (
+                <FeatureEmptyState
+                  icon={<Target className="size-5" />}
+                  title="No initiatives yet"
+                  description="An initiative is the department-level chunk of work that moves a quarterly Rock — owned by one person, broken into tasks you can tick off, and escalated to IDS the moment it stalls. Rocks say what has to be true by the end of the quarter; initiatives are how each department gets there."
+                  useWhen={[
+                    "A Rock is too big for one person to hold — split it into department-sized initiatives here.",
+                    "Quarterly planning has just set the Rocks and each department needs its own lane.",
+                    "Something has stalled and you want it on the IDS list with its history attached.",
+                  ]}
+                  action={{
+                    label: "Add the first initiative",
+                    onClick: openAddDialog,
+                    icon: <Plus className="size-3.5" />,
+                  }}
+                />
+              ) : (
+                <FeatureEmptyState
+                  compact
+                  title={`Nothing in ${activeTabLabel ?? "this department"} yet`}
+                  description={`${
+                    activeTabLabel ?? "This department"
+                  } owns no initiative this quarter. That is fine if the department genuinely has no Rock work — otherwise it means a Rock has no lane.`}
+                  action={{
+                    label: `Add a ${
+                      activeTabLabel ?? "department"
+                    } initiative`,
+                    onClick: openAddDialog,
+                    icon: <Plus className="size-3.5" />,
+                  }}
+                />
+              )
             ) : (
               visibleInitiatives.map((initiative) => {
                 const initTasks = tasks.filter(
@@ -348,6 +395,11 @@ export function InitiativesView({
                     initiative={initiative}
                     tasks={initTasks}
                     departmentLabel={deptLabel(deptKey(initiative.department))}
+                    ownerName={
+                      initiative.owner_id
+                        ? memberNameById.get(initiative.owner_id) ?? null
+                        : null
+                    }
                     onTaskToggle={handleTaskToggle}
                     onAddTask={handleAddTask}
                   />
@@ -363,6 +415,7 @@ export function InitiativesView({
         onOpenChange={setAddDialogOpen}
         defaultDepartment={addDialogDept}
         departmentOptions={DEFAULT_DEPARTMENTS}
+        members={members}
       />
     </>
   );

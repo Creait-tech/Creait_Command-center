@@ -13,6 +13,10 @@ export const maxDuration = 60
  */
 const ALLOWED_NAMES = new Set([
   'daily-briefing',
+  // Pulls GHL conversations into `messages`. Must run before `comms-sweep`
+  // so drafts are written against real client mail — commsIngest chains into
+  // the sweep itself whenever it lands new inbound messages.
+  'comms-ingest',
   'comms-sweep',
   'goal-check',
   'weekly-summary',

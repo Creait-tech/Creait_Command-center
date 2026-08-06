@@ -160,11 +160,21 @@ function WorkspaceShellInner({ initialProjects, orgId }: Props) {
         </div>
         <ScrollArea className="flex-1">
           {filtered.length === 0 ? (
-            <div className="p-6 text-center">
+            <div className="p-6 text-center space-y-1">
               <Folder className="size-8 mx-auto text-muted-foreground mb-2" />
-              <p className="text-xs text-muted-foreground">
-                {projects.length === 0 ? "No projects yet. Create one above." : "No matches."}
-              </p>
+              {projects.length === 0 ? (
+                <>
+                  <p className="text-xs font-medium">No projects yet</p>
+                  <p className="text-[11px] leading-relaxed text-muted-foreground">
+                    Name one after a job you do every week — the thread and its
+                    system prompt persist, so you stop re-explaining context.
+                  </p>
+                </>
+              ) : (
+                <p className="text-xs text-muted-foreground">
+                  No project matches &ldquo;{filter}&rdquo;.
+                </p>
+              )}
             </div>
           ) : (
             <ul>
@@ -196,7 +206,7 @@ function WorkspaceShellInner({ initialProjects, orgId }: Props) {
         </ScrollArea>
         <div className="p-3 border-t border-border text-[10px] text-muted-foreground space-y-1">
           <p><strong>How this works:</strong></p>
-          <p>Each project = a thread + system prompt. The AI has access to all 26 MCP tools — CREAIT dashboard, Rocks, GHL, memory, second brain.</p>
+          <p>Each project is one long-running thread plus its own system prompt. The AI reaches the Command Center, GHL and the second brain through the MCP server, so it can answer and also change things.</p>
         </div>
       </aside>
 
@@ -237,14 +247,24 @@ function WorkspaceShellInner({ initialProjects, orgId }: Props) {
         ) : (
           <div className="flex-1 flex flex-col items-center justify-center text-center p-12">
             <Sparkles className="size-12 text-[color:var(--color-brand-electric)] mb-3" />
-            <h2 className="text-xl font-bold mb-2">AI Workspace</h2>
+            <h2 className="text-xl font-bold mb-2">No project open</h2>
             <p className="text-sm text-muted-foreground max-w-md">
-              Create a project to start. Each project keeps its own conversation history + system prompt.
-              The AI has access to your Command Center, GHL, second brain, and memory — so it can both
-              help you think AND make real changes (add Rocks, log Todos, draft replies).
+              A project is one standing thread with its own system prompt, so the
+              context you set up on Monday is still there on Friday. The AI can
+              read the Command Center, GHL and the second brain — and write back
+              to them: add a Rock, log a To-Do, draft a reply.
             </p>
-            <div className="mt-6 flex items-center gap-2">
-              {["Sales prep", "Client work", "Strategy", "Personal", "Trembly planning"].map((suggestion) => (
+            <p className="text-xs text-muted-foreground max-w-md mt-3">
+              Keep one project per recurring job. Ad-hoc questions belong in the
+              floating chat, not here.
+            </p>
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
+              {[
+                "Diagnostic Delivery",
+                "Outbound — 2,500 List",
+                "Weekly L10 Prep",
+                "Client Builds",
+              ].map((suggestion) => (
                 <Button
                   key={suggestion}
                   variant="outline"

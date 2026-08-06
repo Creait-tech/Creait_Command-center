@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, ExternalLink, ArrowRight } from "lucide-react";
+import { Plus, ExternalLink, ArrowRight, Lightbulb } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,6 +13,7 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
+import { FeatureEmptyState } from "@/components/empty-states/feature-empty-state";
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
 import { useActiveOrgId } from "@/lib/use-active-org";
 import type { AdvisorInsight } from "@/lib/supabase/types";
@@ -132,17 +133,32 @@ export function AdvisorFeed({ insights, onChange }: AdvisorFeedProps) {
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-end">
-        <Button size="sm" onClick={openDialog}>
-          <Plus className="size-3.5" />
-          Add Insight
-        </Button>
-      </div>
+      {insights.length > 0 && (
+        <div className="flex justify-end">
+          <Button size="sm" onClick={openDialog}>
+            <Plus className="size-3.5" />
+            Add Insight
+          </Button>
+        </div>
+      )}
 
       {insights.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-[color:var(--color-brand-fog)] flex items-center justify-center h-32 text-sm text-muted-foreground">
-          No advisor insights logged yet.
-        </div>
+        <FeatureEmptyState
+          icon={<Lightbulb className="size-5" />}
+          title="No advisor insights logged"
+          description="A running log of what people outside the four founders actually told you — verbatim where possible, with who said it, when, and where it came from. Any entry can be turned into an initiative in one click, so advice stops evaporating between calls."
+          useWhen={[
+            "Straight after a call, podcast or DM where someone with scar tissue told you something you did not already know.",
+            "You are about to repeat a decision an advisor already warned you about.",
+            "Quarterly planning — read the log end to end before setting Rocks.",
+          ]}
+          action={{
+            label: "Log the first insight",
+            onClick: openDialog,
+            icon: <Plus className="size-3.5" />,
+          }}
+          footnote="Deliberately empty. Fabricated advisor quotes would be indistinguishable from real advice once they are in here — only paste what was actually said."
+        />
       ) : (
         <ul className="space-y-3">
           {insights.map((entry) => (

@@ -32,10 +32,12 @@ import {
   INDICATORS_BY_PILLAR,
   MIN_PILLAR_SAMPLE,
   MIN_REPORT_RESOLVED,
+  normalizeOverlapFactor,
   OVERLAY_FLAGS,
   paybackMonths,
   PILLARS,
   portfolioTotals,
+  rangeOrderIssue,
   SCALE_LABELS,
   toScoreMap,
   type IndicatorDef,
@@ -45,6 +47,7 @@ import {
   deleteOpportunity,
   removePlanItem,
   saveOpportunity,
+  setOpportunityIncluded,
   updateAssessment,
   upsertIndicatorScore,
   type ActionResult,
@@ -482,9 +485,23 @@ export function AssessmentWorkbench({
   const [editingOppId, setEditingOppId] = useState<string | null>(null);
   const [planDraft, setPlanDraft] = useState("");
   const planQueue = useRef<Promise<void>>(Promise.resolve());
+  /**
+   * Plan writes in flight. While this is non-zero a full assessment row coming
+   * back from an unrelated field save is stale with respect to plan_items, so
+   * the local list is kept rather than snapping back and losing the item the
+   * advisor just typed.
+   */
+  const pendingPlanWrites = useRef(0);
+  /**
+   * One write chain per indicator. Clicking 0 then 4 quickly fires two
+   * upserts; without serialization the network can deliver them out of order
+   * and the row ends up holding 0 while the workbench shows 4 — a silent
+   * disagreement between the screen and the printed report.
+   */
+  const scoreQueues = useRef(new Map<string, Promise<void>>());
 
   const computed = useMemo(() => computeScores(scores), [scores]);
-  const resolvedCount = computed.scoredCount + computed.naCount;
+  const resolvedCount = computed.resolvedCount;
   const reportReady = resolvedCount >= MIN_REPORT_RESOLVED;
   const overlayFlags = useMemo(
     () => jsonToStrings(assessment.overlay_flags),
@@ -501,21 +518,39 @@ export function AssessmentWorkbench({
   const editingOpp =
     opportunities.find((o) => o.id === editingOppId) ?? null;
 
-  // Optimistic assessment-field save.
+  /**
+   * Optimistic assessment-field save.
+   *
+   * Rollback restores only the keys this patch touched. Restoring the whole
+   * previous row would wipe out edits the advisor made to other fields while
+   * this request was in flight.
+   */
   async function patchAssessment(patch: AssessmentPatch) {
-    const previous = assessment;
+    const keys = Object.keys(patch) as Array<keyof CcAssessment>;
+    const previousValues = Object.fromEntries(
+      keys.map((k) => [k, assessment[k]])
+    ) as Partial<CcAssessment>;
+
     setAssessment((p) => ({ ...p, ...(patch as Partial<CcAssessment>) }));
     const res = await updateAssessment(assessment.id, patch);
     if (!res.ok) {
-      setAssessment(previous);
+      setAssessment((p) => ({ ...p, ...previousValues }));
       toast.error(res.error);
-    } else {
-      setAssessment(res.data!.assessment);
+      return;
     }
+    // The server row is authoritative for everything except a plan list that
+    // has writes still in flight — that copy is stale by construction.
+    const row = res.data!.assessment;
+    setAssessment((p) =>
+      pendingPlanWrites.current > 0 ? { ...row, plan_items: p.plan_items } : row
+    );
   }
 
-  // Optimistic indicator save.
-  async function patchScore(
+  /**
+   * Optimistic indicator save, serialized per indicator so the last click
+   * always wins in the database too. Rollback restores only this indicator.
+   */
+  function patchScore(
     indicator: IndicatorDef,
     patch: {
       score?: number | null;
@@ -524,10 +559,9 @@ export function AssessmentWorkbench({
       notes?: string | null;
     }
   ) {
-    const previous = scores;
-    const existing = scores[indicator.key];
+    const previous = scores[indicator.key];
     const next: CcAssessmentScore = {
-      id: existing?.id ?? `optimistic-${indicator.key}`,
+      id: previous?.id ?? `optimistic-${indicator.key}`,
       assessment_id: assessment.id,
       indicator_key: indicator.key,
       pillar: indicator.pillar,
@@ -536,30 +570,73 @@ export function AssessmentWorkbench({
           ? null
           : patch.score !== undefined
             ? patch.score
-            : existing?.score ?? null,
-      not_applicable: patch.not_applicable ?? existing?.not_applicable ?? false,
+            : previous?.score ?? null,
+      not_applicable: patch.not_applicable ?? previous?.not_applicable ?? false,
       evidence_confidence:
-        patch.evidence_confidence ??
-        existing?.evidence_confidence ??
-        "unknown",
-      notes:
-        patch.notes !== undefined ? patch.notes : existing?.notes ?? null,
-      created_at: existing?.created_at ?? new Date().toISOString(),
+        patch.evidence_confidence ?? previous?.evidence_confidence ?? "unknown",
+      notes: patch.notes !== undefined ? patch.notes : previous?.notes ?? null,
+      created_at: previous?.created_at ?? new Date().toISOString(),
       updated_at: new Date().toISOString(),
     };
+    // Merge functionally so a save on another indicator can't be clobbered.
     setScores((p) => ({ ...p, [indicator.key]: next }));
-    const res = await upsertIndicatorScore({
-      assessment_id: assessment.id,
-      indicator_key: indicator.key,
-      score: next.score,
-      not_applicable: next.not_applicable,
-      evidence_confidence: next.evidence_confidence,
-      notes: next.notes,
-    });
+
+    const prior = scoreQueues.current.get(indicator.key) ?? Promise.resolve();
+    const chained = prior
+      .then(async () => {
+        const res = await upsertIndicatorScore({
+          assessment_id: assessment.id,
+          indicator_key: indicator.key,
+          score: next.score,
+          not_applicable: next.not_applicable,
+          evidence_confidence: next.evidence_confidence,
+          notes: next.notes,
+        });
+        if (!res.ok) {
+          setScores((p) => {
+            const revert = { ...p };
+            if (previous) revert[indicator.key] = previous;
+            else delete revert[indicator.key];
+            return revert;
+          });
+          toast.error(res.error);
+        }
+      })
+      .catch(() => {
+        toast.error(`Could not save ${indicator.key}`);
+      })
+      .finally(() => {
+        if (scoreQueues.current.get(indicator.key) === chained) {
+          scoreQueues.current.delete(indicator.key);
+        }
+      });
+    scoreQueues.current.set(indicator.key, chained);
+  }
+
+  /**
+   * Only the include flag is written. Re-sending the whole row from client
+   * state let a stale browser copy overwrite figures saved elsewhere.
+   */
+  async function toggleOppIncluded(
+    opp: CcAssessmentOpportunity,
+    include: boolean
+  ) {
+    setOpportunities((p) =>
+      p.map((x) => (x.id === opp.id ? { ...x, include_in_report: include } : x))
+    );
+    const res = await setOpportunityIncluded(opp.id, assessment.id, include);
     if (!res.ok) {
-      setScores(previous);
+      setOpportunities((p) =>
+        p.map((x) =>
+          x.id === opp.id ? { ...x, include_in_report: !include } : x
+        )
+      );
       toast.error(res.error);
+      return;
     }
+    setOpportunities((p) =>
+      p.map((x) => (x.id === opp.id ? res.data!.opportunity : x))
+    );
   }
 
   async function handleDeleteOpp(opp: CcAssessmentOpportunity) {
@@ -582,23 +659,41 @@ export function AssessmentWorkbench({
 
   /**
    * Plan writes are queued so rapid entry can't interleave: each mutation
-   * waits for the previous one, and the server appends against the stored
-   * array rather than a client snapshot.
+   * waits for the previous one, and the server mutates the stored array under
+   * a row lock rather than trusting a client snapshot.
+   *
+   * The returned row is only adopted once the queue has drained. Adopting it
+   * mid-queue would replay an intermediate list and make items the advisor has
+   * already typed vanish and reappear.
    */
   function queuePlanWrite(
-    run: () => Promise<ActionResult<{ assessment: CcAssessment }>>
+    run: () => Promise<ActionResult<{ assessment: CcAssessment }>>,
+    rollback: (items: string[]) => string[]
   ) {
+    pendingPlanWrites.current += 1;
+    const revert = () =>
+      setAssessment((p) => ({
+        ...p,
+        plan_items: rollback(jsonToStrings(p.plan_items)),
+      }));
     planQueue.current = planQueue.current
       .then(async () => {
         const res = await run();
         if (!res.ok) {
+          revert();
           toast.error(res.error);
           return;
         }
-        setAssessment(res.data!.assessment);
+        if (pendingPlanWrites.current <= 1) {
+          setAssessment(res.data!.assessment);
+        }
       })
       .catch(() => {
+        revert();
         toast.error("Could not save the plan item");
+      })
+      .finally(() => {
+        pendingPlanWrites.current = Math.max(0, pendingPlanWrites.current - 1);
       });
   }
 
@@ -610,7 +705,14 @@ export function AssessmentWorkbench({
       ...p,
       plan_items: [...jsonToStrings(p.plan_items), item],
     }));
-    queuePlanWrite(() => appendPlanItem(assessment.id, item));
+    queuePlanWrite(
+      () => appendPlanItem(assessment.id, item),
+      // Failed append: drop the last copy of the item we optimistically added.
+      (items) => {
+        const at = items.lastIndexOf(item);
+        return at === -1 ? items : items.filter((_, i) => i !== at);
+      }
+    );
   }
 
   function removePlanItemAt(item: string, index: number) {
@@ -618,7 +720,15 @@ export function AssessmentWorkbench({
       ...p,
       plan_items: jsonToStrings(p.plan_items).filter((_, i) => i !== index),
     }));
-    queuePlanWrite(() => removePlanItem(assessment.id, item, index));
+    queuePlanWrite(
+      () => removePlanItem(assessment.id, item, index),
+      // Failed removal: put it back where it was.
+      (items) => {
+        const restored = [...items];
+        restored.splice(Math.min(Math.max(index, 0), restored.length), 0, item);
+        return restored;
+      }
+    );
   }
 
   return (
@@ -707,18 +817,32 @@ export function AssessmentWorkbench({
       )}
 
       {/* Sticky running score bar */}
-      <div className="sticky top-2 z-20 rounded-xl border border-[color:var(--color-brand-fog)]/60 bg-[color:var(--color-brand-charcoal)]/95 backdrop-blur px-5 py-3.5 flex flex-wrap items-center gap-x-6 gap-y-2 shadow-lg">
+      <div
+        className={cn(
+          "sticky top-2 z-20 rounded-xl border px-5 py-3.5 flex flex-wrap items-center gap-x-6 gap-y-2 shadow-lg backdrop-blur",
+          assessment.is_practice
+            ? "border-[color:var(--color-brand-violet)]/60 bg-[color:var(--color-brand-violet)]/15"
+            : "border-[color:var(--color-brand-fog)]/60 bg-[color:var(--color-brand-charcoal)]/95"
+        )}
+      >
+        {assessment.is_practice && (
+          // The banner at the top of the page scrolls away; this bar does not.
+          <span className="rounded-md bg-[color:var(--color-brand-violet)] px-2 py-1 text-[10px] font-black uppercase tracking-widest text-white">
+            Practice
+          </span>
+        )}
         <div>
           <span className="text-3xl font-extrabold tabular-nums text-[color:var(--color-brand-electric)]">
             {computed.creaitScore ?? "—"}
           </span>
           <span className="block text-[11px] font-semibold text-muted-foreground">
             CREAiT Score{computed.band ? ` · ${computed.band}` : ""}
+            {computed.provisional ? " · provisional" : ""}
           </span>
         </div>
         {PILLARS.map((p) => {
           const n = computed.pillarScoredCounts[p.key];
-          const thin = n > 0 && n < MIN_PILLAR_SAMPLE;
+          const thin = computed.thinPillars[p.key];
           return (
             <div
               key={p.key}
@@ -908,6 +1032,7 @@ export function AssessmentWorkbench({
           ) : (
             opportunities.map((opp) => {
               const payback = paybackMonths(opp.fix_cost, opp.annual_expected);
+              const rangeIssue = rangeOrderIssue(opp);
               return (
                 <div
                   key={opp.id}
@@ -947,6 +1072,12 @@ export function AssessmentWorkbench({
                       {opp.finding}
                     </p>
                   )}
+                  {rangeIssue && (
+                    <p className="text-xs font-semibold text-[color:var(--color-brand-warning)]">
+                      ⚠ {rangeIssue} — the printed range will read as nonsense.
+                      Fix before delivering.
+                    </p>
+                  )}
                   <div className="flex flex-wrap gap-x-5 gap-y-1 text-xs tabular-nums">
                     <span>
                       <span className="text-muted-foreground">Low</span>{" "}
@@ -981,30 +1112,9 @@ export function AssessmentWorkbench({
                     <label className="flex items-center gap-1.5 cursor-pointer ml-auto">
                       <Checkbox
                         checked={opp.include_in_report}
-                        onCheckedChange={(c) => {
-                          const include = c === true;
-                          setOpportunities((p) =>
-                            p.map((x) =>
-                              x.id === opp.id
-                                ? { ...x, include_in_report: include }
-                                : x
-                            )
-                          );
-                          void saveOpportunity({
-                            id: opp.id,
-                            assessment_id: assessment.id,
-                            title: opp.title,
-                            finding: opp.finding,
-                            annual_low: opp.annual_low,
-                            annual_expected: opp.annual_expected,
-                            annual_high: opp.annual_high,
-                            fix_cost: opp.fix_cost,
-                            months_to_benefit: opp.months_to_benefit,
-                            confidence: opp.confidence,
-                            rank: opp.rank,
-                            include_in_report: include,
-                          });
-                        }}
+                        onCheckedChange={(c) =>
+                          void toggleOppIncluded(opp, c === true)
+                        }
                       />
                       <span className="text-muted-foreground">In report</span>
                     </label>
@@ -1016,7 +1126,9 @@ export function AssessmentWorkbench({
 
           <div className="flex flex-wrap items-center gap-4 rounded-lg border-t-2 border-[color:var(--color-brand-fog)]/60 pt-3 text-sm">
             <span className="font-semibold">
-              Portfolio (×{portfolio.overlapFactor} overlap):
+              {portfolio.overlapApplied
+                ? `Portfolio (×${portfolio.overlapFactor} overlap):`
+                : "Portfolio (single initiative — no overlap to adjust):"}
             </span>
             <span className="tabular-nums">
               low <b>{formatMoney(portfolio.adjLow)}</b>
@@ -1033,14 +1145,25 @@ export function AssessmentWorkbench({
             <label className="flex items-center gap-2 ml-auto text-xs text-muted-foreground">
               Overlap factor
               <Input
+                // Keyed on the persisted value so a rejected entry (0, blank,
+                // >1) snaps back to what was actually stored instead of
+                // leaving the field showing a number the portfolio never used.
+                key={`overlap-${portfolio.configuredFactor}`}
                 type="number"
                 step="0.05"
                 min="0.1"
                 max="1"
-                defaultValue={assessment.overlap_factor}
-                onBlur={(e) =>
-                  void patchAssessment({ overlap_factor: e.target.value })
-                }
+                defaultValue={portfolio.configuredFactor}
+                onBlur={(e) => {
+                  const entered = e.target.value.trim();
+                  const normalized = normalizeOverlapFactor(entered);
+                  if (entered !== "" && Number(entered) !== normalized) {
+                    toast.error(
+                      `Overlap factor must be between 0 and 1 — kept ${normalized}`
+                    );
+                  }
+                  void patchAssessment({ overlap_factor: normalized });
+                }}
                 className="w-20 h-8 tabular-nums"
               />
             </label>

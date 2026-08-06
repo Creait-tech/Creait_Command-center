@@ -404,11 +404,27 @@ export interface ComputedScores {
   pillars: Record<AssessmentPillar, number | null>;
   /** How many of the ten indicators in each pillar carry a score. */
   pillarScoredCounts: Record<AssessmentPillar, number>;
+  /**
+   * Pillars carrying 1–3 scored indicators: they contribute to the composite
+   * but are too thinly sampled to state as a pillar score. Every surface that
+   * shows a pillar number must show these as "insufficient data" instead —
+   * the score detail and the dashboard can never disagree.
+   */
+  thinPillars: Record<AssessmentPillar, boolean>;
   /** Composite CREAiT Score 0–100, weights renormalized over scored pillars. */
   creaitScore: number | null;
   band: string | null;
   scoredCount: number;
   naCount: number;
+  /** Indicators with a verdict: scored + N/A. The report-readiness measure. */
+  resolvedCount: number;
+  /**
+   * True when the composite rests on too little evidence to state flatly —
+   * fewer than MIN_REPORT_RESOLVED indicators resolved, or any contributing
+   * pillar below MIN_PILLAR_SAMPLE. The number is still computed exactly as
+   * the methodology defines it; this only forces the disclosure.
+   */
+  provisional: boolean;
 }
 
 /**
@@ -445,20 +461,30 @@ export function computeScores(scores: ScoreMap): ComputedScores {
     systems: 0,
     leverage: 0,
   };
+  const thinPillars: Record<AssessmentPillar, boolean> = {
+    profit: false,
+    systems: false,
+    leverage: false,
+  };
   let total = 0;
   let weightSum = 0;
 
   for (const { key, weight } of PILLARS) {
     const raw = pillarRaw(key, scores);
+    const examined = pillarScoredCount(key, scores);
     pillars[key] = raw === null ? null : Math.round(raw);
-    pillarScoredCounts[key] = pillarScoredCount(key, scores);
+    pillarScoredCounts[key] = examined;
+    thinPillars[key] = examined > 0 && examined < MIN_PILLAR_SAMPLE;
     if (raw !== null) {
       total += raw * weight;
       weightSum += weight;
     }
   }
 
-  const creaitScore = weightSum > 0 ? Math.round(total / weightSum) : null;
+  const creaitScore =
+    weightSum > 0 && Number.isFinite(total / weightSum)
+      ? Math.round(total / weightSum)
+      : null;
 
   let scoredCount = 0;
   let naCount = 0;
@@ -469,28 +495,61 @@ export function computeScores(scores: ScoreMap): ComputedScores {
     else if (row.score !== null) scoredCount += 1;
   }
 
+  const resolvedCount = scoredCount + naCount;
+
   return {
     pillars,
     pillarScoredCounts,
+    thinPillars,
     creaitScore,
     band: creaitScore === null ? null : bandFor(creaitScore),
     scoredCount,
     naCount,
+    resolvedCount,
+    provisional:
+      creaitScore !== null &&
+      (resolvedCount < MIN_REPORT_RESOLVED ||
+        PILLARS.some((p) => thinPillars[p.key])),
   };
 }
 
 /**
  * Payback in months = fix cost ÷ expected monthly recovery
  * (expected monthly recovery = annual expected ÷ 12).
+ *
+ * Returns null rather than a number whenever the division cannot produce an
+ * honest month count: no fix cost, no/zero/negative expected recovery, or a
+ * negative fix cost. A printed "-4 months" or "Infinity" on a $7,500
+ * deliverable is worse than an em dash.
  */
 export function paybackMonths(
   fixCost: number | null,
   annualExpected: number | null
 ): number | null {
-  if (fixCost === null || annualExpected === null || annualExpected <= 0) {
-    return null;
-  }
+  if (fixCost === null || annualExpected === null) return null;
+  if (!Number.isFinite(fixCost) || !Number.isFinite(annualExpected)) return null;
+  if (fixCost < 0 || annualExpected <= 0) return null;
   return fixCost / (annualExpected / 12);
+}
+
+export const DEFAULT_OVERLAP_FACTOR = 0.7;
+
+/**
+ * Postgres NUMERIC arrives as a JSON number over PostgREST, but optimistic
+ * client state briefly holds the raw string an <input> produced. Coercing here
+ * keeps `0 + "12000"` from ever becoming the string "012000" and then NaN.
+ */
+function toFinite(value: unknown): number | null {
+  if (value === null || value === undefined || value === "") return null;
+  const n = typeof value === "number" ? value : Number(value);
+  return Number.isFinite(n) ? n : null;
+}
+
+/** Clamp to the sellable range: an overlap factor above 1 would inflate. */
+export function normalizeOverlapFactor(value: unknown): number {
+  const n = toFinite(value);
+  if (n === null || n <= 0 || n > 1) return DEFAULT_OVERLAP_FACTOR;
+  return n;
 }
 
 export interface PortfolioTotals {
@@ -500,11 +559,23 @@ export interface PortfolioTotals {
   adjLow: number;
   adjExpected: number;
   adjHigh: number;
+  /** The factor actually applied — 1 when there is nothing to overlap. */
   overlapFactor: number;
+  /** The engagement's configured factor, whether or not it was applied. */
+  configuredFactor: number;
+  /** How many opportunities are included in the total. */
+  includedCount: number;
+  /** False when a single initiative made the overlap discount meaningless. */
+  overlapApplied: boolean;
 }
 
 /**
- * Portfolio total = sum × overlap factor (default 0.7) — never the raw sum.
+ * Portfolio total = sum × overlap factor (default 0.7) — never the raw sum,
+ * because initiatives share the same customers and the same hours.
+ *
+ * With fewer than two included initiatives there is nothing to overlap, so the
+ * discount is NOT applied: shaving 30% off a lone opportunity understates it
+ * and contradicts the report's own "not additive with each other" wording.
  */
 export function portfolioTotals(
   opportunities: Array<{
@@ -513,19 +584,22 @@ export function portfolioTotals(
     annual_high: number | null;
     include_in_report: boolean;
   }>,
-  overlapFactor: number
+  overlapFactor: unknown
 ): PortfolioTotals {
-  const factor =
-    Number.isFinite(overlapFactor) && overlapFactor > 0 ? overlapFactor : 0.7;
+  const configuredFactor = normalizeOverlapFactor(overlapFactor);
   let rawLow = 0;
   let rawExpected = 0;
   let rawHigh = 0;
+  let includedCount = 0;
   for (const opp of opportunities) {
     if (!opp.include_in_report) continue;
-    rawLow += opp.annual_low ?? 0;
-    rawExpected += opp.annual_expected ?? 0;
-    rawHigh += opp.annual_high ?? 0;
+    includedCount += 1;
+    rawLow += toFinite(opp.annual_low) ?? 0;
+    rawExpected += toFinite(opp.annual_expected) ?? 0;
+    rawHigh += toFinite(opp.annual_high) ?? 0;
   }
+  const overlapApplied = includedCount > 1;
+  const factor = overlapApplied ? configuredFactor : 1;
   return {
     rawLow,
     rawExpected,
@@ -534,7 +608,35 @@ export function portfolioTotals(
     adjExpected: rawExpected * factor,
     adjHigh: rawHigh * factor,
     overlapFactor: factor,
+    configuredFactor,
+    includedCount,
+    overlapApplied,
   };
+}
+
+/**
+ * An advisor can type a low above the expected (or a high below it) and the
+ * printed range then reads as nonsense. Non-blocking — surfaced in the
+ * workbench so it is caught before the client sees it.
+ */
+export function rangeOrderIssue(opp: {
+  annual_low: number | null;
+  annual_expected: number | null;
+  annual_high: number | null;
+}): string | null {
+  const low = toFinite(opp.annual_low);
+  const expected = toFinite(opp.annual_expected);
+  const high = toFinite(opp.annual_high);
+  if (low !== null && expected !== null && low > expected) {
+    return "Low is above expected";
+  }
+  if (expected !== null && high !== null && expected > high) {
+    return "Expected is above high";
+  }
+  if (low !== null && high !== null && low > high) {
+    return "Low is above high";
+  }
+  return null;
 }
 
 export function formatMoney(n: number | null | undefined): string {

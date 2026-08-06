@@ -1,8 +1,14 @@
 import 'server-only'
 
-import { generateText, stepCountIs } from 'ai'
+import { stepCountIs } from 'ai'
 
-import { resolveModel, DEFAULT_MODEL } from '@/lib/ai'
+import {
+  DEFAULT_MODEL,
+  describeFallback,
+  generateWithFallback,
+  normalizeModelId,
+  type FallbackReport,
+} from '@/lib/ai'
 import { buildSystemPrompt, type PageContext } from '@/lib/context-builder'
 import { loadMcpTools } from '@/lib/mcp-client'
 import { createServiceClient } from '@/lib/supabase/server'
@@ -17,8 +23,11 @@ import type { RunTrigger, Skill } from '@/lib/supabase/types'
  *   3. Composes a system prompt: skill prompt + page-context prompt + input.
  *   4. Loads MCP tools (gracefully empty if MCP is unreachable).
  *   5. Inserts a `run_history` row with status=running.
- *   6. Calls `generateText` with `stopWhen: stepCountIs(15)`.
- *   7. Updates the run row with status, output, tokens, cost, duration.
+ *   6. Calls `generateWithFallback` with `stopWhen: stepCountIs(15)` — if the
+ *      preferred provider is out of credit / rate limited / unauthorised, the
+ *      call degrades to the next model in the chain instead of failing.
+ *   7. Updates the run row with status, output, tokens, cost, duration, and the
+ *      model that actually served the response.
  *
  * Specific output routing (e.g., a Daily Briefing writing to
  * `research_briefings`) is the responsibility of skill-specific Inngest
@@ -37,6 +46,10 @@ export interface RunSkillOptions {
 export interface RunSkillResult {
   output: string
   runId: string
+  /** The model that actually produced `output` — may differ from the skill's preference. */
+  model: string
+  /** True when the preferred model was unavailable and a fallback served the run. */
+  fellBack: boolean
 }
 
 interface CostRate {
@@ -52,6 +65,8 @@ const COST_RATES: Record<string, CostRate> = {
   'claude-sonnet-4-6': { inputPerMillion: 3, outputPerMillion: 15 },
   'claude-opus-4-7': { inputPerMillion: 15, outputPerMillion: 75 },
   'claude-haiku-4-5': { inputPerMillion: 0.8, outputPerMillion: 4 },
+  // OpenRouter `:free` tier — genuinely $0, so record 0 rather than "unknown".
+  'openrouter/nemotron-free': { inputPerMillion: 0, outputPerMillion: 0 },
 }
 
 /**
@@ -89,8 +104,7 @@ export async function runSkill(
     throw new Error(`Skill "${skill.name}" is disabled`)
   }
 
-  const modelId = skill.preferred_model || DEFAULT_MODEL
-  const model = resolveModel(modelId)
+  const modelId = normalizeModelId(skill.preferred_model || DEFAULT_MODEL)
 
   // ---------------------------------------------------------------------------
   // 2. Insert a placeholder run row so we can record failures too
@@ -140,15 +154,23 @@ export async function runSkill(
     const tools = await loadMcpTools()
 
     // -------------------------------------------------------------------------
-    // 5. Call the model
+    // 5. Call the model (degrades to the next model in the fallback chain when
+    //    the preferred provider is out of credit / rate limited / unauthorised)
     // -------------------------------------------------------------------------
-    const result = await generateText({
-      model,
+    const { result, servedModel, fellBack, fallback } = await generateWithFallback({
+      model: modelId,
       system: composedSystem,
       prompt: safeStringify(input),
       tools,
       stopWhen: stepCountIs(15),
     })
+
+    if (fellBack) {
+      console.warn(
+        `[skills-engine] skill "${skill.name}" requested ${modelId} but was served by ` +
+          `${servedModel} — ${describeFallback(fallback)}`,
+      )
+    }
 
     // -------------------------------------------------------------------------
     // 6. Persist success
@@ -156,13 +178,20 @@ export async function runSkill(
     const durationMs = Date.now() - startedAt
     const inputTokens = result.usage?.inputTokens ?? null
     const outputTokens = result.usage?.outputTokens ?? null
-    const costUsd = estimateCostUsd(modelId, inputTokens, outputTokens)
+    // Cost belongs to the model that actually ran, not the one we asked for.
+    const costUsd = estimateCostUsd(servedModel, inputTokens, outputTokens)
 
     await supabase
       .from('run_history')
       .update({
         status: 'succeeded',
-        output: { text: result.text } as never,
+        // `model` now reflects reality; `output.model_routing` keeps the trail.
+        model: servedModel,
+        output: {
+          text: result.text,
+          model: servedModel,
+          model_routing: summarizeRouting(fallback),
+        } as never,
         duration_ms: durationMs,
         input_tokens: inputTokens,
         output_tokens: outputTokens,
@@ -171,7 +200,7 @@ export async function runSkill(
       })
       .eq('id', runId)
 
-    return { output: result.text, runId }
+    return { output: result.text, runId, model: servedModel, fellBack }
   } catch (err) {
     // -------------------------------------------------------------------------
     // 7. Persist failure
@@ -213,6 +242,27 @@ function estimateCostUsd(
     (outTok / 1_000_000) * rate.outputPerMillion
   // 6 decimal places to match the NUMERIC(10,6) column.
   return Number(cost.toFixed(6))
+}
+
+/**
+ * Compact, JSON-safe record of how the call was routed. Lands inside the
+ * existing `run_history.output` JSON — no new columns.
+ */
+function summarizeRouting(report: FallbackReport) {
+  return {
+    requested_model: report.requestedModel,
+    served_model: report.servedModel,
+    fell_back: report.fellBack,
+    chain: report.chain,
+    attempts: report.attempts.map((a) => ({
+      model: a.model,
+      provider: a.provider,
+      outcome: a.outcome,
+      kind: a.kind,
+      status: a.status ?? null,
+      message: a.message.slice(0, 500),
+    })),
+  }
 }
 
 function safeStringify(value: unknown): string {
