@@ -602,8 +602,13 @@ export default async function ExecutiveBlueprintPage({
                       <tr>
                         <td style={mathLabel}>Time to first benefit</td>
                         <td style={mathValue}>
-                          {opp.months_to_benefit}{" "}
-                          {opp.months_to_benefit === 1 ? "month" : "months"}
+                          {/* Numeric columns can arrive as strings, so compare
+                              the coerced value — "1 months" otherwise. */}
+                          {`${opp.months_to_benefit} ${
+                            Number(opp.months_to_benefit) === 1
+                              ? "month"
+                              : "months"
+                          }`}
                         </td>
                       </tr>
                     )}
@@ -691,11 +696,13 @@ export default async function ExecutiveBlueprintPage({
         )}
         {activeWarnings.length > 0 && (
           <p style={{ fontSize: 12, color: muted, marginTop: 16, lineHeight: 1.6 }}>
-            Note: while the critical constraint{" "}
-            {activeWarnings.length > 1 ? "warnings are" : "warning is"} active,
-            growth
-            initiatives that depend on the weak foundation carry a
-            &ldquo;Prepare First&rdquo; label — foundation work comes first.
+            {/* One expression: JSX drops the space between an expression and
+                following text when that text wraps to the next line. */}
+            {`Note: while the critical ${
+              activeWarnings.length > 1
+                ? "constraint warnings are"
+                : "constraint warning is"
+            } active, growth initiatives that depend on the weak foundation carry a “Prepare First” label — foundation work comes first.`}
           </p>
         )}
       </section>
