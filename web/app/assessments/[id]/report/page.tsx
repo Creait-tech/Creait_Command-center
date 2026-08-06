@@ -288,14 +288,14 @@ export default async function ExecutiveBlueprintPage({
           <div
             className="avoid-break"
             style={{
-              border: `1px solid ${line}`,
-              borderLeft: `4px solid ${blue}`,
+              border: "1px solid #c9e4f5",
+              background: "#f4fafd",
               borderRadius: 8,
               padding: "14px 18px",
               marginTop: 20,
             }}
           >
-            <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: muted }}>
+            <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: blue }}>
               Primary Business Constraint
             </p>
             <p style={{ fontSize: 15, marginTop: 6, lineHeight: 1.5 }}>
@@ -740,8 +740,8 @@ export default async function ExecutiveBlueprintPage({
         </div>
         <div
           style={{
-            border: `1px solid ${line}`,
-            borderLeft: `4px solid ${blue}`,
+            border: "1px solid #c9e4f5",
+            background: "#f4fafd",
             borderRadius: 8,
             padding: "14px 18px",
             marginTop: 20,
