@@ -697,6 +697,98 @@ export interface CcClientJourney {
 }
 
 // =============================================================================
+// Assessments — the $7,500 Growth & AI Diagnostic delivered through software.
+// Instrument (30 indicators, anchors, weights, bands) lives in
+// lib/assessment-instrument.ts. Mirrors supabase/migrations/0004_assessments.sql.
+// =============================================================================
+
+export type AssessmentStatus =
+  | "practice"
+  | "intake"
+  | "scoring"
+  | "review"
+  | "delivered";
+
+export type AssessmentPillar = "profit" | "systems" | "leverage";
+
+/**
+ * Evidence confidence per the scoring engine: Reported (owner said so) ·
+ * Demonstrated (walked through it live) · Documented (record/report seen).
+ * Never changes the score — widens financial ranges and is disclosed.
+ */
+export type EvidenceConfidence =
+  | "reported"
+  | "demonstrated"
+  | "documented"
+  | "unknown";
+
+export type OpportunityConfidence = "high" | "medium" | "low";
+
+export interface CcAssessment {
+  id: string;
+  org_id: string;
+  client_name: string;
+  company: string | null;
+  industry: string | null;
+  status: AssessmentStatus;
+  is_practice: boolean;
+  started_at: string | null;
+  delivered_at: string | null;
+  annual_revenue: number | null;
+  gross_margin: number | null;
+  operating_profit: number | null;
+  owner_objective: string | null;
+  /** Intake Q8 verbatim — the "you said X / the evidence says Y" moment. */
+  owner_belief: string | null;
+  /** Primary Business Constraint — root, one sentence. */
+  primary_constraint: string | null;
+  constraint_symptoms: string | null;
+  constraint_cost: string | null;
+  constraint_fix: string | null;
+  momentum_initiative: string | null;
+  /** Critical Constraint Overlay flag keys (see OVERLAY_FLAGS). */
+  overlay_flags: Json;
+  /** 90-day plan items — array of strings (v1). */
+  plan_items: Json;
+  overlap_factor: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CcAssessmentScore {
+  id: string;
+  assessment_id: string;
+  indicator_key: string;
+  pillar: AssessmentPillar;
+  /** 0–4 behavioral score; null = not examined (never faked in the report). */
+  score: number | null;
+  /** N/A — removed from the denominator, never counted as zero. */
+  not_applicable: boolean;
+  evidence_confidence: EvidenceConfidence;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CcAssessmentOpportunity {
+  id: string;
+  assessment_id: string;
+  title: string;
+  finding: string | null;
+  /** Annual operating-profit impact — low / expected / high, always together. */
+  annual_low: number | null;
+  annual_expected: number | null;
+  annual_high: number | null;
+  fix_cost: number | null;
+  months_to_benefit: number | null;
+  confidence: OpportunityConfidence;
+  rank: number;
+  include_in_report: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+// =============================================================================
 // OAuth tokens — per-org provider credentials for outbound sends (Gmail).
 // Prefixed `cc_*`. RLS-enabled with NO policies: only the service-role client
 // (which bypasses RLS) ever reads/writes this table. `refresh_token` must never
@@ -794,6 +886,10 @@ export interface Database {
       cc_workspace_messages: Table<WorkspaceMessage>;
       cc_clients: Table<CcClient>;
       cc_client_journey: Table<CcClientJourney>;
+      // Assessments (Growth & AI Diagnostic)
+      cc_assessments: Table<CcAssessment>;
+      cc_assessment_scores: Table<CcAssessmentScore>;
+      cc_assessment_opportunities: Table<CcAssessmentOpportunity>;
       // OAuth tokens (Gmail send)
       cc_oauth_tokens: Table<CcOAuthToken>;
       // KPI history
