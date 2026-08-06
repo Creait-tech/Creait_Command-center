@@ -25,7 +25,7 @@ Internal business OS for CREAIT (AI consulting agency, Atlanta — 4 co-founders
 - **PostgREST `.or()` filter strings use `*` as the ilike wildcard**, not `%` (see `war-room/page.tsx`).
 - **`meetings.meeting_type` has a CHECK constraint** — the value list must stay in sync with `web/lib/meeting-agendas.ts` (8 EOS types + legacy values; migration `0002_meeting_types.sql`).
 - The Next.js version here has breaking changes vs training data — read `web/AGENTS.md` and `node_modules/next/dist/docs/` before assuming APIs.
-- The MCP server's GHL tools hard-cap at 100 items with no cursor — counts of exactly 100 are floors, not totals (pagination is a known open task).
+- **GHL MCP tools now paginate** (fixed 2026-08-06). `ghl_get_contacts`, `ghl_get_opportunities`, and `ghl_get_conversations` return `{ total, count, truncated, items[] }` — `total` is GHL's exact count, `items` is capped by the call's `limit`, and `truncated` says whether you're seeing everything. `ghl_get_opportunities` also returns `openCount`/`openValue` so every consumer shares one definition of "open". Read `total` for counts; never treat `items.length` as a population. (Real scale: ~8k contacts, ~1.2k opportunities, ~2.1k conversations — the old 100-cap was silently reporting floors as totals onto the scoreboard.)
 - `updated_at` columns have no triggers — don't trust them; `cc_kpi_history.recorded_at` is the reliable sync evidence.
 - A pre-existing React #418 hydration warning fires once per page on every route — cosmetic, known, unrelated to new work.
 

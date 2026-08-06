@@ -94,15 +94,100 @@ function jsonResult(value: unknown) {
   };
 }
 
+/**
+ * GHL returns at most 100 rows per request. These tools used to stop there,
+ * so a location with 8,012 contacts reported "100" — a floor presented as a
+ * total, which put wrong numbers on the Command Center scoreboard.
+ *
+ * GHL's list endpoints expose `meta.total` (an exact count, free of charge)
+ * plus a `startAfter`/`startAfterId` cursor pair. We read the total from the
+ * first page and follow the cursor for the rows themselves.
+ *
+ * Guards: a page that returns nothing, a cursor that fails to advance, and
+ * hard page/row ceilings all end the walk, so a malformed cursor can never
+ * spin forever against a paid API.
+ */
+const GHL_PAGE_SIZE = 100;
+const GHL_MAX_PAGES = 60;
+
+type GhlPage = {
+  rows: Array<Record<string, unknown>>;
+  total: number | null;
+  startAfter?: string | number;
+  startAfterId?: string;
+};
+
+async function paginateGhl(
+  pit: string,
+  buildQuery: (cursor: { startAfter?: string | number; startAfterId?: string }) => string,
+  readPage: (body: unknown) => GhlPage,
+  maxItems: number,
+): Promise<{ items: Array<Record<string, unknown>>; total: number | null; truncated: boolean }> {
+  const items: Array<Record<string, unknown>> = [];
+  const seen = new Set<string>();
+  let cursor: { startAfter?: string | number; startAfterId?: string } = {};
+  let total: number | null = null;
+  let truncated = false;
+
+  for (let page = 0; page < GHL_MAX_PAGES; page++) {
+    const body = await ghlFetch(pit, buildQuery(cursor));
+    const parsed = readPage(body);
+    if (page === 0) total = parsed.total;
+    if (parsed.rows.length === 0) break;
+
+    for (const row of parsed.rows) {
+      const id = typeof row.id === "string" ? row.id : null;
+      if (id) {
+        if (seen.has(id)) continue; // cursor overlap — never double-count
+        seen.add(id);
+      }
+      items.push(row);
+      if (items.length >= maxItems) break;
+    }
+    if (items.length >= maxItems) {
+      truncated = total === null ? true : items.length < total;
+      break;
+    }
+
+    // No cursor, or a cursor that didn't move, means there is no next page.
+    const advanced =
+      (parsed.startAfter !== undefined && parsed.startAfter !== cursor.startAfter) ||
+      (parsed.startAfterId !== undefined && parsed.startAfterId !== cursor.startAfterId);
+    if (!advanced) break;
+    cursor = { startAfter: parsed.startAfter, startAfterId: parsed.startAfterId };
+
+    if (page === GHL_MAX_PAGES - 1) truncated = true;
+  }
+
+  return { items, total, truncated };
+}
+
+type GhlMeta = {
+  total?: number;
+  startAfter?: string | number;
+  startAfterId?: string;
+};
+
+function readMeta(body: unknown): GhlMeta {
+  const meta = (body as { meta?: GhlMeta } | null)?.meta;
+  return meta ?? {};
+}
+
 // ─── Tool: ghl_get_contacts ──────────────────────────────────────────────────
 
 export const ghlGetContactsInput = {
-  limit: z.number().int().min(1).max(100).optional(),
+  limit: z
+    .number()
+    .int()
+    .min(1)
+    .max(5000)
+    .optional()
+    .describe("Max contacts to return. Pagination is automatic; `total` is exact regardless."),
   search: z.string().optional(),
 };
 
 export async function ghlGetContacts({
-  limit = 25,
+  limit = 100,
   search,
 }: {
   limit?: number;
@@ -111,17 +196,33 @@ export async function ghlGetContacts({
   const cfg = readGhlConfig();
   if (!cfg.ok) return notConfigured(cfg.reason);
 
-  const params = new URLSearchParams({
-    locationId: cfg.locationId,
-    limit: String(limit),
-  });
-  if (search) params.set("query", search);
-
   try {
-    const body = (await ghlFetch(cfg.pit, `/contacts/?${params}`)) as {
-      contacts?: Array<Record<string, unknown>>;
-    };
-    const contacts = (body.contacts ?? []).map((c) => ({
+    const { items, total, truncated } = await paginateGhl(
+      cfg.pit,
+      (cursor) => {
+        const params = new URLSearchParams({
+          locationId: cfg.locationId,
+          limit: String(GHL_PAGE_SIZE),
+        });
+        if (search) params.set("query", search);
+        if (cursor.startAfter !== undefined)
+          params.set("startAfter", String(cursor.startAfter));
+        if (cursor.startAfterId) params.set("startAfterId", cursor.startAfterId);
+        return `/contacts/?${params}`;
+      },
+      (body) => {
+        const meta = readMeta(body);
+        return {
+          rows: (body as { contacts?: Array<Record<string, unknown>> })?.contacts ?? [],
+          total: meta.total ?? null,
+          startAfter: meta.startAfter,
+          startAfterId: meta.startAfterId,
+        };
+      },
+      limit,
+    );
+
+    const contacts = items.map((c) => ({
       id: c.id,
       firstName: c.firstName,
       lastName: c.lastName,
@@ -130,7 +231,7 @@ export async function ghlGetContacts({
       tags: c.tags,
       dateAdded: c.dateAdded,
     }));
-    return jsonResult(contacts);
+    return jsonResult({ total, count: contacts.length, truncated, items: contacts });
   } catch (err) {
     return errorResult(err);
   }
@@ -140,12 +241,18 @@ export async function ghlGetContacts({
 
 export const ghlGetOpportunitiesInput = {
   pipelineId: z.string().optional(),
-  limit: z.number().int().min(1).max(100).optional(),
+  limit: z
+    .number()
+    .int()
+    .min(1)
+    .max(5000)
+    .optional()
+    .describe("Max opportunities to return. Pagination is automatic; `total` is exact regardless."),
 };
 
 export async function ghlGetOpportunities({
   pipelineId,
-  limit = 50,
+  limit = 500,
 }: {
   pipelineId?: string;
   limit?: number;
@@ -154,43 +261,66 @@ export async function ghlGetOpportunities({
   if (!cfg.ok) return notConfigured(cfg.reason);
 
   try {
-    let pipelineIds: string[];
-    if (pipelineId) {
-      pipelineIds = [pipelineId];
-    } else {
-      const pipes = (await ghlFetch(
-        cfg.pit,
-        `/opportunities/pipelines?locationId=${encodeURIComponent(cfg.locationId)}`,
-      )) as { pipelines?: Array<{ id: string }> };
-      pipelineIds = (pipes.pipelines ?? []).map((p) => p.id).filter(Boolean);
+    // Searching without a pipeline filter returns every pipeline's
+    // opportunities in one cursor-paged stream, and `meta.total` is then the
+    // location-wide total. Only narrow to one pipeline when asked.
+    const { items, total, truncated } = await paginateGhl(
+      cfg.pit,
+      (cursor) => {
+        const params = new URLSearchParams({
+          location_id: cfg.locationId,
+          limit: String(GHL_PAGE_SIZE),
+        });
+        if (pipelineId) params.set("pipeline_id", pipelineId);
+        if (cursor.startAfter !== undefined)
+          params.set("startAfter", String(cursor.startAfter));
+        if (cursor.startAfterId) params.set("startAfterId", cursor.startAfterId);
+        return `/opportunities/search?${params}`;
+      },
+      (body) => {
+        const meta = readMeta(body);
+        return {
+          rows:
+            (body as { opportunities?: Array<Record<string, unknown>> })?.opportunities ?? [],
+          total: meta.total ?? null,
+          startAfter: meta.startAfter,
+          startAfterId: meta.startAfterId,
+        };
+      },
+      limit,
+    );
+
+    const opportunities = items.map((o) => ({
+      id: o.id,
+      name: o.name,
+      contactId: o.contactId,
+      status: o.status,
+      monetaryValue: o.monetaryValue,
+      pipelineId: o.pipelineId,
+      pipelineStageId: o.pipelineStageId,
+      updatedAt: o.updatedAt,
+    }));
+
+    // Open-only rollups, computed here so every consumer agrees on the
+    // definition of "open" rather than each re-deriving it.
+    let openCount = 0;
+    let openValue = 0;
+    for (const o of opportunities) {
+      const status = String(o.status ?? "").toLowerCase();
+      if (status === "won" || status === "lost" || status === "abandoned") continue;
+      openCount++;
+      const v = Number(o.monetaryValue ?? 0);
+      if (Number.isFinite(v)) openValue += v;
     }
 
-    const collected: Array<Record<string, unknown>> = [];
-    for (const pid of pipelineIds) {
-      if (collected.length >= 100) break;
-      const remaining = Math.min(limit, 100 - collected.length);
-      const params = new URLSearchParams({
-        location_id: cfg.locationId,
-        pipeline_id: pid,
-        limit: String(remaining),
-      });
-      const body = (await ghlFetch(cfg.pit, `/opportunities/search?${params}`)) as {
-        opportunities?: Array<Record<string, unknown>>;
-      };
-      for (const o of body.opportunities ?? []) {
-        if (collected.length >= 100) break;
-        collected.push({
-          id: o.id,
-          name: o.name,
-          contactId: o.contactId,
-          status: o.status,
-          monetaryValue: o.monetaryValue,
-          pipelineStageId: o.pipelineStageId,
-          updatedAt: o.updatedAt,
-        });
-      }
-    }
-    return jsonResult(collected);
+    return jsonResult({
+      total,
+      count: opportunities.length,
+      truncated,
+      openCount,
+      openValue: Number(openValue.toFixed(2)),
+      items: opportunities,
+    });
   } catch (err) {
     return errorResult(err);
   }
@@ -199,30 +329,92 @@ export async function ghlGetOpportunities({
 // ─── Tool: ghl_get_conversations ─────────────────────────────────────────────
 
 export const ghlGetConversationsInput = {
-  limit: z.number().int().min(1).max(100).optional(),
+  limit: z
+    .number()
+    .int()
+    .min(1)
+    .max(2000)
+    .optional()
+    .describe("Max conversations to return, newest first. `total` is exact regardless."),
 };
 
-export async function ghlGetConversations({ limit = 25 }: { limit?: number }) {
+export async function ghlGetConversations({ limit = 100 }: { limit?: number }) {
   const cfg = readGhlConfig();
   if (!cfg.ok) return notConfigured(cfg.reason);
 
-  const params = new URLSearchParams({
-    locationId: cfg.locationId,
-    limit: String(limit),
-  });
+  // `/conversations/search` reports the exact count as a top-level `total`
+  // (not under `meta`) and pages by `startAfterDate` rather than the
+  // startAfter/startAfterId cursor the other endpoints use.
+  const collected: Array<Record<string, unknown>> = [];
+  const seen = new Set<string>();
+  let total: number | null = null;
+  let truncated = false;
+  let startAfterDate: number | undefined;
+
   try {
-    const body = (await ghlFetch(cfg.pit, `/conversations/search?${params}`)) as {
-      conversations?: Array<Record<string, unknown>>;
-    };
-    const conversations = (body.conversations ?? []).map((c) => ({
+    for (let page = 0; page < GHL_MAX_PAGES; page++) {
+      const params = new URLSearchParams({
+        locationId: cfg.locationId,
+        limit: String(GHL_PAGE_SIZE),
+        sortBy: "last_message_date",
+        sort: "desc",
+      });
+      if (startAfterDate !== undefined)
+        params.set("startAfterDate", String(startAfterDate));
+
+      const body = (await ghlFetch(cfg.pit, `/conversations/search?${params}`)) as {
+        conversations?: Array<Record<string, unknown>>;
+        total?: number;
+      };
+      if (page === 0) total = typeof body.total === "number" ? body.total : null;
+
+      const rows = body.conversations ?? [];
+      if (rows.length === 0) break;
+
+      let newestCursor: number | undefined;
+      let added = 0;
+      for (const c of rows) {
+        const id = typeof c.id === "string" ? c.id : null;
+        if (id) {
+          if (seen.has(id)) continue;
+          seen.add(id);
+        }
+        collected.push(c);
+        added++;
+        const d = Number(c.lastMessageDate);
+        if (Number.isFinite(d)) newestCursor = d;
+        if (collected.length >= limit) break;
+      }
+
+      if (collected.length >= limit) {
+        truncated = total !== null && collected.length < total;
+        break;
+      }
+      // Nothing new, or no usable cursor — we've reached the end.
+      if (added === 0 || newestCursor === undefined || newestCursor === startAfterDate)
+        break;
+      startAfterDate = newestCursor;
+      if (page === GHL_MAX_PAGES - 1) truncated = true;
+    }
+
+    const conversations = collected.map((c) => ({
       id: c.id,
+      contactId: c.contactId,
       contactName: c.fullName ?? c.contactName,
+      email: c.email,
+      phone: c.phone,
       lastMessageBody: c.lastMessageBody,
       lastMessageType: c.lastMessageType,
+      lastMessageDirection: c.lastMessageDirection,
       unreadCount: c.unreadCount,
       lastMessageDate: c.lastMessageDate,
     }));
-    return jsonResult(conversations);
+    return jsonResult({
+      total,
+      count: conversations.length,
+      truncated,
+      items: conversations,
+    });
   } catch (err) {
     return errorResult(err);
   }

@@ -67,6 +67,35 @@ function formatRelative(value: string | null): string {
   return new Date(value).toLocaleDateString();
 }
 
+/**
+ * Auto-synced KPIs are supposed to refresh hourly. When a sync is skipped —
+ * the GHL pull failing, or the sync declining to write a value it can't
+ * trust — the previous number stays on the card. Rendered in the same muted
+ * grey as a fresh one, a two-day-old figure reads as current, which is how a
+ * scoreboard quietly starts lying. Colour the timestamp by age instead.
+ */
+function freshnessClass(kpi: Kpi): string {
+  if (kpi.source === "manual") return "text-muted-foreground";
+  if (!kpi.last_synced_at)
+    return "text-[color:var(--color-brand-danger)] font-medium";
+  const then = new Date(kpi.last_synced_at).getTime();
+  if (Number.isNaN(then)) return "text-[color:var(--color-brand-danger)] font-medium";
+  const hours = (Date.now() - then) / 3_600_000;
+  if (hours >= 24) return "text-[color:var(--color-brand-danger)] font-medium";
+  if (hours >= 6) return "text-[color:var(--color-brand-warning)]";
+  return "text-muted-foreground";
+}
+
+function freshnessTitle(kpi: Kpi): string {
+  if (kpi.source === "manual") return "Entered manually";
+  if (!kpi.last_synced_at)
+    return "This KPI has never synced — no data source is feeding it yet.";
+  const hours = (Date.now() - new Date(kpi.last_synced_at).getTime()) / 3_600_000;
+  if (hours >= 6)
+    return "Auto-syncs hourly — this value is stale, so treat it as a last-known figure rather than a current one.";
+  return "Auto-syncs hourly";
+}
+
 function formatAxisDate(value: string): string {
   const d = new Date(value);
   if (Number.isNaN(d.getTime())) return "";
@@ -394,7 +423,7 @@ function KpiCard({ kpi, points, onSave }: KpiCardProps) {
 
         <div className="flex items-center justify-between text-xs text-muted-foreground">
           <span className="capitalize">{kpi.source}</span>
-          <span title="Auto-syncs hourly">
+          <span className={freshnessClass(kpi)} title={freshnessTitle(kpi)}>
             {formatRelative(kpi.last_synced_at)}
           </span>
         </div>
