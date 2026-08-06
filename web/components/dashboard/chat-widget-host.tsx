@@ -20,7 +20,9 @@ function derivePageContext(pathname: string): string {
 export function ChatWidgetHost() {
   const [open, setOpen] = React.useState(false);
   const pathname = usePathname();
-  const [model] = useSelectedModel();
+  // Single owner of the model selection — passed down to both the selector
+  // and the chat panel so the dropdown choice actually reaches the request.
+  const [model, setModel] = useSelectedModel();
   const pageContext = derivePageContext(pathname);
 
   if (!open) {
@@ -56,7 +58,7 @@ export function ChatWidgetHost() {
           </span>
         </div>
         <div className="flex items-center gap-1.5">
-          <ModelSelector size="sm" />
+          <ModelSelector size="sm" value={model} onValueChange={setModel} />
           <Button
             type="button"
             variant="ghost"

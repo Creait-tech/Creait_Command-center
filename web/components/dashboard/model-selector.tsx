@@ -24,6 +24,8 @@ export const MODELS = [
   { id: "openrouter/deepseek-v3", label: "DeepSeek V3", tier: "openrouter" },
   { id: "openrouter/llama-3.3-70b", label: "Llama 3.3 70B", tier: "openrouter" },
   { id: "openrouter/gemini-flash", label: "Gemini Flash", tier: "openrouter" },
+  // Free tier — responds even with $0 OpenRouter balance
+  { id: "openrouter/nemotron-free", label: "Nemotron Ultra (Free)", tier: "free" },
 ] as const;
 
 export type ModelId = (typeof MODELS)[number]["id"];
@@ -64,10 +66,25 @@ export function useSelectedModel(): [ModelId, (id: ModelId) => void] {
 type ModelSelectorProps = {
   className?: string;
   size?: "sm" | "default";
+  /**
+   * Controlled mode: pass both so the parent owns the selection. Without
+   * these, two components calling useSelectedModel() hold independent
+   * useState copies — the dropdown updates its own copy while the chat
+   * panel keeps sending the stale one.
+   */
+  value?: ModelId;
+  onValueChange?: (id: ModelId) => void;
 };
 
-export function ModelSelector({ className, size = "sm" }: ModelSelectorProps) {
-  const [model, setModel] = useSelectedModel();
+export function ModelSelector({
+  className,
+  size = "sm",
+  value,
+  onValueChange,
+}: ModelSelectorProps) {
+  const [internalModel, setInternalModel] = useSelectedModel();
+  const model = value ?? internalModel;
+  const setModel = onValueChange ?? setInternalModel;
 
   return (
     <Select
@@ -82,6 +99,15 @@ export function ModelSelector({ className, size = "sm" }: ModelSelectorProps) {
         <SelectValue placeholder="Model" />
       </SelectTrigger>
       <SelectContent>
+        <div className="px-2 py-1 text-[10px] uppercase tracking-wider text-[color:var(--color-brand-success)]">
+          Free
+        </div>
+        {MODELS.filter((m) => m.tier === "free").map((m) => (
+          <SelectItem key={m.id} value={m.id}>
+            {m.label}
+          </SelectItem>
+        ))}
+        <div className="border-t border-border my-1 mx-2" />
         {MODELS.filter((m) => m.tier === "frontier").map((m) => (
           <SelectItem key={m.id} value={m.id}>
             {m.label}

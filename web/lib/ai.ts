@@ -46,6 +46,8 @@ export const MODEL_MAP = {
   'openrouter/llama-3.3-70b': openrouter('meta-llama/llama-3.3-70b-instruct'),
   // gemini-2.0-flash-001 was delisted from OpenRouter; 2.5-flash is the stable successor
   'openrouter/gemini-flash': openrouter('google/gemini-2.5-flash'),
+  // :free tier — works even with $0 OpenRouter credits (rate-limited ~50 req/day)
+  'openrouter/nemotron-free': openrouter('nvidia/nemotron-3-ultra-550b-a55b:free'),
 } as const
 
 export type ModelId = keyof typeof MODEL_MAP
@@ -64,6 +66,7 @@ const MODEL_PROVIDER: Record<ModelId, Provider> = {
   'openrouter/deepseek-v3': 'openrouter',
   'openrouter/llama-3.3-70b': 'openrouter',
   'openrouter/gemini-flash': 'openrouter',
+  'openrouter/nemotron-free': 'openrouter',
 }
 
 const PROVIDER_ENV_VAR: Record<Provider, string> = {
@@ -91,6 +94,7 @@ export const MODEL_LABELS: Record<ModelId, string> = {
   'openrouter/deepseek-v3': 'DeepSeek V3 (OpenRouter)',
   'openrouter/llama-3.3-70b': 'Llama 3.3 70B (OpenRouter)',
   'openrouter/gemini-flash': 'Gemini Flash (OpenRouter)',
+  'openrouter/nemotron-free': 'Nemotron Ultra 550B (Free)',
 }
 
 /**
