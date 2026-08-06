@@ -402,11 +402,36 @@ export function pillarRaw(pillar: AssessmentPillar, scores: ScoreMap): number | 
 export interface ComputedScores {
   /** Rounded pillar scores for display (null = no data). */
   pillars: Record<AssessmentPillar, number | null>;
+  /** How many of the ten indicators in each pillar carry a score. */
+  pillarScoredCounts: Record<AssessmentPillar, number>;
   /** Composite CREAiT Score 0–100, weights renormalized over scored pillars. */
   creaitScore: number | null;
   band: string | null;
   scoredCount: number;
   naCount: number;
+}
+
+/**
+ * A pillar scored from fewer than this many indicators is reported as
+ * insufficient data rather than a number — two indicators out of ten can
+ * read as a strength when the pillar is actually unexamined.
+ */
+export const MIN_PILLAR_SAMPLE = 4;
+
+/** Engagements below this many resolved indicators are not report-ready. */
+export const MIN_REPORT_RESOLVED = 25;
+
+export function pillarScoredCount(
+  pillar: AssessmentPillar,
+  scores: ScoreMap
+): number {
+  let count = 0;
+  for (const ind of INDICATORS_BY_PILLAR[pillar]) {
+    const row = scores[ind.key];
+    if (!row || row.not_applicable || row.score === null) continue;
+    count += 1;
+  }
+  return count;
 }
 
 export function computeScores(scores: ScoreMap): ComputedScores {
@@ -415,12 +440,18 @@ export function computeScores(scores: ScoreMap): ComputedScores {
     systems: null,
     leverage: null,
   };
+  const pillarScoredCounts: Record<AssessmentPillar, number> = {
+    profit: 0,
+    systems: 0,
+    leverage: 0,
+  };
   let total = 0;
   let weightSum = 0;
 
   for (const { key, weight } of PILLARS) {
     const raw = pillarRaw(key, scores);
     pillars[key] = raw === null ? null : Math.round(raw);
+    pillarScoredCounts[key] = pillarScoredCount(key, scores);
     if (raw !== null) {
       total += raw * weight;
       weightSum += weight;
@@ -440,6 +471,7 @@ export function computeScores(scores: ScoreMap): ComputedScores {
 
   return {
     pillars,
+    pillarScoredCounts,
     creaitScore,
     band: creaitScore === null ? null : bandFor(creaitScore),
     scoredCount,

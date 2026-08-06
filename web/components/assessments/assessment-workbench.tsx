@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, FileText, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
@@ -30,6 +30,8 @@ import {
   formatMoney,
   formatPayback,
   INDICATORS_BY_PILLAR,
+  MIN_PILLAR_SAMPLE,
+  MIN_REPORT_RESOLVED,
   OVERLAY_FLAGS,
   paybackMonths,
   PILLARS,
@@ -39,10 +41,13 @@ import {
   type IndicatorDef,
 } from "@/lib/assessment-instrument";
 import {
+  appendPlanItem,
   deleteOpportunity,
+  removePlanItem,
   saveOpportunity,
   updateAssessment,
   upsertIndicatorScore,
+  type ActionResult,
   type AssessmentPatch,
 } from "@/lib/assessment-actions";
 import {
@@ -181,7 +186,12 @@ function IndicatorRow({
             }
           >
             <SelectTrigger className="w-full h-8 text-xs">
-              <SelectValue placeholder="Evidence" />
+              <SelectValue placeholder="Evidence">
+                {(value: unknown) =>
+                  EVIDENCE_OPTIONS.find((o) => o.value === value)?.label ??
+                  "Evidence"
+                }
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
               {EVIDENCE_OPTIONS.map((o) => (
@@ -471,8 +481,11 @@ export function AssessmentWorkbench({
   const [oppDialogOpen, setOppDialogOpen] = useState(false);
   const [editingOppId, setEditingOppId] = useState<string | null>(null);
   const [planDraft, setPlanDraft] = useState("");
+  const planQueue = useRef<Promise<void>>(Promise.resolve());
 
   const computed = useMemo(() => computeScores(scores), [scores]);
+  const resolvedCount = computed.scoredCount + computed.naCount;
+  const reportReady = resolvedCount >= MIN_REPORT_RESOLVED;
   const overlayFlags = useMemo(
     () => jsonToStrings(assessment.overlay_flags),
     [assessment.overlay_flags]
@@ -567,11 +580,45 @@ export function AssessmentWorkbench({
     void patchAssessment({ overlay_flags: next });
   }
 
+  /**
+   * Plan writes are queued so rapid entry can't interleave: each mutation
+   * waits for the previous one, and the server appends against the stored
+   * array rather than a client snapshot.
+   */
+  function queuePlanWrite(
+    run: () => Promise<ActionResult<{ assessment: CcAssessment }>>
+  ) {
+    planQueue.current = planQueue.current
+      .then(async () => {
+        const res = await run();
+        if (!res.ok) {
+          toast.error(res.error);
+          return;
+        }
+        setAssessment(res.data!.assessment);
+      })
+      .catch(() => {
+        toast.error("Could not save the plan item");
+      });
+  }
+
   function addPlanItem() {
     const item = planDraft.trim();
     if (!item) return;
     setPlanDraft("");
-    void patchAssessment({ plan_items: [...planItems, item] });
+    setAssessment((p) => ({
+      ...p,
+      plan_items: [...jsonToStrings(p.plan_items), item],
+    }));
+    queuePlanWrite(() => appendPlanItem(assessment.id, item));
+  }
+
+  function removePlanItemAt(item: string, index: number) {
+    setAssessment((p) => ({
+      ...p,
+      plan_items: jsonToStrings(p.plan_items).filter((_, i) => i !== index),
+    }));
+    queuePlanWrite(() => removePlanItem(assessment.id, item, index));
   }
 
   return (
@@ -645,6 +692,20 @@ export function AssessmentWorkbench({
         </div>
       </div>
 
+      {!reportReady && (
+        <div className="relative z-10 rounded-xl border border-[color:var(--color-brand-warning,#c98a2b)]/50 bg-[color:var(--color-brand-warning,#c98a2b)]/10 px-5 py-3.5">
+          <p className="text-sm font-semibold">
+            Not ready to deliver — {resolvedCount} of 30 indicators resolved
+          </p>
+          <p className="mt-1 text-xs text-muted-foreground leading-relaxed">
+            Below {MIN_REPORT_RESOLVED} the report reads as an unfinished
+            checklist, and pillar scores drawn from a handful of indicators
+            mislead. Score every indicator or mark it N/A with a reason before
+            this goes to a client.
+          </p>
+        </div>
+      )}
+
       {/* Sticky running score bar */}
       <div className="sticky top-2 z-20 rounded-xl border border-[color:var(--color-brand-fog)]/60 bg-[color:var(--color-brand-charcoal)]/95 backdrop-blur px-5 py-3.5 flex flex-wrap items-center gap-x-6 gap-y-2 shadow-lg">
         <div>
@@ -655,19 +716,34 @@ export function AssessmentWorkbench({
             CREAiT Score{computed.band ? ` · ${computed.band}` : ""}
           </span>
         </div>
-        {PILLARS.map((p) => (
-          <div
-            key={p.key}
-            className="rounded-lg bg-[color:var(--color-brand-slate)]/60 px-3 py-1.5 text-center"
-          >
-            <span className="block text-base font-bold tabular-nums">
-              {computed.pillars[p.key] ?? "—"}
-            </span>
-            <span className="text-[10px] text-muted-foreground">
-              {p.label} ({Math.round(p.weight * 100)}%)
-            </span>
-          </div>
-        ))}
+        {PILLARS.map((p) => {
+          const n = computed.pillarScoredCounts[p.key];
+          const thin = n > 0 && n < MIN_PILLAR_SAMPLE;
+          return (
+            <div
+              key={p.key}
+              className="rounded-lg bg-[color:var(--color-brand-slate)]/60 px-3 py-1.5 text-center"
+              title={
+                thin
+                  ? `Only ${n} of 10 ${p.label} indicators examined — too few to report as a pillar score`
+                  : undefined
+              }
+            >
+              <span
+                className={cn(
+                  "block text-base font-bold tabular-nums",
+                  thin && "text-muted-foreground/60"
+                )}
+              >
+                {computed.pillars[p.key] ?? "—"}
+                {thin && "*"}
+              </span>
+              <span className="text-[10px] text-muted-foreground">
+                {p.label} ({Math.round(p.weight * 100)}%) · {n}/10
+              </span>
+            </div>
+          );
+        })}
         <div className="rounded-lg bg-[color:var(--color-brand-slate)]/60 px-3 py-1.5 text-center">
           <span className="block text-base font-bold tabular-nums text-[color:var(--color-brand-success)]">
             {formatMoney(portfolio.adjExpected)}
@@ -1111,11 +1187,7 @@ export function AssessmentWorkbench({
               <button
                 type="button"
                 aria-label={`Remove plan item ${i + 1}`}
-                onClick={() =>
-                  void patchAssessment({
-                    plan_items: planItems.filter((_, idx) => idx !== i),
-                  })
-                }
+                onClick={() => removePlanItemAt(item, i)}
                 className="text-muted-foreground hover:text-[color:var(--color-brand-danger)] transition-colors shrink-0 mt-0.5"
               >
                 <Trash2 className="size-3.5" />

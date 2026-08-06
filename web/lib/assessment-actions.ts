@@ -21,7 +21,7 @@ import type {
   OpportunityConfidence,
 } from "@/lib/supabase/types";
 
-type ActionResult<T = undefined> =
+export type ActionResult<T = undefined> =
   | { ok: true; data?: T }
   | { ok: false; error: string };
 
@@ -191,6 +191,84 @@ export async function updateAssessment(
   if (error) return { ok: false, error: error.message };
   revalidate(id);
   return { ok: true, data: { assessment: data as CcAssessment } };
+}
+
+/**
+ * Plan items are edited one at a time, often in rapid succession at the end of
+ * a session. Sending the whole array from the client raced: a second write
+ * built from pre-first-write state silently dropped the earlier item. These two
+ * actions read the current array on the server and write the mutation, so each
+ * item survives regardless of how fast they arrive.
+ */
+function currentPlanItems(value: unknown): string[] {
+  if (!Array.isArray(value)) return [];
+  return value
+    .filter((v): v is string => typeof v === "string")
+    .map((v) => v.trim())
+    .filter(Boolean);
+}
+
+async function writePlanItems(
+  id: string,
+  orgId: string,
+  mutate: (items: string[]) => string[]
+): Promise<ActionResult<{ assessment: CcAssessment }>> {
+  const supabase = await createClient();
+  const { data: row, error: readError } = await supabase
+    .from("cc_assessments")
+    .select("plan_items")
+    .eq("id", id)
+    .eq("org_id", orgId)
+    .single();
+
+  if (readError) return { ok: false, error: readError.message };
+
+  const next = mutate(currentPlanItems((row as { plan_items: unknown }).plan_items));
+
+  const { data, error } = await supabase
+    .from("cc_assessments")
+    .update({ plan_items: next, updated_at: new Date().toISOString() })
+    .eq("id", id)
+    .eq("org_id", orgId)
+    .select("*")
+    .single();
+
+  if (error) return { ok: false, error: error.message };
+  revalidate(id);
+  return { ok: true, data: { assessment: data as CcAssessment } };
+}
+
+export async function appendPlanItem(
+  id: string,
+  item: string
+): Promise<ActionResult<{ assessment: CcAssessment }>> {
+  const ctx = await requireOrg();
+  if ("error" in ctx) return { ok: false, error: ctx.error };
+
+  const trimmed = item.trim();
+  if (!trimmed) return { ok: false, error: "Plan item is empty" };
+
+  return writePlanItems(id, ctx.orgId, (items) => [...items, trimmed]);
+}
+
+export async function removePlanItem(
+  id: string,
+  item: string,
+  index: number
+): Promise<ActionResult<{ assessment: CcAssessment }>> {
+  const ctx = await requireOrg();
+  if ("error" in ctx) return { ok: false, error: ctx.error };
+
+  return writePlanItems(id, ctx.orgId, (items) => {
+    // Prefer the exact index when it still holds the expected text; fall back
+    // to removing the first text match so a concurrent insert can't delete the
+    // wrong line.
+    if (items[index] === item) {
+      return items.filter((_, i) => i !== index);
+    }
+    const match = items.indexOf(item);
+    return match === -1 ? items : items.filter((_, i) => i !== match);
+  });
 }
 
 export async function deleteAssessment(id: string): Promise<ActionResult> {

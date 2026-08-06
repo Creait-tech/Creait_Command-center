@@ -10,6 +10,7 @@ import {
   formatMoney,
   formatPayback,
   INDICATORS_BY_PILLAR,
+  MIN_PILLAR_SAMPLE,
   OVERLAY_FLAGS,
   paybackMonths,
   PILLARS,
@@ -17,6 +18,14 @@ import {
   SCALE_LABELS,
   toScoreMap,
 } from "@/lib/assessment-instrument";
+
+/**
+ * The template supplies the quotation marks around the owner's verbatim, so
+ * strip any the advisor typed — otherwise the cover renders ""like this"".
+ */
+function unquote(value: string): string {
+  return value.trim().replace(/^["'“”‘’]+|["'“”‘’]+$/g, "").trim();
+}
 import type {
   CcAssessment,
   CcAssessmentOpportunity,
@@ -352,8 +361,8 @@ export default async function ExecutiveBlueprintPage({
         {assessment.owner_belief && (
           <p style={{ fontSize: 13, color: muted, marginTop: 20, lineHeight: 1.6 }}>
             <b style={{ color: ink }}>What you told us:</b>{" "}
-            &ldquo;{assessment.owner_belief}&rdquo; — this report tests that
-            belief against the evidence.
+            &ldquo;{unquote(assessment.owner_belief)}&rdquo; — this report tests
+            that belief against the evidence.
           </p>
         )}
       </section>
@@ -374,7 +383,17 @@ export default async function ExecutiveBlueprintPage({
           An indicator we did not examine says so — nothing here is assumed.
         </p>
 
-        {PILLARS.map((pillar) => (
+        {PILLARS.map((pillar) => {
+          const examined = computed.pillarScoredCounts[pillar.key];
+          const thinPillar = examined > 0 && examined < MIN_PILLAR_SAMPLE;
+          const unexamined = INDICATORS_BY_PILLAR[pillar.key].filter((ind) => {
+            const row = scores[ind.key];
+            return !row || (!row.not_applicable && row.score === null);
+          });
+          const shown = INDICATORS_BY_PILLAR[pillar.key].filter(
+            (ind) => !unexamined.includes(ind)
+          );
+          return (
           <div key={pillar.key} className="avoid-break" style={{ marginTop: 22 }}>
             <p style={{ fontSize: 14, fontWeight: 800, color: blue }}>
               {pillar.label}{" "}
@@ -382,8 +401,18 @@ export default async function ExecutiveBlueprintPage({
                 — {pillar.question}
               </span>
               <span style={{ float: "right", color: ink }}>
-                {computed.pillars[pillar.key] ?? "not examined"}
+                {examined === 0
+                  ? "not examined"
+                  : thinPillar
+                    ? `insufficient data (${examined} of 10)`
+                    : computed.pillars[pillar.key]}
               </span>
+            </p>
+            <p style={{ fontSize: 11, color: muted, marginTop: 2 }}>
+              {examined} of 10 indicators examined
+              {thinPillar
+                ? " — too few to state a pillar score; treat the rows below as observations, not a verdict."
+                : ""}
             </p>
             <table style={{ width: "100%", borderCollapse: "collapse", marginTop: 8, fontSize: 12 }}>
               <thead>
@@ -395,7 +424,7 @@ export default async function ExecutiveBlueprintPage({
                 </tr>
               </thead>
               <tbody>
-                {INDICATORS_BY_PILLAR[pillar.key].map((ind) => {
+                {shown.map((ind) => {
                   const row = scores[ind.key];
                   const isNa = row?.not_applicable ?? false;
                   const score = isNa ? null : row?.score ?? null;
@@ -407,9 +436,7 @@ export default async function ExecutiveBlueprintPage({
                       <td style={tdStyle}>
                         {isNa
                           ? "N/A (excluded)"
-                          : score === null
-                            ? "not examined"
-                            : `${score} · ${SCALE_LABELS[score]}`}
+                          : `${score} · ${SCALE_LABELS[score as 0 | 1 | 2 | 3 | 4]}`}
                       </td>
                       <td style={tdStyle}>
                         {row && !isNa && score !== null
@@ -422,10 +449,23 @@ export default async function ExecutiveBlueprintPage({
                     </tr>
                   );
                 })}
+                {unexamined.length > 0 && (
+                  <tr>
+                    <td
+                      colSpan={4}
+                      style={{ ...tdStyle, color: muted, fontStyle: "italic" }}
+                    >
+                      {unexamined.length} indicator
+                      {unexamined.length > 1 ? "s" : ""} not examined in this
+                      engagement: {unexamined.map((i) => i.key).join(", ")}
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
-        ))}
+          );
+        })}
       </section>
 
       {/* ── Primary constraint ────────────────────────────────────────── */}
@@ -438,7 +478,7 @@ export default async function ExecutiveBlueprintPage({
           <div style={{ marginTop: 16 }}>
             {assessment.owner_belief && (
               <ConstraintBlock label="You said">
-                &ldquo;{assessment.owner_belief}&rdquo;
+                &ldquo;{unquote(assessment.owner_belief)}&rdquo;
               </ConstraintBlock>
             )}
             {assessment.constraint_symptoms && (
@@ -561,7 +601,10 @@ export default async function ExecutiveBlueprintPage({
                     {opp.months_to_benefit !== null && (
                       <tr>
                         <td style={mathLabel}>Time to first benefit</td>
-                        <td style={mathValue}>{opp.months_to_benefit} months</td>
+                        <td style={mathValue}>
+                          {opp.months_to_benefit}{" "}
+                          {opp.months_to_benefit === 1 ? "month" : "months"}
+                        </td>
                       </tr>
                     )}
                   </tbody>
@@ -648,8 +691,9 @@ export default async function ExecutiveBlueprintPage({
         )}
         {activeWarnings.length > 0 && (
           <p style={{ fontSize: 12, color: muted, marginTop: 16, lineHeight: 1.6 }}>
-            Note: while the critical constraint warning
-            {activeWarnings.length > 1 ? "s are" : " is"} active, growth
+            Note: while the critical constraint{" "}
+            {activeWarnings.length > 1 ? "warnings are" : "warning is"} active,
+            growth
             initiatives that depend on the weak foundation carry a
             &ldquo;Prepare First&rdquo; label — foundation work comes first.
           </p>
@@ -698,8 +742,9 @@ export default async function ExecutiveBlueprintPage({
             lineHeight: 1.6,
           }}
         >
-          <b>The credit, plainly:</b> your diagnostic fee returns as 50%
-          credit on everything we build, until it&apos;s used up.
+          <b>The credit, plainly:</b>{" "}
+          your diagnostic fee returns as 50% credit on everything we build,
+          until it&apos;s used up.
         </div>
         <p style={{ fontSize: 13.5, lineHeight: 1.7, marginTop: 24 }}>
           You don&apos;t need more hustle. You need cleaner systems and
