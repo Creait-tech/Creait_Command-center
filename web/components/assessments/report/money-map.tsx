@@ -27,8 +27,8 @@ export function MoneyMap({
 
   if (rows.length === 0) return null;
 
-  const ROW = 52;
-  const AXIS = 26;
+  const ROW = 50;
+  const AXIS = 34;
   const H = rows.length * ROW + AXIS;
   const domainMax = niceMax(
     Math.max(...rows.map((o) => o.annual_high ?? o.annual_expected ?? 0))
@@ -148,7 +148,7 @@ export function MoneyMap({
         <text
           key={`t${i}`}
           x={i === 0 ? 0 : i === ticks.length - 1 ? VB_W - 2 : x(t)}
-          y={rows.length * ROW + 16}
+          y={rows.length * ROW + 15}
           textAnchor={i === 0 ? "start" : i === ticks.length - 1 ? "end" : "middle"}
           fontSize={9}
           fill={T.muted}

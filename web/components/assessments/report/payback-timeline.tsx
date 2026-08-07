@@ -50,7 +50,7 @@ export function PaybackTimeline({ rows }: { rows: PaybackRow[] }) {
 
   const LEGEND = 20;
   const ROW = 48;
-  const AXIS = 28;
+  const AXIS = 32;
   const H = LEGEND + rows.length * ROW + AXIS;
 
   const maxMonth = Math.max(...rows.map((r) => r.paidBackAt));
