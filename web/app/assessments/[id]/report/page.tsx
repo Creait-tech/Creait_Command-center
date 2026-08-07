@@ -615,16 +615,22 @@ export default async function ExecutiveBlueprintPage({
 
         {/* The money map */}
         {opportunities.length > 0 && (
-          <div className="avoid-break" style={{ marginTop: 20 }}>
-            <p style={labelCap}>
-              {`Where the money is — ${opportunities.length} priced initiative${
-                opportunities.length === 1 ? "" : "s"
-              }, ranked by expected annual impact`}
-            </p>
-            <div style={{ marginTop: 12 }}>
-              <MoneyMap opportunities={opportunities} />
+          <div style={{ marginTop: 20 }}>
+            {/* The chart must never split; the total beneath it may reflow, so
+                they take separate break scopes. One avoid-break around both
+                pushed the whole exhibit to a fresh sheet over a few pixels. */}
+            <div className="avoid-break">
+              <p style={labelCap}>
+                {`Where the money is — ${opportunities.length} priced initiative${
+                  opportunities.length === 1 ? "" : "s"
+                }, ranked by expected annual impact`}
+              </p>
+              <div style={{ marginTop: 12 }}>
+                <MoneyMap opportunities={opportunities} />
+              </div>
             </div>
             <div
+              className="avoid-break"
               style={{
                 borderTop: `2px solid ${ink}`,
                 marginTop: 12,
