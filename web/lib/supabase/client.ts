@@ -27,10 +27,33 @@ import type { Database } from "./types";
  * outcome for a signed-out caller.
  */
 type ClerkGlobal = {
+  loaded?: boolean;
+  load?: () => Promise<unknown>;
   session?: {
     getToken: (options?: { template?: string }) => Promise<string | null>;
   };
 };
+
+/**
+ * Clerk attaches itself to `window` asynchronously. A request issued before
+ * it finishes loading would get a null token and be treated as anonymous —
+ * and an anonymous DELETE or UPDATE does not error, it simply matches zero
+ * rows and reports success. Waiting for `load()` closes that window so a
+ * failure can never masquerade as a no-op.
+ */
+async function clerkToken(): Promise<string | null> {
+  if (typeof window === "undefined") return null;
+  const clerk = (window as unknown as { Clerk?: ClerkGlobal }).Clerk;
+  if (!clerk) return null;
+  try {
+    if (!clerk.loaded && typeof clerk.load === "function") await clerk.load();
+    // Template "supabase" is what mints the org_id claim; a default token
+    // authenticates the user but carries no org, so RLS would still deny.
+    return (await clerk.session?.getToken({ template: "supabase" })) ?? null;
+  } catch {
+    return null;
+  }
+}
 
 export function createBrowserClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -50,16 +73,6 @@ export function createBrowserClient() {
       autoRefreshToken: false,
       detectSessionInUrl: false,
     },
-    accessToken: async () => {
-      if (typeof window === "undefined") return null;
-      const clerk = (window as unknown as { Clerk?: ClerkGlobal }).Clerk;
-      try {
-        // Template "supabase" is what mints the org_id claim; a default token
-        // authenticates the user but carries no org, so RLS would still deny.
-        return (await clerk?.session?.getToken({ template: "supabase" })) ?? null;
-      } catch {
-        return null;
-      }
-    },
+    accessToken: clerkToken,
   });
 }

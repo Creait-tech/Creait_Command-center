@@ -130,9 +130,29 @@ export function TodosView({ initialTodos, members, orgId }: Props) {
   async function remove(id: string) {
     if (!confirm("Delete this To-Do?")) return;
     const supabase = createClient();
-    const { error } = await supabase.from("cc_todos").delete().eq("id", id);
-    if (error) toast.error(error.message);
-    else toast.success("Deleted");
+    // `.select()` makes the outcome observable. A delete the row-level
+    // security policy rejects does not raise — it matches zero rows and
+    // returns success, so without this the row silently stays on screen and
+    // the button looks broken. Reporting "deleted" for a delete that did not
+    // happen is worse than reporting the failure.
+    const { data, error } = await supabase
+      .from("cc_todos")
+      .delete()
+      .eq("id", id)
+      .select("id");
+
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    if (!data || data.length === 0) {
+      toast.error(
+        "Couldn't delete — your session doesn't have permission for this To-Do. Try reloading the page."
+      );
+      return;
+    }
+    setTodos((p) => p.filter((x) => x.id !== id));
+    toast.success("Deleted");
   }
 
   return (
