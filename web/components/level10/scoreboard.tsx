@@ -1,7 +1,19 @@
 "use client";
 
 import { useState, useEffect, useRef, useMemo } from "react";
-import { Check, X, Info, TrendingUp, ChevronDown } from "lucide-react";
+import {
+  Check,
+  X,
+  Info,
+  TrendingUp,
+  ChevronDown,
+  MoreVertical,
+  Pencil,
+  Plus,
+  Trash2,
+  AlertTriangle,
+  RefreshCw,
+} from "lucide-react";
 import { toast } from "sonner";
 import {
   ResponsiveContainer,
@@ -17,9 +29,24 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
 import { useActiveOrgId } from "@/lib/use-active-org";
+import { cn } from "@/lib/utils";
 import type { Kpi, KpiHistory } from "@/lib/supabase/types";
+import { KpiFormDialog } from "./kpi-form-dialog";
+import {
+  formatKpiValue,
+  formatTarget,
+  kpiWriteMode,
+  writeModeCopy,
+  type KpiWriteMode,
+} from "./kpi-meta";
 
 interface ScoreboardProps {
   initialKpis: Kpi[];
@@ -32,24 +59,6 @@ interface TrendPoint {
   t: number;
   recorded_at: string;
   value: number;
-}
-
-function formatKpiValue(value: number, unit: string | null): string {
-  if (unit === "USD" || unit === "$") {
-    return `$${value.toLocaleString("en-US", { maximumFractionDigits: 0 })}`;
-  }
-  if (unit === "%") {
-    return `${value.toLocaleString("en-US")}%`;
-  }
-  if (unit) {
-    return `${value.toLocaleString("en-US")} ${unit}`;
-  }
-  return value.toLocaleString("en-US");
-}
-
-function formatTarget(target: number | null, unit: string | null): string {
-  if (target == null) return "";
-  return formatKpiValue(target, unit);
 }
 
 function formatRelative(value: string | null): string {
@@ -73,9 +82,15 @@ function formatRelative(value: string | null): string {
  * trust — the previous number stays on the card. Rendered in the same muted
  * grey as a fresh one, a two-day-old figure reads as current, which is how a
  * scoreboard quietly starts lying. Colour the timestamp by age instead.
+ *
+ * Keyed on write mode rather than raw `source`: an age alarm only means
+ * something for a KPI a job actually writes. A row marked `ghl` that no job
+ * touches (its name isn't in the sync's list) would otherwise show a
+ * permanent red "Never synced" that reads as an outage, when the real story
+ * is "nothing feeds this" — which the badge beside it now states outright.
  */
-function freshnessClass(kpi: Kpi): string {
-  if (kpi.source === "manual") return "text-muted-foreground";
+function freshnessClass(kpi: Kpi, mode: KpiWriteMode): string {
+  if (mode !== "synced" && mode !== "shadowed") return "text-muted-foreground";
   if (!kpi.last_synced_at)
     return "text-[color:var(--color-brand-danger)] font-medium";
   const then = new Date(kpi.last_synced_at).getTime();
@@ -86,8 +101,10 @@ function freshnessClass(kpi: Kpi): string {
   return "text-muted-foreground";
 }
 
-function freshnessTitle(kpi: Kpi): string {
-  if (kpi.source === "manual") return "Entered manually";
+function freshnessTitle(kpi: Kpi, mode: KpiWriteMode): string {
+  if (mode === "manual") return "Entered manually";
+  if (mode === "declared")
+    return "No background job writes a KPI with this name, so this stamp will not advance.";
   if (!kpi.last_synced_at)
     return "This KPI has never synced — no data source is feeding it yet.";
   const hours = (Date.now() - new Date(kpi.last_synced_at).getTime()) / 3_600_000;
@@ -256,20 +273,33 @@ function TrendChart({ points, unit }: TrendChartProps) {
   );
 }
 
+const BADGE_TONE: Record<"neutral" | "auto" | "warn", string> = {
+  neutral:
+    "bg-[color:var(--color-brand-fog)]/40 text-[color:var(--color-brand-mist)]",
+  auto: "bg-[color:var(--color-brand-electric)]/15 text-[color:var(--color-brand-electric)]",
+  warn: "bg-[color:var(--color-brand-warning)]/15 text-[color:var(--color-brand-warning)]",
+};
+
 interface KpiCardProps {
   kpi: Kpi;
   points: TrendPoint[];
   onSave: (id: string, newValue: number) => Promise<void>;
+  onEdit: (kpi: Kpi) => void;
+  onDelete: (kpi: Kpi) => Promise<void>;
 }
 
-function KpiCard({ kpi, points, onSave }: KpiCardProps) {
+function KpiCard({ kpi, points, onSave, onEdit, onDelete }: KpiCardProps) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState<string>(String(kpi.value));
   const [saving, setSaving] = useState(false);
   const [showTrend, setShowTrend] = useState(false);
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const hasTrend = points.length >= 2;
+  const mode = kpiWriteMode(kpi);
+  const copy = writeModeCopy(mode, kpi.source);
 
   useEffect(() => {
     if (editing && inputRef.current) {
@@ -317,6 +347,16 @@ function KpiCard({ kpi, points, onSave }: KpiCardProps) {
     }
   }
 
+  async function confirmDelete() {
+    setDeleting(true);
+    try {
+      await onDelete(kpi);
+    } finally {
+      setDeleting(false);
+      setConfirmingDelete(false);
+    }
+  }
+
   return (
     <Card>
       <CardContent className="space-y-3">
@@ -324,15 +364,39 @@ function KpiCard({ kpi, points, onSave }: KpiCardProps) {
           <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
             {kpi.name}
           </p>
-          {kpi.description && (
-            <span
-              title={kpi.description}
-              aria-label={kpi.description}
-              className="text-[color:var(--color-brand-mist)] cursor-help"
-            >
-              <Info className="size-3.5" />
-            </span>
-          )}
+          <div className="flex items-center gap-1 shrink-0">
+            {kpi.description && (
+              <span
+                title={kpi.description}
+                aria-label={kpi.description}
+                className="text-[color:var(--color-brand-mist)] cursor-help"
+              >
+                <Info className="size-3.5" />
+              </span>
+            )}
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                <Button
+                  variant="ghost"
+                  size="icon-xs"
+                  aria-label={`Actions for ${kpi.name}`}
+                >
+                  <MoreVertical className="size-3.5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => onEdit(kpi)}>
+                  <Pencil className="size-3.5" /> Edit KPI
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  variant="destructive"
+                  onClick={() => setConfirmingDelete(true)}
+                >
+                  <Trash2 className="size-3.5" /> Delete KPI
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
 
         <div className="flex items-end gap-2">
@@ -384,6 +448,15 @@ function KpiCard({ kpi, points, onSave }: KpiCardProps) {
           )}
         </div>
 
+        {/* Typing a number into a machine-written KPI is the one edit that
+            silently undoes itself. Say so at the moment of typing, not after. */}
+        {editing && copy.editWarning && (
+          <div className="flex gap-1.5 rounded-md border border-[color:var(--color-brand-warning)]/40 bg-[color:var(--color-brand-warning)]/10 px-2 py-1.5 text-[11px] leading-relaxed text-[color:var(--color-brand-warning)]">
+            <AlertTriangle className="size-3.5 shrink-0 mt-0.5" />
+            <span>{copy.editWarning}</span>
+          </div>
+        )}
+
         {/* Sparkline / empty trend state */}
         {hasTrend ? (
           <Sparkline points={points} />
@@ -421,12 +494,66 @@ function KpiCard({ kpi, points, onSave }: KpiCardProps) {
           </div>
         )}
 
-        <div className="flex items-center justify-between text-xs text-muted-foreground">
-          <span className="capitalize">{kpi.source}</span>
-          <span className={freshnessClass(kpi)} title={freshnessTitle(kpi)}>
-            {formatRelative(kpi.last_synced_at)}
-          </span>
-        </div>
+        {confirmingDelete ? (
+          <div className="space-y-2 rounded-lg border border-[color:var(--color-brand-danger)]/40 bg-[color:var(--color-brand-danger)]/10 p-2.5">
+            <p className="text-[11px] leading-relaxed text-[color:var(--color-brand-danger)]">
+              Delete <span className="font-semibold">{kpi.name}</span>? Its
+              recorded history goes with it
+              {points.length > 0 && (
+                <>
+                  {" "}
+                  — including the{" "}
+                  <span className="font-data tabular-nums">{points.length}</span>{" "}
+                  {points.length === 1 ? "point" : "points"} behind this trend
+                </>
+              )}
+              . This can&apos;t be undone.
+            </p>
+            <div className="flex justify-end gap-2">
+              <Button
+                size="xs"
+                variant="outline"
+                onClick={() => setConfirmingDelete(false)}
+                disabled={deleting}
+              >
+                Cancel
+              </Button>
+              <Button
+                size="xs"
+                variant="destructive"
+                onClick={() => void confirmDelete()}
+                disabled={deleting}
+              >
+                {deleting ? "Deleting…" : "Delete KPI"}
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <div className="flex items-center justify-between gap-2 text-xs text-muted-foreground">
+            <span
+              title={copy.detail}
+              className={cn(
+                "inline-flex items-center gap-1 rounded-full px-1.5 py-0.5 text-[10px] font-medium cursor-help",
+                BADGE_TONE[copy.tone]
+              )}
+            >
+              {copy.tone === "warn" ? (
+                <AlertTriangle className="size-3" />
+              ) : copy.tone === "auto" ? (
+                <RefreshCw className="size-3" />
+              ) : (
+                <Pencil className="size-3" />
+              )}
+              {copy.badge}
+            </span>
+            <span
+              className={freshnessClass(kpi, mode)}
+              title={freshnessTitle(kpi, mode)}
+            >
+              {formatRelative(kpi.last_synced_at)}
+            </span>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
@@ -436,8 +563,22 @@ export function Scoreboard({ initialKpis, initialHistory }: ScoreboardProps) {
   const orgId = useActiveOrgId();
   const [kpis, setKpis] = useState<Kpi[]>(sortKpis(initialKpis));
   const [history, setHistory] = useState<KpiHistory[]>(initialHistory);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [editingKpi, setEditingKpi] = useState<Kpi | null>(null);
+  // Bumped only when a session *starts*, so the form remounts fresh on open
+  // but is left alone while the dialog plays its close animation.
+  const [sessionKey, setSessionKey] = useState(0);
 
   const historyByKpi = useMemo(() => groupHistory(history), [history]);
+
+  // New KPIs append to the end of the board unless the operator overrides it.
+  const nextSortOrder = useMemo(
+    () =>
+      kpis.length === 0
+        ? 0
+        : Math.max(...kpis.map((k) => k.sort_order)) + 1,
+    [kpis]
+  );
 
   useEffect(() => {
     const supabase = createClient();
@@ -496,6 +637,7 @@ export function Scoreboard({ initialKpis, initialHistory }: ScoreboardProps) {
   async function handleSave(id: string, newValue: number) {
     const supabase = createClient();
     const previous = kpis;
+    const target = kpis.find((k) => k.id === id);
 
     // Optimistic update.
     setKpis((prev) =>
@@ -526,27 +668,115 @@ export function Scoreboard({ initialKpis, initialHistory }: ScoreboardProps) {
       console.error("KPI history insert failed:", historyError.message);
     }
 
+    // A value typed into a KPI the sync owns will not survive the hour. The
+    // save genuinely succeeded, so this is a warning, not an error.
+    const mode = target ? kpiWriteMode(target) : "manual";
+    if (mode === "synced" || mode === "shadowed") {
+      toast.warning("Saved — but the hourly GHL sync will overwrite this value");
+      return;
+    }
     toast.success("KPI updated");
   }
 
-  if (kpis.length === 0) {
-    return (
-      <div className="rounded-xl border border-dashed border-[color:var(--color-brand-fog)] flex items-center justify-center py-12 text-sm text-muted-foreground">
-        No KPIs configured yet.
-      </div>
+  function openCreate() {
+    setEditingKpi(null);
+    setSessionKey((n) => n + 1);
+    setDialogOpen(true);
+  }
+
+  function openEdit(kpi: Kpi) {
+    setEditingKpi(kpi);
+    setSessionKey((n) => n + 1);
+    setDialogOpen(true);
+  }
+
+  function handleSaved(saved: Kpi, mode: "create" | "edit") {
+    setKpis((prev) =>
+      mode === "create"
+        ? sortKpis([...prev, saved])
+        : sortKpis(prev.map((k) => (k.id === saved.id ? saved : k)))
     );
   }
 
+  async function handleDelete(kpi: Kpi) {
+    const supabase = createClient();
+    const previousKpis = kpis;
+    const previousHistory = history;
+
+    setKpis((prev) => prev.filter((k) => k.id !== kpi.id));
+    setHistory((prev) => prev.filter((h) => h.kpi_id !== kpi.id));
+
+    // `cc_kpi_history.kpi_id` is FK'd to `kpis(id) ON DELETE CASCADE`
+    // (constraint `cc_kpi_history_kpi_id_fkey`, verified against the live
+    // schema), so Postgres removes the trend rows with the KPI — no orphans,
+    // and no second round-trip. Deleting history first would be worse: if the
+    // KPI delete then failed we'd have destroyed the trend of a row that
+    // still exists. Cascades run as the referencing table's owner and are not
+    // filtered by RLS, so this works from the browser client.
+    const { error } = await supabase
+      .from("kpis")
+      .delete()
+      .eq("id", kpi.id)
+      .eq("org_id", orgId);
+
+    if (error) {
+      setKpis(previousKpis);
+      setHistory(previousHistory);
+      toast.error(`Failed to delete: ${error.message}`);
+      return;
+    }
+
+    toast.success(`"${kpi.name}" deleted`);
+  }
+
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
-      {kpis.map((kpi) => (
-        <KpiCard
-          key={kpi.id}
-          kpi={kpi}
-          points={historyByKpi.get(kpi.id) ?? []}
-          onSave={handleSave}
-        />
-      ))}
+    <div className="space-y-4">
+      <div className="flex items-center justify-between gap-3 flex-wrap">
+        <p className="text-xs text-muted-foreground">
+          The numbers you review every week. Click a value to enter this week&apos;s
+          figure.
+        </p>
+        <Button size="sm" onClick={openCreate}>
+          <Plus className="size-4" />
+          Add KPI
+        </Button>
+      </div>
+
+      {kpis.length === 0 ? (
+        <div className="rounded-xl border border-dashed border-[color:var(--color-brand-fog)] flex flex-col items-center justify-center py-12 text-center">
+          <p className="text-sm font-medium">No KPIs on the scoreboard</p>
+          <p className="text-xs text-muted-foreground mt-1 max-w-md">
+            Add the handful of numbers this team measures every week — 5 to 15 is
+            the EOS rule of thumb, each with an owner and a target.
+          </p>
+          <Button size="sm" onClick={openCreate} className="mt-3">
+            <Plus className="size-4" />
+            Add your first KPI
+          </Button>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+          {kpis.map((kpi) => (
+            <KpiCard
+              key={kpi.id}
+              kpi={kpi}
+              points={historyByKpi.get(kpi.id) ?? []}
+              onSave={handleSave}
+              onEdit={openEdit}
+              onDelete={handleDelete}
+            />
+          ))}
+        </div>
+      )}
+
+      <KpiFormDialog
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        kpi={editingKpi}
+        nextSortOrder={nextSortOrder}
+        sessionKey={sessionKey}
+        onSaved={handleSaved}
+      />
     </div>
   );
 }
