@@ -211,68 +211,81 @@ export function IndicatorCard({
           )}
         </div>
 
-        <div className="mt-2.5 flex flex-wrap items-stretch gap-1.5">
-          {[0, 1, 2, 3, 4].map((n) => {
-            const selected = !isNa && score === n;
-            return (
-              <button
-                key={n}
-                type="button"
-                aria-pressed={selected}
-                onClick={() => {
-                  onChange({ score: n, not_applicable: false });
-                  setFlash(n);
-                }}
-                className={cn(
-                  "min-w-[104px] flex-1 rounded-md px-3 py-2.5 text-left transition-[background-color,color,box-shadow] duration-150 motion-reduce:transition-none",
-                  selected
-                    ? "bg-[color:var(--color-brand-electric)] text-white shadow-[0_1px_2px_rgba(0,0,0,0.4)]"
-                    : "bg-[color:var(--color-brand-slate)]/60 text-muted-foreground hover:bg-[color:var(--color-brand-fog)]/70 hover:text-foreground",
-                  flash === n &&
-                    "ring-2 ring-[color:var(--color-brand-electric-glow)] ring-offset-2 ring-offset-background"
-                )}
-              >
-                <span className="block text-lg font-semibold tabular-nums leading-none">
-                  {n}
-                </span>
-                <span
+        {/*
+          Six equal cells that never wrap: a scale that reflows into two rows
+          stops reading as a scale. The word under each numeral appears only
+          when the column is wide enough to hold "Established" without
+          truncating — below that the numeral carries it, the anchors below
+          still name 0, 2 and 4, and every button keeps its full label for
+          screen readers and on hover.
+        */}
+        <div className="@container mt-2.5">
+          <div className="grid grid-cols-6 gap-1.5">
+            {[0, 1, 2, 3, 4].map((n) => {
+              const selected = !isNa && score === n;
+              return (
+                <button
+                  key={n}
+                  type="button"
+                  aria-pressed={selected}
+                  aria-label={`${n} — ${SCALE_LABELS[n]}`}
+                  title={`${n} · ${SCALE_LABELS[n]}`}
+                  onClick={() => {
+                    onChange({ score: n, not_applicable: false });
+                    setFlash(n);
+                  }}
                   className={cn(
-                    "mt-1 block text-[11px] leading-none",
-                    selected ? "text-white/80" : "text-muted-foreground/80"
+                    "flex min-h-11 flex-col items-center justify-center rounded-md px-1 py-2 transition-[background-color,color,box-shadow] duration-150 motion-reduce:transition-none",
+                    selected
+                      ? "bg-[color:var(--color-brand-electric)] text-white shadow-[0_1px_2px_rgba(0,0,0,0.4)]"
+                      : "bg-[color:var(--color-brand-slate)]/60 text-muted-foreground hover:bg-[color:var(--color-brand-fog)]/70 hover:text-foreground",
+                    flash === n &&
+                      "ring-2 ring-[color:var(--color-brand-electric-glow)] ring-offset-2 ring-offset-background"
                   )}
                 >
-                  {SCALE_LABELS[n]}
-                </span>
-              </button>
-            );
-          })}
-          <button
-            type="button"
-            aria-pressed={isNa}
-            title="Not applicable — removed from the denominator, never counted as zero"
-            onClick={() => {
-              onChange({ score: null, not_applicable: !isNa });
-              setFlash("na");
-            }}
-            className={cn(
-              "min-w-[76px] rounded-md px-3 py-2.5 text-left transition-[background-color,color,box-shadow] duration-150 motion-reduce:transition-none",
-              isNa
-                ? "bg-[color:var(--color-brand-warning)] text-black"
-                : "bg-[color:var(--color-brand-slate)]/60 text-muted-foreground hover:bg-[color:var(--color-brand-fog)]/70 hover:text-foreground",
-              flash === "na" &&
-                "ring-2 ring-[color:var(--color-brand-warning)] ring-offset-2 ring-offset-background"
-            )}
-          >
-            <span className="block text-lg font-semibold leading-none">N/A</span>
-            <span
+                  <span className="text-lg font-semibold leading-none tabular-nums">
+                    {n}
+                  </span>
+                  <span
+                    className={cn(
+                      "mt-1 hidden text-[10.5px] leading-none @[30rem]:block",
+                      selected ? "text-white/80" : "text-muted-foreground/80"
+                    )}
+                  >
+                    {SCALE_LABELS[n]}
+                  </span>
+                </button>
+              );
+            })}
+            <button
+              type="button"
+              aria-pressed={isNa}
+              aria-label="Not applicable"
+              title="Not applicable — removed from the denominator, never counted as zero"
+              onClick={() => {
+                onChange({ score: null, not_applicable: !isNa });
+                setFlash("na");
+              }}
               className={cn(
-                "mt-1 block text-[11px] leading-none",
-                isNa ? "text-black/70" : "text-muted-foreground/80"
+                "flex min-h-11 flex-col items-center justify-center rounded-md px-1 py-2 transition-[background-color,color,box-shadow] duration-150 motion-reduce:transition-none",
+                isNa
+                  ? "bg-[color:var(--color-brand-warning)] text-black"
+                  : "bg-[color:var(--color-brand-slate)]/60 text-muted-foreground hover:bg-[color:var(--color-brand-fog)]/70 hover:text-foreground",
+                flash === "na" &&
+                  "ring-2 ring-[color:var(--color-brand-warning)] ring-offset-2 ring-offset-background"
               )}
             >
-              Excluded
-            </span>
-          </button>
+              <span className="text-lg font-semibold leading-none">N/A</span>
+              <span
+                className={cn(
+                  "mt-1 hidden text-[10.5px] leading-none @[30rem]:block",
+                  isNa ? "text-black/70" : "text-muted-foreground/80"
+                )}
+              >
+                Excluded
+              </span>
+            </button>
+          </div>
         </div>
 
         <dl className="mt-3 grid gap-x-6 gap-y-2.5 sm:grid-cols-3">
