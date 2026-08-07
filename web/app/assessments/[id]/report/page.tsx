@@ -5,6 +5,15 @@ import { auth } from "@clerk/nextjs/server";
 import { createClient } from "@/lib/supabase/server";
 import { getActiveOrgId } from "@/lib/active-org";
 import { ReportToolbar } from "@/components/assessments/print-button";
+import { CountUp } from "@/components/assessments/report/count-up";
+import { ScoreBandRail } from "@/components/assessments/report/score-band";
+import { PillarBars } from "@/components/assessments/report/pillar-bars";
+import { MoneyMap } from "@/components/assessments/report/money-map";
+import {
+  PaybackTimeline,
+  paybackRows,
+} from "@/components/assessments/report/payback-timeline";
+import { BleedProjection } from "@/components/assessments/report/bleed-projection";
 import {
   computeScores,
   EVIDENCE_LABELS,
@@ -12,6 +21,7 @@ import {
   formatPayback,
   INDICATORS,
   INDICATORS_BY_PILLAR,
+  MIN_PILLAR_SAMPLE,
   MIN_REPORT_RESOLVED,
   OVERLAY_FLAGS,
   paybackMonths,
@@ -21,13 +31,6 @@ import {
   toScoreMap,
 } from "@/lib/assessment-instrument";
 
-/**
- * The template supplies the quotation marks around the owner's verbatim, so
- * strip any the advisor typed — otherwise the cover renders ""like this"".
- */
-function unquote(value: string): string {
-  return value.trim().replace(/^["'“”‘’]+|["'“”‘’]+$/g, "").trim();
-}
 import type {
   CcAssessment,
   CcAssessmentOpportunity,
@@ -37,11 +40,26 @@ import type {
 export const dynamic = "force-dynamic";
 
 /**
+ * The template supplies the quotation marks around the owner's verbatim, so
+ * strip any the advisor typed — otherwise the cover renders ""like this"".
+ */
+function unquote(value: string): string {
+  return value.trim().replace(/^["'“”‘’]+|["'“”‘’]+$/g, "").trim();
+}
+
+/**
  * The Executive Blueprint — client-ready, print-optimized (browser
  * print → PDF is the delivery mechanism). Lives OUTSIDE the dashboard
  * route group so no app chrome ever prints. Honest by construction:
  * unscored indicators say "not examined", evidence confidence is
  * disclosed, and portfolio totals are overlap-adjusted, never raw sums.
+ *
+ * The page order is deliberate:
+ *   cover → the mirror (their words vs the evidence) → the one-page dashboard
+ *   → what waiting costs → the three things to start → then every working.
+ * Findings land first; the arithmetic is there to be checked, not waded
+ * through. Limitations are disclosed after the rigor has been shown rather
+ * than before it, and the document ends on the owner, never on a price list.
  */
 
 function jsonToStrings(value: unknown): string[] {
@@ -177,6 +195,59 @@ const REPORT_CSS = `
     .report-page thead { display: table-header-group; }
     .report-page h1, .report-page h2 { break-after: avoid; }
   }
+
+  /* ── Entrance sequence ──────────────────────────────────────────────────
+     The RESTING state of every animated element is the finished exhibit.
+     Keyframes supply only a "from", and only inside a screen + motion-welcome
+     query — so print, prefers-reduced-motion, and any engine that drops the
+     animation all land on a complete, correct chart rather than an empty one. */
+  @media screen and (prefers-reduced-motion: no-preference) {
+    .rp-grow-x {
+      transform-box: fill-box;
+      transform-origin: left center;
+      animation: rp-grow 820ms cubic-bezier(0.22, 1, 0.36, 1) both;
+      animation-delay: var(--d, 0ms);
+    }
+    @keyframes rp-grow { from { transform: scaleX(0); } }
+
+    .rp-fade {
+      animation: rp-fadein 460ms cubic-bezier(0.22, 1, 0.36, 1) both;
+      animation-delay: var(--d, 0ms);
+    }
+    @keyframes rp-fadein { from { opacity: 0; } }
+
+    .rp-seg {
+      transform-box: fill-box;
+      transform-origin: center center;
+      animation: rp-segin 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+      animation-delay: var(--d, 0ms);
+    }
+    @keyframes rp-segin { from { opacity: 0; transform: scaleY(0.3); } }
+
+    .rp-needle {
+      animation: rp-needlein 1000ms cubic-bezier(0.22, 1, 0.36, 1) both;
+      animation-delay: 300ms;
+    }
+    @keyframes rp-needlein {
+      from { opacity: 0; transform: translateX(var(--from, 0px)); }
+    }
+
+    .rp-rise {
+      animation: rp-risein 620ms cubic-bezier(0.22, 1, 0.36, 1) both;
+      animation-delay: var(--d, 0ms);
+    }
+    @keyframes rp-risein { from { opacity: 0; transform: translateY(10px); } }
+  }
+  @media print {
+    .rp-grow-x, .rp-fade, .rp-seg, .rp-needle, .rp-rise {
+      animation: none !important;
+      opacity: 1 !important;
+      transform: none !important;
+    }
+  }
+
+  /* A rule the owner writes on — the commitment device on "Start Monday". */
+  .rp-fill { flex: 1; border-bottom: 1px solid #cbd5e1; padding-bottom: 5px; }
 `;
 
 /**
@@ -279,10 +350,27 @@ export default async function ExecutiveBlueprintPage({
     .map((p) => `${p.label} (${computed.pillarScoredCounts[p.key]} of 10)`)
     .join(", ");
 
+  /** The lowest-scored indicators — the evidence standing behind the mirror. */
+  const weakest = INDICATORS.map((ind) => ({ ind, row: scores[ind.key] }))
+    .filter(
+      (r): r is { ind: (typeof INDICATORS)[number]; row: CcAssessmentScore } =>
+        Boolean(r.row) && !r.row.not_applicable && r.row.score !== null
+    )
+    .sort((a, b) => (a.row.score as number) - (b.row.score as number))
+    .slice(0, 3);
+
+  /** Ranked actions — the advisor's own ranking, re-presented, top three only. */
+  const topActions = opportunities.slice(0, 3);
+  const timeline = paybackRows(opportunities);
+  const showMirror = Boolean(
+    assessment.owner_belief || assessment.primary_constraint
+  );
+
   const blue = "#0284c7";
   const ink = "#111827";
   const muted = "#5b6675";
   const line = "#e4e9f0";
+  const tint = "#f4fafd";
 
   /** Repeated at the top of every printed page so no sheet can stand alone. */
   const pageBanners = (
@@ -338,174 +426,425 @@ export default async function ExecutiveBlueprintPage({
         </p>
       </section>
 
+      {/* ── The mirror ────────────────────────────────────────────────── */}
+      {showMirror && (
+        <section className="report-page">
+          {pageBanners}
+          <SectionHeading
+            title="What you told us, and what the evidence says"
+            deck="Every diagnostic starts with the owner's own diagnosis. Ours is only worth what you paid for it if it can disagree with you — and show its work."
+          />
+
+          {assessment.owner_belief && (
+            <div className="avoid-break" style={{ marginTop: 30 }}>
+              <p style={labelCap}>You said</p>
+              <blockquote
+                className="rp-rise"
+                style={{
+                  margin: "10px 0 0",
+                  fontSize: 25,
+                  lineHeight: 1.4,
+                  fontWeight: 600,
+                  color: ink,
+                  letterSpacing: "-0.012em",
+                }}
+              >
+                &ldquo;{unquote(assessment.owner_belief)}&rdquo;
+              </blockquote>
+            </div>
+          )}
+
+          {assessment.primary_constraint && (
+            <div
+              className="avoid-break rp-rise"
+              style={{
+                ["--d" as string]: "160ms",
+                border: "1px solid #c9e4f5",
+                background: tint,
+                borderRadius: 10,
+                padding: "18px 22px",
+                marginTop: 26,
+              }}
+            >
+              <p style={{ ...labelCap, color: blue }}>The evidence says</p>
+              <p style={{ fontSize: 17, lineHeight: 1.55, marginTop: 8, fontWeight: 500 }}>
+                {assessment.primary_constraint}
+              </p>
+            </div>
+          )}
+
+          {weakest.length > 0 && (
+            <div className="avoid-break" style={{ marginTop: 28 }}>
+              <p style={labelCap}>The weakest readings behind that finding</p>
+              <table
+                style={{
+                  width: "100%",
+                  borderCollapse: "collapse",
+                  marginTop: 10,
+                  fontSize: 12.5,
+                }}
+              >
+                <tbody>
+                  {weakest.map(({ ind, row }) => (
+                    <tr key={ind.key}>
+                      <td style={{ ...tdStyle, width: 40, fontWeight: 800, color: blue }}>
+                        {ind.key}
+                      </td>
+                      <td style={{ ...tdStyle, fontWeight: 600 }}>{ind.label}</td>
+                      <td style={{ ...tdStyle, width: 126 }}>
+                        {`${row.score} · ${SCALE_LABELS[row.score as 0 | 1 | 2 | 3 | 4]}`}
+                      </td>
+                      <td style={{ ...tdStyle, width: 104, color: muted }}>
+                        {EVIDENCE_LABELS[row.evidence_confidence]}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <p style={{ fontSize: 11, color: muted, marginTop: 8, lineHeight: 1.6 }}>
+                Scored 0–4 against written behavioral anchors. The last column
+                says how we know: Reported (you told us), Demonstrated (we
+                watched it work), Documented (we saw the record). We never score
+                an indicator we did not examine.
+              </p>
+            </div>
+          )}
+
+          {activeWarnings.length > 0 && (
+            <div
+              className="avoid-break"
+              style={{
+                border: "1px solid #f3c6bf",
+                background: "#fff6f4",
+                borderRadius: 10,
+                padding: "14px 18px",
+                marginTop: 24,
+              }}
+            >
+              <p style={{ fontSize: 12, fontWeight: 800, color: "#b03a2e" }}>
+                {`Critical constraint warning${
+                  activeWarnings.length > 1 ? "s" : ""
+                } — these sit alongside the score and are never averaged away:`}
+              </p>
+              <ul style={{ margin: "6px 0 0 18px", fontSize: 12.5, color: "#7f2d22", lineHeight: 1.6 }}>
+                {activeWarnings.map((w) => (
+                  <li key={w.key}>{w.label}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </section>
+      )}
+
       {/* ── Dashboard ─────────────────────────────────────────────────── */}
       <section className="report-page">
         {pageBanners}
-        <SectionHeading label="At a glance" title="The One-Page Dashboard" />
+        <SectionHeading
+          title="The One-Page Dashboard"
+          deck="Everything that matters on one sheet. Every number here is either measured or shown with its arithmetic."
+        />
 
-        <div style={{ display: "flex", gap: 32, alignItems: "flex-start", marginTop: 24 }}>
-          <div style={{ textAlign: "center", minWidth: 150 }}>
-            <p style={{ fontSize: 64, fontWeight: 800, color: blue, lineHeight: 1 }}>
-              {computed.creaitScore ?? "—"}
-            </p>
-            <p style={{ fontSize: 13, fontWeight: 700, color: ink, marginTop: 6 }}>
-              CREAiT Score{computed.provisional ? " (provisional)" : ""}
-            </p>
-            <p style={{ fontSize: 12, color: muted }}>
-              {computed.band ? `Band: ${computed.band}` : "Not yet scored"} ·{" "}
-              {computed.scoredCount} of {INDICATORS.length} indicators examined
-              {computed.naCount > 0 ? `, ${computed.naCount} N/A` : ""}
-            </p>
+        {/* Score + the band it sits in */}
+        <div className="avoid-break" style={{ marginTop: 24 }}>
+          <div style={{ display: "flex", gap: 30, alignItems: "flex-end" }}>
+            <div style={{ minWidth: 172 }}>
+              <p style={labelCap}>
+                CREAiT Score{computed.provisional ? " (provisional)" : ""}
+              </p>
+              <p
+                style={{
+                  fontSize: 72,
+                  fontWeight: 800,
+                  color: ink,
+                  lineHeight: 1,
+                  marginTop: 4,
+                  letterSpacing: "-0.035em",
+                }}
+              >
+                {computed.creaitScore === null ? (
+                  "—"
+                ) : (
+                  <CountUp value={computed.creaitScore} />
+                )}
+                <span style={{ fontSize: 21, fontWeight: 600, color: muted }}>
+                  {" "}
+                  / 100
+                </span>
+              </p>
+              <p style={{ fontSize: 14, fontWeight: 800, color: blue, marginTop: 8 }}>
+                {computed.band ?? "Not yet scored"}
+              </p>
+              <p style={{ fontSize: 11, color: muted, marginTop: 3, lineHeight: 1.5 }}>
+                {`Built on ${computed.scoredCount} of ${INDICATORS.length} indicators`}
+                {computed.naCount > 0 ? ` · ${computed.naCount} excluded as N/A` : ""}
+              </p>
+            </div>
+            <div style={{ flex: 1, paddingBottom: 6 }}>
+              <ScoreBandRail score={computed.creaitScore} />
+            </div>
           </div>
-          <div style={{ flex: 1 }}>
-            {PILLARS.map((p) => {
-              const value = computed.pillars[p.key];
-              const examined = computed.pillarScoredCounts[p.key];
-              // A pillar drawn from 1–3 of its ten indicators is reported as
-              // insufficient data in the score detail; the dashboard must say
-              // the same thing. Two surfaces of one report cannot disagree.
-              const thin = computed.thinPillars[p.key];
-              return (
-                <div key={p.key} style={{ marginBottom: 14 }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, marginBottom: 4, gap: 12 }}>
-                    <span style={{ fontWeight: 700 }}>
-                      {p.label}{" "}
-                      <span style={{ color: muted, fontWeight: 400 }}>
-                        ({Math.round(p.weight * 100)}%) — {p.question}
-                      </span>
-                    </span>
-                    <span
-                      style={{
-                        fontWeight: 700,
-                        whiteSpace: "nowrap",
-                        color: thin || value === null ? muted : ink,
-                      }}
-                    >
-                      {value === null
-                        ? "not examined"
-                        : thin
-                          ? `insufficient data (${examined} of 10)`
-                          : value}
-                    </span>
-                  </div>
-                  <div style={{ height: 8, background: "#eef1f5", borderRadius: 4 }}>
-                    <div
-                      style={{
-                        height: 8,
-                        // A thin pillar gets no confident bar — a full-length
-                        // bar off two indicators reads as a verdict.
-                        width: thin || value === null ? "0%" : `${value}%`,
-                        background: blue,
-                        borderRadius: 4,
-                      }}
-                    />
-                  </div>
-                </div>
-              );
-            })}
+          <p style={{ fontSize: 11, color: muted, marginTop: 10, lineHeight: 1.6 }}>
+            Profit × 40% + Systems × 35% + Leverage × 25%, renormalized over the
+            pillars that carry data. The band describes how the business runs
+            today. It is not a grade, and it is not a prediction.
+          </p>
+        </div>
+
+        {/* Pillars */}
+        <div className="avoid-break" style={{ marginTop: 22 }}>
+          <p style={labelCap}>The three pillars, and how much of each we saw</p>
+          <div style={{ marginTop: 12 }}>
+            <PillarBars
+              pillars={computed.pillars}
+              counts={computed.pillarScoredCounts}
+              thin={computed.thinPillars}
+            />
           </div>
+          <p style={{ fontSize: 11, color: muted, marginTop: 2, lineHeight: 1.6 }}>
+            {`A pillar scored from fewer than ${MIN_PILLAR_SAMPLE} of its 10 indicators is reported as insufficient data, never as a number — a hatched rail means we did not look at enough of it to hold a view.`}
+          </p>
         </div>
 
         {computed.provisional && !isDraft && (
-          <p style={{ fontSize: 12, color: muted, marginTop: 4, lineHeight: 1.6 }}>
+          <p style={{ fontSize: 12, color: muted, marginTop: 12, lineHeight: 1.6 }}>
             {thinPillarLabels
               ? `The composite is provisional: ${thinPillarLabels} rests on too few indicators to state as a pillar score. It still contributes at its full weight, so treat the headline number as directional until those indicators are examined.`
               : `The composite is provisional — fewer than ${MIN_REPORT_RESOLVED} of ${INDICATORS.length} indicators have been resolved.`}
           </p>
         )}
 
-        {assessment.primary_constraint && (
-          <div
-            className="avoid-break"
-            style={{
-              border: "1px solid #c9e4f5",
-              background: "#f4fafd",
-              borderRadius: 8,
-              padding: "14px 18px",
-              marginTop: 20,
-            }}
-          >
-            <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: blue }}>
-              Primary Business Constraint
+        {/* The money map */}
+        {opportunities.length > 0 && (
+          <div className="avoid-break" style={{ marginTop: 22 }}>
+            <p style={labelCap}>
+              {`Where the money is — ${opportunities.length} priced initiative${
+                opportunities.length === 1 ? "" : "s"
+              }, ranked by expected annual impact`}
             </p>
-            <p style={{ fontSize: 15, marginTop: 6, lineHeight: 1.5 }}>
-              {assessment.primary_constraint}
-            </p>
-          </div>
-        )}
-
-        <div className="avoid-break" style={{ marginTop: 20 }}>
-          <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: muted, marginBottom: 8 }}>
-            The annual opportunity ({opportunities.length} priced initiative
-            {opportunities.length === 1 ? "" : "s"}
-            {portfolio.overlapApplied
-              ? `, overlap-adjusted ×${portfolio.overlapFactor} — not additive with each other`
-              : ""}
-            )
-          </p>
-          <div style={{ display: "flex", gap: 12 }}>
-            {[
-              { label: "Low", value: portfolio.adjLow },
-              { label: "Expected", value: portfolio.adjExpected },
-              { label: "High", value: portfolio.adjHigh },
-            ].map((cell) => (
-              <div
-                key={cell.label}
-                style={{
-                  flex: 1,
-                  border: `1px solid ${line}`,
-                  borderRadius: 8,
-                  padding: "12px 16px",
-                  textAlign: "center",
-                }}
-              >
-                <p style={{ fontSize: 20, fontWeight: 800, color: cell.label === "Expected" ? blue : ink }}>
-                  {formatMoney(cell.value)}
+            <div style={{ marginTop: 12 }}>
+              <MoneyMap opportunities={opportunities} />
+            </div>
+            <div
+              style={{
+                borderTop: `2px solid ${ink}`,
+                marginTop: 12,
+                paddingTop: 12,
+                display: "flex",
+                gap: 24,
+                alignItems: "baseline",
+              }}
+            >
+              <div style={{ flex: "0 0 auto" }}>
+                <p style={labelCap}>
+                  {portfolio.overlapApplied ? "Portfolio, overlap-adjusted" : "Portfolio"}
                 </p>
-                <p style={{ fontSize: 11, color: muted }}>{cell.label} / year</p>
+                <p
+                  style={{
+                    fontSize: 26,
+                    fontWeight: 800,
+                    color: blue,
+                    letterSpacing: "-0.025em",
+                    lineHeight: 1.2,
+                    marginTop: 2,
+                  }}
+                >
+                  {formatMoney(portfolio.adjExpected)}
+                  <span style={{ fontSize: 13, fontWeight: 600, color: muted }}>
+                    {" "}
+                    / year expected
+                  </span>
+                </p>
               </div>
-            ))}
+              <p style={{ fontSize: 11.5, color: muted, lineHeight: 1.6, flex: 1 }}>
+                {`Range ${formatMoney(portfolio.adjLow)} – ${formatMoney(
+                  portfolio.adjHigh
+                )}. `}
+                {portfolio.overlapApplied
+                  ? `The raw sum of these initiatives is ${formatMoney(
+                      portfolio.rawExpected
+                    )}; we multiply by ${
+                      portfolio.overlapFactor
+                    } because they share the same customers and the same hours. We never add raw maximums.`
+                  : "There is a single initiative here, so there is no overlap to discount — the total is that initiative's own range."}
+              </p>
+            </div>
           </div>
-        </div>
-
-        {activeWarnings.length > 0 && (
-          <div
-            className="avoid-break"
-            style={{
-              border: "1px solid #f3c6bf",
-              background: "#fff6f4",
-              borderRadius: 8,
-              padding: "12px 16px",
-              marginTop: 20,
-            }}
-          >
-            <p style={{ fontSize: 12, fontWeight: 700, color: "#b03a2e" }}>
-              Critical constraint warning{activeWarnings.length > 1 ? "s" : ""}{" "}
-              — these sit alongside the score and are never averaged away:
-            </p>
-            <ul style={{ margin: "6px 0 0 18px", fontSize: 12.5, color: "#7f2d22", lineHeight: 1.6 }}>
-              {activeWarnings.map((w) => (
-                <li key={w.key}>{w.label}</li>
-              ))}
-            </ul>
-          </div>
-        )}
-
-        {assessment.owner_belief && (
-          <p style={{ fontSize: 13, color: muted, marginTop: 20, lineHeight: 1.6 }}>
-            <b style={{ color: ink }}>What you told us:</b>{" "}
-            &ldquo;{unquote(assessment.owner_belief)}&rdquo; — this report tests
-            that belief against the evidence.
-          </p>
         )}
       </section>
+
+      {/* ── What waiting costs ────────────────────────────────────────── */}
+      {portfolio.adjExpected > 0 && (
+        <section className="report-page">
+          {pageBanners}
+          <SectionHeading
+            title="What waiting costs"
+            deck="This is the same money as the page before, seen from the other side. Profit you do not capture is profit you do not have."
+          />
+
+          <div className="avoid-break" style={{ marginTop: 24 }}>
+            <BleedProjection
+              annualExpected={portfolio.adjExpected}
+              operatingProfit={assessment.operating_profit}
+            />
+          </div>
+
+          <div
+            className="avoid-break"
+            style={{
+              border: `1px solid ${line}`,
+              borderRadius: 10,
+              padding: "14px 18px",
+              marginTop: 20,
+              fontSize: 12,
+              color: muted,
+              lineHeight: 1.65,
+            }}
+          >
+            <b style={{ color: ink }}>What this projection is, and is not.</b>{" "}
+            It is the {portfolio.overlapApplied ? "overlap-adjusted " : ""}
+            expected case from the priced initiatives, divided by twelve and
+            repeated. It assumes the gap stays exactly the size we measured, and
+            it does not compound. It is not a forecast of your revenue and it is
+            not a promise of recovery — it is what the evidence in this report
+            implies you are leaving on the table, month after month, while
+            nothing changes.
+          </div>
+
+          {timeline.length > 0 && (
+            <div className="avoid-break" style={{ marginTop: 24 }}>
+              <p style={labelCap}>And how fast each fix pays for itself</p>
+              <div style={{ marginTop: 12 }}>
+                <PaybackTimeline rows={timeline} />
+              </div>
+            </div>
+          )}
+        </section>
+      )}
+
+      {/* ── Start Monday ──────────────────────────────────────────────── */}
+      {topActions.length > 0 && (
+        <section className="report-page">
+          {pageBanners}
+          <SectionHeading
+            title="If you do only three things, do these"
+            deck="In this order, ranked by expected annual operating-profit impact. Everything else in this report can wait."
+          />
+
+          <ol style={{ margin: "24px 0 0", padding: 0, listStyle: "none" }}>
+            {topActions.map((opp, i) => {
+              const monthly =
+                opp.annual_expected !== null ? opp.annual_expected / 12 : null;
+              const payback = paybackMonths(opp.fix_cost, opp.annual_expected);
+              return (
+                <li
+                  key={opp.id}
+                  className="avoid-break rp-rise"
+                  style={{
+                    ["--d" as string]: `${i * 110}ms`,
+                    border: `1px solid ${line}`,
+                    borderRadius: 10,
+                    padding: "18px 22px",
+                    marginBottom: 14,
+                    display: "flex",
+                    gap: 16,
+                    alignItems: "flex-start",
+                  }}
+                >
+                  <span
+                    style={{
+                      fontSize: 30,
+                      fontWeight: 800,
+                      color: blue,
+                      lineHeight: 1,
+                      letterSpacing: "-0.04em",
+                      minWidth: 28,
+                    }}
+                  >
+                    {i + 1}
+                  </span>
+                  <div style={{ flex: 1 }}>
+                    <p style={{ fontSize: 16, fontWeight: 800, lineHeight: 1.35 }}>
+                      {opp.title}
+                    </p>
+                    <p style={{ fontSize: 12.5, color: muted, marginTop: 6, lineHeight: 1.65 }}>
+                      {`Worth ${formatMoney(
+                        opp.annual_expected
+                      )} a year in the expected case (range ${formatMoney(
+                        opp.annual_low
+                      )} – ${formatMoney(opp.annual_high)}).`}
+                      {opp.fix_cost !== null && monthly !== null && payback !== null
+                        ? ` Costs ${formatMoney(
+                            opp.fix_cost
+                          )} to put in place and pays that back in about ${formatPayback(
+                            payback
+                          )}.`
+                        : ""}
+                      {opp.months_to_benefit !== null
+                        ? ` First returns land around month ${Number(
+                            opp.months_to_benefit
+                          )}.`
+                        : ""}
+                    </p>
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: 22,
+                        marginTop: 16,
+                        fontSize: 10.5,
+                        color: muted,
+                        textTransform: "uppercase",
+                        letterSpacing: "0.08em",
+                        fontWeight: 700,
+                      }}
+                    >
+                      <span className="rp-fill">Owner</span>
+                      <span className="rp-fill">Starts on</span>
+                      <span className="rp-fill">First checkpoint</span>
+                    </div>
+                  </div>
+                </li>
+              );
+            })}
+          </ol>
+
+          {planItems.length > 0 && (
+            <div
+              className="avoid-break"
+              style={{
+                border: "1px solid #c9e4f5",
+                background: tint,
+                borderRadius: 10,
+                padding: "16px 20px",
+                marginTop: 8,
+              }}
+            >
+              <p style={{ ...labelCap, color: blue }}>Your first move this week</p>
+              <p style={{ fontSize: 14.5, lineHeight: 1.6, marginTop: 8, fontWeight: 500 }}>
+                {planItems[0]}
+              </p>
+              <p style={{ fontSize: 11, color: muted, marginTop: 8 }}>
+                Step one of the 90-day plan later in this report, repeated here
+                so nothing has to be looked up on Monday.
+              </p>
+            </div>
+          )}
+
+          <p style={{ fontSize: 12, color: muted, marginTop: 18, lineHeight: 1.7 }}>
+            Fill in the three lines on each card before you close this document.
+            Name the person, name the date, and name the day you will first
+            check whether it worked. An initiative with no owner and no start
+            date is a finding, not a plan — and findings do not change
+            businesses.
+          </p>
+        </section>
+      )}
 
       {/* ── Score detail ──────────────────────────────────────────────── */}
       <section className="report-page">
         {pageBanners}
         <SectionHeading
-          label="How the score works"
           title="The CREAiT Score, indicator by indicator"
+          deck="The full working. Check any line of it."
         />
         <p style={{ fontSize: 13, color: muted, lineHeight: 1.6, marginTop: 10 }}>
           Thirty indicators, ten per pillar, each scored 0–4 against written
@@ -615,8 +954,8 @@ export default async function ExecutiveBlueprintPage({
       <section className="report-page">
         {pageBanners}
         <SectionHeading
-          label="The finding that matters most"
           title="Your Primary Business Constraint"
+          deck="Where it came from, what it costs, and what moves first."
         />
         {assessment.primary_constraint ? (
           <div style={{ marginTop: 16 }}>
@@ -660,8 +999,8 @@ export default async function ExecutiveBlueprintPage({
       <section className="report-page">
         {pageBanners}
         <SectionHeading
-          label="We show you the math"
           title="The Profit Opportunities"
+          deck="We show you the math before you spend a dollar."
         />
         <p style={{ fontSize: 13, color: muted, lineHeight: 1.6, marginTop: 10 }}>
           Every figure below is an annual operating-profit estimate shown as a
@@ -807,8 +1146,8 @@ export default async function ExecutiveBlueprintPage({
       <section className="report-page">
         {pageBanners}
         <SectionHeading
-          label="Yours to run, with or without us"
           title="The 90-Day Plan"
+          deck="Yours to run, with or without us."
         />
         <p style={{ fontSize: 13, color: muted, lineHeight: 1.6, marginTop: 10 }}>
           This plan is complete and fully usable on its own. Priorities are
@@ -849,8 +1188,15 @@ export default async function ExecutiveBlueprintPage({
             ))}
           </ol>
         )}
+        {planItems.length > 0 && (
+          <p style={{ fontSize: 12, color: muted, marginTop: 16, lineHeight: 1.7 }}>
+            Write a name and a start date beside each line. A priority that
+            names who and when gets finished far more often than one that names
+            only what.
+          </p>
+        )}
         {activeWarnings.length > 0 && (
-          <p style={{ fontSize: 12, color: muted, marginTop: 16, lineHeight: 1.6 }}>
+          <p style={{ fontSize: 12, color: muted, marginTop: 12, lineHeight: 1.6 }}>
             {/* One expression: JSX drops the space between an expression and
                 following text when that text wraps to the next line. */}
             {`Note: while the critical ${
@@ -865,7 +1211,7 @@ export default async function ExecutiveBlueprintPage({
       {/* ── What's next ───────────────────────────────────────────────── */}
       <section className="report-page">
         {pageBanners}
-        <SectionHeading label="If you want help" title="What's Next" />
+        <SectionHeading title="What's Next" deck="If you want help." />
         <p style={{ fontSize: 13.5, lineHeight: 1.7, marginTop: 12 }}>
           The plan above is yours either way. If you want us alongside you,
           there are two ways we work — and your diagnostic fee returns as 50%
@@ -909,10 +1255,21 @@ export default async function ExecutiveBlueprintPage({
           your diagnostic fee returns as 50% credit on everything we build,
           until it&apos;s used up.
         </div>
-        <p style={{ fontSize: 13.5, lineHeight: 1.7, marginTop: 24 }}>
-          You don&apos;t need more hustle. You need cleaner systems and
-          clearer days.
-        </p>
+        {/* The document ends on the owner, not on a price. */}
+        <div style={{ borderTop: `2px solid ${line}`, marginTop: 44, paddingTop: 28 }}>
+          <p
+            style={{
+              fontSize: 26,
+              fontWeight: 700,
+              lineHeight: 1.35,
+              letterSpacing: "-0.02em",
+              maxWidth: "24ch",
+            }}
+          >
+            You don&apos;t need more hustle. You need cleaner systems and
+            clearer days.
+          </p>
+        </div>
         <p style={{ fontSize: 12, color: muted, marginTop: 40 }}>
           CREAiT · Growth &amp; AI Diagnostic · {reportDate} · Info@creait.tech
         </p>
@@ -949,6 +1306,15 @@ const mathValue: React.CSSProperties = {
   fontVariantNumeric: "tabular-nums",
 };
 
+/** Small uppercase caption naming an exhibit. */
+const labelCap: React.CSSProperties = {
+  fontSize: 10.5,
+  fontWeight: 800,
+  textTransform: "uppercase",
+  letterSpacing: "0.11em",
+  color: "#5b6675",
+};
+
 const nextCard: React.CSSProperties = {
   flex: 1,
   border: "1px solid #e4e9f0",
@@ -956,21 +1322,39 @@ const nextCard: React.CSSProperties = {
   padding: "16px 18px",
 };
 
-function SectionHeading({ label, title }: { label: string; title: string }) {
+/**
+ * A message-titled heading, after the consulting "action title" convention:
+ * the h2 states the finding and an optional deck carries the "so what". No
+ * kicker — an eyebrow above a heading restates the heading in smaller type.
+ */
+function SectionHeading({ title, deck }: { title: string; deck?: string }) {
   return (
     <div>
-      <p
+      <h2
         style={{
-          fontSize: 11,
+          fontSize: 27,
           fontWeight: 800,
-          letterSpacing: "0.22em",
-          textTransform: "uppercase",
-          color: "#0284c7",
+          lineHeight: 1.2,
+          letterSpacing: "-0.022em",
+          maxWidth: "24ch",
         }}
       >
-        {label}
-      </p>
-      <h2 style={{ fontSize: 26, fontWeight: 800, marginTop: 4 }}>{title}</h2>
+        {title}
+      </h2>
+      {deck && (
+        <p
+          style={{
+            fontSize: 14,
+            color: "#5b6675",
+            lineHeight: 1.55,
+            marginTop: 8,
+            maxWidth: "62ch",
+          }}
+        >
+          {deck}
+        </p>
+      )}
+      <div style={{ height: 2, background: "#111827", width: 44, marginTop: 16 }} />
     </div>
   );
 }
