@@ -340,6 +340,7 @@ export default async function ExecutiveBlueprintPage({
 
       {/* ── Dashboard ─────────────────────────────────────────────────── */}
       <section className="report-page">
+        {pageBanners}
         <SectionHeading label="At a glance" title="The One-Page Dashboard" />
 
         <div style={{ display: "flex", gap: 32, alignItems: "flex-start", marginTop: 24 }}>
@@ -348,34 +349,52 @@ export default async function ExecutiveBlueprintPage({
               {computed.creaitScore ?? "—"}
             </p>
             <p style={{ fontSize: 13, fontWeight: 700, color: ink, marginTop: 6 }}>
-              CREAiT Score
+              CREAiT Score{computed.provisional ? " (provisional)" : ""}
             </p>
             <p style={{ fontSize: 12, color: muted }}>
               {computed.band ? `Band: ${computed.band}` : "Not yet scored"} ·{" "}
-              {computed.scoredCount}/30 indicators examined
+              {computed.scoredCount} of {INDICATORS.length} indicators examined
+              {computed.naCount > 0 ? `, ${computed.naCount} N/A` : ""}
             </p>
           </div>
           <div style={{ flex: 1 }}>
             {PILLARS.map((p) => {
               const value = computed.pillars[p.key];
+              const examined = computed.pillarScoredCounts[p.key];
+              // A pillar drawn from 1–3 of its ten indicators is reported as
+              // insufficient data in the score detail; the dashboard must say
+              // the same thing. Two surfaces of one report cannot disagree.
+              const thin = computed.thinPillars[p.key];
               return (
                 <div key={p.key} style={{ marginBottom: 14 }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, marginBottom: 4 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, marginBottom: 4, gap: 12 }}>
                     <span style={{ fontWeight: 700 }}>
                       {p.label}{" "}
                       <span style={{ color: muted, fontWeight: 400 }}>
                         ({Math.round(p.weight * 100)}%) — {p.question}
                       </span>
                     </span>
-                    <span style={{ fontWeight: 700 }}>
-                      {value ?? "not examined"}
+                    <span
+                      style={{
+                        fontWeight: 700,
+                        whiteSpace: "nowrap",
+                        color: thin || value === null ? muted : ink,
+                      }}
+                    >
+                      {value === null
+                        ? "not examined"
+                        : thin
+                          ? `insufficient data (${examined} of 10)`
+                          : value}
                     </span>
                   </div>
                   <div style={{ height: 8, background: "#eef1f5", borderRadius: 4 }}>
                     <div
                       style={{
                         height: 8,
-                        width: `${value ?? 0}%`,
+                        // A thin pillar gets no confident bar — a full-length
+                        // bar off two indicators reads as a verdict.
+                        width: thin || value === null ? "0%" : `${value}%`,
                         background: blue,
                         borderRadius: 4,
                       }}
@@ -386,6 +405,14 @@ export default async function ExecutiveBlueprintPage({
             })}
           </div>
         </div>
+
+        {computed.provisional && !isDraft && (
+          <p style={{ fontSize: 12, color: muted, marginTop: 4, lineHeight: 1.6 }}>
+            {thinPillarLabels
+              ? `The composite is provisional: ${thinPillarLabels} rests on too few indicators to state as a pillar score. It still contributes at its full weight, so treat the headline number as directional until those indicators are examined.`
+              : `The composite is provisional — fewer than ${MIN_REPORT_RESOLVED} of ${INDICATORS.length} indicators have been resolved.`}
+          </p>
+        )}
 
         {assessment.primary_constraint && (
           <div
@@ -410,8 +437,11 @@ export default async function ExecutiveBlueprintPage({
         <div className="avoid-break" style={{ marginTop: 20 }}>
           <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: muted, marginBottom: 8 }}>
             The annual opportunity ({opportunities.length} priced initiative
-            {opportunities.length === 1 ? "" : "s"}, overlap-adjusted ×
-            {portfolio.overlapFactor} — not additive with each other)
+            {opportunities.length === 1 ? "" : "s"}
+            {portfolio.overlapApplied
+              ? `, overlap-adjusted ×${portfolio.overlapFactor} — not additive with each other`
+              : ""}
+            )
           </p>
           <div style={{ display: "flex", gap: 12 }}>
             {[
@@ -472,6 +502,7 @@ export default async function ExecutiveBlueprintPage({
 
       {/* ── Score detail ──────────────────────────────────────────────── */}
       <section className="report-page">
+        {pageBanners}
         <SectionHeading
           label="How the score works"
           title="The CREAiT Score, indicator by indicator"
@@ -488,7 +519,7 @@ export default async function ExecutiveBlueprintPage({
 
         {PILLARS.map((pillar) => {
           const examined = computed.pillarScoredCounts[pillar.key];
-          const thinPillar = examined > 0 && examined < MIN_PILLAR_SAMPLE;
+          const thinPillar = computed.thinPillars[pillar.key];
           const unexamined = INDICATORS_BY_PILLAR[pillar.key].filter((ind) => {
             const row = scores[ind.key];
             return !row || (!row.not_applicable && row.score === null);
@@ -498,12 +529,21 @@ export default async function ExecutiveBlueprintPage({
           );
           return (
           <div key={pillar.key} className="avoid-break" style={{ marginTop: 22 }}>
-            <p style={{ fontSize: 14, fontWeight: 800, color: blue }}>
-              {pillar.label}{" "}
-              <span style={{ color: muted, fontWeight: 400 }}>
-                — {pillar.question}
+            {/* Flex, not float: a floated score escapes its block when the
+                pillar heading wraps or lands on a page break. */}
+            <p className="report-flag" style={{ fontSize: 14, fontWeight: 800, color: blue }}>
+              <span>
+                {pillar.label}{" "}
+                <span style={{ color: muted, fontWeight: 400 }}>
+                  — {pillar.question}
+                </span>
               </span>
-              <span style={{ float: "right", color: ink }}>
+              <span
+                style={{
+                  color: examined === 0 || thinPillar ? muted : ink,
+                  whiteSpace: "nowrap",
+                }}
+              >
                 {examined === 0
                   ? "not examined"
                   : thinPillar
@@ -573,6 +613,7 @@ export default async function ExecutiveBlueprintPage({
 
       {/* ── Primary constraint ────────────────────────────────────────── */}
       <section className="report-page">
+        {pageBanners}
         <SectionHeading
           label="The finding that matters most"
           title="Your Primary Business Constraint"
@@ -617,6 +658,7 @@ export default async function ExecutiveBlueprintPage({
 
       {/* ── Opportunities ─────────────────────────────────────────────── */}
       <section className="report-page">
+        {pageBanners}
         <SectionHeading
           label="We show you the math"
           title="The Profit Opportunities"
@@ -624,9 +666,10 @@ export default async function ExecutiveBlueprintPage({
         <p style={{ fontSize: 13, color: muted, lineHeight: 1.6, marginTop: 10 }}>
           Every figure below is an annual operating-profit estimate shown as a
           range with its basis and its cost to capture. Payback = fix cost ÷
-          expected monthly recovery. The portfolio total is overlap-adjusted
-          (×{portfolio.overlapFactor}) because initiatives share the same
-          customers and hours — we never add raw maximums.
+          expected monthly recovery.{" "}
+          {portfolio.overlapApplied
+            ? `The portfolio total is overlap-adjusted (×${portfolio.overlapFactor}) because initiatives share the same customers and hours — we never add raw maximums.`
+            : "There is a single initiative here, so there is no overlap to discount — the total is that initiative's own range."}
           {hasEstimateBasedOpp &&
             " Items marked low-confidence are based on your estimates; treat the ranges as wide."}
         </p>
@@ -651,16 +694,18 @@ export default async function ExecutiveBlueprintPage({
                   marginTop: 16,
                 }}
               >
-                <p style={{ fontSize: 15, fontWeight: 800 }}>
-                  {i + 1}. {opp.title}
+                <p className="report-flag" style={{ fontSize: 15, fontWeight: 800 }}>
+                  <span>
+                    {i + 1}. {opp.title}
+                  </span>
                   <span
                     style={{
-                      float: "right",
                       fontSize: 11,
                       fontWeight: 700,
                       color: muted,
                       textTransform: "uppercase",
                       letterSpacing: "0.06em",
+                      whiteSpace: "nowrap",
                     }}
                   >
                     {opp.confidence} confidence
@@ -738,22 +783,29 @@ export default async function ExecutiveBlueprintPage({
               fontSize: 13.5,
             }}
           >
-            <b>Portfolio, overlap-adjusted (×{portfolio.overlapFactor}):</b>{" "}
+            <b>
+              {portfolio.overlapApplied
+                ? `Portfolio, overlap-adjusted (×${portfolio.overlapFactor}):`
+                : "Portfolio:"}
+            </b>{" "}
             low {formatMoney(portfolio.adjLow)} · expected{" "}
             <b style={{ color: blue }}>{formatMoney(portfolio.adjExpected)}</b>{" "}
             · high {formatMoney(portfolio.adjHigh)} per year.
-            <span style={{ color: muted }}>
-              {" "}
-              Raw sum before adjustment: {formatMoney(portfolio.rawLow)} /{" "}
-              {formatMoney(portfolio.rawExpected)} /{" "}
-              {formatMoney(portfolio.rawHigh)}.
-            </span>
+            {portfolio.overlapApplied && (
+              <span style={{ color: muted }}>
+                {" "}
+                Raw sum before adjustment: {formatMoney(portfolio.rawLow)} /{" "}
+                {formatMoney(portfolio.rawExpected)} /{" "}
+                {formatMoney(portfolio.rawHigh)}.
+              </span>
+            )}
           </div>
         )}
       </section>
 
       {/* ── 90-day plan ───────────────────────────────────────────────── */}
       <section className="report-page">
+        {pageBanners}
         <SectionHeading
           label="Yours to run, with or without us"
           title="The 90-Day Plan"
@@ -812,6 +864,7 @@ export default async function ExecutiveBlueprintPage({
 
       {/* ── What's next ───────────────────────────────────────────────── */}
       <section className="report-page">
+        {pageBanners}
         <SectionHeading label="If you want help" title="What's Next" />
         <p style={{ fontSize: 13.5, lineHeight: 1.7, marginTop: 12 }}>
           The plan above is yours either way. If you want us alongside you,
