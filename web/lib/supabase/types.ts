@@ -750,6 +750,13 @@ export interface CcAssessment {
   overlay_flags: Json;
   /** 90-day plan items — array of strings (v1). */
   plan_items: Json;
+  /**
+   * Live capture from the 4-hour Diagnostic Intensive, keyed by the five
+   * Facilitator Guide blocks (migration 0006). Parsed by SessionNotes in
+   * lib/assessment-session.ts. The guide scores from these notes after the
+   * session, not with the client in the room.
+   */
+  session_notes: Json;
   overlap_factor: number;
   created_at: string;
   updated_at: string;
@@ -945,6 +952,20 @@ export interface Database {
           p_org: string;
           p_item: string;
           p_index: number;
+        };
+        Returns: CcAssessment[];
+      };
+      /**
+       * Swaps one plan item with its neighbour under the same row lock
+       * (migration 0006). Returns the full updated cc_assessments row.
+       */
+      cc_assessment_plan_reorder: {
+        Args: {
+          p_id: string;
+          p_org: string;
+          p_item: string;
+          p_index: number;
+          p_direction: "up" | "down";
         };
         Returns: CcAssessment[];
       };

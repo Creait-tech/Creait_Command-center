@@ -11,12 +11,25 @@ import type {
 
 export const dynamic = "force-dynamic";
 
+/**
+ * The workbench step lives in the query string so a refresh mid-session resumes
+ * where the facilitator was. It is read here rather than with useSearchParams so
+ * the client component never needs a Suspense boundary, and so that step changes
+ * (which use history.replaceState) never round-trip to the server.
+ */
+function first(value: string | string[] | undefined): string | undefined {
+  return Array.isArray(value) ? value[0] : value;
+}
+
 export default async function AssessmentDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const { id } = await params;
+  const query = await searchParams;
   const supabase = await createClient();
   const orgId = await getActiveOrgId();
 
@@ -30,10 +43,7 @@ export default async function AssessmentDetailPage({
   if (!assessment) notFound();
 
   const [scoresRes, oppsRes] = await Promise.all([
-    supabase
-      .from("cc_assessment_scores")
-      .select("*")
-      .eq("assessment_id", id),
+    supabase.from("cc_assessment_scores").select("*").eq("assessment_id", id),
     supabase
       .from("cc_assessment_opportunities")
       .select("*")
@@ -49,6 +59,9 @@ export default async function AssessmentDetailPage({
       initialOpportunities={
         (oppsRes.data as CcAssessmentOpportunity[] | null) ?? []
       }
+      initialStep={first(query.step)}
+      initialBlock={first(query.block)}
+      initialIndicator={first(query.k)}
     />
   );
 }

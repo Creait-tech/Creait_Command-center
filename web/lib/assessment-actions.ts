@@ -16,13 +16,18 @@ import {
   INDICATORS,
   normalizeOverlapFactor,
 } from "@/lib/assessment-instrument";
+import { BLOCK_IDS, ENGINE_METRICS } from "@/lib/assessment-session";
 import type {
   AssessmentStatus,
   CcAssessment,
   CcAssessmentOpportunity,
   EvidenceConfidence,
+  Json,
   OpportunityConfidence,
 } from "@/lib/supabase/types";
+
+const BLOCK_ID_VALUES: string[] = BLOCK_IDS;
+const ENGINE_METRIC_KEYS: string[] = ENGINE_METRICS.map((m) => m.key);
 
 export type ActionResult<T = undefined> =
   | { ok: true; data?: T }
@@ -127,6 +132,11 @@ export async function createAssessment(input: {
 }
 
 export interface AssessmentPatch {
+  /** The person in the room. */
+  client_name?: string;
+  /** The business being assessed — this is the report cover line. */
+  company?: string | null;
+  industry?: string | null;
   status?: AssessmentStatus;
   started_at?: string | null;
   delivered_at?: string | null;
@@ -156,6 +166,14 @@ export async function updateAssessment(
     updated_at: new Date().toISOString(),
   };
 
+  if (patch.client_name !== undefined) {
+    const name = patch.client_name.trim();
+    if (!name) return { ok: false, error: "Primary contact cannot be empty" };
+    update.client_name = name;
+  }
+  if (patch.company !== undefined) update.company = patch.company?.trim() || null;
+  if (patch.industry !== undefined)
+    update.industry = patch.industry?.trim() || null;
   if (patch.status !== undefined) {
     if (!STATUSES.includes(patch.status)) {
       return { ok: false, error: `Invalid status: ${patch.status}` };
@@ -336,6 +354,143 @@ export async function removePlanItem(
   }
   if (!data) return { ok: false, error: "Assessment not found" };
 
+  revalidate(id);
+  return { ok: true, data: { assessment: data as CcAssessment } };
+}
+
+/**
+ * Move one plan item up or down. Same atomicity as append/remove (0006): the
+ * swap happens inside a single row lock in the database, because a
+ * read-modify-write reorder built from a stale client array can resurrect a
+ * deleted item or drop a concurrent insert.
+ */
+export async function reorderPlanItems(
+  id: string,
+  item: string,
+  index: number,
+  direction: "up" | "down"
+): Promise<ActionResult<{ assessment: CcAssessment }>> {
+  const ctx = await requireOrg();
+  if ("error" in ctx) return { ok: false, error: ctx.error };
+
+  const trimmed = item.trim();
+  if (!trimmed) return { ok: false, error: "Plan item is empty" };
+
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .rpc("cc_assessment_plan_reorder", {
+      p_id: id,
+      p_org: ctx.orgId,
+      p_item: trimmed,
+      p_index: Number.isInteger(index) ? index : -1,
+      p_direction: direction,
+    })
+    .select("*")
+    .maybeSingle();
+
+  if (error) {
+    if (isMissingFunction(error)) {
+      return writePlanItemsFallback(id, ctx.orgId, (items) => {
+        const from =
+          items[index] === trimmed ? index : items.indexOf(trimmed);
+        if (from === -1) return items;
+        const to = direction === "up" ? from - 1 : from + 1;
+        if (to < 0 || to >= items.length) return items;
+        const next = [...items];
+        next[from] = items[to];
+        next[to] = items[from];
+        return next;
+      });
+    }
+    return { ok: false, error: error.message };
+  }
+  if (!data) return { ok: false, error: "Assessment not found" };
+
+  revalidate(id);
+  return { ok: true, data: { assessment: data as CcAssessment } };
+}
+
+/**
+ * Live capture from the five-block Diagnostic Intensive (migration 0006).
+ *
+ * Merged on the server for the same reason the plan items are: during a session
+ * a block's notes, its timer and an engine number can all be in flight at once,
+ * and a client-side whole-object write would silently drop whichever landed
+ * first. Each call reads the stored JSON, applies only the keys it was given,
+ * and writes it back.
+ */
+export async function updateSessionNotes(
+  id: string,
+  patch: {
+    blockId?: string;
+    notes?: string;
+    elapsedSeconds?: number;
+    metrics?: Record<string, string>;
+  }
+): Promise<ActionResult<{ assessment: CcAssessment }>> {
+  const ctx = await requireOrg();
+  if ("error" in ctx) return { ok: false, error: ctx.error };
+
+  const supabase = await createClient();
+  const { data: row, error: readError } = await supabase
+    .from("cc_assessments")
+    .select("session_notes")
+    .eq("id", id)
+    .eq("org_id", ctx.orgId)
+    .single();
+
+  if (readError) return { ok: false, error: readError.message };
+
+  const stored = (row as { session_notes: unknown }).session_notes;
+  const base: Record<string, Json> =
+    stored && typeof stored === "object" && !Array.isArray(stored)
+      ? { ...(stored as Record<string, Json>) }
+      : {};
+
+  if (patch.blockId && BLOCK_ID_VALUES.includes(patch.blockId)) {
+    if (patch.notes !== undefined) {
+      const blocks: Record<string, Json> =
+        base.blocks &&
+        typeof base.blocks === "object" &&
+        !Array.isArray(base.blocks)
+          ? { ...(base.blocks as Record<string, Json>) }
+          : {};
+      blocks[patch.blockId] = patch.notes;
+      base.blocks = blocks;
+    }
+    if (
+      patch.elapsedSeconds !== undefined &&
+      Number.isFinite(patch.elapsedSeconds) &&
+      patch.elapsedSeconds >= 0
+    ) {
+      const elapsed: Record<string, Json> =
+        base.elapsed &&
+        typeof base.elapsed === "object" &&
+        !Array.isArray(base.elapsed)
+          ? { ...(base.elapsed as Record<string, Json>) }
+          : {};
+      elapsed[patch.blockId] = Math.round(patch.elapsedSeconds);
+      base.elapsed = elapsed;
+    }
+  }
+
+  if (patch.metrics) {
+    for (const [key, value] of Object.entries(patch.metrics)) {
+      if (ENGINE_METRIC_KEYS.includes(key) && typeof value === "string") {
+        base[key] = value;
+      }
+    }
+  }
+
+  const { data, error } = await supabase
+    .from("cc_assessments")
+    .update({ session_notes: base, updated_at: new Date().toISOString() })
+    .eq("id", id)
+    .eq("org_id", ctx.orgId)
+    .select("*")
+    .single();
+
+  if (error) return { ok: false, error: error.message };
   revalidate(id);
   return { ok: true, data: { assessment: data as CcAssessment } };
 }
