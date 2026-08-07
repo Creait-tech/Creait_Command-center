@@ -16,7 +16,7 @@ import { BAND_RAMP, T, VB_W } from "./tokens";
  * bands are told apart by lightness, and the marker is ink.
  */
 export function ScoreBandRail({ score }: { score: number | null }) {
-  const H = 62;
+  const H = 65;
   const seg = VB_W / BANDS.length; // 136
   const activeIdx =
     score === null ? -1 : Math.max(0, BANDS.findIndex((b) => score <= b.max));
@@ -46,7 +46,7 @@ export function ScoreBandRail({ score }: { score: number | null }) {
               x={x + 1}
               y={10}
               width={seg - 2}
-              height={18}
+              height={21}
               rx={2}
               fill={BAND_RAMP[i]}
             >
@@ -56,9 +56,9 @@ export function ScoreBandRail({ score }: { score: number | null }) {
             </rect>
             <text
               x={x + seg / 2}
-              y={41}
+              y={44}
               textAnchor="middle"
-              fontSize={9.5}
+              fontSize={10}
               fontWeight={isActive ? 800 : 500}
               fill={isActive ? T.ink : T.muted}
             >
@@ -74,10 +74,10 @@ export function ScoreBandRail({ score }: { score: number | null }) {
         const cx = Math.min(VB_W - 9, Math.max(9, x));
         return (
           <g key={`t${i}`}>
-            <line x1={x} y1={29} x2={x} y2={32} stroke={T.line} strokeWidth={1} />
+            <line x1={x} y1={32} x2={x} y2={35} stroke={T.line} strokeWidth={1} />
             <text
               x={cx}
-              y={56}
+              y={59}
               textAnchor="middle"
               fontSize={8.5}
               fill={T.muted}
@@ -102,7 +102,7 @@ export function ScoreBandRail({ score }: { score: number | null }) {
               x1={0}
               y1={10}
               x2={0}
-              y2={28}
+              y2={31}
               stroke={T.surface}
               strokeWidth={5}
               strokeLinecap="butt"
@@ -111,7 +111,7 @@ export function ScoreBandRail({ score }: { score: number | null }) {
               x1={0}
               y1={10}
               x2={0}
-              y2={28}
+              y2={31}
               stroke={T.ink}
               strokeWidth={2}
               strokeLinecap="butt"

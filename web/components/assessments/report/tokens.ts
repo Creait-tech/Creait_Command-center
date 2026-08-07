@@ -15,6 +15,8 @@ export const T = {
   tint: "#f4fafd",
   /** Chart track / unfilled rail — chrome, never data. */
   track: "#e8edf3",
+  /** A rail that *does* carry meaning (a phase, a gap) — must stay visible. */
+  railInk: "#c3cfdc",
   /** Lighter step of the blue ramp: range bands, area washes. */
   wash: "#d3ecf9",
   washStrong: "#a8d9f2",
@@ -58,8 +60,10 @@ export function compactMoney(n: number | null | undefined): string {
     return `$${(Math.round(v * 10) / 10).toLocaleString("en-US")}M`;
   }
   if (abs >= 1_000) {
+    // Keep one decimal below $100K so a chart label never disagrees with the
+    // exact figure printed beside it ($73.5K, not $74K, for $73,500).
     const v = n / 1_000;
-    const rounded = abs >= 10_000 ? Math.round(v) : Math.round(v * 10) / 10;
+    const rounded = abs >= 100_000 ? Math.round(v) : Math.round(v * 10) / 10;
     return `$${rounded.toLocaleString("en-US")}K`;
   }
   return `$${Math.round(n).toLocaleString("en-US")}`;

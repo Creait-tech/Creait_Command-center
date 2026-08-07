@@ -78,7 +78,7 @@ export function PaybackTimeline({ rows }: { rows: PaybackRow[] }) {
     >
       {/* Legend — required whenever more than one thing is encoded. */}
       <g>
-        <rect x={0} y={5} width={22} height={4} rx={2} fill={T.track} />
+        <rect x={0} y={5} width={22} height={4} rx={2} fill={T.railInk} />
         <text x={28} y={11} fontSize={9.5} fill={T.muted}>
           Building — no return yet
         </text>
@@ -119,7 +119,7 @@ export function PaybackTimeline({ rows }: { rows: PaybackRow[] }) {
               style={{ ["--d" as string]: `${140 + i * 120}ms` }}
             >
               {r.buildMonths > 0 && (
-                <rect x={0} y={y + 24} width={bx} height={4} rx={2} fill={T.track}>
+                <rect x={0} y={y + 24} width={bx} height={4} rx={2} fill={T.railInk}>
                   <title>{`Building for ${fmtMonth(r.buildMonths)} month(s) before any return`}</title>
                 </rect>
               )}

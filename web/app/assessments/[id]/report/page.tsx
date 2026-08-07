@@ -545,7 +545,7 @@ export default async function ExecutiveBlueprintPage({
         />
 
         {/* Score + the band it sits in */}
-        <div className="avoid-break" style={{ marginTop: 24 }}>
+        <div className="avoid-break" style={{ marginTop: 22 }}>
           <div style={{ display: "flex", gap: 30, alignItems: "flex-end" }}>
             <div style={{ minWidth: 172 }}>
               <p style={labelCap}>
@@ -591,7 +591,7 @@ export default async function ExecutiveBlueprintPage({
         </div>
 
         {/* Pillars */}
-        <div className="avoid-break" style={{ marginTop: 22 }}>
+        <div className="avoid-break" style={{ marginTop: 20 }}>
           <p style={labelCap}>The three pillars, and how much of each we saw</p>
           <div style={{ marginTop: 12 }}>
             <PillarBars
@@ -601,7 +601,7 @@ export default async function ExecutiveBlueprintPage({
             />
           </div>
           <p style={{ fontSize: 11, color: muted, marginTop: 2, lineHeight: 1.6 }}>
-            {`A pillar scored from fewer than ${MIN_PILLAR_SAMPLE} of its 10 indicators is reported as insufficient data, never as a number — a hatched rail means we did not look at enough of it to hold a view.`}
+            {`Fewer than ${MIN_PILLAR_SAMPLE} of a pillar\u2019s 10 indicators reads as insufficient data, never as a number \u2014 a hatched rail means we did not look at enough of it.`}
           </p>
         </div>
 
@@ -615,7 +615,7 @@ export default async function ExecutiveBlueprintPage({
 
         {/* The money map */}
         {opportunities.length > 0 && (
-          <div className="avoid-break" style={{ marginTop: 22 }}>
+          <div className="avoid-break" style={{ marginTop: 20 }}>
             <p style={labelCap}>
               {`Where the money is — ${opportunities.length} priced initiative${
                 opportunities.length === 1 ? "" : "s"
@@ -773,11 +773,11 @@ export default async function ExecutiveBlueprintPage({
                         opp.annual_low
                       )} – ${formatMoney(opp.annual_high)}).`}
                       {opp.fix_cost !== null && monthly !== null && payback !== null
-                        ? ` Costs ${formatMoney(
-                            opp.fix_cost
-                          )} to put in place and pays that back in about ${formatPayback(
-                            payback
-                          )}.`
+                        ? ` Costs ${formatMoney(opp.fix_cost)} to put in place${
+                            payback < 1
+                              ? " and pays that back inside the first month."
+                              : ` and pays that back in about ${formatPayback(payback)}.`
+                          }`
                         : ""}
                       {opp.months_to_benefit !== null
                         ? ` First returns land around month ${Number(
@@ -1336,7 +1336,7 @@ function SectionHeading({ title, deck }: { title: string; deck?: string }) {
           fontWeight: 800,
           lineHeight: 1.2,
           letterSpacing: "-0.022em",
-          maxWidth: "24ch",
+          maxWidth: "30ch",
         }}
       >
         {title}

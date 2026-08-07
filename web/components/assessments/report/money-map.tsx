@@ -27,8 +27,8 @@ export function MoneyMap({
 
   if (rows.length === 0) return null;
 
-  const ROW = 60;
-  const AXIS = 30;
+  const ROW = 52;
+  const AXIS = 26;
   const H = rows.length * ROW + AXIS;
   const domainMax = niceMax(
     Math.max(...rows.map((o) => o.annual_high ?? o.annual_expected ?? 0))
@@ -80,7 +80,7 @@ export function MoneyMap({
             <text x={0} y={y + 12} fontSize={12.5} fontWeight={800} fill={T.ink}>
               {`${i + 1}. ${o.title}`}
             </text>
-            <text x={VB_W} y={y + 12} textAnchor="end" fontSize={10} fill={T.muted}>
+            <text x={VB_W - 2} y={y + 12} textAnchor="end" fontSize={10} fill={T.muted}>
               {`${compactMoney(lo)} – ${compactMoney(hi)} / yr`}
             </text>
 
@@ -121,7 +121,7 @@ export function MoneyMap({
                 />
                 <text
                   x={labelX}
-                  y={y + 51}
+                  y={y + 47}
                   textAnchor="middle"
                   fontSize={12}
                   fontWeight={800}
@@ -147,7 +147,7 @@ export function MoneyMap({
       {ticks.map((t, i) => (
         <text
           key={`t${i}`}
-          x={i === 0 ? 0 : i === ticks.length - 1 ? VB_W : x(t)}
+          x={i === 0 ? 0 : i === ticks.length - 1 ? VB_W - 2 : x(t)}
           y={rows.length * ROW + 16}
           textAnchor={i === 0 ? "start" : i === ticks.length - 1 ? "end" : "middle"}
           fontSize={9}

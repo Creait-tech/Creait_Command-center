@@ -26,7 +26,7 @@ export function BleedProjection({
   const monthly = annualExpected / 12;
   const H = 208;
   const PAD_L = 58;
-  const TOP = 16;
+  const TOP = 30;
   const BOTTOM = 158;
   const plotW = VB_W - PAD_L;
   const domain = niceMax(annualExpected);
