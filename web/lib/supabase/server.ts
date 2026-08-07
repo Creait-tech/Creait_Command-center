@@ -1,6 +1,4 @@
-import { createServerClient } from "@supabase/ssr";
 import { createClient as createSupabaseClient } from "@supabase/supabase-js";
-import { cookies } from "next/headers";
 import { auth } from "@clerk/nextjs/server";
 
 import type { Database } from "./types";
@@ -8,21 +6,26 @@ import type { Database } from "./types";
 /**
  * Server-side Supabase client for the current request.
  *
- * Two modes (controlled by USE_CLERK_THIRD_PARTY_AUTH env var):
+ * Attaches the Clerk session token (template: 'supabase') as an
+ * Authorization Bearer; Supabase verifies it against Clerk's JWKS via
+ * Third-Party Auth. The token's `org_id` claim is what every RLS
+ * `org_isolation` policy on this project checks:
  *
- *   true  → Pull Clerk session token (template: 'supabase') and pass it
- *           as Authorization Bearer to Supabase. Supabase verifies via
- *           Clerk's JWKS (requires Third-Party Auth → Clerk to be
- *           configured in the Supabase dashboard). This is the
- *           production multi-org path: the JWT's `org_id` claim is what
- *           our RLS `org_isolation` policy checks.
+ *   org_id = COALESCE(auth.jwt() ->> 'org_id', current_setting(...))
  *
- *   false → Legacy cookie-based path. Anon key only; relies on the
- *           `phase1_creait_open` permissive policy. Default while we
- *           transition; flip env var to true once Maurice enables
- *           Third-Party Auth → Clerk in Supabase.
+ * This used to sit behind USE_CLERK_THIRD_PARTY_AUTH, defaulting to a
+ * legacy anon path that leaned on the permissive `phase1_creait_open`
+ * policy. That policy has since been dropped in favour of real tenant
+ * isolation, which left the legacy path unable to read or write anything:
+ * with no claim, the policy compares org_id against NULL and every row is
+ * filtered out. Reads came back as empty lists and writes as "new row
+ * violates row-level security policy" — and because the flag was unset in
+ * production, that was the path actually running.
  *
- * Either path returns a typed Database client.
+ * There is no working configuration in which the anon path is correct, so
+ * the flag is gone rather than left as a switch that only breaks things.
+ * An unauthenticated request still degrades to anon and is correctly
+ * denied by RLS.
  */
 export async function createClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -34,46 +37,23 @@ export async function createClient() {
     );
   }
 
-  const useClerkJwt = process.env.USE_CLERK_THIRD_PARTY_AUTH === "true";
-
-  if (useClerkJwt) {
-    let accessToken: string | null = null;
-    try {
-      const { getToken } = await auth();
-      accessToken = await getToken({ template: "supabase" });
-    } catch {
-      accessToken = null; // unauth'd requests fall through to anon
-    }
-
-    return createSupabaseClient<Database>(url, key, {
-      auth: {
-        autoRefreshToken: false,
-        persistSession: false,
-        detectSessionInUrl: false,
-      },
-      global: accessToken
-        ? { headers: { Authorization: `Bearer ${accessToken}` } }
-        : undefined,
-    });
+  let accessToken: string | null = null;
+  try {
+    const { getToken } = await auth();
+    accessToken = await getToken({ template: "supabase" });
+  } catch {
+    accessToken = null; // unauthenticated — RLS will deny, which is correct
   }
 
-  // Legacy cookie path — Phase 1/2/3 default
-  const cookieStore = await cookies();
-  return createServerClient<Database>(url, key, {
-    cookies: {
-      getAll() {
-        return cookieStore.getAll();
-      },
-      setAll(cookiesToSet) {
-        try {
-          cookiesToSet.forEach(({ name, value, options }) => {
-            cookieStore.set(name, value, options);
-          });
-        } catch {
-          // Server component cannot mutate cookies; middleware refreshes.
-        }
-      },
+  return createSupabaseClient<Database>(url, key, {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false,
+      detectSessionInUrl: false,
     },
+    global: accessToken
+      ? { headers: { Authorization: `Bearer ${accessToken}` } }
+      : undefined,
   });
 }
 
