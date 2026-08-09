@@ -15,6 +15,11 @@ import {
 } from "@/components/assessments/report/payback-timeline";
 import { BleedProjection } from "@/components/assessments/report/bleed-projection";
 import {
+  RoadmapToGoal,
+  roadmapRows,
+} from "@/components/assessments/report/roadmap-to-goal";
+import {
+  computePotentialScores,
   computeScores,
   EVIDENCE_LABELS,
   formatMoney,
@@ -22,6 +27,7 @@ import {
   INDICATORS,
   INDICATORS_BY_PILLAR,
   MIN_PILLAR_SAMPLE,
+  MIN_POTENTIAL_SET,
   MIN_REPORT_RESOLVED,
   OVERLAY_FLAGS,
   paybackMonths,
@@ -325,6 +331,7 @@ export default async function ExecutiveBlueprintPage({
   const opportunities = allOpps.filter((o) => o.include_in_report);
 
   const computed = computeScores(scores);
+  const potential = computePotentialScores(scores);
   const portfolio = portfolioTotals(opportunities, assessment.overlap_factor);
   const overlayFlags = jsonToStrings(assessment.overlay_flags);
   const activeWarnings = OVERLAY_FLAGS.filter((f) =>
@@ -349,6 +356,36 @@ export default async function ExecutiveBlueprintPage({
   const thinPillarLabels = PILLARS.filter((p) => computed.thinPillars[p.key])
     .map((p) => `${p.label} (${computed.pillarScoredCounts[p.key]} of 10)`)
     .join(", ");
+
+  /**
+   * The potential composite renders ONLY on a solid current reading: enough
+   * advisor-set targets (never a "potential" built on three guesses), a
+   * non-provisional, non-draft engagement, and both composites computable.
+   */
+  const showPotential =
+    !isDraft &&
+    !computed.provisional &&
+    computed.creaitScore !== null &&
+    potential.creaitScore !== null &&
+    potential.potentialSet >= MIN_POTENTIAL_SET;
+
+  /** Same guard family for the two-paths projection — a provisional or thin
+      engagement never projects a recovery it hasn't measured. */
+  const goalRows = roadmapRows(opportunities, portfolio.overlapFactor);
+  const showRoadmap =
+    !isDraft &&
+    !computed.provisional &&
+    portfolio.adjExpected > 0 &&
+    goalRows.length > 0;
+
+  /** Dollar-titled identity — exact, overlap-adjusted, only when priced. */
+  const roadmapIdentity =
+    portfolio.includedCount > 0 && portfolio.adjExpected > 0
+      ? `The ${formatMoney(portfolio.adjExpected)} Profit Recovery Roadmap`
+      : null;
+
+  const firstName = assessment.client_name.trim().split(/\s+/)[0] || "there";
+  const hasBlueprints = opportunities.some((o) => o.blueprint);
 
   /** The lowest-scored indicators — the evidence standing behind the mirror. */
   const weakest = INDICATORS.map((ind) => ({ ind, row: scores[ind.key] }))
@@ -404,9 +441,29 @@ export default async function ExecutiveBlueprintPage({
           <h1 style={{ fontSize: 40, fontWeight: 800, lineHeight: 1.15, marginTop: 20 }}>
             Growth &amp; AI Diagnostic
           </h1>
-          <p style={{ fontSize: 22, color: muted, marginTop: 6 }}>
-            Executive Blueprint
-          </p>
+          {roadmapIdentity ? (
+            <>
+              <p
+                style={{
+                  fontSize: 24,
+                  fontWeight: 700,
+                  color: ink,
+                  marginTop: 8,
+                  letterSpacing: "-0.015em",
+                }}
+              >
+                {roadmapIdentity}
+              </p>
+              <p style={{ fontSize: 12, color: muted, marginTop: 6 }}>
+                Expected annual operating-profit impact of the priced
+                initiatives, overlap-adjusted. The arithmetic is inside.
+              </p>
+            </>
+          ) : (
+            <p style={{ fontSize: 22, color: muted, marginTop: 6 }}>
+              Executive Blueprint
+            </p>
+          )}
           <div style={{ borderTop: `2px solid ${line}`, marginTop: 40, paddingTop: 24 }}>
             <p style={{ fontSize: 18, fontWeight: 700 }}>{clientLine}</p>
             {assessment.industry && (
@@ -424,6 +481,64 @@ export default async function ExecutiveBlueprintPage({
           evidence-based estimates, not guarantees, and are shown as ranges
           with their basis. This is not a business valuation or appraisal.
         </p>
+      </section>
+
+      {/* ── Advisor letter ────────────────────────────────────────────── */}
+      <section className="report-page">
+        {pageBanners}
+        <div
+          style={{
+            maxWidth: "64ch",
+            fontSize: 13.5,
+            lineHeight: 1.8,
+            position: "relative",
+            zIndex: 2,
+          }}
+        >
+          <p style={{ fontSize: 12, color: muted }}>{reportDate}</p>
+          <p style={{ marginTop: 26, fontSize: 15, fontWeight: 600 }}>
+            Dear {firstName},
+          </p>
+          <p style={{ marginTop: 16 }}>
+            Thank you for the trust it takes to open a business to outside
+            eyes. Over the course of this diagnostic you gave us hours of your
+            time, straight answers to uncomfortable questions, and a look at
+            how {assessment.company?.trim() || "your business"} actually runs
+            — not how anyone wishes it ran. We don&apos;t take that lightly,
+            and this report was written to be worth it.
+          </p>
+          <p style={{ marginTop: 14 }}>
+            What we examined is the machinery underneath your results: the
+            growth engine that turns attention into revenue, the systems that
+            decide whether the business can run and grow without you, and how
+            much of the daily work runs on automation and AI instead of memory
+            and heroics. Thirty indicators, each scored against written
+            standards, with the evidence behind every one of them disclosed.
+          </p>
+          <p style={{ marginTop: 14 }}>
+            A word on how to read what follows. Every number in these pages
+            shows its arithmetic — nothing asks to be taken on faith. Ranges
+            are ranges: where we estimate, we say so and state the basis.
+            Where we did not examine something, the page says &ldquo;not
+            examined&rdquo; rather than guessing. If a figure ever looks
+            wrong, check the math printed beside it; that is exactly what
+            it&apos;s there for.
+          </p>
+          <p style={{ marginTop: 14 }}>
+            The plan in the back is yours to run, with us or without us.
+            Either way, our aim for this document is simple: that a year from
+            now the business runs cleaner, owes you fewer of its hours, and
+            makes more money — and that you can point to the page where that
+            started.
+          </p>
+          <p style={{ marginTop: 26 }}>With genuine appreciation for what you&apos;ve built,</p>
+          <div style={{ marginTop: 30, borderTop: `2px solid ${line}`, paddingTop: 14, maxWidth: 260 }}>
+            <p style={{ fontSize: 15, fontWeight: 800 }}>Maurice Grant</p>
+            <p style={{ fontSize: 12.5, color: muted, marginTop: 2 }}>
+              CREAiT · getcreait.com
+            </p>
+          </div>
+        </div>
       </section>
 
       {/* ── The mirror ────────────────────────────────────────────────── */}
@@ -580,7 +695,10 @@ export default async function ExecutiveBlueprintPage({
               </p>
             </div>
             <div style={{ flex: 1, paddingBottom: 6 }}>
-              <ScoreBandRail score={computed.creaitScore} />
+              <ScoreBandRail
+                score={computed.creaitScore}
+                potential={showPotential ? potential.creaitScore : null}
+              />
             </div>
           </div>
           <p style={{ fontSize: 11, color: muted, marginTop: 10, lineHeight: 1.6 }}>
@@ -588,6 +706,14 @@ export default async function ExecutiveBlueprintPage({
             pillars that carry data. The band describes how the business runs
             today. It is not a grade, and it is not a prediction.
           </p>
+          {showPotential && (
+            <p style={{ fontSize: 11, color: muted, marginTop: 6, lineHeight: 1.6 }}>
+              <b style={{ color: ink }}>
+                {`The hollow marker is the target: ${potential.creaitScore} · ${potential.band}`}
+              </b>
+              {` — where this business lands with the 90-day plan executed, from targets your advisor set indicator by indicator (${potential.potentialSet} of ${computed.scoredCount} scored). Set by your advisor, not a projection we can promise.`}
+            </p>
+          )}
         </div>
 
         {/* Pillars */}
@@ -598,10 +724,13 @@ export default async function ExecutiveBlueprintPage({
               pillars={computed.pillars}
               counts={computed.pillarScoredCounts}
               thin={computed.thinPillars}
+              potentials={showPotential ? potential.pillars : undefined}
             />
           </div>
           <p style={{ fontSize: 11, color: muted, marginTop: 2, lineHeight: 1.6 }}>
             {`Fewer than ${MIN_PILLAR_SAMPLE} of a pillar\u2019s 10 indicators reads as insufficient data, never as a number \u2014 a hatched rail means we did not look at enough of it.`}
+            {showPotential &&
+              " Outlined bars are the advisor-set targets with the 90-day plan executed \u2014 not projections."}
           </p>
         </div>
 
@@ -724,6 +853,48 @@ export default async function ExecutiveBlueprintPage({
               </div>
             </div>
           )}
+        </section>
+      )}
+
+      {/* ── Roadmap to goal — two paths, one chart ────────────────────── */}
+      {showRoadmap && (
+        <section className="report-page">
+          {pageBanners}
+          <SectionHeading
+            title="The same twelve months, lived twice"
+            deck="One path changes nothing. The other executes the plan, initiative by initiative, each starting when its build lands. Same calendar, same arithmetic, one axis — and a projection, not a promise."
+          />
+
+          <div className="avoid-break" style={{ marginTop: 24 }}>
+            <RoadmapToGoal
+              rows={goalRows}
+              annualExpected={portfolio.adjExpected}
+              overlapApplied={portfolio.overlapApplied}
+              overlapFactor={portfolio.overlapFactor}
+            />
+          </div>
+
+          <div
+            className="avoid-break"
+            style={{
+              border: `1px solid ${line}`,
+              borderRadius: 10,
+              padding: "14px 18px",
+              marginTop: 20,
+              fontSize: 12,
+              color: muted,
+              lineHeight: 1.65,
+            }}
+          >
+            <b style={{ color: ink }}>Read this chart the way we drew it.</b>{" "}
+            Both paths assume the measured gaps stay exactly the size they are
+            today. The recovery line starts each initiative at its
+            months-to-benefit and runs it at flat rate after — no compounding,
+            no growth assumptions, no momentum effects. If the plan slips, the
+            solid line slips with it; if the business grows, both lines were
+            too small. This is the shape of the choice, not a forecast of
+            either path.
+          </div>
         </section>
       )}
 
@@ -1017,6 +1188,8 @@ export default async function ExecutiveBlueprintPage({
             : "There is a single initiative here, so there is no overlap to discount — the total is that initiative's own range."}
           {hasEstimateBasedOpp &&
             " Items marked low-confidence are based on your estimates; treat the ranges as wide."}
+          {hasBlueprints &&
+            " Where a build is named, it is scoped the way we would build it: the automation or AI workflow, the manual work it replaces, and the hours it hands back."}
         </p>
 
         {opportunities.length === 0 ? (
@@ -1112,6 +1285,48 @@ export default async function ExecutiveBlueprintPage({
                     Based on your estimates — we widened this range and will
                     firm it up with real measurement in the first 30 days.
                   </p>
+                )}
+                {opp.blueprint && (
+                  <div
+                    style={{
+                      borderTop: `1px solid ${line}`,
+                      marginTop: 14,
+                      paddingTop: 12,
+                    }}
+                  >
+                    <p style={{ ...labelCap, color: blue }}>
+                      The build that captures this
+                    </p>
+                    <p style={{ fontSize: 13, lineHeight: 1.65, marginTop: 6 }}>
+                      {opp.blueprint}
+                    </p>
+                    {(opp.replaces ||
+                      opp.hours_recovered_weekly !== null) && (
+                      <p
+                        style={{
+                          fontSize: 12,
+                          color: muted,
+                          marginTop: 8,
+                          lineHeight: 1.65,
+                        }}
+                      >
+                        {opp.replaces && (
+                          <>
+                            <b style={{ color: ink }}>What it replaces:</b>{" "}
+                            {opp.replaces}
+                          </>
+                        )}
+                        {opp.replaces &&
+                          opp.hours_recovered_weekly !== null &&
+                          " "}
+                        {opp.hours_recovered_weekly !== null && (
+                          <b style={{ color: ink, whiteSpace: "nowrap" }}>
+                            {`≈ ${Number(opp.hours_recovered_weekly)} hours/week of manual work recovered.`}
+                          </b>
+                        )}
+                      </p>
+                    )}
+                  </div>
                 )}
               </div>
             );
@@ -1212,6 +1427,112 @@ export default async function ExecutiveBlueprintPage({
             } active, growth initiatives that depend on the weak foundation carry a “Prepare First” label — foundation work comes first.`}
           </p>
         )}
+      </section>
+
+      {/* ── The decision frame ────────────────────────────────────────── */}
+      <section className="report-page">
+        {pageBanners}
+        <SectionHeading
+          title="What to do with this report"
+          deck="There are three honest ways to leave this page. All three are choices; only one of them pretends not to be."
+        />
+
+        <ol style={{ margin: "24px 0 0", padding: 0, listStyle: "none" }}>
+          <li style={pathCard} className="avoid-break">
+            <p style={pathTitle}>1 · Take the plan and run it yourselves</p>
+            <p style={pathBody}>
+              The 90-day plan, the priced initiatives and the builds behind
+              them are complete and usable without us — that was the deal when
+              you paid for a diagnostic instead of a pitch. Name an owner and a
+              start date for each priority, hold the checkpoints, and re-check
+              the arithmetic in ninety days. Everything you need to start is in
+              these pages.
+            </p>
+          </li>
+          <li style={pathCard} className="avoid-break">
+            <p style={pathTitle}>2 · Run it with CREAiT</p>
+            <p style={pathBody}>
+              We build the workflows priced in this report as fixed-scope
+              builds, or run the whole plan alongside you on advisory — weekly
+              rhythm, a scoreboard, builds folded in, and the score re-tested
+              each quarter. Working together starts exactly where this document
+              ends: same numbers, same priorities, no re-discovery. Your
+              diagnostic fee returns as 50% credit on everything we build. The
+              final page lays both options out.
+            </p>
+          </li>
+          <li style={pathCard} className="avoid-break">
+            <p style={pathTitle}>3 · Do nothing</p>
+            <p style={pathBody}>
+              {portfolio.adjExpected > 0
+                ? `Also a real option — it just isn't free: the gap measured in these pages runs at about ${formatMoney(
+                    portfolio.adjExpected / 12
+                  )} a month for as long as nothing changes.`
+                : "Also a real option — the gaps documented in these pages simply stay where they are."}
+            </p>
+          </li>
+        </ol>
+      </section>
+
+      {/* ── About this report ─────────────────────────────────────────── */}
+      <section className="report-page">
+        {pageBanners}
+        <SectionHeading
+          title="About this report"
+          deck="How the numbers were made, and where their edges are."
+        />
+
+        <p style={aboutHead}>How the score works</p>
+        <p style={aboutBody}>
+          Thirty indicators, ten to a pillar — Profit (is the growth engine
+          working?), Systems (can it run and grow without the owner?), and
+          Leverage (how much runs on systems and AI?). Each is scored 0–4
+          against written behavioral anchors: 0 Absent, 1 Informal, 2
+          Developing, 3 Established, 4 Scalable. An indicator that does not
+          apply to your business is excluded from the average entirely — it is
+          never counted as a zero. Pillar scores average the indicators we
+          examined; the composite weighs Profit at 40%, Systems at 35% and
+          Leverage at 25%, renormalized over whatever pillars carry data. An
+          indicator we did not examine is disclosed as exactly that.
+        </p>
+
+        <p style={aboutHead}>How we know what we claim</p>
+        <p style={aboutBody}>
+          Every scored indicator carries an evidence grade: Reported (you told
+          us), Demonstrated (we watched it work), or Documented (we saw the
+          record). A grade never changes a score — it tells you how much
+          weight the reading can bear, and it widens the financial ranges
+          built on it.
+        </p>
+
+        <p style={aboutHead}>How the money was estimated</p>
+        <p style={aboutBody}>
+          Every opportunity is an annual operating-profit estimate stated as a
+          low / expected / high range with its basis printed beside it. The
+          portfolio total multiplies the sum by an overlap factor
+          {portfolio.overlapApplied
+            ? ` (×${portfolio.overlapFactor} in this report)`
+            : ""}{" "}
+          because initiatives share the same customers and the same hours — we
+          never add raw maximums. Payback is the cost to fix divided by the
+          expected monthly recovery.
+          {showPotential &&
+            " Where a target score appears, it is your advisor's judgement of where an indicator lands with the 90-day plan executed — set by hand, labeled as such, and never a projection."}
+        </p>
+
+        <p style={aboutHead}>What this report is not</p>
+        <p style={aboutBody}>
+          It is built from the information you provided and what we directly
+          observed during the engagement; we did not audit your books or
+          independently verify financial statements. It is not an audit, a
+          business valuation or appraisal, or financial, legal or tax advice.
+          The figures are ranges with a stated basis — treat the expected case
+          as the middle of a range, not a number the future owes you. Results
+          depend on execution: on owners, start dates and checkpoints, and on
+          conditions that can change underneath any plan. And the score
+          describes how the business runs today — it is not a grade of you,
+          and it is not a prediction.
+        </p>
       </section>
 
       {/* ── What's next ───────────────────────────────────────────────── */}
@@ -1326,6 +1647,40 @@ const nextCard: React.CSSProperties = {
   border: "1px solid #e4e9f0",
   borderRadius: 8,
   padding: "16px 18px",
+};
+
+/** The three paths on "What to do with this report". */
+const pathCard: React.CSSProperties = {
+  border: "1px solid #e4e9f0",
+  borderRadius: 10,
+  padding: "18px 22px",
+  marginBottom: 14,
+};
+
+const pathTitle: React.CSSProperties = {
+  fontSize: 15,
+  fontWeight: 800,
+};
+
+const pathBody: React.CSSProperties = {
+  fontSize: 13,
+  lineHeight: 1.7,
+  marginTop: 8,
+};
+
+/** "About this report" appendix typography. */
+const aboutHead: React.CSSProperties = {
+  fontSize: 13,
+  fontWeight: 800,
+  marginTop: 22,
+};
+
+const aboutBody: React.CSSProperties = {
+  fontSize: 12.5,
+  lineHeight: 1.7,
+  color: "#3d4653",
+  marginTop: 6,
+  maxWidth: "72ch",
 };
 
 /**

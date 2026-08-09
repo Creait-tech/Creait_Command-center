@@ -769,6 +769,12 @@ export interface CcAssessmentScore {
   pillar: AssessmentPillar;
   /** 0–4 behavioral score; null = not examined (never faked in the report). */
   score: number | null;
+  /**
+   * Advisor-set target (0–4) with the 90-day plan executed; null = no target.
+   * A judgement, never a computed projection — the report only renders a
+   * potential composite when enough indicators carry one (migration 0007).
+   */
+  potential_score: number | null;
   /** N/A — removed from the denominator, never counted as zero. */
   not_applicable: boolean;
   evidence_confidence: EvidenceConfidence;
@@ -791,6 +797,16 @@ export interface CcAssessmentOpportunity {
   confidence: OpportunityConfidence;
   rank: number;
   include_in_report: boolean;
+  /**
+   * AI Workflow Blueprint (migration 0007): what gets built — the automation /
+   * AI / tech solution named plainly. Optional; renders "The build that
+   * captures this" in the report when set.
+   */
+  blueprint: string | null;
+  /** The manual work the build eliminates. */
+  replaces: string | null;
+  /** Rough hours per week of manual work recovered by the build. */
+  hours_recovered_weekly: number | null;
   created_at: string;
   updated_at: string;
 }

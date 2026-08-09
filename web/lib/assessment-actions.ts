@@ -519,6 +519,8 @@ export async function upsertIndicatorScore(input: {
   assessment_id: string;
   indicator_key: string;
   score?: number | null;
+  /** Advisor-set target 0–4 (migration 0007). undefined = leave as stored. */
+  potential_score?: number | null;
   not_applicable?: boolean;
   evidence_confidence?: EvidenceConfidence;
   notes?: string | null;
@@ -544,6 +546,16 @@ export async function upsertIndicatorScore(input: {
       return { ok: false, error: "Score must be 0–4" };
     }
   }
+  let potential: number | null = null;
+  if (input.potential_score !== null && input.potential_score !== undefined) {
+    if (!Number.isFinite(input.potential_score)) {
+      return { ok: false, error: "Potential must be 0–4" };
+    }
+    potential = Math.trunc(input.potential_score);
+    if (potential < 0 || potential > 4) {
+      return { ok: false, error: "Potential must be 0–4" };
+    }
+  }
   const evidence = input.evidence_confidence ?? "unknown";
   if (!EVIDENCE.includes(evidence)) {
     return { ok: false, error: `Invalid evidence confidence: ${evidence}` };
@@ -555,19 +567,24 @@ export async function upsertIndicatorScore(input: {
   }
 
   const notApplicable = Boolean(input.not_applicable);
-  const { error } = await supabase.from("cc_assessment_scores").upsert(
-    {
-      assessment_id: input.assessment_id,
-      indicator_key: input.indicator_key,
-      pillar,
-      score: notApplicable ? null : score,
-      not_applicable: notApplicable,
-      evidence_confidence: evidence,
-      notes: input.notes?.trim() || null,
-      updated_at: new Date().toISOString(),
-    },
-    { onConflict: "assessment_id,indicator_key" }
-  );
+  const row: Record<string, unknown> = {
+    assessment_id: input.assessment_id,
+    indicator_key: input.indicator_key,
+    pillar,
+    score: notApplicable ? null : score,
+    not_applicable: notApplicable,
+    evidence_confidence: evidence,
+    notes: input.notes?.trim() || null,
+    updated_at: new Date().toISOString(),
+  };
+  // Only touch the column when the caller sent it, so an older client that
+  // doesn't know about potential can never wipe a stored target on update.
+  if (input.potential_score !== undefined) {
+    row.potential_score = notApplicable ? null : potential;
+  }
+  const { error } = await supabase
+    .from("cc_assessment_scores")
+    .upsert(row, { onConflict: "assessment_id,indicator_key" });
 
   if (error) return { ok: false, error: error.message };
   revalidateReport(input.assessment_id);
@@ -591,6 +608,10 @@ export interface OpportunityInput {
   confidence?: OpportunityConfidence;
   rank?: number;
   include_in_report?: boolean;
+  /** AI Workflow Blueprint (migration 0007) — all optional. */
+  blueprint?: string | null;
+  replaces?: string | null;
+  hours_recovered_weekly?: number | string | null;
 }
 
 export async function saveOpportunity(
@@ -623,6 +644,9 @@ export async function saveOpportunity(
     confidence,
     rank: input.rank ?? 0,
     include_in_report: input.include_in_report ?? true,
+    blueprint: input.blueprint?.trim() || null,
+    replaces: input.replaces?.trim() || null,
+    hours_recovered_weekly: num(input.hours_recovered_weekly),
     updated_at: new Date().toISOString(),
   };
 

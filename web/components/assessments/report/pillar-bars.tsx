@@ -21,13 +21,22 @@ export function PillarBars({
   pillars,
   counts,
   thin,
+  potentials,
 }: {
   pillars: Record<AssessmentPillar, number | null>;
   counts: Record<AssessmentPillar, number>;
   /** Comes from computeScores so the chart and the tables cannot disagree. */
   thin: Record<AssessmentPillar, boolean>;
+  /**
+   * Advisor-set targets with the 90-day plan executed. When present, each
+   * readable pillar gets a second, HOLLOW bar under the solid one — outlined
+   * vs filled, so the pair survives grayscale. The caller gates this on
+   * enough indicators carrying a target; omit to render exactly as before.
+   */
+  potentials?: Record<AssessmentPillar, number | null>;
 }) {
-  const ROW = 50;
+  const paired = potentials !== undefined;
+  const ROW = paired ? 66 : 50;
   const H = PILLARS.length * ROW;
   const TRACK = VB_W - 46;
 
@@ -45,7 +54,11 @@ export function PillarBars({
             : thin[p.key]
               ? `insufficient data, ${n} of 10 indicators`
               : `${v} of 100 from ${n} of 10 indicators`;
-        return `${p.label}: ${state}`;
+        const target =
+          paired && v !== null && !thin[p.key] && potentials?.[p.key] !== null
+            ? `, advisor-set target ${potentials?.[p.key]} of 100`
+            : "";
+        return `${p.label}: ${state}${target}`;
       }).join(". ")}
     >
       <defs>
@@ -130,11 +143,69 @@ export function PillarBars({
                   fill={T.ink}
                 >
                   {value}
+                  {paired && (
+                    <tspan dx={4} fontSize={8.5} fontWeight={600} fill={T.muted}>
+                      today
+                    </tspan>
+                  )}
                 </text>
               </>
             )}
 
-            <text x={0} y={y + 43} fontSize={10} fill={T.muted}>
+            {/* Target bar — hollow, under the solid one. Only drawn when the
+                current bar is readable, so a target can never stand in for a
+                pillar the report refuses to state. */}
+            {paired && readable && potentials?.[p.key] !== null && (
+              (() => {
+                const pv = potentials![p.key] as number;
+                const pw = (Math.min(100, Math.max(0, pv)) / 100) * TRACK;
+                return (
+                  <>
+                    <rect
+                      x={0}
+                      y={y + 33}
+                      width={TRACK}
+                      height={10}
+                      rx={2}
+                      fill={T.track}
+                    />
+                    <g
+                      className="rp-grow-x"
+                      style={{ ["--d" as string]: `${340 + i * 90}ms` }}
+                    >
+                      <rect
+                        x={0.75}
+                        y={y + 33.75}
+                        width={Math.max(2, pw - 1.5)}
+                        height={8.5}
+                        rx={3}
+                        fill={T.surface}
+                        stroke={T.blue}
+                        strokeWidth={1.5}
+                      >
+                        <title>{`${p.label}: advisor-set target ${pv} of 100 with the 90-day plan executed — not a projection`}</title>
+                      </rect>
+                    </g>
+                    <text
+                      className="rp-fade"
+                      style={{ ["--d" as string]: `${740 + i * 90}ms` }}
+                      x={pw + 9}
+                      y={y + 42.5}
+                      fontSize={12}
+                      fontWeight={700}
+                      fill={T.ink}
+                    >
+                      {pv}
+                      <tspan dx={4} fontSize={8.5} fontWeight={600} fill={T.muted}>
+                        target
+                      </tspan>
+                    </text>
+                  </>
+                );
+              })()
+            )}
+
+            <text x={0} y={y + (paired ? 59 : 43)} fontSize={10} fill={T.muted}>
               {`${n} of 10 indicators examined${
                 n > 0 && n < 10 ? ` · ${10 - n} not examined` : ""
               }  ·  ${p.question}`}

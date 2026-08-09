@@ -61,6 +61,8 @@ const ANCHORS_FOR_SCORE: Record<number, number[]> = {
 
 export interface IndicatorPatch {
   score?: number | null;
+  /** Advisor-set target 0–4; null clears it. Optional and visually secondary. */
+  potential_score?: number | null;
   not_applicable?: boolean;
   evidence_confidence?: EvidenceConfidence;
   notes?: string | null;
@@ -89,6 +91,7 @@ export function IndicatorCard({
 }) {
   const isNa = row?.not_applicable ?? false;
   const score = isNa ? null : (row?.score ?? null);
+  const potential = isNa ? null : (row?.potential_score ?? null);
   const evidence = row?.evidence_confidence ?? "unknown";
   const resolved = isNa || score !== null;
 
@@ -313,6 +316,46 @@ export function IndicatorCard({
             );
           })}
         </dl>
+
+        {/* Target — deliberately secondary to the score: small, outlined, and
+            optional. Click the same value again to clear it. Hidden for N/A —
+            an excluded indicator can't carry a target. */}
+        {!isNa && (
+          <div className="mt-3.5 flex flex-wrap items-center gap-x-2.5 gap-y-1.5 border-t border-border/40 pt-3">
+            <span className="text-[11px] font-medium text-muted-foreground">
+              Target
+            </span>
+            <div className="flex items-center gap-1" role="group" aria-label={`Target for ${indicator.label} with the 90-day plan executed`}>
+              {[0, 1, 2, 3, 4].map((n) => {
+                const selected = potential === n;
+                return (
+                  <button
+                    key={n}
+                    type="button"
+                    aria-pressed={selected}
+                    aria-label={`Target ${n} — ${SCALE_LABELS[n]}${selected ? " (press again to clear)" : ""}`}
+                    title={`Target ${n} · ${SCALE_LABELS[n]}`}
+                    onClick={() =>
+                      onChange({ potential_score: selected ? null : n })
+                    }
+                    className={cn(
+                      "grid size-6 place-items-center rounded text-[11px] font-semibold tabular-nums transition-colors duration-150 motion-reduce:transition-none",
+                      selected
+                        ? "bg-transparent text-[color:var(--color-brand-electric)] ring-1 ring-inset ring-[color:var(--color-brand-electric)]"
+                        : "text-muted-foreground/70 ring-1 ring-inset ring-border/60 hover:text-foreground"
+                    )}
+                  >
+                    {n}
+                  </button>
+                );
+              })}
+            </div>
+            <span className="text-[10.5px] leading-snug text-muted-foreground/70">
+              optional — where this lands with the 90-day plan executed. Set
+              only what you&apos;d defend.
+            </span>
+          </div>
+        )}
       </section>
 
       <section className="flex flex-col gap-3 border-t border-border/60 pt-4 sm:flex-row sm:items-center">

@@ -62,6 +62,9 @@ interface OppForm {
   fix_cost: string;
   months_to_benefit: string;
   confidence: OpportunityConfidence;
+  blueprint: string;
+  replaces: string;
+  hours_recovered_weekly: string;
 }
 
 const EMPTY_OPP: OppForm = {
@@ -73,6 +76,9 @@ const EMPTY_OPP: OppForm = {
   fix_cost: "",
   months_to_benefit: "",
   confidence: "medium",
+  blueprint: "",
+  replaces: "",
+  hours_recovered_weekly: "",
 };
 
 function toOppForm(o: CcAssessmentOpportunity): OppForm {
@@ -86,6 +92,10 @@ function toOppForm(o: CcAssessmentOpportunity): OppForm {
     months_to_benefit:
       o.months_to_benefit !== null ? String(o.months_to_benefit) : "",
     confidence: o.confidence,
+    blueprint: o.blueprint ?? "",
+    replaces: o.replaces ?? "",
+    hours_recovered_weekly:
+      o.hours_recovered_weekly !== null ? String(o.hours_recovered_weekly) : "",
   };
 }
 
@@ -146,6 +156,9 @@ function OpportunityDialog({
       confidence: form.confidence,
       rank: editing?.rank ?? nextRank,
       include_in_report: editing?.include_in_report ?? true,
+      blueprint: form.blueprint,
+      replaces: form.replaces,
+      hours_recovered_weekly: form.hours_recovered_weekly,
     });
     setSubmitting(false);
     if (!res.ok) {
@@ -277,6 +290,54 @@ function OpportunityDialog({
               {formatPayback(previewPayback)}
             </span>
           </p>
+
+          {/* AI Workflow Blueprint — optional. This is what turns a priced
+              finding into "the build that captures this" in the report. */}
+          <div className="space-y-3 border-t border-border/60 pt-3">
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-muted-foreground">
+                Blueprint — what gets built{" "}
+                <span className="font-normal text-muted-foreground/70">
+                  optional · the automation / AI / tech solution, named plainly
+                </span>
+              </label>
+              <Textarea
+                value={form.blueprint}
+                onChange={(e) => set("blueprint", e.target.value)}
+                className="min-h-16"
+                placeholder="e.g. Missed-call text-back + AI voice agent on the main line; CRM logs every call"
+              />
+            </div>
+            <div className="grid grid-cols-[1fr_120px] gap-3">
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-muted-foreground">
+                  What it replaces{" "}
+                  <span className="font-normal text-muted-foreground/70">
+                    the manual work it eliminates
+                  </span>
+                </label>
+                <Input
+                  value={form.replaces}
+                  onChange={(e) => set("replaces", e.target.value)}
+                  placeholder="e.g. Hand-typed quotes and memory-based follow-up"
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-muted-foreground">
+                  Hours/week back
+                </label>
+                <Input
+                  type="number"
+                  min="0"
+                  value={form.hours_recovered_weekly}
+                  onChange={(e) =>
+                    set("hours_recovered_weekly", e.target.value)
+                  }
+                  className="tabular-nums"
+                />
+              </div>
+            </div>
+          </div>
           <DialogFooter>
             <Button
               type="button"
@@ -446,6 +507,9 @@ export function OpportunityEditor({
                           confidence: opp.confidence,
                           rank: opp.rank,
                           include_in_report: include,
+                          blueprint: opp.blueprint,
+                          replaces: opp.replaces,
+                          hours_recovered_weekly: opp.hours_recovered_weekly,
                         });
                       }}
                     />

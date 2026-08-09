@@ -308,6 +308,12 @@ export function AssessmentWorkbench({
             : patch.score !== undefined
               ? patch.score
               : (existing?.score ?? null),
+        potential_score:
+          patch.not_applicable === true
+            ? null
+            : patch.potential_score !== undefined
+              ? patch.potential_score
+              : (existing?.potential_score ?? null),
         not_applicable:
           patch.not_applicable ?? existing?.not_applicable ?? false,
         evidence_confidence:
@@ -324,6 +330,7 @@ export function AssessmentWorkbench({
             assessment_id: assessment.id,
             indicator_key: indicator.key,
             score: next.score,
+            potential_score: next.potential_score,
             not_applicable: next.not_applicable,
             evidence_confidence: next.evidence_confidence,
             notes: next.notes,

@@ -513,6 +513,82 @@ export function computeScores(scores: ScoreMap): ComputedScores {
   };
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Potential score — the advisor-set target (migration 0007)
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * The report only renders a potential composite when the advisor has set a
+ * target on at least this many indicators. Below it, a "potential score"
+ * would rest on a handful of guesses dressed up as a second reading — so the
+ * report omits it entirely rather than hedging it.
+ */
+export const MIN_POTENTIAL_SET = 8;
+
+export interface PotentialScores {
+  /** Rounded potential pillar scores (null = pillar has no current data). */
+  pillars: Record<AssessmentPillar, number | null>;
+  /** Potential composite 0–100 — same weights and renormalization as current. */
+  creaitScore: number | null;
+  band: string | null;
+  /** How many scored indicators carry an advisor-set target. */
+  potentialSet: number;
+}
+
+/**
+ * The potential composite uses the SAME denominator as the current one: only
+ * indicators that carry a current score participate, with potential_score
+ * where the advisor set one and the current score where not. That keeps the
+ * two composites directly comparable — the delta is exactly the sum of the
+ * advisor's targets, never an artifact of a different sample.
+ */
+export function computePotentialScores(scores: ScoreMap): PotentialScores {
+  const pillars: Record<AssessmentPillar, number | null> = {
+    profit: null,
+    systems: null,
+    leverage: null,
+  };
+  let total = 0;
+  let weightSum = 0;
+  let potentialSet = 0;
+
+  for (const { key, weight } of PILLARS) {
+    let sum = 0;
+    let count = 0;
+    for (const ind of INDICATORS_BY_PILLAR[key]) {
+      const row = scores[ind.key];
+      if (!row || row.not_applicable || row.score === null) continue;
+      const target =
+        row.potential_score !== null && row.potential_score !== undefined
+          ? row.potential_score
+          : row.score;
+      if (row.potential_score !== null && row.potential_score !== undefined) {
+        potentialSet += 1;
+      }
+      sum += target;
+      count += 1;
+    }
+    const raw = count > 0 ? (sum / count / 4) * 100 : null;
+    pillars[key] = raw === null ? null : Math.round(raw);
+    if (raw !== null) {
+      total += raw * weight;
+      weightSum += weight;
+    }
+  }
+
+  const creaitScore =
+    weightSum > 0 && Number.isFinite(total / weightSum)
+      ? Math.round(total / weightSum)
+      : null;
+
+  return {
+    pillars,
+    creaitScore,
+    band: creaitScore === null ? null : bandFor(creaitScore),
+    potentialSet,
+  };
+}
+
 /**
  * Payback in months = fix cost ÷ expected monthly recovery
  * (expected monthly recovery = annual expected ÷ 12).
