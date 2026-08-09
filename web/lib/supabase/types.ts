@@ -807,6 +807,12 @@ export interface CcAssessmentOpportunity {
   replaces: string | null;
   /** Rough hours per week of manual work recovered by the build. */
   hours_recovered_weekly: number | null;
+  /**
+   * The owner's own annual estimate for this opportunity (migration 0008).
+   * The report shows it only when it sits ABOVE our modeled expected case —
+   * the advisor visibly lowering the number is the trust act.
+   */
+  owner_estimate_annual: number | null;
   created_at: string;
   updated_at: string;
 }

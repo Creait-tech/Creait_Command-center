@@ -33,6 +33,7 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import {
+  concentrationWarning,
   formatMoney,
   formatPayback,
   paybackMonths,
@@ -61,6 +62,7 @@ interface OppForm {
   annual_high: string;
   fix_cost: string;
   months_to_benefit: string;
+  owner_estimate_annual: string;
   confidence: OpportunityConfidence;
   blueprint: string;
   replaces: string;
@@ -75,6 +77,7 @@ const EMPTY_OPP: OppForm = {
   annual_high: "",
   fix_cost: "",
   months_to_benefit: "",
+  owner_estimate_annual: "",
   confidence: "medium",
   blueprint: "",
   replaces: "",
@@ -91,6 +94,8 @@ function toOppForm(o: CcAssessmentOpportunity): OppForm {
     fix_cost: o.fix_cost !== null ? String(o.fix_cost) : "",
     months_to_benefit:
       o.months_to_benefit !== null ? String(o.months_to_benefit) : "",
+    owner_estimate_annual:
+      o.owner_estimate_annual !== null ? String(o.owner_estimate_annual) : "",
     confidence: o.confidence,
     blueprint: o.blueprint ?? "",
     replaces: o.replaces ?? "",
@@ -153,6 +158,7 @@ function OpportunityDialog({
       annual_high: form.annual_high,
       fix_cost: form.fix_cost,
       months_to_benefit: form.months_to_benefit,
+      owner_estimate_annual: form.owner_estimate_annual,
       confidence: form.confidence,
       rank: editing?.rank ?? nextRank,
       include_in_report: editing?.include_in_report ?? true,
@@ -284,6 +290,24 @@ function OpportunityDialog({
               </Select>
             </div>
           </div>
+          <div className="space-y-1">
+            <label className="text-xs font-medium text-muted-foreground">
+              Owner&apos;s own estimate (annual $){" "}
+              <span className="font-normal text-muted-foreground/70">
+                optional
+              </span>
+            </label>
+            <Input
+              type="number"
+              value={form.owner_estimate_annual}
+              onChange={(e) => set("owner_estimate_annual", e.target.value)}
+              className="tabular-nums"
+            />
+            <p className="text-[11px] text-muted-foreground/70">
+              what THEY think it&apos;s worth — we model conservatively. The
+              report cites it only when it sits above our expected case.
+            </p>
+          </div>
           <p className="text-xs text-muted-foreground">
             Payback (fix cost ÷ expected monthly recovery):{" "}
             <span className="font-semibold tabular-nums text-foreground">
@@ -377,6 +401,8 @@ export function OpportunityEditor({
   const [editingId, setEditingId] = useState<string | null>(null);
   const editing = opportunities.find((o) => o.id === editingId) ?? null;
   const portfolio = portfolioTotals(opportunities, overlapFactor);
+  // Advisor-only: the report never says this. See concentrationWarning().
+  const concentration = concentrationWarning(opportunities);
 
   async function handleDelete(opp: CcAssessmentOpportunity) {
     if (!window.confirm(`Delete "${opp.title}"?`)) return;
@@ -555,6 +581,18 @@ export function OpportunityEditor({
           />
         </label>
       </div>
+
+      {concentration && (
+        <p className="max-w-[80ch] rounded-lg bg-[color:var(--color-brand-slate)]/45 px-4 py-3 text-[12px] leading-relaxed text-muted-foreground ring-1 ring-inset ring-[color:var(--color-brand-electric)]/20">
+          &ldquo;{concentration.title}&rdquo; carries{" "}
+          <b className="tabular-nums text-foreground">
+            {concentration.sharePct}%
+          </b>{" "}
+          of the projected recovery. If the client disputes that one number,
+          most of the projection goes with it — consider lowering it and
+          broadening.
+        </p>
+      )}
 
       <OpportunityDialog
         assessmentId={assessmentId}

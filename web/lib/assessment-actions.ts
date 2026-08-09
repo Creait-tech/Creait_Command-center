@@ -612,6 +612,11 @@ export interface OpportunityInput {
   blueprint?: string | null;
   replaces?: string | null;
   hours_recovered_weekly?: number | string | null;
+  /**
+   * Owner's own annual estimate (migration 0008). undefined = leave the
+   * stored value alone, so an older client can never wipe it on update.
+   */
+  owner_estimate_annual?: number | string | null;
 }
 
 export async function saveOpportunity(
@@ -632,7 +637,7 @@ export async function saveOpportunity(
     return { ok: false, error: "Assessment not found" };
   }
 
-  const row = {
+  const row: Record<string, unknown> = {
     assessment_id: input.assessment_id,
     title,
     finding: input.finding?.trim() || null,
@@ -649,6 +654,11 @@ export async function saveOpportunity(
     hours_recovered_weekly: num(input.hours_recovered_weekly),
     updated_at: new Date().toISOString(),
   };
+  // Only touch the column when the caller sent it — same rule as
+  // potential_score, so a stale client can't wipe a stored estimate.
+  if (input.owner_estimate_annual !== undefined) {
+    row.owner_estimate_annual = num(input.owner_estimate_annual);
+  }
 
   const query = input.id
     ? supabase

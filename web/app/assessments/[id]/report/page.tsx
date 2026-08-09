@@ -26,6 +26,7 @@ import {
   formatPayback,
   INDICATORS,
   INDICATORS_BY_PILLAR,
+  marginShift,
   MIN_PILLAR_SAMPLE,
   MIN_POTENTIAL_SET,
   MIN_REPORT_RESOLVED,
@@ -391,6 +392,26 @@ export default async function ExecutiveBlueprintPage({
 
   const firstName = assessment.client_name.trim().split(/\s+/)[0] || "there";
   const hasBlueprints = opportunities.some((o) => o.blueprint);
+
+  /**
+   * The margin-points headline — "9.0% → 15.1% (+6.1 points)". Margin points,
+   * NEVER a profit-lift percentage: a lift % is a function of the starting
+   * margin, not of the work, and it reads as hype on a thin-margin business.
+   * Same guard family as the other projections: a draft or provisional
+   * engagement states no expected-case margin, and marginShift() itself
+   * requires both financials, positive revenue and a priced portfolio.
+   */
+  const margin =
+    !isDraft && !computed.provisional
+      ? marginShift(
+          assessment.annual_revenue,
+          assessment.operating_profit,
+          portfolio.adjExpected
+        )
+      : null;
+  const marginLine = margin
+    ? `Operating margin: ${margin.currentPct.toFixed(1)}% → ${margin.expectedPct.toFixed(1)}% (+${margin.deltaPts.toFixed(1)} points) in the expected case, with revenue held flat.`
+    : null;
 
   /** The lowest-scored indicators — the evidence standing behind the mirror. */
   const weakest = INDICATORS.map((ind) => ({ ind, row: scores[ind.key] }))
@@ -807,6 +828,19 @@ export default async function ExecutiveBlueprintPage({
                   : "There is a single initiative here, so there is no overlap to discount — the total is that initiative's own range."}
               </p>
             </div>
+            {marginLine && (
+              <p
+                style={{
+                  fontSize: 11.5,
+                  color: muted,
+                  marginTop: 8,
+                  lineHeight: 1.6,
+                  fontVariantNumeric: "tabular-nums",
+                }}
+              >
+                {marginLine}
+              </p>
+            )}
           </div>
         )}
       </section>
@@ -877,6 +911,20 @@ export default async function ExecutiveBlueprintPage({
               overlapFactor={portfolio.overlapFactor}
             />
           </div>
+
+          {marginLine && (
+            <p
+              style={{
+                fontSize: 12,
+                color: muted,
+                marginTop: 14,
+                lineHeight: 1.65,
+                fontVariantNumeric: "tabular-nums",
+              }}
+            >
+              {marginLine}
+            </p>
+          )}
 
           <div
             className="avoid-break"
@@ -1284,6 +1332,31 @@ export default async function ExecutiveBlueprintPage({
                     )}
                   </tbody>
                 </table>
+                {/* Downward anchoring only: the advisor visibly LOWERING the
+                    owner's number is the trust act. If our model sits at or
+                    above the owner's estimate, the line never renders — a
+                    report shown raising the number reads as salesmanship. */}
+                {opp.owner_estimate_annual !== null &&
+                  opp.annual_expected !== null &&
+                  Number(opp.owner_estimate_annual) >
+                    Number(opp.annual_expected) && (
+                    <p
+                      style={{
+                        fontSize: 12,
+                        color: muted,
+                        marginTop: 8,
+                        fontVariantNumeric: "tabular-nums",
+                      }}
+                    >
+                      The owner&apos;s own estimate was{" "}
+                      {formatMoney(Number(opp.owner_estimate_annual))}. We
+                      modeled{" "}
+                      <b style={{ color: ink }}>
+                        {formatMoney(Number(opp.annual_expected))}
+                      </b>
+                      .
+                    </p>
+                  )}
                 {opp.confidence === "low" && (
                   <p style={{ fontSize: 11.5, color: muted, marginTop: 8 }}>
                     Based on your estimates — we widened this range and will

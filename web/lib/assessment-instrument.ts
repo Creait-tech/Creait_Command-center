@@ -690,6 +690,82 @@ export function portfolioTotals(
   };
 }
 
+export interface MarginShift {
+  /** Current operating margin, %, rounded to one decimal for display. */
+  currentPct: number;
+  /** Expected-case margin with the portfolio captured, revenue held flat. */
+  expectedPct: number;
+  /** expectedPct − currentPct, from the ROUNDED values so the printed line's implied arithmetic always checks out. */
+  deltaPts: number;
+}
+
+/**
+ * The margin-points headline: "9.0% → 15.1% (+6.1 points)". Margin POINTS,
+ * never a profit-lift percentage — a lift % is a function of the starting
+ * margin, not of the work, and it reads as hype on any thin-margin business.
+ *
+ * Expected-case margin holds revenue flat and adds the overlap-adjusted
+ * expected portfolio to operating profit (the impact is priced as operating
+ * profit, so this is the conservative reading). Returns null whenever the
+ * line cannot be stated honestly: missing figures, non-positive revenue, an
+ * unpriced portfolio, or a shift that rounds to zero points.
+ */
+export function marginShift(
+  annualRevenue: unknown,
+  operatingProfit: unknown,
+  adjExpected: number
+): MarginShift | null {
+  const revenue = toFinite(annualRevenue);
+  const profit = toFinite(operatingProfit);
+  if (revenue === null || profit === null || revenue <= 0) return null;
+  if (!Number.isFinite(adjExpected) || adjExpected <= 0) return null;
+  const round1 = (v: number) => Math.round(v * 10) / 10;
+  const currentPct = round1((profit / revenue) * 100);
+  const expectedPct = round1(((profit + adjExpected) / revenue) * 100);
+  const deltaPts = round1(expectedPct - currentPct);
+  if (deltaPts <= 0) return null;
+  return { currentPct, expectedPct, deltaPts };
+}
+
+export interface ConcentrationWarning {
+  title: string;
+  /** Whole-percent share of the raw included expected sum. */
+  sharePct: number;
+}
+
+/**
+ * Advisor-only concentration check (never the report): when one included
+ * opportunity carries more than half the raw expected recovery, the whole
+ * projection stands or falls on that single number. Threshold 50% — we
+ * typically carry three initiatives, so 25% would fire constantly. A lone
+ * initiative is trivially 100% and the portfolio math already treats it as
+ * its own range, so the check needs at least two included opportunities.
+ */
+export function concentrationWarning(
+  opportunities: Array<{
+    title: string;
+    annual_expected: number | null;
+    include_in_report: boolean;
+  }>
+): ConcentrationWarning | null {
+  const included = opportunities.filter((o) => o.include_in_report);
+  if (included.length < 2) return null;
+  let sum = 0;
+  let top: { title: string; expected: number } | null = null;
+  for (const opp of included) {
+    const expected = toFinite(opp.annual_expected);
+    if (expected === null || expected <= 0) continue;
+    sum += expected;
+    if (!top || expected > top.expected) {
+      top = { title: opp.title, expected };
+    }
+  }
+  if (!top || sum <= 0) return null;
+  const share = top.expected / sum;
+  if (share <= 0.5) return null;
+  return { title: top.title, sharePct: Math.round(share * 100) };
+}
+
 /**
  * An advisor can type a low above the expected (or a high below it) and the
  * printed range then reads as nonsense. Non-blocking — surfaced in the
