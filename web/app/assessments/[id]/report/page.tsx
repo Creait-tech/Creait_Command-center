@@ -378,9 +378,14 @@ export default async function ExecutiveBlueprintPage({
     portfolio.adjExpected > 0 &&
     goalRows.length > 0;
 
-  /** Dollar-titled identity — exact, overlap-adjusted, only when priced. */
+  /**
+   * Dollar-titled identity — exact, overlap-adjusted, only when priced. A
+   * draft never takes the finished-deliverable identity: a cover that names a
+   * dollar figure two inches above "not ready to hand to a client" undercuts
+   * both lines.
+   */
   const roadmapIdentity =
-    portfolio.includedCount > 0 && portfolio.adjExpected > 0
+    !isDraft && portfolio.includedCount > 0 && portfolio.adjExpected > 0
       ? `The ${formatMoney(portfolio.adjExpected)} Profit Recovery Roadmap`
       : null;
 
@@ -500,12 +505,11 @@ export default async function ExecutiveBlueprintPage({
             Dear {firstName},
           </p>
           <p style={{ marginTop: 16 }}>
-            Thank you for the trust it takes to open a business to outside
-            eyes. Over the course of this diagnostic you gave us hours of your
-            time, straight answers to uncomfortable questions, and a look at
-            how {assessment.company?.trim() || "your business"} actually runs
-            — not how anyone wishes it ran. We don&apos;t take that lightly,
-            and this report was written to be worth it.
+            {/* One template literal: JSX swallows the space between an
+                expression and text that wraps to the next line. */}
+            {`Thank you for the trust it takes to open a business to outside eyes. Over the course of this diagnostic you gave us hours of your time, straight answers to uncomfortable questions, and a look at how ${
+              assessment.company?.trim() || "your business"
+            } actually runs — not how anyone wishes it ran. We don't take that lightly, and this report was written to be worth it.`}
           </p>
           <p style={{ marginTop: 14 }}>
             What we examined is the machinery underneath your results: the
