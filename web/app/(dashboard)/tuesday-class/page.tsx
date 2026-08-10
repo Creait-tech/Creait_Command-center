@@ -19,6 +19,13 @@ export const dynamic = "force-dynamic";
 
 const WEEKS = 8;
 
+/** The sync columns are jsonb, so narrow before handing them to the client. */
+function toStringList(value: unknown): string[] {
+  return Array.isArray(value)
+    ? value.filter((v): v is string => typeof v === "string")
+    : [];
+}
+
 /**
  * AI Tuesday — the internal side.
  *
@@ -106,6 +113,12 @@ export default async function TuesdayClassPage() {
           attended: m.attended,
           source: m.source,
         }))}
+        sync={{
+          syncedAt: thisWeekSession?.zoom_synced_at ?? null,
+          participantCount: thisWeekSession?.zoom_participant_count ?? null,
+          unmatched: toStringList(thisWeekSession?.zoom_unmatched),
+          error: thisWeekSession?.zoom_error ?? null,
+        }}
       />
 
       <ClassScoreboard stats={stats} totalRegistered={registrations.length} />

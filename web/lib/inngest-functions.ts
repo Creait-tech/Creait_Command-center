@@ -1493,7 +1493,17 @@ export const zoomSync = inngest.createFunction(
     if (!zoomConfigured()) {
       return { skipped: 'Zoom S2S env vars not configured' }
     }
-    return step.run('sync-zoom-recordings', () => syncZoomRecordings(7))
+    const result = await step.run('sync-zoom-recordings', () =>
+      syncZoomRecordings(7),
+    )
+    // Class attendance reads the meeting record this job just filled in, so
+    // chain rather than racing two clocks. The attendance job is idempotent
+    // and no-ops on any day without a class, which makes a daily chain free.
+    await step.sendEvent('trigger-class-attendance', {
+      name: 'cron/zoom-attendance',
+      data: { triggeredBy: 'zoom-sync' },
+    })
+    return result
   },
 )
 
@@ -1502,20 +1512,28 @@ export const zoomSync = inngest.createFunction(
 // ---------------------------------------------------------------------------
 
 /**
- * Tuesday night, a couple of hours after class ends, match Zoom's participant
- * list against the registration list and fill in whoever we can see was there.
+ * Attendance for the weekly class, taken automatically from Zoom.
  *
- * Presence only — never absence. A manual mark always wins, and Zoom never
- * writes a no-show, so the founders' check-off stays the system of record.
- * Idempotent: re-running only fills gaps, so a late-processing recording just
- * needs `GET /api/cron/zoom-attendance` again.
+ * This is the primary mechanism — the check-off on /tuesday-class is the
+ * override for whoever Zoom could not identify. Every registrant who was on
+ * the list when the class ran ends up tagged `attended-tuesday` or
+ * `missed-tuesday`, which is what lets GHL run two follow-up tracks.
+ *
+ * Runs Wednesday 7am ET as a backstop and, more importantly, is chained
+ * straight off `zoomSync` (6am ET daily) so it can never read the meeting
+ * record before that morning's Zoom pull has filled it in.
+ *
+ * Idempotent by construction: a registrant with an existing row for the
+ * session is skipped whole, so a second run writes nothing and tags nobody.
+ * If Zoom returns nothing or fails, it tags NOBODY and records why on the
+ * session — a hiccup must never mass-tag a full room as no-shows.
  */
 export const zoomAttendanceSync = inngest.createFunction(
   {
     id: 'zoom-attendance-sync',
     name: 'AI Tuesday Attendance Sync',
     triggers: [
-      { cron: 'TZ=America/New_York 0 22 * * 2' },
+      { cron: 'TZ=America/New_York 0 7 * * 3' },
       { event: 'cron/zoom-attendance' },
     ],
   },

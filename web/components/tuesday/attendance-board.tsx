@@ -1,7 +1,13 @@
 "use client";
 
 import { useMemo, useState, useTransition } from "react";
-import { Check, Search, TriangleAlert, UserX } from "lucide-react";
+import {
+  Check,
+  RefreshCw,
+  Search,
+  TriangleAlert,
+  UserX,
+} from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -17,25 +23,36 @@ type InitialMark = {
   source: string;
 };
 
+export type SyncState = {
+  syncedAt: string | null;
+  participantCount: number | null;
+  unmatched: string[];
+  error: string | null;
+};
+
 type Props = {
   sessionDate: string;
   sessionLabel: string;
   topic: string | null;
   registrations: CcClassRegistration[];
   initialMarks: InitialMark[];
+  sync: SyncState;
 };
 
 /** `undefined` is "not yet decided" and is the state that never tags anyone. */
 type Decision = boolean | undefined;
 
 /**
- * The post-class check-off.
+ * The attendance override.
  *
- * Designed for one hand on a phone at 7:35 PM: every registrant is a row with
- * two big targets, the whole list is local state until Save, and one button
- * closes out everyone still unmarked. Nothing reaches GHL until Save, and
- * anyone left undecided is left alone — the tag they would otherwise get says
- * "we missed you" to somebody who was there.
+ * Zoom takes attendance automatically the morning after class; this list is
+ * where a human corrects it. So the sync's own report leads — when it ran,
+ * how many people Zoom saw, and which Zoom names matched nobody — and the
+ * rows below it are the fix-by-hand queue.
+ *
+ * Nothing reaches GHL until Save, and anyone left undecided is left alone:
+ * the tag they would otherwise get says "we missed you" to somebody who was
+ * there.
  */
 export function AttendanceBoard({
   sessionDate,
@@ -43,6 +60,7 @@ export function AttendanceBoard({
   topic,
   registrations,
   initialMarks,
+  sync,
 }: Props) {
   const initial = useMemo(() => {
     const map: Record<string, Decision> = {};
@@ -154,6 +172,8 @@ export function AttendanceBoard({
   return (
     <Card>
       <CardContent className="flex flex-col gap-4 pt-6">
+        <SyncReport sync={sync} />
+
         <div className="flex flex-wrap items-baseline justify-between gap-2">
           <div>
             <h2 className="text-base font-semibold">{sessionLabel}</h2>
@@ -274,10 +294,90 @@ export function AttendanceBoard({
           <p className="w-full text-xs text-muted-foreground sm:w-auto sm:flex-1">
             Saving adds <code className="font-data">attended-tuesday</code> or{" "}
             <code className="font-data">missed-tuesday</code> in GHL. Anyone left
-            unmarked is left alone.
+            unmarked is left alone. A mark you make here outranks the Zoom sync
+            and is never overwritten by it.
           </p>
         </div>
       </CardContent>
     </Card>
+  );
+}
+
+/**
+ * What the automatic sync did, in the three states that matter to a founder:
+ * it hasn't run, it refused to run, or it ran and here is what it saw.
+ *
+ * The refusal state is deliberately loud. When Zoom returns nothing the job
+ * tags nobody, which means a full room silently stays untagged — the only way
+ * that gets noticed is if the page says so.
+ */
+function SyncReport({ sync }: { sync: SyncState }) {
+  if (sync.error) {
+    return (
+      <div className="rounded-md border border-destructive/50 bg-destructive/10 p-3">
+        <p className="flex items-center gap-2 text-sm font-semibold">
+          <TriangleAlert className="size-4 text-destructive" />
+          Automatic attendance did not run — nobody was tagged
+        </p>
+        <p className="mt-1.5 text-xs text-muted-foreground">{sync.error}</p>
+        <p className="mt-1.5 text-xs text-muted-foreground">
+          Mark the list below by hand, or fix the cause and re-run{" "}
+          <code className="font-data">/api/cron/zoom-attendance</code>.
+        </p>
+      </div>
+    );
+  }
+
+  if (!sync.syncedAt) {
+    return (
+      <div className="rounded-md border border-border bg-secondary/40 p-3">
+        <p className="flex items-center gap-2 text-sm font-medium">
+          <RefreshCw className="size-4 text-muted-foreground" />
+          Waiting on the Zoom sync
+        </p>
+        <p className="mt-1.5 text-xs text-muted-foreground">
+          Attendance is taken automatically on Wednesday morning, after the
+          recording lands. Marking anyone below before then still works and
+          still wins.
+        </p>
+      </div>
+    );
+  }
+
+  const when = new Date(sync.syncedAt).toLocaleString("en-US", {
+    timeZone: "America/New_York",
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  });
+
+  return (
+    <div className="rounded-md border border-border bg-secondary/40 p-3">
+      <p className="flex items-center gap-2 text-sm font-medium">
+        <Check className="size-4 text-brand-success" />
+        Attendance taken from Zoom · {when} ET
+      </p>
+      <p className="mt-1.5 text-xs text-muted-foreground">
+        Zoom reported {sync.participantCount ?? 0} participant
+        {sync.participantCount === 1 ? "" : "s"} (hosts and notetaker bots
+        excluded). Everyone on the list was tagged either way.
+      </p>
+      {sync.unmatched.length > 0 && (
+        <div className="mt-2.5 border-t border-border pt-2.5">
+          <p className="text-xs font-medium">
+            {sync.unmatched.length} Zoom name
+            {sync.unmatched.length === 1 ? "" : "s"} matched nobody on the list
+          </p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            {sync.unmatched.join(" · ")}
+          </p>
+          <p className="mt-1.5 text-xs text-muted-foreground">
+            They joined under a name we can&apos;t tie to a registration — mark
+            them Here below if you recognise them.
+          </p>
+        </div>
+      )}
+    </div>
   );
 }

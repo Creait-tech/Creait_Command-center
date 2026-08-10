@@ -859,6 +859,11 @@ export interface CcClassRegistration {
   updated_at: string;
 }
 
+export interface ZoomClassParticipant {
+  name: string;
+  email: string | null;
+}
+
 export interface CcClassSession {
   id: string;
   org_id: string;
@@ -866,6 +871,15 @@ export interface CcClassSession {
   session_date: string;
   topic: string | null;
   created_at: string;
+  // Automatic attendance sync state (migration 0010).
+  zoom_synced_at: string | null;
+  zoom_meeting_uuid: string | null;
+  zoom_participant_count: number | null;
+  zoom_participants: Json;
+  /** Zoom names that matched no registrant — the resolve-by-hand queue. */
+  zoom_unmatched: Json;
+  /** Non-null means the run refused to tag anyone, and why. */
+  zoom_error: string | null;
 }
 
 /** 'manual' is the human check-off and outranks 'zoom' imports. */

@@ -187,19 +187,89 @@ export async function syncZoomRecordings(daysBack = 7): Promise<{
 }
 
 // ---------------------------------------------------------------------------
-// AI Tuesday attendance from Zoom participants
+// AI Tuesday attendance — automatic, from Zoom
 // ---------------------------------------------------------------------------
 
-type ZoomParticipant = {
-  name?: string;
-  user_email?: string;
-};
+/**
+ * Attendance for the weekly class is taken from Zoom, not from a person with a
+ * clipboard. The manual check-off on /tuesday-class stays, demoted to the
+ * override for whoever Zoom could not identify.
+ *
+ * Where the evidence comes from, in order of trustworthiness:
+ *
+ *  1. Zoom's past-meeting participant report — names AND emails. The class
+ *     requires Zoom registration, so most joins carry an email, and an email
+ *     match is the only kind worth trusting outright.
+ *  2. `meetings.attendees` — display names only, delivered by Read.ai. Used as
+ *     a second pass and as the fallback when the participant scope is missing.
+ *
+ * Name matching is a fallback for a reason: the real list contains "marielle
+ * cooper", first-name-only joins and device names like "iPhone". Normalizing
+ * case, spacing, punctuation and accents catches the common cases and nothing
+ * more; anything left over is surfaced for a human instead of guessed at.
+ */
+
+type ZoomParticipant = { name: string; email: string | null };
+
+/**
+ * Never counted as attendees: the host account, the founder who runs the
+ * class from the host seat, and the notetaker bots that join every meeting.
+ * Matched on the normalized name.
+ */
+const NON_ATTENDEE_NAMES = new Set([
+  "creait team",
+  "maurice grant",
+  "read.ai meeting notes",
+]);
+
+const BOT_NAME_FRAGMENTS = [
+  "read.ai",
+  "otter.ai",
+  "fireflies",
+  "notetaker",
+  "meeting notes",
+  "recording bot",
+];
+
+/** Title patterns that identify the class among a day's other meetings. */
+const CLASS_TITLE_PATTERNS = [
+  "creait live",
+  "creait  live",
+  "ai tuesday",
+  "systems behind a smoother business",
+];
+
+/**
+ * Lowercase, strip accents and punctuation, collapse whitespace. "Marielle
+ * Cooper", "marielle cooper" and "Marielle  Cooper " all land on one key.
+ */
+export function normalizeName(value: string): string {
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function isNonAttendee(name: string): boolean {
+  const n = normalizeName(name);
+  if (!n) return true;
+  if (NON_ATTENDEE_NAMES.has(n)) return true;
+  const raw = name.toLowerCase();
+  return BOT_NAME_FRAGMENTS.some((f) => raw.includes(f));
+}
+
+function isClassTitle(title: string): boolean {
+  const t = normalizeName(title);
+  return CLASS_TITLE_PATTERNS.some((p) => t.includes(normalizeName(p)));
+}
 
 /**
  * Zoom meeting UUIDs are base64 and can contain `/`. When one starts with `/`
  * or contains `//`, the path segment must be double URL-encoded or Zoom routes
- * the request somewhere else entirely and answers 404. Anything else is
- * encoded once, as normal.
+ * the request elsewhere and answers 404. Anything else is encoded once.
  */
 function encodeMeetingUuid(uuid: string): string {
   const once = encodeURIComponent(uuid);
@@ -208,34 +278,59 @@ function encodeMeetingUuid(uuid: string): string {
     : once;
 }
 
+/**
+ * Participants for a finished meeting.
+ *
+ * Tries the report endpoint first (richest, needs `report:read:admin`) and
+ * falls back to past_meetings (needs the past-participants scope). Both
+ * failing is reported to the caller, which then refuses to tag anyone.
+ */
 async function fetchParticipants(
   token: string,
   uuid: string,
-): Promise<ZoomParticipant[]> {
-  const out: ZoomParticipant[] = [];
-  let nextPageToken = "";
-  do {
-    const url = new URL(
-      `${ZOOM_API}/past_meetings/${encodeMeetingUuid(uuid)}/participants`,
-    );
-    url.searchParams.set("page_size", "300");
-    if (nextPageToken) url.searchParams.set("next_page_token", nextPageToken);
-    const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
-    if (!res.ok) {
-      // A missing participant scope is the likely cause and it is not fatal —
-      // the manual check-off is the system of record either way.
-      throw new Error(
-        `Zoom participants failed: ${res.status} ${(await res.text()).slice(0, 200)}`,
-      );
-    }
-    const json = (await res.json()) as {
-      participants?: ZoomParticipant[];
-      next_page_token?: string;
-    };
-    out.push(...(json.participants ?? []));
-    nextPageToken = json.next_page_token ?? "";
-  } while (nextPageToken);
-  return out;
+): Promise<{ participants: ZoomParticipant[]; errors: string[] }> {
+  const errors: string[] = [];
+  const encoded = encodeMeetingUuid(uuid);
+
+  for (const path of [
+    `/report/meetings/${encoded}/participants`,
+    `/past_meetings/${encoded}/participants`,
+  ]) {
+    const out: ZoomParticipant[] = [];
+    let nextPageToken = "";
+    let failed = false;
+
+    do {
+      const url = new URL(`${ZOOM_API}${path}`);
+      url.searchParams.set("page_size", "300");
+      if (nextPageToken) url.searchParams.set("next_page_token", nextPageToken);
+      const res = await fetch(url, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) {
+        errors.push(
+          `${path} → ${res.status} ${(await res.text()).slice(0, 180)}`,
+        );
+        failed = true;
+        break;
+      }
+      const json = (await res.json()) as {
+        participants?: { name?: string; user_email?: string }[];
+        next_page_token?: string;
+      };
+      for (const p of json.participants ?? []) {
+        const name = (p.name ?? "").trim();
+        const email = (p.user_email ?? "").trim().toLowerCase();
+        if (!name && !email) continue;
+        out.push({ name, email: email || null });
+      }
+      nextPageToken = json.next_page_token ?? "";
+    } while (nextPageToken);
+
+    if (!failed && out.length > 0) return { participants: out, errors };
+  }
+
+  return { participants: [], errors };
 }
 
 /** The Eastern calendar date of an instant — the class lives on ET Tuesdays. */
@@ -250,116 +345,171 @@ function easternDay(iso: string): string {
 
 export type ZoomAttendanceResult = {
   sessionDate: string;
-  meetings: number;
+  /** Set when the run refused to tag anyone. Surfaced on the dashboard. */
+  error: string | null;
+  meetingUuid: string | null;
   participants: number;
-  matched: number;
-  inserted: number;
+  attended: number;
+  noShow: number;
   tagged: number;
-  skippedManual: number;
+  /** Already decided — a manual mark or an earlier run. Left untouched. */
+  skipped: number;
+  unmatched: string[];
   notes: string[];
 };
 
+function emptyZoomAttendance(
+  sessionDate: string,
+  error: string | null,
+  notes: string[] = [],
+  meetingUuid: string | null = null,
+): ZoomAttendanceResult {
+  return {
+    sessionDate,
+    error,
+    meetingUuid,
+    participants: 0,
+    attended: 0,
+    noShow: 0,
+    tagged: 0,
+    skipped: 0,
+    unmatched: [],
+    notes,
+  };
+}
+
 /**
- * Fill in attendance for one class from Zoom's participant list.
+ * Take attendance for one class from Zoom and push the outcome tags.
  *
- * Deliberate limits, all of them about not asserting more than Zoom knows:
+ * Safety rails, in the order they bind:
  *
- *  - A manual mark ALWAYS wins. Any registrant who already has a row for this
- *    session is skipped, whichever way John marked them.
- *  - Only presence is inferred. Absence from a Zoom participant list is not
- *    evidence of a no-show — guests who join without signing in have no email
- *    attached at all — so this never writes `attended = false` and never
- *    sends `missed-tuesday`. Deciding somebody missed the class stays a human
- *    act.
- *  - Matching is by exact email. A name-based fuzzy match would eventually tag
- *    the wrong person's CRM record, which is worse than a gap.
+ *  a. No participants, or every Zoom call failed → tag NOBODY, record the
+ *     reason on the session, return. The job tags every registrant one way or
+ *     the other, so an API hiccup must never mass-tag a full room as no-shows.
+ *  b. A registrant who already has a row for this session is skipped whole —
+ *     manual marks win, and that is also what makes a second run a no-op.
+ *  c. Only rows this run actually wrote get tagged, so re-running never
+ *     double-tags.
+ *  d. Only people who were registered when the class ran are considered; a
+ *     Thursday signup is not a no-show for Tuesday.
  */
 export async function syncZoomAttendance(
   sessionDate: string = currentClassDate(),
 ): Promise<ZoomAttendanceResult> {
   const notes: string[] = [];
-  const token = await zoomToken();
+  const supabase = createServiceClient();
 
-  // Look back far enough to catch a recording that finished processing late.
-  const recordings = await listRecordings(
-    token,
-    new Date(`${sessionDate}T00:00:00Z`).toISOString(),
-  );
-  const dayMeetings = recordings.filter(
-    (r) => r.start_time && easternDay(r.start_time) === sessionDate,
+  // ── Find the class meeting for that date ────────────────────────────────
+  // `meetings` holds two rows per Zoom meeting: one written by zoomSync
+  // (source_id = the Zoom UUID, attendees empty) and one from Read.ai
+  // (source_id = a GUID, attendees populated). Both are wanted — the first
+  // for the UUID the participant API needs, the second for its names.
+  // Pre-existing duplication, deliberately read around rather than fixed here.
+  const dayStart = new Date(`${sessionDate}T00:00:00Z`);
+  const { data: meetingRows } = await supabase
+    .from("meetings")
+    .select("title, source, source_id, scheduled_at, attendees")
+    .eq("org_id", CREAIT_ORG_ID)
+    .gte("scheduled_at", new Date(dayStart.getTime() - 86_400_000).toISOString())
+    .lte("scheduled_at", new Date(dayStart.getTime() + 2 * 86_400_000).toISOString());
+
+  const classRows = ((meetingRows as
+    | {
+        title: string | null;
+        source: string | null;
+        source_id: string | null;
+        scheduled_at: string | null;
+        attendees: unknown;
+      }[]
+    | null) ?? []).filter(
+    (m) =>
+      m.scheduled_at &&
+      easternDay(m.scheduled_at) === sessionDate &&
+      isClassTitle(m.title ?? ""),
   );
 
-  if (dayMeetings.length === 0) {
-    return {
+  if (classRows.length === 0) {
+    return emptyZoomAttendance(
       sessionDate,
-      meetings: 0,
-      participants: 0,
-      matched: 0,
-      inserted: 0,
-      tagged: 0,
-      skippedManual: 0,
-      notes: [`No Zoom meeting found on ${sessionDate}.`],
-    };
+      `No AI Tuesday meeting found in the meeting record for ${sessionDate}. Nobody was tagged.`,
+    );
   }
 
-  const emails = new Set<string>();
-  let participantCount = 0;
-  for (const meeting of dayMeetings) {
+  const meetingUuid =
+    classRows.find((m) => m.source === "zoom" && m.source_id)?.source_id ?? null;
+
+  // ── Gather participants ─────────────────────────────────────────────────
+  const byKey = new Map<string, ZoomParticipant>();
+
+  if (meetingUuid) {
     try {
-      const people = await fetchParticipants(token, meeting.uuid);
-      participantCount += people.length;
-      for (const p of people) {
-        const email = p.user_email?.trim().toLowerCase();
-        if (email) emails.add(email);
+      const token = await zoomToken();
+      const { participants, errors } = await fetchParticipants(token, meetingUuid);
+      notes.push(...errors);
+      for (const p of participants) {
+        const key = p.email ?? normalizeName(p.name);
+        if (key) byKey.set(key, p);
       }
     } catch (err) {
       notes.push(err instanceof Error ? err.message : String(err));
     }
+  } else {
+    notes.push("No Zoom meeting UUID on record — falling back to stored names.");
   }
 
-  if (participantCount > 0 && emails.size === 0) {
+  const emailCount = [...byKey.values()].filter((p) => p.email).length;
+
+  // Second pass: display names already stored on the meeting rows.
+  for (const row of classRows) {
+    const names = Array.isArray(row.attendees) ? row.attendees : [];
+    for (const raw of names) {
+      if (typeof raw !== "string") continue;
+      const key = normalizeName(raw);
+      if (key && !byKey.has(key)) byKey.set(key, { name: raw, email: null });
+    }
+  }
+
+  const participants = [...byKey.values()].filter((p) => !isNonAttendee(p.name));
+
+  if (participants.length === 0) {
+    const error =
+      notes.length > 0
+        ? `Zoom returned no usable participant list. Nobody was tagged. ${notes[0]}`
+        : "Zoom reported no participants for this class. Nobody was tagged.";
+    await writeSessionSyncState(supabase, sessionDate, {
+      zoom_meeting_uuid: meetingUuid,
+      zoom_participant_count: 0,
+      zoom_participants: [],
+      zoom_unmatched: [],
+      zoom_error: error,
+    });
+    return emptyZoomAttendance(sessionDate, error, notes, meetingUuid);
+  }
+
+  if (emailCount === 0) {
     notes.push(
-      `Zoom reported ${participantCount} participants but no email addresses — attendees joined without signing in. Mark this week by hand.`,
+      "Zoom supplied no email addresses — matching fell back to display names only. Check the Zoom app's participant-report scope.",
     );
   }
 
-  const supabase = createServiceClient();
-
-  const { data: sessionRow } = await supabase
-    .from("cc_class_sessions")
-    .select("id")
-    .eq("org_id", CREAIT_ORG_ID)
-    .eq("session_date", sessionDate)
-    .maybeSingle();
-
-  let sessionId = (sessionRow as { id: string } | null)?.id ?? null;
+  // ── Match against the registration list ─────────────────────────────────
+  const sessionId = await ensureSessionRow(supabase, sessionDate);
   if (!sessionId) {
-    const { data, error } = await supabase
-      .from("cc_class_sessions")
-      .insert({ org_id: CREAIT_ORG_ID, session_date: sessionDate })
-      .select("id")
-      .single();
-    if (error || !data) {
-      notes.push(`Could not create the session row: ${error?.message}`);
-      return {
-        sessionDate,
-        meetings: dayMeetings.length,
-        participants: participantCount,
-        matched: 0,
-        inserted: 0,
-        tagged: 0,
-        skippedManual: 0,
-        notes,
-      };
-    }
-    sessionId = (data as { id: string }).id;
+    return emptyZoomAttendance(
+      sessionDate,
+      "Could not create the session row; nobody was tagged.",
+      notes,
+      meetingUuid,
+    );
   }
 
+  const cutoff = new Date(dayStart.getTime() + 86_400_000).toISOString();
   const [{ data: regRows }, { data: markRows }] = await Promise.all([
     supabase
       .from("cc_class_registrations")
-      .select("id, first_name, last_name, email, ghl_contact_id")
-      .eq("org_id", CREAIT_ORG_ID),
+      .select("id, first_name, last_name, email, ghl_contact_id, created_at")
+      .eq("org_id", CREAIT_ORG_ID)
+      .lt("created_at", cutoff),
     supabase
       .from("cc_class_attendance")
       .select("registration_id")
@@ -371,64 +521,144 @@ export async function syncZoomAttendance(
       CcClassRegistration,
       "id" | "first_name" | "last_name" | "email" | "ghl_contact_id"
     >[] | null) ?? [];
-  const alreadyMarked = new Set(
+  const decided = new Set(
     ((markRows as Pick<CcClassAttendance, "registration_id">[] | null) ?? [])
       .map((m) => m.registration_id)
       .filter((id): id is string => Boolean(id)),
   );
 
-  const present = registrations.filter((r) =>
-    emails.has(r.email.trim().toLowerCase()),
+  const participantEmails = new Set(
+    participants.map((p) => p.email).filter((e): e is string => Boolean(e)),
   );
-  const toInsert = present.filter((r) => !alreadyMarked.has(r.id));
-  const skippedManual = present.length - toInsert.length;
+  const participantNames = new Map(
+    participants.map((p) => [normalizeName(p.name), p.name]),
+  );
+  const claimedNames = new Set<string>();
+
+  const pending = registrations.filter((r) => !decided.has(r.id));
+  const rows: {
+    registration: (typeof registrations)[number];
+    attended: boolean;
+  }[] = pending.map((r) => {
+    const email = r.email.trim().toLowerCase();
+    if (participantEmails.has(email)) {
+      // Consume the name too, so an email match doesn't leave the same person
+      // sitting in the "couldn't match these" queue.
+      claimedNames.add(normalizeName(`${r.first_name} ${r.last_name}`));
+      return { registration: r, attended: true };
+    }
+    const fullName = normalizeName(`${r.first_name} ${r.last_name}`);
+    if (fullName && participantNames.has(fullName)) {
+      claimedNames.add(fullName);
+      return { registration: r, attended: true };
+    }
+    return { registration: r, attended: false };
+  });
 
   let inserted = 0;
-  if (toInsert.length > 0) {
+  if (rows.length > 0) {
     const { error } = await supabase.from("cc_class_attendance").insert(
-      toInsert.map((r) => ({
+      rows.map((r) => ({
         session_id: sessionId,
-        registration_id: r.id,
-        email: r.email,
-        attended: true,
+        registration_id: r.registration.id,
+        email: r.registration.email,
+        attended: r.attended,
         source: "zoom" as const,
       })),
     );
-    if (error) notes.push(`Attendance insert failed: ${error.message}`);
-    else inserted = toInsert.length;
+    if (error) {
+      const message = `Attendance write failed: ${error.message}. Nobody was tagged.`;
+      await writeSessionSyncState(supabase, sessionDate, {
+        zoom_meeting_uuid: meetingUuid,
+        zoom_participant_count: participants.length,
+        zoom_participants: participants,
+        zoom_unmatched: [],
+        zoom_error: message,
+      });
+      return emptyZoomAttendance(sessionDate, message, notes, meetingUuid);
+    }
+    inserted = rows.length;
   }
 
-  // Tag only what was newly written, so a re-run never re-tags.
+  // ── Tag, for the rows this run wrote ────────────────────────────────────
   let tagged = 0;
-  if (inserted > 0) {
-    for (const person of toInsert) {
-      let contactId = person.ghl_contact_id;
-      if (!contactId) {
-        const found = await findContactByEmail(person.email);
-        if (!found.ok || !found.data) {
-          notes.push(`No GHL contact for ${person.email} — tag not sent.`);
-          continue;
-        }
-        contactId = found.data.id;
-        await supabase
-          .from("cc_class_registrations")
-          .update({ ghl_contact_id: contactId })
-          .eq("id", person.id);
+  for (const row of rows) {
+    const person = row.registration;
+    const tag = row.attended ? CLASS_TAGS.attended : CLASS_TAGS.missed;
+    let contactId = person.ghl_contact_id;
+    if (!contactId) {
+      const found = await findContactByEmail(person.email);
+      if (!found.ok || !found.data) {
+        notes.push(`No GHL contact for ${person.email} — tag not sent.`);
+        continue;
       }
-      const res = await addContactTags(contactId, [CLASS_TAGS.attended]);
-      if (res.ok) tagged += 1;
-      else notes.push(`GHL tag failed for ${person.email}: ${res.error}`);
+      contactId = found.data.id;
+      await supabase
+        .from("cc_class_registrations")
+        .update({ ghl_contact_id: contactId })
+        .eq("id", person.id);
     }
+    const res = await addContactTags(contactId, [tag]);
+    if (res.ok) tagged += 1;
+    else notes.push(`GHL tag failed for ${person.email}: ${res.error}`);
   }
+
+  const unmatched = [...participantNames.entries()]
+    .filter(([key]) => !claimedNames.has(key))
+    .map(([, display]) => display)
+    .sort((a, b) => a.localeCompare(b));
+
+  await writeSessionSyncState(supabase, sessionDate, {
+    zoom_meeting_uuid: meetingUuid,
+    zoom_participant_count: participants.length,
+    zoom_participants: participants,
+    zoom_unmatched: unmatched,
+    zoom_error: null,
+  });
 
   return {
     sessionDate,
-    meetings: dayMeetings.length,
-    participants: participantCount,
-    matched: present.length,
-    inserted,
+    error: null,
+    meetingUuid,
+    participants: participants.length,
+    attended: rows.filter((r) => r.attended).length,
+    noShow: rows.filter((r) => !r.attended).length,
     tagged,
-    skippedManual,
+    skipped: registrations.length - inserted,
+    unmatched,
     notes,
   };
+}
+
+async function ensureSessionRow(
+  supabase: ReturnType<typeof createServiceClient>,
+  sessionDate: string,
+): Promise<string | null> {
+  const { data: found } = await supabase
+    .from("cc_class_sessions")
+    .select("id")
+    .eq("org_id", CREAIT_ORG_ID)
+    .eq("session_date", sessionDate)
+    .maybeSingle();
+  if (found) return (found as { id: string }).id;
+
+  const { data } = await supabase
+    .from("cc_class_sessions")
+    .insert({ org_id: CREAIT_ORG_ID, session_date: sessionDate })
+    .select("id")
+    .single();
+  return (data as { id: string } | null)?.id ?? null;
+}
+
+async function writeSessionSyncState(
+  supabase: ReturnType<typeof createServiceClient>,
+  sessionDate: string,
+  patch: Record<string, unknown>,
+): Promise<void> {
+  await ensureSessionRow(supabase, sessionDate);
+  await supabase
+    .from("cc_class_sessions")
+    .update({ ...patch, zoom_synced_at: new Date().toISOString() })
+    .eq("org_id", CREAIT_ORG_ID)
+    .eq("session_date", sessionDate);
 }
