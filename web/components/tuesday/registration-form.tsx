@@ -2,11 +2,15 @@
 
 import { useActionState } from "react";
 
-import {
-  initialRegistrationState,
-  submitRegistration,
-} from "@/lib/class-actions";
+import { submitRegistration, type RegistrationFormState } from "@/lib/class-actions";
 import { CLASS_FACTS } from "@/lib/tuesday-class";
+
+/**
+ * Lives here, not beside the action: a `"use server"` module may export async
+ * functions and nothing else, and exporting this object from there fails at
+ * request time with a 500 that no build or type check catches.
+ */
+const INITIAL_STATE: RegistrationFormState = { status: "idle" };
 
 /**
  * The registration form — the second half of the worksheet.
@@ -76,7 +80,7 @@ function Field({
 export function RegistrationForm({ nextClassLabel }: { nextClassLabel: string }) {
   const [state, formAction, pending] = useActionState(
     submitRegistration,
-    initialRegistrationState,
+    INITIAL_STATE,
   );
 
   const values = state.values ?? {};

@@ -205,6 +205,12 @@ export async function registerForClass(
  * before React hydrates — an owner on a slow phone can submit a half-loaded
  * page and still end up on the list. Entered values ride back out on failure
  * so a validation error never empties the form someone just filled in.
+ *
+ * A `"use server"` module may export async functions and nothing else — a
+ * plain constant here fails at request time with "A 'use server' file can only
+ * export async functions, found object", which neither the build nor the type
+ * check catches. So the initial state lives in the client component, and only
+ * types (erased at build) travel out of this file alongside the actions.
  */
 export type RegistrationFormState = {
   status: "idle" | "error" | "success";
@@ -213,8 +219,6 @@ export type RegistrationFormState = {
   values?: Record<string, string>;
   success?: RegistrationSuccess;
 };
-
-export const initialRegistrationState: RegistrationFormState = { status: "idle" };
 
 const FORM_FIELDS = [
   "firstName",
