@@ -25,6 +25,7 @@ import {
   Sparkles,
   Settings,
   Building2,
+  GraduationCap,
   type LucideIcon,
 } from "lucide-react";
 
@@ -59,6 +60,7 @@ const NAV_SECTIONS: NavSection[] = [
       { href: "/recruiting", label: "Recruiting", icon: UserPlus },
       { href: "/journey", label: "Client Journey", icon: Route },
       { href: "/clients", label: "Clients", icon: Building2 },
+      { href: "/tuesday-class", label: "AI Tuesday", icon: GraduationCap },
       { href: "/assessments", label: "Assessments", icon: ClipboardCheck },
       { href: "/strategy", label: "Strategy", icon: Compass },
       { href: "/vision", label: "Vision", icon: Eye },

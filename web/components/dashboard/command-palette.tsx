@@ -31,6 +31,7 @@ import {
   Target,
   Settings,
   History,
+  GraduationCap,
   type LucideIcon,
 } from "lucide-react";
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
@@ -58,6 +59,7 @@ const PAGES: { label: string; href: string; icon: LucideIcon }[] = [
   { label: "Team Scorecard", href: "/team", icon: Users },
   { label: "Recruiting", href: "/recruiting", icon: UserPlus },
   { label: "Client Journey", href: "/journey", icon: Route },
+  { label: "AI Tuesday (class + attendance)", href: "/tuesday-class", icon: GraduationCap },
   { label: "Assessments", href: "/assessments", icon: ClipboardCheck },
   { label: "Strategy", href: "/strategy", icon: Compass },
   { label: "Vision / V/TO", href: "/vision", icon: Eye },

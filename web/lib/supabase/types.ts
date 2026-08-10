@@ -838,6 +838,54 @@ export interface CcOAuthToken {
   updated_at: string;
 }
 
+// =============================================================================
+// AI Tuesday class (migration 0009)
+// =============================================================================
+
+export interface CcClassRegistration {
+  id: string;
+  org_id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone: string;
+  business_name: string | null;
+  industry: string | null;
+  annoyance: string;
+  /** Null when the GHL upsert failed — the reconciliation queue. */
+  ghl_contact_id: string | null;
+  source: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CcClassSession {
+  id: string;
+  org_id: string;
+  /** ISO date (YYYY-MM-DD) of the Tuesday. */
+  session_date: string;
+  topic: string | null;
+  created_at: string;
+}
+
+/** 'manual' is the human check-off and outranks 'zoom' imports. */
+export type ClassAttendanceSource = "manual" | "zoom";
+
+/**
+ * A row exists ONLY once a human (or Zoom) has decided. Absence means
+ * "not yet marked", which must never be tagged in GHL as either outcome.
+ */
+export interface CcClassAttendance {
+  id: string;
+  session_id: string;
+  registration_id: string | null;
+  email: string;
+  attended: boolean;
+  source: ClassAttendanceSource;
+  created_at: string;
+  updated_at: string;
+}
+
 export type WorkspaceMessageRole = "user" | "assistant" | "system" | "tool";
 
 export interface WorkspaceMessage {
@@ -949,6 +997,10 @@ export interface Database {
       cc_assessments: Table<CcAssessment>;
       cc_assessment_scores: Table<CcAssessmentScore>;
       cc_assessment_opportunities: Table<CcAssessmentOpportunity>;
+      // AI Tuesday class
+      cc_class_registrations: Table<CcClassRegistration>;
+      cc_class_sessions: Table<CcClassSession>;
+      cc_class_attendance: Table<CcClassAttendance>;
       // OAuth tokens (Gmail send)
       cc_oauth_tokens: Table<CcOAuthToken>;
       // KPI history
