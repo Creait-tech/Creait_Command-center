@@ -39,7 +39,11 @@ const trimmed = (max: number) => z.string().trim().max(max);
 const registrationSchema = z.object({
   firstName: trimmed(80).min(1, "First name is required"),
   lastName: trimmed(80).min(1, "Last name is required"),
-  email: trimmed(200).pipe(z.email("That email doesn't look right")),
+  // The .min(1) has to come first: without it an empty box reports "that email
+  // doesn't look right", which names the wrong problem.
+  email: trimmed(200)
+    .min(1, "Email is required")
+    .pipe(z.email("That email doesn't look right")),
   // Deliberately permissive: owners type "(404) 555-0100" and "404.555.0100"
   // and both are the same person. Digit count is the only real check.
   phone: trimmed(40).min(7, "Phone number is required"),
