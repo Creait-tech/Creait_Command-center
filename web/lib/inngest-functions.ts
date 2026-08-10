@@ -1498,6 +1498,44 @@ export const zoomSync = inngest.createFunction(
 )
 
 // ---------------------------------------------------------------------------
+// AI Tuesday attendance from Zoom
+// ---------------------------------------------------------------------------
+
+/**
+ * Tuesday night, a couple of hours after class ends, match Zoom's participant
+ * list against the registration list and fill in whoever we can see was there.
+ *
+ * Presence only — never absence. A manual mark always wins, and Zoom never
+ * writes a no-show, so the founders' check-off stays the system of record.
+ * Idempotent: re-running only fills gaps, so a late-processing recording just
+ * needs `GET /api/cron/zoom-attendance` again.
+ */
+export const zoomAttendanceSync = inngest.createFunction(
+  {
+    id: 'zoom-attendance-sync',
+    name: 'AI Tuesday Attendance Sync',
+    triggers: [
+      { cron: 'TZ=America/New_York 0 22 * * 2' },
+      { event: 'cron/zoom-attendance' },
+    ],
+  },
+  async ({ event, step }) => {
+    const { zoomConfigured, syncZoomAttendance } = await import('@/lib/zoom-sync')
+    if (!zoomConfigured()) {
+      return { skipped: 'Zoom S2S env vars not configured' }
+    }
+    // An explicit date lets a founder backfill one week without waiting for
+    // next Tuesday: send `cron/zoom-attendance` with { sessionDate }.
+    // The client is untyped, so the cron payload arrives as a union without
+    // this field — read it through a narrow cast rather than widening it.
+    const data = event.data as { sessionDate?: unknown } | undefined
+    const sessionDate =
+      typeof data?.sessionDate === 'string' ? data.sessionDate : undefined
+    return step.run('sync-zoom-attendance', () => syncZoomAttendance(sessionDate))
+  },
+)
+
+// ---------------------------------------------------------------------------
 // GHL webhook relay
 // ---------------------------------------------------------------------------
 
@@ -1547,6 +1585,7 @@ export const functions = [
   ghlSync,
   ghlChangeRelay,
   zoomSync,
+  zoomAttendanceSync,
   youtubeResearch,
   recruitingMonitor,
   clientHealth,

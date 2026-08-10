@@ -22,6 +22,9 @@ const ALLOWED_NAMES = new Set([
   'weekly-summary',
   'ghl-sync',
   'zoom-sync',
+  // Matches Zoom's participant list for the AI Tuesday class against the
+  // registration list. Presence only — a manual mark always wins.
+  'zoom-attendance',
   // Phase 3 long-running agents
   'youtube-research',
   'recruiting-monitor',
