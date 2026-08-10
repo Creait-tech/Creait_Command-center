@@ -261,6 +261,13 @@ function isNonAttendee(name: string): boolean {
   return BOT_NAME_FRAGMENTS.some((f) => raw.includes(f));
 }
 
+/** A canonical 8-4-4-4-12 GUID, which is what the Read.ai row uses. */
+function isGuid(value: string): boolean {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+    value,
+  );
+}
+
 function isClassTitle(title: string): boolean {
   const t = normalizeName(title);
   return CLASS_TITLE_PATTERNS.some((p) => t.includes(normalizeName(p)));
@@ -435,26 +442,40 @@ export async function syncZoomAttendance(
     );
   }
 
-  const meetingUuid =
-    classRows.find((m) => m.source === "zoom" && m.source_id)?.source_id ?? null;
+  // Both rows carry source='zoom', so "the one from zoomSync" is not a field
+  // you can filter on — you have to read the id itself. A real Zoom meeting
+  // UUID is base64 (`G9+XdEn7TJyT9JlhQ38jyQ==`); the Read.ai row's id is a
+  // canonical GUID, which the participant API answers 404 for. Try the
+  // base64-looking ones first, then anything else, so a schema surprise
+  // degrades to the name fallback instead of silently skipping the emails.
+  const candidateUuids = classRows
+    .map((m) => m.source_id)
+    .filter((id): id is string => Boolean(id))
+    .sort((a, b) => Number(isGuid(a)) - Number(isGuid(b)));
 
   // ── Gather participants ─────────────────────────────────────────────────
   const byKey = new Map<string, ZoomParticipant>();
+  let meetingUuid: string | null = candidateUuids[0] ?? null;
 
-  if (meetingUuid) {
+  if (candidateUuids.length > 0) {
     try {
       const token = await zoomToken();
-      const { participants, errors } = await fetchParticipants(token, meetingUuid);
-      notes.push(...errors);
-      for (const p of participants) {
-        const key = p.email ?? normalizeName(p.name);
-        if (key) byKey.set(key, p);
+      for (const uuid of candidateUuids) {
+        const { participants, errors } = await fetchParticipants(token, uuid);
+        notes.push(...errors);
+        if (participants.length === 0) continue;
+        meetingUuid = uuid;
+        for (const p of participants) {
+          const key = p.email ?? normalizeName(p.name);
+          if (key) byKey.set(key, p);
+        }
+        break;
       }
     } catch (err) {
       notes.push(err instanceof Error ? err.message : String(err));
     }
   } else {
-    notes.push("No Zoom meeting UUID on record — falling back to stored names.");
+    notes.push("No Zoom meeting id on record — falling back to stored names.");
   }
 
   const emailCount = [...byKey.values()].filter((p) => p.email).length;

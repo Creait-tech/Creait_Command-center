@@ -26,6 +26,8 @@ type InitialMark = {
 export type SyncState = {
   syncedAt: string | null;
   participantCount: number | null;
+  /** Participants Zoom gave an email for. Zero means name-only matching. */
+  emailCount: number;
   unmatched: string[];
   error: string | null;
 };
@@ -363,6 +365,13 @@ function SyncReport({ sync }: { sync: SyncState }) {
         {sync.participantCount === 1 ? "" : "s"} (hosts and notetaker bots
         excluded). Everyone on the list was tagged either way.
       </p>
+      {sync.emailCount === 0 && (sync.participantCount ?? 0) > 0 && (
+        <p className="mt-1.5 text-xs text-brand-warning">
+          Zoom supplied no email addresses, so everyone was matched on their
+          display name alone — the weaker test. If this keeps happening, the
+          Zoom app is missing the participant-report scope.
+        </p>
+      )}
       {sync.unmatched.length > 0 && (
         <div className="mt-2.5 border-t border-border pt-2.5">
           <p className="text-xs font-medium">

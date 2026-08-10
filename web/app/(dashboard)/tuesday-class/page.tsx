@@ -27,6 +27,22 @@ function toStringList(value: unknown): string[] {
 }
 
 /**
+ * How many of the reported participants carried an email address. Zero means
+ * every match this week rested on a display name, which is worth saying on
+ * the page rather than leaving the founders to assume otherwise.
+ */
+function countEmails(value: unknown): number {
+  if (!Array.isArray(value)) return 0;
+  return value.filter(
+    (p) =>
+      p !== null &&
+      typeof p === "object" &&
+      typeof (p as { email?: unknown }).email === "string" &&
+      (p as { email: string }).email.length > 0,
+  ).length;
+}
+
+/**
  * AI Tuesday — the internal side.
  *
  * Two jobs on one page, in the order they get done: mark this week's
@@ -116,6 +132,7 @@ export default async function TuesdayClassPage() {
         sync={{
           syncedAt: thisWeekSession?.zoom_synced_at ?? null,
           participantCount: thisWeekSession?.zoom_participant_count ?? null,
+          emailCount: countEmails(thisWeekSession?.zoom_participants),
           unmatched: toStringList(thisWeekSession?.zoom_unmatched),
           error: thisWeekSession?.zoom_error ?? null,
         }}
