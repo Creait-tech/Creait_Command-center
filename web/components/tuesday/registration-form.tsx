@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect, useRef } from "react";
 
 import { submitRegistration, type RegistrationFormState } from "@/lib/class-actions";
 import { CLASS_FACTS } from "@/lib/tuesday-class";
@@ -97,7 +97,12 @@ export function RegistrationForm({ nextClassLabel }: { nextClassLabel: string })
   }
 
   return (
-    <form action={formAction} className="tc-form" noValidate>
+    <>
+      <h2 className="tc-h2">The blanks you can fill in</h2>
+      <p className="tc-p">
+        Six lines and one real answer. That&apos;s the whole registration.
+      </p>
+      <form action={formAction} className="tc-form" noValidate>
       {/* Honeypot. Off-screen rather than display:none — some bots skip
           hidden fields, and none of them skip a field a human never sees. */}
       <div className="tc-honeypot" aria-hidden="true">
@@ -198,12 +203,13 @@ export function RegistrationForm({ nextClassLabel }: { nextClassLabel: string })
         <button type="submit" className="tc-submit" disabled={pending}>
           {pending ? "Saving your spot…" : "Save my spot"}
         </button>
-        <p className="tc-fineprint">
-          We&apos;ll text you a confirmation and send the {CLASS_FACTS.platform} link
-          before each class. Reply STOP any time and the texts end.
-        </p>
-      </div>
-    </form>
+          <p className="tc-fineprint">
+            We&apos;ll text you a confirmation and send the {CLASS_FACTS.platform}{" "}
+            link before each class. Reply STOP any time and the texts end.
+          </p>
+        </div>
+      </form>
+    </>
   );
 }
 
@@ -216,8 +222,17 @@ function ThankYou({
   syncedToCrm: boolean;
   nextClassLabel: string;
 }) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  // The form is most of a phone screen tall, so after submit the confirmation
+  // can land below the fold and read as "nothing happened". Jump to it — no
+  // smooth scroll, which would be motion nobody asked for.
+  useEffect(() => {
+    ref.current?.scrollIntoView({ block: "start", behavior: "auto" });
+  }, []);
+
   return (
-    <div className="tc-thanks">
+    <div className="tc-thanks" ref={ref}>
       <h2 className="tc-thanks-title">
         You&apos;re on the list, {firstName}.
       </h2>

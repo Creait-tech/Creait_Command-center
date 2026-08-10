@@ -640,11 +640,10 @@ export default function TuesdayPage() {
           </p>
         </section>
 
+        {/* The heading belongs to the form, not to this section: once someone
+            has registered it has to stop promising blanks to fill in, and only
+            the form knows that has happened. */}
         <section className="tc-section">
-          <h2 className="tc-h2">The blanks you can fill in</h2>
-          <p className="tc-p">
-            Six lines and one real answer. That&apos;s the whole registration.
-          </p>
           <RegistrationForm nextClassLabel={nextLabel} />
         </section>
 
