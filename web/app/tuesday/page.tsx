@@ -38,7 +38,13 @@ import {
  * ────────────────────────────────────────────────────────────────────────────
  */
 
-export const dynamic = "force-dynamic";
+/**
+ * The only dynamic value on this page is the next-Tuesday label, so
+ * `force-dynamic` was making the app's highest-traffic public route serve
+ * uncached HTML for no benefit. Revalidate every 15 minutes instead — a cold
+ * prospect on a phone gets a cached document.
+ */
+export const revalidate = 900;
 
 export const metadata: Metadata = {
   title: "AI Tuesday — CREAiT Live",
@@ -296,21 +302,23 @@ const TUESDAY_CSS = `
   .tc-form {
     margin-top: 26px;
     display: grid;
-    gap: 22px;
+    gap: 34px;
   }
   @media (min-width: 640px) {
     .tc-form {
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 26px 28px;
+      gap: 34px 28px;
     }
     .tc-field-wide { grid-column: 1 / -1; }
   }
 
+  /* 12px, not 10.5px: these label the one region a phone user has to read in
+     order to act, and they were smaller than the hint text underneath them. */
   .tc-label {
     display: block;
     font-family: var(--font-geist-mono), ui-monospace, monospace;
-    font-size: 10.5px;
-    letter-spacing: 0.09em;
+    font-size: 12px;
+    letter-spacing: 0.07em;
     text-transform: uppercase;
     color: var(--tc-muted);
     line-height: 1.5;
@@ -328,6 +336,14 @@ const TUESDAY_CSS = `
   }
   .tc-req { color: var(--tc-blue); }
 
+  /* globals.css rings focus in the dark shell's #3b82f6 at 4px radius — a
+     third blue, drawn round, on a page of square rules. Same ring, this
+     world's colour and corner. */
+  .tuesday-root :focus-visible {
+    outline-color: var(--tc-accent);
+    border-radius: 0;
+  }
+
   .tc-input {
     display: block;
     width: 100%;
@@ -341,7 +357,10 @@ const TUESDAY_CSS = `
     border: 0;
     border-bottom: 1.5px solid var(--tc-input-rule);
     border-radius: 0;
-    padding: 10px 2px;
+    /* In an underline field the rule IS the input, so the gap under the label
+       has to be smaller than the gap to the field above it. It was the other
+       way round: ~31px above the label, ~60px below it. */
+    padding: 4px 2px 10px;
     min-height: 46px;
     transition: border-color 140ms ease, background-color 140ms ease;
   }
@@ -364,7 +383,7 @@ const TUESDAY_CSS = `
     line-height: 32px;
     color: var(--tc-ink);
     border: 1px solid var(--tc-input-rule);
-    border-radius: 2px;
+    border-radius: 0;
     padding: 0 12px 8px;
     min-height: 136px;
     resize: vertical;
@@ -420,7 +439,7 @@ const TUESDAY_CSS = `
     background: var(--tc-blue);
     color: #ffffff;
     border: 0;
-    border-radius: 3px;
+    border-radius: 0;
     font: inherit;
     font-size: 1rem;
     font-weight: 600;
@@ -435,7 +454,9 @@ const TUESDAY_CSS = `
   .tc-submit:hover:not(:disabled) { background: var(--tc-blue-deep); }
   .tc-submit:active:not(:disabled) { transform: translateY(1px); }
   .tc-submit:disabled {
-    background: #6b93ad;
+    /* Was #6b93ad — white 16px/600 on it is 3.28:1, and a slow phone sits in
+       this state longest. #3f7191 is 4.9:1. */
+    background: #3f7191;
     box-shadow: none;
     cursor: progress;
   }
@@ -448,7 +469,12 @@ const TUESDAY_CSS = `
   }
 
   /* Thank-you state */
-  .tc-thanks { margin-top: 26px; }
+  .tc-thanks {
+    margin-top: 26px;
+    /* The success jump pinned this to y=0 with nothing above it, which reads
+       as a cut-off page rather than a new state. */
+    scroll-margin-top: 28px;
+  }
   .tc-thanks-title {
     font-size: clamp(1.375rem, 4vw, 1.875rem);
     font-weight: 700;
@@ -554,7 +580,12 @@ export default function TuesdayPage() {
 
   return (
     <div className="tuesday-root" data-impeccable-seed="9e248f7e">
-      <style>{TUESDAY_CSS}</style>
+      {/* href + precedence makes React hoist this into <head>. Left inline in
+          the body it parsed after first paint, so a cold phone flashed the
+          app shell's dark background before the sheet appeared. */}
+      <style href="tuesday-sheet" precedence="high">
+        {TUESDAY_CSS}
+      </style>
 
       <main className="tc-sheet">
         <header className="tc-letterhead">

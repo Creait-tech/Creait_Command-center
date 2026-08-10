@@ -210,11 +210,14 @@ export function AttendanceBoard({
           {filtered.map((r) => {
             const decision = decisions[r.id];
             return (
+              // Stacked on a phone: side by side, two 6rem buttons left the
+              // name column ~130px and it truncated to "Claude T…", which is
+              // useless to the person trying to find someone in the list.
               <li
                 key={r.id}
-                className="flex flex-wrap items-center justify-between gap-3 p-3"
+                className="flex flex-col gap-2 p-3 sm:flex-row sm:items-center sm:justify-between sm:gap-3"
               >
-                <div className="min-w-0 flex-1">
+                <div className="min-w-0 sm:flex-1">
                   <p className="truncate text-sm font-medium">
                     {r.first_name} {r.last_name}
                   </p>
@@ -223,7 +226,7 @@ export function AttendanceBoard({
                     {r.email}
                   </p>
                 </div>
-                <div className="flex shrink-0 gap-2">
+                <div className="flex gap-2 sm:shrink-0">
                   <Button
                     type="button"
                     size="lg"
@@ -231,7 +234,7 @@ export function AttendanceBoard({
                     aria-pressed={decision === true}
                     onClick={() => set(r.id, true)}
                     className={cn(
-                      "min-w-24",
+                      "flex-1 sm:flex-none sm:min-w-24",
                       decision === true &&
                         "bg-brand-success text-brand-ink hover:bg-brand-success/85",
                     )}
@@ -245,7 +248,7 @@ export function AttendanceBoard({
                     aria-pressed={decision === false}
                     onClick={() => set(r.id, false)}
                     className={cn(
-                      "min-w-24",
+                      "flex-1 sm:flex-none sm:min-w-24",
                       decision === false &&
                         "bg-brand-warning text-brand-ink hover:bg-brand-warning/85",
                     )}

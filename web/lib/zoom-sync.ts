@@ -436,10 +436,19 @@ export async function syncZoomAttendance(
   );
 
   if (classRows.length === 0) {
-    return emptyZoomAttendance(
-      sessionDate,
-      `No AI Tuesday meeting found in the meeting record for ${sessionDate}. Nobody was tagged.`,
-    );
+    const error = `No AI Tuesday meeting found in the meeting record for ${sessionDate}. Nobody was tagged.`;
+    // Only record the refusal once the class has actually happened. Running on
+    // a Tuesday morning legitimately finds nothing yet, and writing an error
+    // then would put a red banner on the page every week before class.
+    if (Date.parse(`${sessionDate}T23:59:59Z`) < Date.now()) {
+      await writeSessionSyncState(supabase, sessionDate, {
+        zoom_participant_count: 0,
+        zoom_participants: [],
+        zoom_unmatched: [],
+        zoom_error: error,
+      });
+    }
+    return emptyZoomAttendance(sessionDate, error);
   }
 
   // Both rows carry source='zoom', so "the one from zoomSync" is not a field

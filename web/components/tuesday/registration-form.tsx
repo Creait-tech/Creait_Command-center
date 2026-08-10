@@ -82,9 +82,31 @@ export function RegistrationForm({ nextClassLabel }: { nextClassLabel: string })
     submitRegistration,
     INITIAL_STATE,
   );
+  const formRef = useRef<HTMLFormElement>(null);
 
   const values = state.values ?? {};
   const fieldErrors = state.fieldErrors ?? {};
+
+  /**
+   * Validation runs on the server (`noValidate`), so a rejected submit comes
+   * back as a re-render with nothing moving. The error banner sits at the top
+   * of a form several screens tall and the field errors sit beside fields the
+   * visitor has already scrolled past — from the submit button the page looks
+   * unchanged. Put the cursor on the first bad field instead.
+   */
+  useEffect(() => {
+    if (state.status !== "error") return;
+    const form = formRef.current;
+    if (!form) return;
+    const target =
+      form.querySelector<HTMLElement>('[aria-invalid="true"]') ??
+      form.querySelector<HTMLElement>(".tc-form-error");
+    if (!target) return;
+    target.scrollIntoView({ block: "center", behavior: "auto" });
+    if (target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement) {
+      target.focus({ preventScroll: true });
+    }
+  }, [state]);
 
   if (state.status === "success" && state.success) {
     return (
@@ -102,7 +124,7 @@ export function RegistrationForm({ nextClassLabel }: { nextClassLabel: string })
       <p className="tc-p">
         Six lines and one real answer. That&apos;s the whole registration.
       </p>
-      <form action={formAction} className="tc-form" noValidate>
+      <form action={formAction} className="tc-form" noValidate ref={formRef}>
       {/* Honeypot. Off-screen rather than display:none — some bots skip
           hidden fields, and none of them skip a field a human never sees. */}
       <div className="tc-honeypot" aria-hidden="true">
@@ -200,7 +222,12 @@ export function RegistrationForm({ nextClassLabel }: { nextClassLabel: string })
       </div>
 
       <div className="tc-field-wide tc-submit-row">
-        <button type="submit" className="tc-submit" disabled={pending}>
+        <button
+            type="submit"
+            className="tc-submit"
+            disabled={pending}
+            aria-busy={pending}
+          >
           {pending ? "Saving your spot…" : "Save my spot"}
         </button>
           <p className="tc-fineprint">
