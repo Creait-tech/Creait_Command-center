@@ -175,6 +175,25 @@ export async function upsertContactWithTags(
   if (!found.ok) return found;
 
   if (found.data) {
+    // A returning registrant may have a new phone or company — write the
+    // fresh values instead of silently keeping a stale record. Tags are NOT
+    // in this body: a PUT with tags REPLACES the contact's tag list, and
+    // addContactTags below appends safely.
+    const update: Record<string, unknown> = {
+      firstName: input.firstName,
+      lastName: input.lastName,
+      phone: input.phone,
+    };
+    if (input.companyName) update.companyName = input.companyName;
+    const updated = await request<{ contact?: { id?: string } }>(
+      `/contacts/${found.data.id}`,
+      { method: "PUT", body: JSON.stringify(update) },
+    );
+    // A failed field update is not worth losing the registration over — the
+    // tag is what drives every automation, so keep going and tag anyway.
+    if (!updated.ok) {
+      console.error(`GHL contact update failed: ${updated.error}`);
+    }
     const tagged = await addContactTags(found.data.id, input.tags);
     if (!tagged.ok) return tagged;
     return { ok: true, data: { contactId: found.data.id, created: false } };

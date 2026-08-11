@@ -282,18 +282,32 @@ function ThankYou({
 
       <div className="tc-rows tc-rows-tight">
         <div className="tc-row">
-          <div className="tc-row-k">In a few minutes</div>
-          <div className="tc-row-v">A text confirming you&apos;re in.</div>
+          <div className="tc-row-k">Your {CLASS_FACTS.platform} link</div>
+          <div className="tc-row-v">
+            <a
+              className="tc-link"
+              href={CLASS_FACTS.zoomJoinUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Join the class on {CLASS_FACTS.platform}
+            </a>{" "}
+            — same link every single week. Save it now.
+          </div>
         </div>
         <div className="tc-row">
-          <div className="tc-row-k">The day before</div>
+          <div className="tc-row-k">In a few minutes</div>
+          <div className="tc-row-v">
+            A text confirming you&apos;re in, with that same link.
+          </div>
+        </div>
+        <div className="tc-row">
+          <div className="tc-row-k">Monday evening</div>
           <div className="tc-row-v">A reminder, so it doesn&apos;t sneak up on you.</div>
         </div>
         <div className="tc-row">
           <div className="tc-row-k">Tuesday morning</div>
-          <div className="tc-row-v">
-            The {CLASS_FACTS.platform} link. Same link every week.
-          </div>
+          <div className="tc-row-v">One more text, link included.</div>
         </div>
         <div className="tc-row">
           <div className="tc-row-k">{nextClassLabel}</div>

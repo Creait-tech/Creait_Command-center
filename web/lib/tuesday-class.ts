@@ -24,6 +24,14 @@ export const CLASS_FACTS = {
   durationMinutes: 90,
   platform: "Zoom",
   price: "Free",
+  /**
+   * The recurring Zoom room — ONE link, every week, everywhere. The GHL
+   * reminder texts (W12/W13/W15) carry this same URL; if the meeting is ever
+   * recreated in Zoom, update it here AND in those workflows or half the
+   * audience lands in a dead room.
+   */
+  zoomJoinUrl:
+    "https://us02web.zoom.us/j/81299345082?pwd=nxxeiE2l5zVq8SqxXa5R8Ya5JbZD2p.1",
   /** 15-minute fit call for the Growth & AI Diagnostic. */
   fitCallUrl:
     "https://api.leadconnectorhq.com/widget/booking/UvQUpWdVrhv82iDmMOi4",
