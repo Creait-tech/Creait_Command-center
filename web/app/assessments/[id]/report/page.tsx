@@ -654,19 +654,19 @@ export default async function ExecutiveBlueprintPage({
             <div
               className="avoid-break"
               style={{
-                border: "1px solid #f3c6bf",
-                background: "#fff6f4",
+                border: "1px solid #f1c9c9",
+                background: "#fdf5f5",
                 borderRadius: 10,
                 padding: "14px 18px",
                 marginTop: 24,
               }}
             >
-              <p style={{ fontSize: 12, fontWeight: 800, color: "#b03a2e" }}>
+              <p style={{ fontSize: 12, fontWeight: 800, color: "#8f2020" }}>
                 {`Critical constraint warning${
                   activeWarnings.length > 1 ? "s" : ""
                 } — these sit alongside the score and are never averaged away:`}
               </p>
-              <ul style={{ margin: "6px 0 0 18px", fontSize: 12.5, color: "#7f2d22", lineHeight: 1.6 }}>
+              <ul style={{ margin: "6px 0 0 18px", fontSize: 12.5, color: "#8f2020", lineHeight: 1.6 }}>
                 {activeWarnings.map((w) => (
                   <li key={w.key}>{w.label}</li>
                 ))}

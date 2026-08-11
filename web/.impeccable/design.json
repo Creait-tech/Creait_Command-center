@@ -1,0 +1,643 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-11T02:26:00.000Z",
+  "title": "Design System: CREAiT Command Center",
+  "extensions": {
+    "colorMeta": {
+      "desk": {
+        "role": "neutral",
+        "displayName": "Cool Grey Desk",
+        "canonical": "#eef1f5",
+        "note": "Painted onto html and body inside the pinned light subtree so no dark shell edge survives.",
+        "tonalRamp": [
+          "#2b3037",
+          "#3f4650",
+          "#5a6170",
+          "#7d8593",
+          "#a4abb6",
+          "#ccd2da",
+          "#eef1f5",
+          "#fafbfd"
+        ]
+      },
+      "sheet": {
+        "role": "neutral",
+        "displayName": "Sheet White",
+        "canonical": "#ffffff",
+        "note": "The page itself. The only element in the client world that casts a shadow."
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Document Ink",
+        "canonical": "#111827",
+        "note": "All primary text, the 2px letterhead rule, the 44x2px heading stub. Coincides with the dark shell's --card value; the two are not linked.",
+        "tonalRamp": [
+          "#05070c",
+          "#0b0f18",
+          "#111827",
+          "#1f2937",
+          "#374151",
+          "#6b7280",
+          "#9ca3af",
+          "#e5e7eb"
+        ]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Muted Slate",
+        "canonical": "#5b6675",
+        "note": "Secondary prose, mono labels, table headers, captions, fine print.",
+        "tonalRamp": [
+          "#12151a",
+          "#1e232b",
+          "#2c333e",
+          "#3d4653",
+          "#5b6675",
+          "#8a94a3",
+          "#b6bec9",
+          "#e3e7ec"
+        ]
+      },
+      "muted-deep": {
+        "role": "neutral",
+        "displayName": "Appendix Slate",
+        "canonical": "#3d4653",
+        "note": "One step darker than muted, for the report appendix body which runs long."
+      },
+      "hairline": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "#e4e9f0",
+        "note": "Every separator and default border on the sheet. Also the textarea rule gradient.",
+        "tonalRamp": [
+          "#2a3038",
+          "#414a56",
+          "#5b6675",
+          "#7c8794",
+          "#a3adb9",
+          "#c5ceda",
+          "#e4e9f0",
+          "#f5f8fb"
+        ]
+      },
+      "hairline-faint": {
+        "role": "neutral",
+        "displayName": "Table Hairline",
+        "canonical": "#f0f3f7",
+        "note": "The report's table-row rule, one step lighter so a dense table does not read as a grid."
+      },
+      "tint": {
+        "role": "secondary",
+        "displayName": "Pale Sheet Tint",
+        "canonical": "#f4fafd",
+        "note": "The only filled panel inside the sheet, and the ground an input takes while focused. The system's substitute for a card.",
+        "tonalRamp": [
+          "#062231",
+          "#0b3348",
+          "#0f4a67",
+          "#17698f",
+          "#4d9dc4",
+          "#9cd0e6",
+          "#d3ecf7",
+          "#f4fafd"
+        ]
+      },
+      "tint-line": {
+        "role": "secondary",
+        "displayName": "Tint Border",
+        "canonical": "#bcd9ea",
+        "note": "The border that always accompanies the tint ground."
+      },
+      "accent-mark": {
+        "role": "primary",
+        "displayName": "Sheet Blue",
+        "canonical": "#0284c7",
+        "note": "MARKS ONLY — rules, panel borders, the 4px left bar, the focus outline, chart strokes. 4.09:1 on white, which disqualifies it for text.",
+        "tonalRamp": [
+          "#032a3f",
+          "#04405f",
+          "#056080",
+          "#0175ab",
+          "#0284c7",
+          "#38a8de",
+          "#7ec8ec",
+          "#c3e5f7"
+        ]
+      },
+      "accent-text": {
+        "role": "primary",
+        "displayName": "Reading Blue",
+        "canonical": "#0369a1",
+        "note": "TEXT AND BUTTON FILLS — links, the required asterisk, the primary submit ground. 5.9:1 on white.",
+        "tonalRamp": [
+          "#021d2e",
+          "#032c46",
+          "#044566",
+          "#035586",
+          "#0369a1",
+          "#2f93c6",
+          "#79c1e2",
+          "#c6e3f3"
+        ]
+      },
+      "accent-text-deep": {
+        "role": "primary",
+        "displayName": "Reading Blue Deep",
+        "canonical": "#075985",
+        "note": "Hover state for links and the primary submit."
+      },
+      "accent-text-muted": {
+        "role": "primary",
+        "displayName": "Pending Blue",
+        "canonical": "#3f7191",
+        "note": "The disabled/pending submit. 4.9:1 against white 16px/600 — chosen because a slow phone sits in this state longest."
+      },
+      "entry-rule": {
+        "role": "neutral",
+        "displayName": "Entry Rule Grey",
+        "canonical": "#94a3b8",
+        "note": "The 1.5px decorative blank a reader cannot fill in."
+      },
+      "field-rule": {
+        "role": "neutral",
+        "displayName": "Field Rule Grey",
+        "canonical": "#64748b",
+        "note": "The 1.5px underline of a real input — darker than an entry rule because it is interactive."
+      },
+      "write-on-rule": {
+        "role": "neutral",
+        "displayName": "Write-On Rule",
+        "canonical": "#cbd5e1",
+        "note": "The printed line the owner writes on in the report's Start Monday commitment block."
+      },
+      "danger": {
+        "role": "tertiary",
+        "displayName": "Field Error Red",
+        "canonical": "#b91c1c",
+        "note": "Inline field error text and the errored input underline."
+      },
+      "notice-error-bg": {
+        "role": "tertiary",
+        "displayName": "Error Strip Ground",
+        "canonical": "#fdf5f5"
+      },
+      "notice-error-line": {
+        "role": "tertiary",
+        "displayName": "Error Strip Border",
+        "canonical": "#f1c9c9"
+      },
+      "notice-error-ink": {
+        "role": "tertiary",
+        "displayName": "Error Strip Ink",
+        "canonical": "#8f2020"
+      },
+      "notice-warn-bg": {
+        "role": "tertiary",
+        "displayName": "Warning Strip Ground",
+        "canonical": "#fdf9f0"
+      },
+      "notice-warn-line": {
+        "role": "tertiary",
+        "displayName": "Warning Strip Border",
+        "canonical": "#e6d2a8"
+      },
+      "notice-warn-ink": {
+        "role": "tertiary",
+        "displayName": "Warning Strip Ink",
+        "canonical": "#6b4e12"
+      },
+      "shell-ink": {
+        "role": "neutral",
+        "displayName": "Console Ink",
+        "canonical": "#0a0e1a",
+        "note": "DARK WORLD ONLY. --background and --sidebar in globals.css.",
+        "tonalRamp": [
+          "#04060b",
+          "#0a0e1a",
+          "#131a2b",
+          "#1a2235",
+          "#2a3447",
+          "#46536b",
+          "#7b869c",
+          "#c3cad6"
+        ]
+      },
+      "shell-charcoal": {
+        "role": "neutral",
+        "displayName": "Console Charcoal",
+        "canonical": "#111827",
+        "note": "DARK WORLD ONLY. --card and --popover."
+      },
+      "shell-slate": {
+        "role": "neutral",
+        "displayName": "Console Slate",
+        "canonical": "#1a2235",
+        "note": "DARK WORLD ONLY. --secondary, --muted, --accent."
+      },
+      "shell-fog": {
+        "role": "neutral",
+        "displayName": "Console Fog",
+        "canonical": "#2a3447",
+        "note": "DARK WORLD ONLY. --border and --input."
+      },
+      "shell-mist": {
+        "role": "neutral",
+        "displayName": "Console Mist",
+        "canonical": "#94a3b8",
+        "note": "DARK WORLD ONLY. --muted-foreground."
+      },
+      "shell-paper": {
+        "role": "neutral",
+        "displayName": "Console Paper",
+        "canonical": "#f1f5f9",
+        "note": "DARK WORLD ONLY. --foreground."
+      },
+      "shell-electric": {
+        "role": "primary",
+        "displayName": "Electric",
+        "canonical": "#3b82f6",
+        "note": "DARK WORLD ONLY. --primary, --ring, chart-1, and the .glow-electric halo. Never appears on a client-facing sheet.",
+        "tonalRamp": [
+          "#0a1a33",
+          "#10294f",
+          "#17417f",
+          "#1d5cb8",
+          "#2d6fe0",
+          "#3b82f6",
+          "#7fadfa",
+          "#c3d9fd"
+        ]
+      },
+      "shell-aqua": {
+        "role": "secondary",
+        "displayName": "Aqua",
+        "canonical": "#6ee7b7",
+        "note": "DARK WORLD ONLY. chart-2."
+      },
+      "shell-violet": {
+        "role": "tertiary",
+        "displayName": "Violet",
+        "canonical": "#8b5cf6",
+        "note": "DARK WORLD ONLY. chart-3."
+      },
+      "shell-gold": {
+        "role": "tertiary",
+        "displayName": "Gold",
+        "canonical": "#f59e0b",
+        "note": "DARK WORLD ONLY. chart-4, --warning."
+      },
+      "shell-danger": {
+        "role": "tertiary",
+        "displayName": "Console Danger",
+        "canonical": "#ef4444",
+        "note": "DARK WORLD ONLY. --destructive, chart-5."
+      },
+      "notice-practice-bg": {
+        "role": "tertiary",
+        "displayName": "Practice Strip Ground",
+        "canonical": "#f5f1ff",
+        "note": "Provenance, not content. Reserved: never a finding, a chart series, or anything an advisor authors."
+      },
+      "notice-practice-line": {
+        "role": "tertiary",
+        "displayName": "Practice Strip Border",
+        "canonical": "#8b5cf6",
+        "note": "Provenance, not content. Reserved: never a finding, a chart series, or anything an advisor authors."
+      },
+      "notice-practice-ink": {
+        "role": "tertiary",
+        "displayName": "Practice Strip Ink",
+        "canonical": "#5b21b6",
+        "note": "Provenance, not content. Reserved: never a finding, a chart series, or anything an advisor authors."
+      },
+      "notice-draft-bg": {
+        "role": "tertiary",
+        "displayName": "Draft Strip Ground",
+        "canonical": "#fff5ed",
+        "note": "Provenance, not content. Reserved: never a finding, a chart series, or anything an advisor authors."
+      },
+      "notice-draft-line": {
+        "role": "tertiary",
+        "displayName": "Draft Strip Border",
+        "canonical": "#c2410c",
+        "note": "Provenance, not content. Reserved: never a finding, a chart series, or anything an advisor authors."
+      },
+      "notice-draft-ink": {
+        "role": "tertiary",
+        "displayName": "Draft Strip Ink",
+        "canonical": "#9a3412",
+        "note": "Provenance, not content. Reserved: never a finding, a chart series, or anything an advisor authors."
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "The one page title per sheet. Fluid clamp on screen surfaces; the print deliverable uses fixed points (cover 40/800) because viewport units are meaningless on paper. text-wrap: balance."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section headings. In the report a headline is a message title stating the finding, followed by an optional 14px deck and a 44x2px ink rule. No kicker."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Panel titles, ruled-row keys (0.9375rem/600), fact values (1rem/600)."
+      },
+      "lede": {
+        "displayName": "Lede",
+        "purpose": "The single paragraph directly under the display title. Capped at 34em."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Running prose in muted, capped at 36em. The report runs denser at 13-13.5px/1.7-1.8 because it is set for paper."
+      },
+      "label": {
+        "displayName": "Mono Label",
+        "purpose": "Form field names. 12px and not caption-size on purpose — these label the one region a phone user must read in order to act."
+      },
+      "caption": {
+        "displayName": "Mono Caption",
+        "purpose": "Letterhead date, colophon, fact keys, table headers, exhibit captions. An exhibit caption names a different thing than the text below it; it never restates a heading."
+      },
+      "micro": {
+        "displayName": "Micro",
+        "purpose": "Hints, fine print, inline field errors (500 weight, danger)."
+      },
+      "title-compact": {
+        "displayName": "Title (compact)",
+        "purpose": "The 15px end of the Title role: panel and section h2s in the app shell, the letterhead wordmark, and the report's row key column. Prose already declared Title as 1.0625rem / 15-18px; this tokenises the lower step."
+      }
+    },
+    "shadows": [
+      {
+        "name": "sheet-lift",
+        "value": "0 1px 2px rgba(17, 24, 39, 0.05), 0 14px 36px -14px rgba(17, 24, 39, 0.18)",
+        "purpose": "The screen sheet resting on the desk. Contact shadow plus a wide soft cast — the only shadow in the client world."
+      },
+      {
+        "name": "print-sheet-lift",
+        "value": "0 2px 16px rgba(17, 24, 39, 0.12)",
+        "purpose": "The Executive Blueprint's page on screen. Removed entirely under @media print."
+      },
+      {
+        "name": "button-lift",
+        "value": "0 1px 2px rgba(3, 105, 161, 0.28), 0 8px 18px -10px rgba(3, 105, 161, 0.55)",
+        "purpose": "The primary submit only, tinted from its own blue. Removed in the disabled state."
+      },
+      {
+        "name": "glow-electric",
+        "value": "0 0 0 1px color-mix(in oklab, #3b82f6 40%, transparent), 0 0 24px -8px color-mix(in oklab, #3b82f6 55%, transparent)",
+        "purpose": "DARK WORLD ONLY. Hero metrics and primary CTAs on the console. Never on a client sheet."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-draw",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "The /tuesday rule-draw. Fast out, long settle."
+      },
+      {
+        "name": "ease-exhibit",
+        "value": "cubic-bezier(0.22, 1, 0.36, 1)",
+        "purpose": "Every Executive Blueprint entrance (grow, fade, segment, needle, rise)."
+      },
+      {
+        "name": "ease-state",
+        "value": "ease",
+        "purpose": "Interactive state transitions only."
+      },
+      {
+        "name": "duration-draw",
+        "value": "760ms",
+        "purpose": "tc-draw: scaleX(0) to identity on the three answer rules."
+      },
+      {
+        "name": "stagger-draw",
+        "value": "140ms + index * 130ms",
+        "purpose": "The per-element --d delay on the three rules."
+      },
+      {
+        "name": "duration-exhibit",
+        "value": "460ms | 520ms | 620ms | 820ms | 1000ms",
+        "purpose": "rp-fade | rp-seg | rp-rise | rp-grow-x | rp-needle."
+      },
+      {
+        "name": "duration-state",
+        "value": "140ms",
+        "purpose": "border-color and background-color on inputs and the submit. No transition exceeds this, and none is declared on 'all'."
+      },
+      {
+        "name": "duration-press",
+        "value": "120ms",
+        "purpose": "transform on the submit's active state (translateY(1px))."
+      },
+      {
+        "name": "gate",
+        "value": "@media (prefers-reduced-motion: no-preference) — the report prefixes 'screen and'",
+        "purpose": "Every animation block is wrapped. The report additionally forces animation:none, opacity:1, transform:none under @media print."
+      },
+      {
+        "name": "resting-state",
+        "value": "keyframes supply only a 'from'",
+        "purpose": "The declared state IS the finished state, so reduced motion, print, and a dropped animation all land on a complete sheet."
+      },
+      {
+        "name": "scroll-behavior",
+        "value": "auto",
+        "purpose": "Programmatic scrolls to a validation error or the success state are corrections, never effects. Never 'smooth'."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "facts",
+        "value": "560px"
+      },
+      {
+        "name": "blanks",
+        "value": "600px"
+      },
+      {
+        "name": "rows-and-form",
+        "value": "640px"
+      },
+      {
+        "name": "sheet",
+        "value": "768px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Sheet",
+      "kind": "card",
+      "refersTo": "sheet",
+      "description": "The page itself — white, hairline-bordered, square, lifted at its edge. Every client-facing surface is one sheet; the report is a stack of them.",
+      "html": "<div class=\"ds-desk\"><main class=\"ds-sheet\"><header class=\"ds-letterhead\"><p class=\"ds-wordmark\">CREAiT</p><p class=\"ds-mono\">Next session · Tuesday, August 11</p></header><h1 class=\"ds-title\">AI Tuesday — 90 minutes on the systems behind a smoother business</h1><p class=\"ds-lede\">Most business owners can’t answer three questions about their own business.</p></main></div>",
+      "css": ".ds-desk { background: #eef1f5; padding: 28px 12px 56px; font-family: Inter, -apple-system, 'Segoe UI', sans-serif; color: #111827; font-size: 16px; line-height: 1.5; -webkit-font-smoothing: antialiased; } .ds-sheet { max-width: 46rem; margin: 0 auto; background: #ffffff; border: 1px solid #e4e9f0; border-radius: 0; padding: 26px 20px 40px; box-shadow: 0 1px 2px rgba(17,24,39,0.05), 0 14px 36px -14px rgba(17,24,39,0.18); overflow-wrap: anywhere; } @media (min-width: 768px) { .ds-desk { padding: 64px 24px 96px; } .ds-sheet { padding: 46px 56px 64px; } } .ds-letterhead { display: flex; justify-content: space-between; align-items: baseline; gap: 10px 20px; flex-wrap: wrap; border-bottom: 2px solid #111827; padding-bottom: 10px; } .ds-wordmark { font-size: 15px; font-weight: 700; letter-spacing: -0.01em; margin: 0; } .ds-mono { font-family: 'Geist Mono', ui-monospace, SFMono-Regular, monospace; font-size: 11px; letter-spacing: 0.05em; color: #5b6675; font-variant-numeric: tabular-nums; margin: 0; } .ds-title { margin: 30px 0 0; font-size: clamp(1.75rem, 6.4vw, 2.75rem); line-height: 1.09; font-weight: 700; letter-spacing: -0.03em; text-wrap: balance; } .ds-lede { margin: 20px 0 0; font-size: clamp(1.0625rem, 2.3vw, 1.1875rem); line-height: 1.6; max-width: 34em; }"
+    },
+    {
+      "name": "Ruled Blank",
+      "kind": "custom",
+      "refersTo": "row-ruled",
+      "description": "The signature component: a numbered question whose answer is a rule the reader cannot fill in. The rules draw themselves left to right on load, staggered; the resting state is three finished rules.",
+      "html": "<section class=\"ds-blanks\"><div class=\"ds-blank\"><span class=\"ds-blank-n\" aria-hidden=\"true\">1.</span><span class=\"ds-blank-q\">How many inquiries came in last month?</span><span class=\"ds-blank-rule\" aria-hidden=\"true\" style=\"--d:140ms\"></span></div><div class=\"ds-blank\"><span class=\"ds-blank-n\" aria-hidden=\"true\">2.</span><span class=\"ds-blank-q\">What happens to the ones that go quiet?</span><span class=\"ds-blank-rule\" aria-hidden=\"true\" style=\"--d:270ms\"></span></div><div class=\"ds-blank\"><span class=\"ds-blank-n\" aria-hidden=\"true\">3.</span><span class=\"ds-blank-q\">What’s your close rate?</span><span class=\"ds-blank-rule\" aria-hidden=\"true\" style=\"--d:400ms\"></span></div></section>",
+      "css": ".ds-blanks { margin-top: 26px; border-top: 1px solid #e4e9f0; font-family: Inter, -apple-system, 'Segoe UI', sans-serif; color: #111827; } .ds-blank { display: grid; grid-template-columns: 1.6rem 1fr; column-gap: 8px; row-gap: 9px; align-items: baseline; padding: 15px 0; border-bottom: 1px solid #e4e9f0; } .ds-blank-n { font-family: 'Geist Mono', ui-monospace, monospace; font-size: 11px; color: #5b6675; font-variant-numeric: tabular-nums; } .ds-blank-q { font-size: 1rem; line-height: 1.45; font-weight: 500; } .ds-blank-rule { grid-column: 2 / -1; height: 0; border-bottom: 1.5px solid #94a3b8; transform-origin: left center; } @media (min-width: 600px) { .ds-blank { grid-template-columns: 1.6rem 21rem 1fr; column-gap: 16px; row-gap: 0; } .ds-blank-rule { grid-column: 3; align-self: end; margin-bottom: 4px; } } @media (prefers-reduced-motion: no-preference) { .ds-blank-rule { animation: ds-draw 760ms cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: var(--d, 0ms); } @keyframes ds-draw { from { transform: scaleX(0); } } }"
+    },
+    {
+      "name": "Ruled Row",
+      "kind": "custom",
+      "refersTo": "row-ruled",
+      "description": "The anti-card. Every list in the system is a stack of these: key left, value right, baseline-aligned, hairline-separated, stacking on a phone.",
+      "html": "<div class=\"ds-rows\"><div class=\"ds-row\"><div class=\"ds-row-k\">Where revenue leaks</div><div class=\"ds-row-v\">The places money is already being lost — slow follow-up, quotes nobody chased, work you’re underpricing without realizing it.</div></div><div class=\"ds-row\"><div class=\"ds-row-k\">What breaks without you</div><div class=\"ds-row-v\">Every step that only happens because you remembered it. That list is the ceiling on the business.</div></div></div>",
+      "css": ".ds-rows { margin-top: 22px; border-top: 1px solid #e4e9f0; font-family: Inter, -apple-system, 'Segoe UI', sans-serif; } .ds-row { display: grid; gap: 4px; padding: 15px 0; border-bottom: 1px solid #e4e9f0; } @media (min-width: 640px) { .ds-row { grid-template-columns: 15rem 1fr; gap: 24px; align-items: baseline; } } .ds-row-k { font-weight: 600; font-size: 0.9375rem; line-height: 1.45; color: #111827; } .ds-row-v { font-size: 0.9375rem; line-height: 1.62; color: #5b6675; }"
+    },
+    {
+      "name": "Underline Input",
+      "kind": "input",
+      "refersTo": "input-underline",
+      "description": "A ruled entry line that is also the field. Mono uppercase label above, 16px text, square, hover darkens the rule, focus thickens it to the accent and tints the ground.",
+      "html": "<div class=\"ds-field\"><label class=\"ds-label\" for=\"ds-email\">Email<span class=\"ds-req\" aria-hidden=\"true\"> *</span></label><input class=\"ds-input\" id=\"ds-email\" name=\"email\" type=\"email\" inputmode=\"email\" autocomplete=\"email\"></div>",
+      "css": ".ds-field { font-family: Inter, -apple-system, 'Segoe UI', sans-serif; } .ds-label { display: block; font-family: 'Geist Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.07em; text-transform: uppercase; color: #5b6675; line-height: 1.5; } .ds-req { color: #0369a1; } .ds-input { display: block; width: 100%; margin-top: 7px; font: inherit; font-size: 16px; color: #111827; background: transparent; border: 0; border-bottom: 1.5px solid #64748b; border-radius: 0; padding: 4px 2px 10px; min-height: 46px; transition: border-color 140ms ease, background-color 140ms ease; } .ds-input:hover { border-bottom-color: #111827; } .ds-input:focus { border-bottom-color: #0284c7; border-bottom-width: 2px; background: #f4fafd; } .ds-input:focus-visible { outline: 2px solid #0284c7; outline-offset: 2px; border-radius: 0; } .ds-input[aria-invalid=\"true\"] { border-bottom-color: #b91c1c; }"
+    },
+    {
+      "name": "Ruled Textarea",
+      "kind": "input",
+      "refersTo": "textarea-ruled",
+      "description": "The worksheet answer box. line-height and the background gradient period are the same 32px, so typed text sits ON the rules; background-attachment: local scrolls the rules with the text.",
+      "html": "<div class=\"ds-field\"><label class=\"ds-label-q\" for=\"ds-annoyance\">What’s the most annoying thing in your business right now?<span class=\"ds-req\" aria-hidden=\"true\"> *</span></label><textarea class=\"ds-textarea\" id=\"ds-annoyance\" name=\"annoyance\" rows=\"4\"></textarea><p class=\"ds-hint\">One sentence is plenty. We read these before every class.</p></div>",
+      "css": ".ds-label-q { display: block; font-family: Inter, -apple-system, 'Segoe UI', sans-serif; font-size: 1rem; font-weight: 600; line-height: 1.45; color: #111827; letter-spacing: -0.006em; } .ds-textarea { display: block; width: 100%; margin-top: 7px; font-family: Inter, -apple-system, 'Segoe UI', sans-serif; font-size: 16px; line-height: 32px; color: #111827; border: 1px solid #64748b; border-radius: 0; padding: 0 12px 8px; min-height: 136px; resize: vertical; background-color: #ffffff; background-image: repeating-linear-gradient(to bottom, transparent 0, transparent 31px, #e4e9f0 31px, #e4e9f0 32px); background-attachment: local; transition: border-color 140ms ease; } .ds-textarea:focus { border-color: #0284c7; } .ds-textarea:focus-visible { outline: 2px solid #0284c7; outline-offset: 2px; border-radius: 0; } .ds-hint { margin-top: 9px; font-family: Inter, -apple-system, 'Segoe UI', sans-serif; font-size: 0.8125rem; line-height: 1.55; color: #5b6675; }"
+    },
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The only button in the system. Square, filled in Reading Blue (never the mark blue), full width on a phone, auto width from 640px, with a blue-tinted lift that disappears when disabled.",
+      "html": "<button class=\"ds-btn-primary\" type=\"submit\">Save my spot</button>",
+      "css": ".ds-btn-primary { display: block; width: 100%; background: #0369a1; color: #ffffff; border: 0; border-radius: 0; font-family: Inter, -apple-system, 'Segoe UI', sans-serif; font-size: 1rem; font-weight: 600; padding: 15px 30px; min-height: 52px; cursor: pointer; box-shadow: 0 1px 2px rgba(3,105,161,0.28), 0 8px 18px -10px rgba(3,105,161,0.55); transition: background-color 140ms ease, transform 120ms ease; } @media (min-width: 640px) { .ds-btn-primary { width: auto; } } .ds-btn-primary:hover:not(:disabled) { background: #075985; } .ds-btn-primary:active:not(:disabled) { transform: translateY(1px); } .ds-btn-primary:focus-visible { outline: 2px solid #0284c7; outline-offset: 2px; border-radius: 0; } .ds-btn-primary:disabled { background: #3f7191; box-shadow: none; cursor: progress; }"
+    },
+    {
+      "name": "Tint Panel",
+      "kind": "card",
+      "refersTo": "panel-tint",
+      "description": "The system's substitute for a card: pale blue ground, tint border, square, mono uppercase keys over 600-weight values in a 2-column grid from 560px.",
+      "html": "<div class=\"ds-panel-tint\"><div><p class=\"ds-caps\">When</p><p class=\"ds-fact-v\">Tuesdays, 6:00 PM Eastern</p></div><div><p class=\"ds-caps\">How long</p><p class=\"ds-fact-v\">90 minutes</p></div><div><p class=\"ds-caps\">Where</p><p class=\"ds-fact-v\">On Zoom</p></div><div><p class=\"ds-caps\">Cost</p><p class=\"ds-fact-v\">Free</p></div></div>",
+      "css": ".ds-panel-tint { margin-top: 24px; background: #f4fafd; border: 1px solid #bcd9ea; border-radius: 0; padding: 18px; display: grid; gap: 15px; font-family: Inter, -apple-system, 'Segoe UI', sans-serif; color: #111827; } @media (min-width: 560px) { .ds-panel-tint { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 32px; padding: 22px 24px; } } .ds-caps { font-family: 'Geist Mono', ui-monospace, SFMono-Regular, monospace; font-size: 10.5px; letter-spacing: 0.09em; text-transform: uppercase; color: #5b6675; font-variant-numeric: tabular-nums; margin: 0; } .ds-fact-v { font-size: 1rem; font-weight: 600; margin: 4px 0 0; line-height: 1.35; }"
+    },
+    {
+      "name": "Notice Strip",
+      "kind": "custom",
+      "refersTo": "panel-tint",
+      "description": "Inline status, in the flow at the point of consequence — never a floating toast. Border, near-white ground, dark ink, square, in the same construction as everything else on the sheet.",
+      "html": "<p class=\"ds-notice-error\" role=\"alert\">Something didn’t go through. Check the highlighted fields and try again.</p><p class=\"ds-notice-warn\" role=\"alert\">Our texting system didn’t confirm just now. You are registered and we can see you on the list.</p>",
+      "css": ".ds-notice-error { border: 1px solid #f1c9c9; background: #fdf5f5; color: #8f2020; border-radius: 0; padding: 12px 14px; font-family: Inter, -apple-system, 'Segoe UI', sans-serif; font-size: 0.9375rem; line-height: 1.5; margin: 0; } .ds-notice-warn { margin: 18px 0 0; border: 1px solid #e6d2a8; background: #fdf9f0; color: #6b4e12; border-radius: 0; padding: 14px 16px; font-family: Inter, -apple-system, 'Segoe UI', sans-serif; font-size: 0.9375rem; line-height: 1.6; }"
+    },
+    {
+      "name": "Report Section Heading",
+      "kind": "custom",
+      "refersTo": "panel-report",
+      "description": "The Executive Blueprint's message-titled heading: the h2 states the finding, an optional deck carries the 'so what', and a 44x2px ink stub closes it. No kicker — an eyebrow restates the heading in smaller type.",
+      "html": "<div class=\"ds-section-heading\"><h2>What you told us, and what the evidence says</h2><p class=\"ds-deck\">Every diagnostic starts with the owner’s own diagnosis. Ours is only worth what you paid for it if it can disagree with you — and show its work.</p><div class=\"ds-stub\"></div></div>",
+      "css": ".ds-section-heading { font-family: Inter, -apple-system, 'Segoe UI', sans-serif; color: #111827; } .ds-section-heading h2 { font-size: 27px; font-weight: 800; line-height: 1.2; letter-spacing: -0.022em; max-width: 30ch; margin: 0; } .ds-deck { font-size: 14px; color: #5b6675; line-height: 1.55; margin: 8px 0 0; max-width: 62ch; } .ds-stub { height: 2px; background: #111827; width: 44px; margin-top: 16px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Working Sheet",
+    "overview": "This project runs two visual worlds on purpose, and conflating them would be the single worst thing anyone could do to it. Behind Clerk, app/(dashboard)/** is a dark analytics console: Tailwind + Base UI + shadcn-shaped tokens from globals.css, an OLED-leaning near-black ground, electric blue as the one live colour. In front of Clerk, everything a client ever sees is a light print sheet — a white page laid on a cool grey desk, set in ink and hairlines, built to survive a browser's print dialog and a cold prospect's phone with equal composure. The Executive Blueprint (app/assessments/[id]/report) established that world; /tuesday inherits it without alteration. They are one system.\n\nThe sheet's character is a working document, not a brochure. Its material is the ruled line: a rule under the letterhead, a rule under every row, a rule you could write an answer on, a rule that doubles as the input field. Nothing floats. There are no cards inside the sheet — a list is a stack of hairline-separated rows, and the only filled surfaces are a pale blue tint panel and the sheet itself. Depth exists exactly once, at the sheet's own edge, as a real offset shadow that says 'paper on a desk'. Everything above that plane is flat.\n\nThe voice this serves is CREAiT's product commitment: show the arithmetic, never overstate. So the type is quiet and dense, the accent is rationed, the hierarchy runs on weight and rule rather than on colour, and the one authored animation on each surface resolves to the finished document rather than assembling it — a reader who has motion disabled, or whose browser drops the animation, sees a complete sheet, never an empty one.",
+    "keyCharacteristics": [
+      "Two pinned worlds: dark app shell, light client sheet; neither leaks into the other.",
+      "White sheet on #eef1f5 desk; ink #111827, muted #5b6675, hairline #e4e9f0.",
+      "Ruled lines are the recurring material; every list is a row, never a card.",
+      "Square corners and hairline borders on the sheet and on every form control.",
+      "Depth once, at the sheet edge — offset plus blur, never a halo.",
+      "One authored motion moment per surface, whose resting state is the finished page.",
+      "Inter for everything set as prose; Geist Mono, uppercase and letterspaced, for field names and stamps."
+    ],
+    "rules": [
+      {
+        "name": "The Two Worlds Rule",
+        "body": "The app shell is hard-committed to dark (<html class=\"dark\"> plus color-scheme: dark). A client-facing surface does not fight that globally — it pins its own scheme inside its own subtree with html:has(.report-root) / html:has(.tuesday-root), setting color-scheme: light and painting html and body with the desk colour. Every new client-facing surface adds its own html:has(.<name>-root) block and lives inside a root element carrying that class. Never flip the shell.",
+        "section": "colors"
+      },
+      {
+        "name": "The Accent Split Rule",
+        "body": "#0284c7 is a mark; #0369a1 is a word. If the blue thing renders glyphs or fills a button a human clicks, it is #0369a1. If it is a rule, a border, an outline or a chart stroke, it is #0284c7. There is no third blue on a client sheet — the shell's #3b82f6 is out of bounds here, which is exactly why /tuesday overrides the global focus ring's colour.",
+        "section": "colors"
+      },
+      {
+        "name": "The Rationed Accent Rule",
+        "body": "On a finished sheet the accent appears in single digits: the focus ring, the required asterisk, one link, one button, one panel border. Ink and hairline do the hierarchy; colour is not a level.",
+        "section": "colors"
+      },
+      {
+        "name": "The CREAiT Rule",
+        "body": "The brand is CREAiT, lowercase i, and text-transform: uppercase destroys it silently. Uppercasing is allowed on exactly one class of text: short mono field names and exhibit captions that contain no brand name. The wordmark is set at its own size and weight, never transformed.",
+        "section": "typography"
+      },
+      {
+        "name": "The 16px Field Rule",
+        "body": "Every text input and textarea is font-size: 16px exactly. Below 16px iOS Safari zooms the viewport on focus, and this form is filled in on a phone more often than not. This is a floor, not a preference.",
+        "section": "typography"
+      },
+      {
+        "name": "The Tabular Figures Rule",
+        "body": "Anything numeric that can change — dates, counts, money, ratings, list numbers — carries font-variant-numeric: tabular-nums. The mono classes bake it in; the shell exposes .tabular-nums and [data-numeric].",
+        "section": "typography"
+      },
+      {
+        "name": "The Hairline Row Rule",
+        "body": "A list is a stack of rows separated by 1px #e4e9f0, opened by a 1px top hairline. Not cards, not a bordered box per item, not a bulleted list. Key on the left, value on the right, baseline-aligned, collapsing to stacked key-over-value on a phone. This is the system's most-repeated pattern and the thing that makes an unfamiliar section still read as the same document.",
+        "section": "layout"
+      },
+      {
+        "name": "The Capped Measure Rule",
+        "body": "No prose element runs to the container edge. Every paragraph carries a max-width in em/ch (34em lede, 36em body, 40em fine print). A paragraph with no measure cap is a bug.",
+        "section": "layout"
+      },
+      {
+        "name": "The Offset Shadow Rule",
+        "body": "A shadow has a y-offset and a blur. A zero-offset, evenly-spread shadow is a glow, and a glow on a light print sheet is a defect.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Flat Interior Rule",
+        "body": "Nothing inside the sheet is elevated. If a block needs to separate from the prose around it, it gets a hairline border, the tint ground, or both — never a shadow.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Square Control Rule",
+        "body": "Inputs, textareas, buttons and the focus ring are square, always. A rounded control on this sheet is out of world. The 8/10px radii belong only to bordered panels inside a report-lineage document.",
+        "section": "shapes"
+      },
+      {
+        "name": "The Resting State Rule",
+        "body": "Every keyframe supplies only a 'from'. The element's declared state IS its finished state, so a reduced-motion user, a print run, or an engine that drops the animation all land on a complete, correct sheet rather than an empty one. One authored moment per surface, gated behind prefers-reduced-motion: no-preference and killed outright under @media print.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Watermark Exemption",
+        "body": "The PRACTICE watermark — rotated -24 degrees, 900 weight, 0.18em tracked, at roughly a tenth opacity in the practice violet — is a graphic device, not type, and is the one element exempt from the type ramp: 96px fixed on the printed sheet, 9rem on the app shell, both sized to cross a whole page rather than to sit in a hierarchy. It is the only place a single element is allowed to dwarf the display step, and it earns that because a practice document escaping as a real one is the worst failure this product has. Nothing else may claim this exemption.",
+        "section": "typography"
+      }
+    ],
+    "dos": [
+      "Do pin every new client-facing surface into the light world with its own html:has(.<name>-root) block setting color-scheme: light and the #eef1f5 desk on both html and body, exactly as .report-root and .tuesday-root do.",
+      "Do split the blue by job: #0284c7 for rules, borders, outlines and chart strokes; #0369a1 for any blue text or filled button.",
+      "Do build every list as hairline-separated rows (15px 0, 1px #e4e9f0), and open the block with a top hairline.",
+      "Do keep inputs at exactly font-size: 16px and give them 46px+ of height and 34px of separation from their neighbours.",
+      "Do cap every prose block with a max-width in em/ch (34em lede, 36em body, 40em fine print).",
+      "Do author animation so the keyframe supplies only a 'from' — the resting state must be the finished element.",
+      "Do ship the light world's colours as a static CSS string inside the route that owns them, hoisted via <style href=\"…\" precedence=\"high\"> so it lands in <head> and a cold phone never flashes the dark shell.",
+      "Do use tabular-nums on every figure that can change."
+    ],
+    "donts": [
+      "Don't put the dark shell's #3b82f6, .glow-electric, or any shadcn surface token on a client-facing sheet; and don't flip the shell to light to make a light surface easier.",
+      "Don't set #0284c7 as text, and don't introduce a third blue.",
+      "Don't wrap sheet content in a card, a bordered box per item, or anything with a shadow — depth exists once, at the sheet's edge.",
+      "Don't use a zero-offset shadow anywhere; a shadow has a y-offset and a blur.",
+      "Don't round a control. Inputs, textareas, buttons and the focus ring are 0. The 8/10px radii belong only to bordered panels inside a report-lineage page.",
+      "Don't text-transform: uppercase anything that could contain \"CREAiT\", and don't set a sentence in uppercase mono — mono uppercase is for short field names, exhibit captions and stamps.",
+      "Don't add a kicker or eyebrow above a heading.",
+      "Don't animate anything a second time on a surface: one authored moment per page, gated behind prefers-reduced-motion: no-preference, and killed outright under @media print.",
+      "Don't put a status message in a floating toast on a client sheet; it goes inline, in the flow, where the consequence is."
+    ]
+  }
+}

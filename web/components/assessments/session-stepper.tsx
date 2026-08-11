@@ -142,7 +142,7 @@ export function SessionStepper({
                 <span
                   aria-hidden
                   className={cn(
-                    "grid size-4 shrink-0 place-items-center rounded-full text-[9px] font-semibold tabular-nums transition-colors",
+                    "grid size-4 shrink-0 place-items-center rounded-full text-[10.5px] font-semibold tabular-nums transition-colors",
                     status === "complete"
                       ? "bg-[color:var(--color-brand-success)]/20 text-[color:var(--color-brand-success)]"
                       : status === "partial"

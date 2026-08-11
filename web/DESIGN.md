@@ -25,6 +25,12 @@ colors:
   notice-warn-bg: "#fdf9f0"
   notice-warn-line: "#e6d2a8"
   notice-warn-ink: "#6b4e12"
+  notice-practice-bg: "#f5f1ff"
+  notice-practice-line: "#8b5cf6"
+  notice-practice-ink: "#5b21b6"
+  notice-draft-bg: "#fff5ed"
+  notice-draft-line: "#c2410c"
+  notice-draft-ink: "#9a3412"
   shell-ink: "#0a0e1a"
   shell-charcoal: "#111827"
   shell-slate: "#1a2235"
@@ -55,6 +61,12 @@ typography:
     fontWeight: 700
     lineHeight: 1.35
     letterSpacing: "-0.012em"
+  title-compact:
+    fontFamily: "Inter, -apple-system, Segoe UI, sans-serif"
+    fontSize: "15px"
+    fontWeight: 600
+    lineHeight: 1.35
+    letterSpacing: "-0.01em"
   lede:
     fontFamily: "Inter, -apple-system, Segoe UI, sans-serif"
     fontSize: "clamp(1.0625rem, 2.3vw, 1.1875rem)"
@@ -249,6 +261,12 @@ dark console palette whose brand tokens are declared once in `globals.css`.
   `#f1c9c9` / `#fdf5f5` / `#8f2020`, warning `#e6d2a8` / `#fdf9f0` / `#6b4e12`,
   inline field error `danger` `#b91c1c`. Each is a border, a near-white ground,
   and a dark ink — the same construction as everything else on the sheet.
+- **Provenance** is the same strip in two reserved hues that say *this document
+  is not what it appears to be*: **practice** `#8b5cf6` / `#f5f1ff` / `#5b21b6`
+  and **draft** `#c2410c` / `#fff5ed` / `#9a3412`. They sit deliberately outside
+  the sheet's cool blue-and-neutral palette so a reader can never mistake one for
+  report content, and they are reserved — neither hue is available to a finding,
+  a chart series, or anything an advisor authors.
 - **Chart colours** exist only in the dark shell: `chart-1..5` map to
   `shell-electric`, `shell-aqua` `#6ee7b7`, `shell-violet` `#8b5cf6`,
   `shell-gold` `#f59e0b`, `shell-danger` `#ef4444`.
@@ -272,6 +290,15 @@ is exactly why `/tuesday` overrides the global focus ring's colour.
 **The Rationed Accent Rule.** On a finished sheet the accent appears in single
 digits: the focus ring, the required asterisk, one link, one button, one panel
 border. Ink and hairline do the hierarchy; colour is not a level.
+
+**The Watermark Exemption.** The PRACTICE watermark — rotated −24°, 900 weight,
+`0.18em` tracked, at roughly a tenth opacity in the practice violet — is a
+graphic device, not type, and is the one element exempt from the type ramp: 96px
+fixed on the printed sheet, `9rem` on the app shell, both sized to cross a whole
+page rather than to sit in a hierarchy. It is the only place a single element is
+allowed to dwarf the display step, and it earns that because a practice document
+escaping as a real one is the worst failure this product has. Nothing else may
+claim this exemption.
 
 ## Typography
 
@@ -409,6 +436,43 @@ evenly-spread shadow is a glow, and a glow on a light print sheet is a defect.
 **The Flat Interior Rule.** Nothing inside the sheet is elevated. If a block
 needs to separate from the prose around it, it gets a hairline border, the tint
 ground, or both — never a shadow.
+
+### Motion
+
+Motion lives with depth here because it is the other half of the same policy:
+what the material does, and what it refuses to do. It is a doctrine, not a scale,
+so it carries no frontmatter token group; exact durations and easings are in
+`.impeccable/design.json` under `extensions.motion`.
+
+**One authored moment per surface.** `/tuesday` has exactly one: the three
+answer rules draw themselves left to right — `tc-draw`, `scaleX(0)` → identity,
+760ms `cubic-bezier(0.16, 1, 0.3, 1)`, `both`, staggered by a per-element `--d`
+of `140 + i × 130`ms. The Executive Blueprint has one entrance vocabulary for its
+exhibits — `rp-grow-x` (820ms), `rp-fade` (460ms), `rp-seg` (520ms), `rp-needle`
+(1000ms at 300ms), `rp-rise` (620ms) — all on `cubic-bezier(0.22, 1, 0.36, 1)`
+with a `--d` delay.
+
+**The Resting State Rule.** Every keyframe supplies only a `from`. The element's
+declared state *is* its finished state, so a reduced-motion user, a print run, or
+an engine that drops the animation all land on a complete, correct sheet rather
+than an empty one. This is why the animations are additive `from`-only and never
+`opacity: 0` in the base rule.
+
+**Gating.** Every animation block is wrapped in `@media (prefers-reduced-motion:
+no-preference)` — the report adds `screen and` — and the report additionally
+forces `animation: none !important; opacity: 1 !important; transform: none
+!important` under `@media print`. The shell's global `prefers-reduced-motion:
+reduce` block in `globals.css` is a backstop, not the primary defence.
+
+**State transitions** are short and property-scoped: `140ms ease` on
+`border-color` and `background-color` for inputs, `140ms ease` on
+`background-color` plus `120ms ease` on `transform` for the submit. No transition
+runs longer than 140ms, and none is declared on `all`.
+
+**Programmatic scrolling** uses `behavior: "auto"`, never `"smooth"` — the jump
+to a validation error or to the success state is a correction, not an effect, and
+carries `scroll-margin-top: 28px` so the target never pins to y=0 with nothing
+above it.
 
 ## Shapes
 
@@ -572,40 +636,3 @@ spans `1 / -1` in the form grid and carries `role="alert"`.
   under `@media print`.
 - **Don't** put a status message in a floating toast on a client sheet; it goes
   inline, in the flow, where the consequence is.
-
----
-
-## Motion
-
-Motion is documented here rather than as a token group because the schema has no
-place for it and because it is a policy, not a scale.
-
-**One authored moment per surface.** `/tuesday` has exactly one: the three
-answer rules draw themselves left to right — `tc-draw`, `scaleX(0)` → identity,
-760ms `cubic-bezier(0.16, 1, 0.3, 1)`, `both`, staggered by a per-element
-`--d` of `140 + i × 130`ms. The Executive Blueprint has one entrance vocabulary
-for its exhibits — `rp-grow-x` (820ms), `rp-fade` (460ms), `rp-seg` (520ms),
-`rp-needle` (1000ms at 300ms), `rp-rise` (620ms) — all on
-`cubic-bezier(0.22, 1, 0.36, 1)` with a `--d` delay.
-
-**The Resting State Rule.** Every keyframe supplies only a `from`. The element's
-declared state *is* its finished state, so a reduced-motion user, a print run, or
-an engine that drops the animation all land on a complete, correct sheet rather
-than an empty one. This is why the animations are additive `from`-only and never
-`opacity: 0` in the base rule.
-
-**Gating.** Every animation block is wrapped in `@media (prefers-reduced-motion:
-no-preference)` — the report adds `screen and` — and the report additionally
-forces `animation: none !important; opacity: 1 !important; transform: none
-!important` under `@media print`. The shell's global `prefers-reduced-motion:
-reduce` block in `globals.css` is a backstop, not the primary defence.
-
-**State transitions** are short and property-scoped: `140ms ease` on
-`border-color` and `background-color` for inputs, `140ms ease` on
-`background-color` plus `120ms ease` on `transform` for the submit. No transition
-runs longer than 140ms, and none is declared on `all`.
-
-**Programmatic scrolling** uses `behavior: "auto"`, never `"smooth"` — the jump
-to a validation error or to the success state is a correction, not an effect, and
-carries `scroll-margin-top: 28px` so the target never pins to y=0 with nothing
-above it.
