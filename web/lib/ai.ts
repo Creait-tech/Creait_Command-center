@@ -78,6 +78,18 @@ export const DEFAULT_MODEL: ModelId = 'claude-sonnet-4-6'
  */
 export const LAST_RESORT_MODEL: ModelId = 'openrouter/nemotron-free'
 
+/**
+ * Cheap paid OpenRouter rung, tried before the free tier.
+ *
+ * `:free` models carry a per-day request cap that is independent of the
+ * credit balance, so a funded account still gets refused there once the cap
+ * is hit. With the free model as the only last resort, a dead primary
+ * provider meant the whole chain bottomed out on a rate limit while paid
+ * credit sat unused. Trying a paid model first spends fractions of a cent
+ * per call and keeps the system running.
+ */
+export const PAID_FALLBACK_MODEL: ModelId = 'openrouter/gemini-flash'
+
 type Provider = 'anthropic' | 'openai' | 'google' | 'openrouter'
 
 const MODEL_PROVIDER: Record<ModelId, Provider> = {
@@ -392,7 +404,8 @@ function messageOf(err: unknown): string {
 /**
  * Build the ordered list of models to try for `requested`.
  *
- *   requested → cheaper same-provider sibling (if any) → LAST_RESORT_MODEL
+ *   requested → cheaper same-provider sibling (if any) → PAID_FALLBACK_MODEL
+ *   → LAST_RESORT_MODEL
  *
  * The last-resort rung is always present and always attempted; the sibling rung
  * is skipped at runtime when the failure was provider-wide.
@@ -404,6 +417,9 @@ export function buildFallbackChain(requested: string | undefined): ModelId[] {
   const sibling = CHEAPER_SIBLING[head]
   if (sibling && !chain.includes(sibling)) chain.push(sibling)
 
+  // Paid before free: the free tier's daily cap is not a funding problem, so
+  // falling straight to it strands whatever credit the account does have.
+  if (!chain.includes(PAID_FALLBACK_MODEL)) chain.push(PAID_FALLBACK_MODEL)
   if (!chain.includes(LAST_RESORT_MODEL)) chain.push(LAST_RESORT_MODEL)
 
   return chain
