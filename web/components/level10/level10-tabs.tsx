@@ -4,17 +4,24 @@ import { Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { WinsFeed } from "./wins-feed";
-import { Scoreboard } from "./scoreboard";
+import { Scorecard } from "./scorecard";
 import { InitiativesReview } from "./initiatives-review";
 import { IdsSection } from "./ids-section";
-import type { AuthoredIdsItem, AuthoredWin } from "@/lib/authorship";
-import type { Kpi, KpiHistory, Initiative } from "@/lib/supabase/types";
+import type { KpiRow } from "./kpi-meta";
+import type { CcKpiWeekly } from "./weekly-types";
+import type { AuthoredIdsItem, AuthoredWin, Person } from "@/lib/authorship";
+import type { KpiHistory, Initiative } from "@/lib/supabase/types";
 
 interface Level10TabsProps {
   meetingId: string | null;
   wins: AuthoredWin[];
-  kpis: Kpi[];
+  kpis: KpiRow[];
+  kpiWeekly: CcKpiWeekly[];
   kpiHistory: KpiHistory[];
+  /** Week starts for the scorecard columns, newest first. Computed server-side
+   *  so the server render and the hydrated client agree on "this week". */
+  weekStarts: string[];
+  people: Person[];
   idsItems: AuthoredIdsItem[];
   initiatives: Initiative[];
 }
@@ -26,7 +33,10 @@ function Level10TabsInner({
   meetingId,
   wins,
   kpis,
+  kpiWeekly,
   kpiHistory,
+  weekStarts,
+  people,
   idsItems,
   initiatives,
 }: Level10TabsProps) {
@@ -53,7 +63,9 @@ function Level10TabsInner({
     >
       <TabsList>
         <TabsTrigger value="wins">Wins</TabsTrigger>
-        <TabsTrigger value="scoreboard">Scoreboard</TabsTrigger>
+        {/* The URL value stays "scoreboard" so existing links keep working;
+            the label is the EOS term the team uses out loud. */}
+        <TabsTrigger value="scoreboard">Scorecard</TabsTrigger>
         <TabsTrigger value="initiatives">Initiatives Review</TabsTrigger>
         <TabsTrigger value="ids">IDS</TabsTrigger>
       </TabsList>
@@ -61,7 +73,13 @@ function Level10TabsInner({
         <WinsFeed initialWins={wins} meetingId={meetingId} />
       </TabsContent>
       <TabsContent value="scoreboard" className="mt-4">
-        <Scoreboard initialKpis={kpis} initialHistory={kpiHistory} />
+        <Scorecard
+          initialKpis={kpis}
+          initialWeekly={kpiWeekly}
+          initialHistory={kpiHistory}
+          people={people}
+          weekStarts={weekStarts}
+        />
       </TabsContent>
       <TabsContent value="initiatives" className="mt-4">
         <InitiativesReview initialInitiatives={initiatives} />

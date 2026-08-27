@@ -38,19 +38,30 @@ import {
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
 import { useActiveOrgId } from "@/lib/use-active-org";
 import { cn } from "@/lib/utils";
-import type { Kpi, KpiHistory } from "@/lib/supabase/types";
+import type { KpiHistory } from "@/lib/supabase/types";
 import { KpiFormDialog } from "./kpi-form-dialog";
 import {
+  asKpiRows,
   formatKpiValue,
   formatTarget,
   kpiWriteMode,
   writeModeCopy,
+  type KpiRow,
   type KpiWriteMode,
 } from "./kpi-meta";
+import type { Person } from "@/lib/authorship";
 
 interface ScoreboardProps {
-  initialKpis: Kpi[];
+  initialKpis: KpiRow[];
   initialHistory: KpiHistory[];
+  /** Roster for the KPI dialog's owner picker. */
+  people?: Person[];
+  /**
+   * The weekly grid in `scorecard.tsx` owns the "Add KPI" control and the
+   * explanatory line when this view is nested inside it; showing a second set
+   * would read as two different scoreboards on one screen.
+   */
+  showHeader?: boolean;
 }
 
 // A single charted point. `value` is the KPI value; `recorded_at` is the ISO
@@ -89,7 +100,7 @@ function formatRelative(value: string | null): string {
  * permanent red "Never synced" that reads as an outage, when the real story
  * is "nothing feeds this" — which the badge beside it now states outright.
  */
-function freshnessClass(kpi: Kpi, mode: KpiWriteMode): string {
+function freshnessClass(kpi: KpiRow, mode: KpiWriteMode): string {
   if (mode !== "synced" && mode !== "shadowed") return "text-muted-foreground";
   if (!kpi.last_synced_at)
     return "text-[color:var(--color-brand-danger)] font-medium";
@@ -101,7 +112,7 @@ function freshnessClass(kpi: Kpi, mode: KpiWriteMode): string {
   return "text-muted-foreground";
 }
 
-function freshnessTitle(kpi: Kpi, mode: KpiWriteMode): string {
+function freshnessTitle(kpi: KpiRow, mode: KpiWriteMode): string {
   if (mode === "manual") return "Entered manually";
   if (mode === "declared")
     return "No background job writes a KPI with this name, so this stamp will not advance.";
@@ -119,7 +130,7 @@ function formatAxisDate(value: string): string {
   return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
 }
 
-function sortKpis(kpis: Kpi[]): Kpi[] {
+function sortKpis(kpis: KpiRow[]): KpiRow[] {
   return [...kpis].sort((a, b) => {
     if (a.sort_order !== b.sort_order) return a.sort_order - b.sort_order;
     return a.name.localeCompare(b.name);
@@ -281,11 +292,11 @@ const BADGE_TONE: Record<"neutral" | "auto" | "warn", string> = {
 };
 
 interface KpiCardProps {
-  kpi: Kpi;
+  kpi: KpiRow;
   points: TrendPoint[];
   onSave: (id: string, newValue: number) => Promise<void>;
-  onEdit: (kpi: Kpi) => void;
-  onDelete: (kpi: Kpi) => Promise<void>;
+  onEdit: (kpi: KpiRow) => void;
+  onDelete: (kpi: KpiRow) => Promise<void>;
 }
 
 function KpiCard({ kpi, points, onSave, onEdit, onDelete }: KpiCardProps) {
@@ -559,12 +570,17 @@ function KpiCard({ kpi, points, onSave, onEdit, onDelete }: KpiCardProps) {
   );
 }
 
-export function Scoreboard({ initialKpis, initialHistory }: ScoreboardProps) {
+export function Scoreboard({
+  initialKpis,
+  initialHistory,
+  people = [],
+  showHeader = true,
+}: ScoreboardProps) {
   const orgId = useActiveOrgId();
-  const [kpis, setKpis] = useState<Kpi[]>(sortKpis(initialKpis));
+  const [kpis, setKpis] = useState<KpiRow[]>(sortKpis(initialKpis));
   const [history, setHistory] = useState<KpiHistory[]>(initialHistory);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [editingKpi, setEditingKpi] = useState<Kpi | null>(null);
+  const [editingKpi, setEditingKpi] = useState<KpiRow | null>(null);
   // Bumped only when a session *starts*, so the form remounts fresh on open
   // but is left alone while the dialog plays its close animation.
   const [sessionKey, setSessionKey] = useState(0);
@@ -589,7 +605,7 @@ export function Scoreboard({ initialKpis, initialHistory }: ScoreboardProps) {
         .select("*")
         .eq("org_id", orgId)
         .order("sort_order", { ascending: true });
-      if (data) setKpis(sortKpis(data as Kpi[]));
+      if (data) setKpis(sortKpis(asKpiRows(data)));
     }
 
     async function refetchHistory() {
@@ -644,17 +660,26 @@ export function Scoreboard({ initialKpis, initialHistory }: ScoreboardProps) {
       prev.map((k) => (k.id === id ? { ...k, value: newValue } : k))
     );
 
-    const { error } = await supabase
+    // `.select("id")` guards the same RLS trap as the delete below: a refused
+    // UPDATE matches zero rows and returns no error, so an unchecked write
+    // would leave the optimistic number on screen and nothing in the database.
+    const { data, error } = await supabase
       .from("kpis")
       .update({
         value: newValue,
         last_synced_at: new Date().toISOString(),
       })
-      .eq("id", id);
+      .eq("id", id)
+      .eq("org_id", orgId)
+      .select("id");
 
-    if (error) {
+    if (error || !data || data.length === 0) {
       setKpis(previous);
-      toast.error(`Failed to update: ${error.message}`);
+      toast.error(
+        error
+          ? `Failed to update: ${error.message}`
+          : "Couldn't save that value — the KPI no longer exists, or your session doesn't have permission for it. Try reloading the page.",
+      );
       return;
     }
 
@@ -684,13 +709,13 @@ export function Scoreboard({ initialKpis, initialHistory }: ScoreboardProps) {
     setDialogOpen(true);
   }
 
-  function openEdit(kpi: Kpi) {
+  function openEdit(kpi: KpiRow) {
     setEditingKpi(kpi);
     setSessionKey((n) => n + 1);
     setDialogOpen(true);
   }
 
-  function handleSaved(saved: Kpi, mode: "create" | "edit") {
+  function handleSaved(saved: KpiRow, mode: "create" | "edit") {
     setKpis((prev) =>
       mode === "create"
         ? sortKpis([...prev, saved])
@@ -698,7 +723,7 @@ export function Scoreboard({ initialKpis, initialHistory }: ScoreboardProps) {
     );
   }
 
-  async function handleDelete(kpi: Kpi) {
+  async function handleDelete(kpi: KpiRow) {
     const supabase = createClient();
     const previousKpis = kpis;
     const previousHistory = history;
@@ -713,16 +738,26 @@ export function Scoreboard({ initialKpis, initialHistory }: ScoreboardProps) {
     // KPI delete then failed we'd have destroyed the trend of a row that
     // still exists. Cascades run as the referencing table's owner and are not
     // filtered by RLS, so this works from the browser client.
-    const { error } = await supabase
+    //
+    // `.select("id")` is not decoration: a DELETE that RLS refuses matches zero
+    // rows and comes back with no error at all, so without reading the affected
+    // rows back this would report a deletion that never happened — and the row
+    // would reappear on the next refetch.
+    const { data, error } = await supabase
       .from("kpis")
       .delete()
       .eq("id", kpi.id)
-      .eq("org_id", orgId);
+      .eq("org_id", orgId)
+      .select("id");
 
-    if (error) {
+    if (error || !data || data.length === 0) {
       setKpis(previousKpis);
       setHistory(previousHistory);
-      toast.error(`Failed to delete: ${error.message}`);
+      toast.error(
+        error
+          ? `Failed to delete: ${error.message}`
+          : "Couldn't delete that KPI — it no longer exists, or your session doesn't have permission for it. Try reloading the page.",
+      );
       return;
     }
 
@@ -731,16 +766,18 @@ export function Scoreboard({ initialKpis, initialHistory }: ScoreboardProps) {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between gap-3 flex-wrap">
-        <p className="text-xs text-muted-foreground">
-          The numbers you review every week. Click a value to enter this week&apos;s
-          figure.
-        </p>
-        <Button size="sm" onClick={openCreate}>
-          <Plus className="size-4" />
-          Add KPI
-        </Button>
-      </div>
+      {showHeader && (
+        <div className="flex items-center justify-between gap-3 flex-wrap">
+          <p className="text-xs text-muted-foreground">
+            The numbers you review every week. Click a value to enter this
+            week&apos;s figure.
+          </p>
+          <Button size="sm" onClick={openCreate}>
+            <Plus className="size-4" />
+            Add KPI
+          </Button>
+        </div>
+      )}
 
       {kpis.length === 0 ? (
         <div className="rounded-xl border border-dashed border-[color:var(--color-brand-fog)] flex flex-col items-center justify-center py-12 text-center">
@@ -773,6 +810,7 @@ export function Scoreboard({ initialKpis, initialHistory }: ScoreboardProps) {
         open={dialogOpen}
         onOpenChange={setDialogOpen}
         kpi={editingKpi}
+        people={people}
         nextSortOrder={nextSortOrder}
         sessionKey={sessionKey}
         onSaved={handleSaved}

@@ -1056,6 +1056,24 @@ export interface CcAgentProposal {
  *  backwards. */
 export type KpiGoalOperator = ">=" | "<=" | "=";
 
+/** One entry in a cell's append-only correction log (migration phase17).
+ *  A scorecard number that gets revised in a Level 10 ("we said 100 emails, it
+ *  was closer to 80") keeps what it used to say, so the revision is visible
+ *  rather than silent. */
+export interface WeeklyCorrection {
+  /** The value the cell used to hold. `null` means it was blank. */
+  from: number | null;
+  /** What it was changed to. `null` means it was cleared back to blank. */
+  to: number | null;
+  /** Whether the replaced value had been typed or synced. */
+  from_source: "manual" | "sync" | null;
+  /** Clerk user id of whoever made the change. */
+  by: string | null;
+  by_name: string | null;
+  /** ISO timestamp. */
+  at: string;
+}
+
 /** One number for one KPI for one week — the unit an EOS scorecard is made of.
  *  `kpis.value` is only ever "latest" and is overwritten by the sync, so it
  *  cannot answer "what did we do the week of Nov 14". */
@@ -1071,6 +1089,9 @@ export interface CcKpiWeekly {
   source: "manual" | "sync";
   entered_by: string | null;
   entered_by_name: string | null;
+  /** Append-only; written only by `cc_kpi_weekly_record()`. Arrives as jsonb —
+   *  parse defensively rather than trusting the shape. */
+  corrections: WeeklyCorrection[];
   created_at: string;
   updated_at: string;
 }
@@ -1160,6 +1181,25 @@ export interface Database {
        * Swaps one plan item with its neighbour under the same row lock
        * (migration 0006). Returns the full updated cc_assessments row.
        */
+      /**
+       * Records a week's scorecard number as a human entry (migration
+       * phase17). Upserts the value, stamps the actor, marks the row
+       * `manual`, and appends to the correction log — all under one row
+       * lock, so two founders editing the same cell in a live meeting can't
+       * drop each other's history. SECURITY INVOKER: RLS applies to the
+       * caller exactly as it would for a direct UPDATE.
+       */
+      cc_kpi_weekly_record: {
+        Args: {
+          p_org: string;
+          p_kpi: string;
+          p_week: string;
+          p_value: number | null;
+          p_actor: string;
+          p_actor_name: string;
+        };
+        Returns: CcKpiWeekly[];
+      };
       cc_assessment_plan_reorder: {
         Args: {
           p_id: string;

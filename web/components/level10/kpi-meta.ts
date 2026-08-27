@@ -1,4 +1,4 @@
-import type { Kpi, KpiSource } from "@/lib/supabase/types";
+import type { Kpi, KpiGoalOperator, KpiSource } from "@/lib/supabase/types";
 
 // =============================================================================
 // Shared KPI presentation rules.
@@ -31,6 +31,197 @@ export function formatTarget(target: number | null, unit: string | null): string
   if (target == null) return "";
   return formatKpiValue(target, unit);
 }
+
+/**
+ * Grid-sized rendering of the same number.
+ *
+ * A scorecard cell is ~88px wide and set in a monospace face, so
+ * "$20,115,685" or "1,485 count" either wraps or stretches the column until a
+ * week falls off the screen. Currency and percent keep their marker because it
+ * changes what the number means; a free-text unit ("count") is dropped, since
+ * the row heading already says what is being counted. Nothing is lost: every
+ * cell, goal, average and total carries the full-precision figure in its
+ * tooltip.
+ *
+ * The 10,000 threshold is set by the widest thing that has to fit — a goal
+ * cell, which also carries an operator glyph. "≥ $67,000" does not fit;
+ * "≥ $67K" does.
+ */
+export function formatGridValue(value: number, unit: string | null): string {
+  const currency = unit === "USD" || unit === "$";
+  const abs = Math.abs(value);
+  const body =
+    abs >= 10_000
+      ? value.toLocaleString("en-US", {
+          notation: "compact",
+          maximumFractionDigits: 1,
+        })
+      : value.toLocaleString("en-US", { maximumFractionDigits: 2 });
+  if (currency) return `$${body}`;
+  if (unit === "%") return `${body}%`;
+  return body;
+}
+
+// =============================================================================
+// Goal direction
+// =============================================================================
+
+/**
+ * `kpis.goal_operator` (migration `phase16_weekly_scorecard`, CHECK-constrained
+ * to these three, default `>=`).
+ *
+ * The column exists because "higher is better" is not universal. Cost per lead,
+ * churn and response time are hit by going *down*; scoring them the same way as
+ * MRR paints every good week red. Nothing in this module may assume a
+ * direction — always route through `goalMet`.
+ */
+export type GoalOperator = KpiGoalOperator;
+
+/**
+ * A KPI as the scorecard reads it.
+ *
+ * A plain alias: `lib/supabase/types.ts` now declares `goal_operator` and
+ * `owner_id`, so no widening is needed. The name is kept because every call
+ * site reads better as "a KPI row" and because it gives one place to widen
+ * again if a future column lands ahead of the generated types.
+ */
+export type KpiRow = Kpi;
+
+export function normalizeGoalOperator(value: unknown): GoalOperator {
+  return value === "<=" || value === "=" ? value : ">=";
+}
+
+/**
+ * Read a `select("*")` row.
+ *
+ * `Table<Kpi>` types the row as `Kpi & { [k: string]: unknown }`, so this both
+ * narrows it and repairs a missing or unrecognised operator — a KPI created
+ * before `goal_operator` existed, or by a path that didn't set it, must not
+ * land here as `undefined` and score every week as unmet.
+ */
+export function asKpiRow(row: unknown): KpiRow {
+  const raw = row as Record<string, unknown>;
+  return {
+    ...(raw as unknown as Kpi),
+    goal_operator: normalizeGoalOperator(raw.goal_operator),
+    owner_id: typeof raw.owner_id === "string" ? raw.owner_id : null,
+  };
+}
+
+export function asKpiRows(rows: unknown): KpiRow[] {
+  return Array.isArray(rows) ? rows.map(asKpiRow) : [];
+}
+
+export interface GoalOperatorOption {
+  value: GoalOperator;
+  /** Shown in the picker. */
+  label: string;
+  /** The glyph the grid renders next to the target. */
+  glyph: string;
+  hint: string;
+}
+
+export const GOAL_OPERATOR_OPTIONS: GoalOperatorOption[] = [
+  {
+    value: ">=",
+    label: "At or above target",
+    glyph: "≥",
+    hint: "Green when the week's number reaches the target. Revenue, calls booked, demos.",
+  },
+  {
+    value: "<=",
+    label: "At or below target",
+    glyph: "≤",
+    hint: "Green when the week's number stays under the target. Cost, churn, response time.",
+  },
+  {
+    value: "=",
+    label: "Exactly on target",
+    glyph: "=",
+    hint: "Green only on an exact match. Rare — use it for a fixed quota.",
+  },
+];
+
+export function goalOperatorGlyph(operator: GoalOperator): string {
+  return (
+    GOAL_OPERATOR_OPTIONS.find((o) => o.value === operator)?.glyph ?? operator
+  );
+}
+
+/** Compact goal for the Goal column, e.g. `≥ $67K`. */
+export function formatGoal(kpi: Pick<KpiRow, "target" | "unit" | "goal_operator">): string {
+  if (kpi.target == null) return "—";
+  return `${goalOperatorGlyph(kpi.goal_operator)} ${formatGridValue(kpi.target, kpi.unit)}`;
+}
+
+/** Full-precision goal for tooltips, e.g. `at or above $67,000`. */
+export function describeGoal(
+  kpi: Pick<KpiRow, "target" | "unit" | "goal_operator">,
+): string {
+  if (kpi.target == null) return "No goal set";
+  const option = GOAL_OPERATOR_OPTIONS.find((o) => o.value === kpi.goal_operator);
+  const phrase = option ? option.label.toLowerCase() : `${kpi.goal_operator}`;
+  return `${phrase} ${formatKpiValue(kpi.target, kpi.unit)}`;
+}
+
+/**
+ * Did this number hit the goal?
+ *
+ * `null` means "unscored" and is deliberately distinct from `false`:
+ * a KPI with no target, or a week with no entry, has not missed anything.
+ * Callers must render `null` as neutral, never as red.
+ */
+export function goalMet(
+  value: number | null,
+  target: number | null,
+  operator: GoalOperator,
+): boolean | null {
+  if (value == null || target == null) return null;
+  switch (operator) {
+    case ">=":
+      return value >= target;
+    case "<=":
+      return value <= target;
+    case "=":
+      return value === target;
+  }
+}
+
+// =============================================================================
+// Whether weeks can be added up
+// =============================================================================
+
+/**
+ * Can a KPI's weekly values be summed into a Total?
+ *
+ * Only for a metric that measures a *flow through a week*. Summing a running
+ * level — MRR, open pipeline, headcount, active deals — produces a number with
+ * no meaning: "$16,335 of MRR across 11 weeks" is not a fact about the
+ * business, and putting it in a column labelled Total invites someone to quote
+ * it. A percentage never sums either.
+ *
+ * There is no column that records this, so it is inferred, conservatively:
+ *  - a percent is never additive;
+ *  - a KPI whose **name declares its window** ("Conversations 7d", "Calls
+ *    Booked 7d", "Demos per week") is a per-week flow, so it sums;
+ *  - everything else is treated as a level and the Total is suppressed rather
+ *    than guessed.
+ *
+ * The rule is stated in the UI on every suppressed cell, so the escape hatch —
+ * name the KPI with its window — is discoverable rather than magic.
+ */
+export type KpiAggregation = "sum" | "none";
+
+const WINDOW_MARKER =
+  /(^|[\s(])\d+\s?d($|[\s)])|\bper\s+week\b|\bweekly\b|\bthis\s+week\b|\/\s?wk\b|\bwk\b/i;
+
+export function kpiAggregation(kpi: Pick<Kpi, "name" | "unit">): KpiAggregation {
+  if (kpi.unit === "%") return "none";
+  return WINDOW_MARKER.test(kpi.name) ? "sum" : "none";
+}
+
+export const TOTAL_SUPPRESSED_HINT =
+  "No total: this KPI reads as a running level (like MRR or open pipeline), and adding a level up across weeks isn't a real number. Totals show for per-week counts — name a KPI with its window (e.g. \"Calls Booked 7d\") to get one.";
 
 export interface UnitOption {
   /** Stored in `kpis.unit`. `null` means "no unit — render a bare number". */

@@ -22,24 +22,36 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
+import { personName, type Person } from "@/lib/authorship";
 import { useActiveOrgId } from "@/lib/use-active-org";
 import { cn } from "@/lib/utils";
-import type { Kpi, KpiSource } from "@/lib/supabase/types";
+import type { KpiSource } from "@/lib/supabase/types";
 import {
   CUSTOM_UNIT,
+  GOAL_OPERATOR_OPTIONS,
   NO_UNIT,
   SOURCE_OPTIONS,
   UNIT_OPTIONS,
+  asKpiRow,
   formatKpiValue,
+  goalOperatorGlyph,
   kpiWriteMode,
+  normalizeGoalOperator,
   writeModeCopy,
+  type GoalOperator,
+  type KpiRow,
 } from "./kpi-meta";
+
+/** Sentinel for "nobody owns this yet" — Base UI Select needs a string value. */
+const NO_OWNER = "__unassigned__";
 
 interface KpiFormDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   /** `null` opens the dialog in create mode. */
-  kpi: Kpi | null;
+  kpi: KpiRow | null;
+  /** Roster the owner picker draws from. */
+  people: Person[];
   /** `max(sort_order) + 1` across the current scoreboard. Create mode only. */
   nextSortOrder: number;
   /**
@@ -49,16 +61,20 @@ interface KpiFormDialogProps {
    */
   sessionKey: number;
   /** Called with the saved row so the caller can update optimistically. */
-  onSaved: (kpi: Kpi, mode: "create" | "edit") => void;
+  onSaved: (kpi: KpiRow, mode: "create" | "edit") => void;
 }
 
 interface FormState {
   name: string;
   description: string;
   target: string;
+  /** Direction of the goal — see `GoalOperator`. */
+  goalOperator: GoalOperator;
   /** A `UNIT_OPTIONS` value, or `CUSTOM_UNIT` while typing a free-text unit. */
   unitChoice: string;
   customUnit: string;
+  /** A `team_members.id`, or `NO_OWNER`. */
+  ownerChoice: string;
   source: KpiSource;
   sortOrder: string;
 }
@@ -68,14 +84,16 @@ function unitChoiceFor(unit: string | null): string {
   return UNIT_OPTIONS.some((o) => o.value === unit) ? unit : CUSTOM_UNIT;
 }
 
-function initialForm(kpi: Kpi | null, nextSortOrder: number): FormState {
+function initialForm(kpi: KpiRow | null, nextSortOrder: number): FormState {
   if (!kpi) {
     return {
       name: "",
       description: "",
       target: "",
+      goalOperator: ">=",
       unitChoice: NO_UNIT,
       customUnit: "",
+      ownerChoice: NO_OWNER,
       source: "manual",
       sortOrder: String(nextSortOrder),
     };
@@ -85,8 +103,10 @@ function initialForm(kpi: Kpi | null, nextSortOrder: number): FormState {
     name: kpi.name,
     description: kpi.description ?? "",
     target: kpi.target == null ? "" : String(kpi.target),
+    goalOperator: normalizeGoalOperator(kpi.goal_operator),
     unitChoice,
     customUnit: unitChoice === CUSTOM_UNIT ? (kpi.unit ?? "") : "",
+    ownerChoice: kpi.owner_id ?? NO_OWNER,
     source: kpi.source,
     sortOrder: String(kpi.sort_order),
   };
@@ -100,17 +120,24 @@ function resolveUnit(form: FormState): string | null {
 }
 
 interface KpiFormProps {
-  kpi: Kpi | null;
+  kpi: KpiRow | null;
+  people: Person[];
   nextSortOrder: number;
   onOpenChange: (open: boolean) => void;
-  onSaved: (kpi: Kpi, mode: "create" | "edit") => void;
+  onSaved: (kpi: KpiRow, mode: "create" | "edit") => void;
 }
 
 /**
  * The form body. Mounted fresh per editing session (keyed by `sessionKey`),
  * so its initial state *is* the reset — there is nothing to synchronise.
  */
-function KpiForm({ kpi, nextSortOrder, onOpenChange, onSaved }: KpiFormProps) {
+function KpiForm({
+  kpi,
+  people,
+  nextSortOrder,
+  onOpenChange,
+  onSaved,
+}: KpiFormProps) {
   const orgId = useActiveOrgId();
   const isEdit = kpi != null;
   const [form, setForm] = useState<FormState>(() =>
@@ -138,6 +165,8 @@ function KpiForm({ kpi, nextSortOrder, onOpenChange, onSaved }: KpiFormProps) {
   const pendingMode = kpiWriteMode({ name: trimmedName, source: form.source });
   const pendingCopy = writeModeCopy(pendingMode, form.source);
   const sourceHint = SOURCE_OPTIONS.find((o) => o.value === form.source)?.hint;
+  const operatorHint =
+    GOAL_OPERATOR_OPTIONS.find((o) => o.value === form.goalOperator)?.hint ?? "";
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -166,6 +195,8 @@ function KpiForm({ kpi, nextSortOrder, onOpenChange, onSaved }: KpiFormProps) {
       sortOrder = parsed;
     }
 
+    const ownerId = form.ownerChoice === NO_OWNER ? null : form.ownerChoice;
+
     setSubmitting(true);
     setError(null);
     const supabase = createClient();
@@ -173,13 +204,19 @@ function KpiForm({ kpi, nextSortOrder, onOpenChange, onSaved }: KpiFormProps) {
     if (isEdit && kpi) {
       // Deliberately does not touch `value` or `last_synced_at` — those belong
       // to the click-to-edit flow on the card and to the sync job.
+      //
+      // `.single()` is load-bearing: an UPDATE that RLS refuses matches zero
+      // rows and returns success, and `.single()` turns that empty result into
+      // the error it is rather than reporting a save that never happened.
       const { data, error: dbError } = await supabase
         .from("kpis")
         .update({
           name: trimmedName,
           description: form.description.trim() || null,
           target,
+          goal_operator: form.goalOperator,
           unit,
+          owner_id: ownerId,
           source: form.source,
         })
         .eq("id", kpi.id)
@@ -192,7 +229,7 @@ function KpiForm({ kpi, nextSortOrder, onOpenChange, onSaved }: KpiFormProps) {
         setError(dbError.message);
         return;
       }
-      onSaved(data as Kpi, "edit");
+      onSaved(asKpiRow(data), "edit");
       onOpenChange(false);
       toast.success(`"${trimmedName}" updated`);
       return;
@@ -208,7 +245,9 @@ function KpiForm({ kpi, nextSortOrder, onOpenChange, onSaved }: KpiFormProps) {
         description: form.description.trim() || null,
         value: 0,
         target,
+        goal_operator: form.goalOperator,
         unit,
+        owner_id: ownerId,
         source: form.source,
         sort_order: sortOrder,
       })
@@ -220,7 +259,7 @@ function KpiForm({ kpi, nextSortOrder, onOpenChange, onSaved }: KpiFormProps) {
       setError(dbError.message);
       return;
     }
-    onSaved(data as Kpi, "create");
+    onSaved(asKpiRow(data), "create");
     onOpenChange(false);
     toast.success(`"${trimmedName}" added to the scoreboard`);
   }
@@ -263,6 +302,34 @@ function KpiForm({ kpi, nextSortOrder, onOpenChange, onSaved }: KpiFormProps) {
       </div>
 
       <div className="grid grid-cols-2 gap-3">
+        {/* The direction sits beside the number, not buried elsewhere, because
+            the pair is the goal: "80" means nothing without "at or below". A
+            <= metric — cost, churn, response time — is green when it comes in
+            *under* target, and scoring it the other way marks every good week
+            red. */}
+        <div className="space-y-1">
+          <label className="text-xs font-medium text-muted-foreground">
+            Goal direction
+          </label>
+          <Select
+            value={form.goalOperator}
+            onValueChange={(v) =>
+              typeof v === "string" && update("goalOperator", v as GoalOperator)
+            }
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {GOAL_OPERATOR_OPTIONS.map((opt) => (
+                <SelectItem key={opt.value} value={opt.value}>
+                  {opt.glyph}&nbsp;&nbsp;{opt.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
         <div className="space-y-1">
           <label
             className="text-xs font-medium text-muted-foreground"
@@ -281,7 +348,13 @@ function KpiForm({ kpi, nextSortOrder, onOpenChange, onSaved }: KpiFormProps) {
             className="font-data tabular-nums"
           />
         </div>
+      </div>
 
+      <p className="text-[11px] text-[color:var(--color-brand-mist)]">
+        {operatorHint}
+      </p>
+
+      <div className="grid grid-cols-2 gap-3">
         <div className="space-y-1">
           <label className="text-xs font-medium text-muted-foreground">
             Unit
@@ -307,6 +380,33 @@ function KpiForm({ kpi, nextSortOrder, onOpenChange, onSaved }: KpiFormProps) {
               <SelectItem value={CUSTOM_UNIT}>Custom…</SelectItem>
             </SelectContent>
           </Select>
+        </div>
+
+        <div className="space-y-1">
+          <label className="text-xs font-medium text-muted-foreground">
+            Owner
+          </label>
+          <Select
+            value={form.ownerChoice}
+            onValueChange={(v) =>
+              typeof v === "string" && update("ownerChoice", v)
+            }
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value={NO_OWNER}>Unassigned</SelectItem>
+              {people.map((person) => (
+                <SelectItem key={person.id} value={person.id}>
+                  {personName(person)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <p className="text-[11px] text-[color:var(--color-brand-mist)]">
+            One person accountable for the number, EOS-style.
+          </p>
         </div>
       </div>
 
@@ -336,6 +436,19 @@ function KpiForm({ kpi, nextSortOrder, onOpenChange, onSaved }: KpiFormProps) {
         </p>
         <p className="text-lg font-bold font-data tabular-nums leading-tight">
           {formatKpiValue(previewBasis, unit)}
+        </p>
+        <p className="mt-0.5 text-[11px] text-[color:var(--color-brand-mist)]">
+          {form.target.trim() !== "" && !Number.isNaN(Number(form.target)) ? (
+            <>
+              Goal shown on the scorecard as{" "}
+              <span className="font-data">
+                {goalOperatorGlyph(form.goalOperator)}{" "}
+                {formatKpiValue(Number(form.target), unit)}
+              </span>
+            </>
+          ) : (
+            "No target — weeks will show but stay unscored."
+          )}
         </p>
       </div>
 
@@ -436,6 +549,7 @@ export function KpiFormDialog({
   open,
   onOpenChange,
   kpi,
+  people,
   nextSortOrder,
   sessionKey,
   onSaved,
@@ -456,6 +570,7 @@ export function KpiFormDialog({
         <KpiForm
           key={sessionKey}
           kpi={kpi}
+          people={people}
           nextSortOrder={nextSortOrder}
           onOpenChange={onOpenChange}
           onSaved={onSaved}

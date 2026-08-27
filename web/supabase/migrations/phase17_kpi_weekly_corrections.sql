@@ -42,7 +42,7 @@ CREATE OR REPLACE FUNCTION public.cc_kpi_weekly_protect_manual()
 RETURNS TRIGGER
 LANGUAGE plpgsql
 SET search_path = public, pg_temp
-AS $$
+AS $fn$
 BEGIN
   IF OLD.source = 'manual' AND NEW.source = 'sync' THEN
     NEW.value           := OLD.value;
@@ -53,7 +53,7 @@ BEGIN
   END IF;
   RETURN NEW;
 END;
-$$;
+$fn$;
 
 DROP TRIGGER IF EXISTS cc_kpi_weekly_protect_manual ON public.cc_kpi_weekly;
 CREATE TRIGGER cc_kpi_weekly_protect_manual
@@ -75,7 +75,7 @@ CREATE OR REPLACE FUNCTION public.cc_kpi_weekly_record(
 RETURNS SETOF public.cc_kpi_weekly
 LANGUAGE plpgsql
 SET search_path = public, pg_temp
-AS $$
+AS $fn$
 DECLARE
   v_existing public.cc_kpi_weekly;
   v_entry    jsonb;
@@ -128,7 +128,7 @@ BEGIN
      WHERE id = v_existing.id
     RETURNING *;
 END;
-$$;
+$fn$;
 
 GRANT EXECUTE ON FUNCTION public.cc_kpi_weekly_record(TEXT, UUID, DATE, NUMERIC, TEXT, TEXT)
   TO anon, authenticated, service_role;
