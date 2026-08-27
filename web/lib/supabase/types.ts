@@ -1096,6 +1096,31 @@ export interface CcKpiWeekly {
   updated_at: string;
 }
 
+/** One row of `cc_meeting_agendas` (migration 0011) — an org's saved override
+ *  for one meeting type. A missing row means that type uses the EOS default;
+ *  `lib/meeting-agendas.ts` is still the interface every consumer reads. */
+export interface CcMeetingAgendaRow {
+  id: string;
+  org_id: string;
+  /** One of the eight EOS meeting types. Kept in step with the
+   *  `meetings.meeting_type` CHECK constraint by migration 0011. */
+  type: string;
+  label: string;
+  cadence: string;
+  purpose: string;
+  title_prefix: string;
+  /** Ordered agenda sections as jsonb; `conclude` must be last (DB CHECK).
+   *  Typed `unknown` rather than a section array on purpose — what comes back
+   *  from Postgres is unvalidated, and `parseAgendaRow` is the one place that
+   *  decides whether a stored agenda is usable or has to fall back to the EOS
+   *  default. Writes still accept a section array. */
+  sections: unknown;
+  updated_by: string | null;
+  updated_by_name: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface Database {
   public: {
     Tables: {
@@ -1151,6 +1176,8 @@ export interface Database {
       // KPI history
       cc_kpi_history: Table<KpiHistory>;
       cc_kpi_weekly: Table<CcKpiWeekly>;
+      // Editable meeting agendas (per-org overrides of the EOS defaults)
+      cc_meeting_agendas: Table<CcMeetingAgendaRow>;
       // Dashboard AI Assistant chat history
       cc_chat_conversations: Table<CcChatConversation>;
       cc_client_activity: Table<CcClientActivity>;

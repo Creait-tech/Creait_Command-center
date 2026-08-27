@@ -1,5 +1,7 @@
 import { IntegrationsPanel } from "@/components/settings/integrations-panel";
+import { MeetingAgendasPanel } from "@/components/settings/meeting-agendas-panel";
 import { ProfileCard } from "@/components/settings/profile-card";
+import { loadStoredAgendas } from "@/components/meeting-agendas/agenda-source";
 import { getActiveOrgId } from "@/lib/active-org";
 import { getMyProfile } from "@/lib/profile-actions";
 import { createServiceClient } from "@/lib/supabase/server";
@@ -42,15 +44,21 @@ export default async function SettingsPage() {
   const member = profile.ok ? profile.data.member : null;
   const fallbackName = profile.ok ? profile.data.fallbackName : null;
 
+  // The eight EOS agendas — the org's saved versions where they exist, the code
+  // defaults where they don't. Loaded server-side so the editor opens on real
+  // values rather than flashing the standard first.
+  const agendas = await loadStoredAgendas();
+
   return (
     <div className="flex flex-col gap-6 p-6">
       <div>
         <h1 className="text-2xl font-bold">Settings</h1>
         <p className="text-sm text-muted-foreground mt-1">
-          Your profile, integration setup, webhook credentials, and system info.
+          Your profile, meeting agendas, integration setup, webhook credentials, and system info.
         </p>
       </div>
       <ProfileCard member={member} fallbackName={fallbackName} />
+      <MeetingAgendasPanel agendas={agendas} />
       <IntegrationsPanel
         readaiSecret={readaiSecret}
         mcpUrl={mcpUrl}
