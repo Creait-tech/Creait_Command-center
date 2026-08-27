@@ -2,7 +2,7 @@
 
 Internal business OS for CREAIT (AI consulting agency, Atlanta — 4 co-founders: Maurice Grant, John McGhee, Ashaela Bowen, Jaylyn Maddox). This is the company's system of record: EOS-style meetings, Rocks, To-Dos, Issues, a GHL-fed scoreboard, and the War Room (searchable memory of every meeting).
 
-**Live:** cc.getcreait.com (production, `main` auto-deploys via Vercel Git integration — project `creait-cc`, Root Directory = `web`). Companion MCP server at mcp.getcreait.com (Hostinger VPS, separate deploy, 25 tools).
+**Live:** cc.getcreait.com (production, `main` auto-deploys via Vercel Git integration — project `creait-cc`, Root Directory = `web`). Companion MCP server at mcp.getcreait.com (Hostinger VPS, separate deploy, 34 tools). Deploy: `rsync -avz --exclude node_modules --exclude dist --exclude data mcp/ root@2.24.116.77:/opt/creait-mcp/source/` then `ssh root@2.24.116.77 'cd /opt/creait-mcp && docker compose up -d --build'`. Deploy **web before MCP** when shipping new agent tools, so a proposal can never be filed before the inbox that handles it exists.
 
 ## Architecture
 
@@ -21,6 +21,9 @@ Internal business OS for CREAIT (AI consulting agency, Atlanta — 4 co-founders
 ## Hard-won gotchas — read before coding
 
 - **Inngest functions are NOT auto-registered on deploy.** After adding/changing a function: `curl -X PUT https://cc.getcreait.com/api/inngest`. Forgetting this = events silently do nothing.
+- **Under RLS a refused UPDATE or DELETE reports success.** A refused INSERT raises; a refused UPDATE/DELETE simply matches zero rows and PostgREST returns 204. Every update and delete must `.select()` and treat an empty result as failure, or the app will tell someone their change saved when nothing happened. This bit six separate features (To-Dos, journey, KPIs, scorecard cells) before it was understood. Same rule for `.rpc()` on a `SECURITY INVOKER` function: an empty result set is a refusal.
+- **Agents may propose config changes, never their own.** `cc_agent_proposals.target_table` has a CHECK allow-list (`cc_client_journey`, `cc_clients`, `journey_milestones`, `journey_deliverables`, `kpis`) that deliberately omits `skills` and `agents`, so an agent cannot file a proposal rewriting its own prompt, schedule or enabled flag. That is a database guarantee — do not add a bypass path. Every agent write goes to `cc_agent_proposals` with `status='pending'`; only a human acceptance in `/command-center` changes anything.
+- **A human number on the scorecard is permanent.** `cc_kpi_weekly` rows with `source='manual'` are protected by the `cc_kpi_weekly_protect_manual` trigger: an UPDATE turning one back into a `sync` row silently keeps the human's value and attribution. Jobs never need to check — write freely and the trigger arbitrates.
 - **This repo uses Base UI, not Radix.** No `asChild`; use the `render={<Component/>}` prop (see `components/ui/dialog.tsx`).
 - **PostgREST `.or()` filter strings use `*` as the ilike wildcard**, not `%` (see `war-room/page.tsx`).
 - **`meetings.meeting_type` has a CHECK constraint** — the value list must stay in sync with `web/lib/meeting-agendas.ts` (8 EOS types + legacy values; migration `0002_meeting_types.sql`).
