@@ -18,6 +18,7 @@ import { Progress } from "@/components/ui/progress";
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
 import { useActiveOrgId } from "@/lib/use-active-org";
 import { cn } from "@/lib/utils";
+import { createIdsItem } from "@/lib/eos-actions";
 import type { Initiative, InitiativeStatus } from "@/lib/supabase/types";
 
 interface InitiativesReviewProps {
@@ -119,20 +120,19 @@ export function InitiativesReview({
     setSubmitting(true);
     setError(null);
 
-    const supabase = createClient();
-    const { error: dbError } = await supabase.from("ids_items").insert({
-      org_id: orgId,
-      title: escalateTitle.trim(),
-      description: escalateDescription.trim() || null,
-      status: "open",
+    // Server action so the escalated issue records who escalated it — the
+    // same stamp every other IDS creation path writes.
+    const result = await createIdsItem({
+      title: escalateTitle,
+      description: escalateDescription,
       priority: 10,
-      owner_id: escalateTarget.owner_id,
+      ownerId: escalateTarget.owner_id,
     });
 
     setSubmitting(false);
 
-    if (dbError) {
-      setError(dbError.message);
+    if (!result.ok) {
+      setError(result.error);
       return;
     }
 

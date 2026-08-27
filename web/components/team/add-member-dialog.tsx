@@ -19,12 +19,13 @@ import {
 } from "@/components/ui/select";
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
 import { useActiveOrgId } from "@/lib/use-active-org";
-import type { TeamMember, TeamRole, TeamStatus } from "@/lib/supabase/types";
+import type { Person } from "@/lib/authorship";
+import type { TeamRole, TeamStatus } from "@/lib/supabase/types";
 
 interface AddMemberDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onCreated: (member: TeamMember) => void;
+  onCreated: (member: Person) => void;
 }
 
 interface FormState {
@@ -103,7 +104,7 @@ export function AddMemberDialog({
     }
 
     if (data) {
-      onCreated(data as TeamMember);
+      onCreated(data as unknown as Person);
     }
     setForm(EMPTY);
     onOpenChange(false);

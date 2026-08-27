@@ -14,18 +14,17 @@ import { createBrowserClient as createClient } from "@/lib/supabase/client";
 import { useActiveOrgId } from "@/lib/use-active-org";
 import { RockCard } from "./rock-card";
 import { AddRockDialog } from "./add-rock-dialog";
+import { asAuthoredRows, type AuthoredRock, type Person } from "@/lib/authorship";
 import type {
-  Rock,
   RockMilestone,
   RockStatusUpdate,
-  TeamMember,
 } from "@/lib/supabase/types";
 
 interface Props {
-  initialRocks: Rock[];
+  initialRocks: AuthoredRock[];
   milestones: RockMilestone[];
   statusUpdates: RockStatusUpdate[];
-  members: TeamMember[];
+  members: Person[];
   currentQuarter: string;
 }
 
@@ -37,7 +36,7 @@ export function RocksView({
   currentQuarter,
 }: Props) {
   const orgId = useActiveOrgId();
-  const [rocks, setRocks] = useState<Rock[]>(initialRocks);
+  const [rocks, setRocks] = useState<AuthoredRock[]>(initialRocks);
   const [milestones, setMilestones] = useState<RockMilestone[]>(initialMilestones);
   const [statusUpdates, setStatusUpdates] = useState<RockStatusUpdate[]>(initialStatus);
   const [selectedQuarter, setSelectedQuarter] = useState(currentQuarter);
@@ -81,7 +80,7 @@ export function RocksView({
             .select("*")
             .eq("org_id", orgId)
             .order("sort_order");
-          if (data) setRocks(data as Rock[]);
+          if (data) setRocks(asAuthoredRows<AuthoredRock>(data));
         },
       )
       .on(
@@ -107,8 +106,13 @@ export function RocksView({
     };
   }, [orgId]);
 
-  function handleRockUpdated(updated: Rock) {
+  function handleRockUpdated(updated: AuthoredRock) {
     setRocks((p) => p.map((r) => (r.id === updated.id ? updated : r)));
+  }
+
+  function handleRockCreated(created: AuthoredRock) {
+    setRocks((p) => [...p.filter((r) => r.id !== created.id), created]);
+    setSelectedQuarter(created.quarter);
   }
 
   return (
@@ -192,6 +196,7 @@ export function RocksView({
         onOpenChange={setAddOpen}
         defaultQuarter={selectedQuarter}
         members={members}
+        onCreated={handleRockCreated}
       />
     </>
   );

@@ -16,20 +16,22 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
 import { useActiveOrgId } from "@/lib/use-active-org";
-import type { Win } from "@/lib/supabase/types";
+import { AuthorStamp } from "@/components/authorship/author-stamp";
+import { asAuthoredRows, type AuthoredWin } from "@/lib/authorship";
+import { createWin } from "@/lib/eos-actions";
 
 interface WinsFeedProps {
-  initialWins: Win[];
+  initialWins: AuthoredWin[];
   meetingId: string | null;
 }
 
-function sortWins(wins: Win[]): Win[] {
+function sortWins(wins: AuthoredWin[]): AuthoredWin[] {
   return [...wins].sort((a, b) => b.created_at.localeCompare(a.created_at));
 }
 
 export function WinsFeed({ initialWins, meetingId }: WinsFeedProps) {
   const orgId = useActiveOrgId();
-  const [wins, setWins] = useState<Win[]>(sortWins(initialWins));
+  const [wins, setWins] = useState<AuthoredWin[]>(sortWins(initialWins));
   const [dialogOpen, setDialogOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -55,7 +57,7 @@ export function WinsFeed({ initialWins, meetingId }: WinsFeedProps) {
             .limit(20);
 
       const { data } = await query;
-      if (data) setWins(sortWins(data as Win[]));
+      if (data) setWins(sortWins(asAuthoredRows<AuthoredWin>(data)));
     }
 
     const channel = supabase
@@ -86,23 +88,24 @@ export function WinsFeed({ initialWins, meetingId }: WinsFeedProps) {
     setSubmitting(true);
     setError(null);
 
-    const supabase = createClient();
-    const today = new Date().toISOString().slice(0, 10);
-    const { error: dbError } = await supabase.from("wins").insert({
-      org_id: orgId,
-      meeting_id: meetingId,
-      title: title.trim(),
-      description: description.trim() || null,
-      win_date: today,
+    // Server action, not the browser client: a Win records who logged it, and
+    // that name is resolved from the Clerk session rather than sent by the page.
+    const result = await createWin({
+      title,
+      description,
+      meetingId,
     });
 
     setSubmitting(false);
 
-    if (dbError) {
-      setError(dbError.message);
+    if (!result.ok) {
+      setError(result.error);
       return;
     }
 
+    setWins((prev) =>
+      sortWins([result.data, ...prev.filter((w) => w.id !== result.data.id)]),
+    );
     setTitle("");
     setDescription("");
     setDialogOpen(false);
@@ -157,15 +160,16 @@ export function WinsFeed({ initialWins, meetingId }: WinsFeedProps) {
                     {win.description}
                   </p>
                 )}
-                <div className="flex items-center justify-between pl-6 pt-1">
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-1 pl-6 pt-1">
                   <span className="text-xs text-muted-foreground">
                     {formatWinDate(win.win_date)}
                   </span>
-                  {win.owner_id && (
-                    <span className="text-xs text-muted-foreground">
-                      {win.owner_id}
-                    </span>
-                  )}
+                  <AuthorStamp
+                    label="logged by"
+                    name={win.created_by_name}
+                    actorId={win.created_by}
+                    at={win.created_at}
+                  />
                 </div>
               </CardContent>
             </Card>

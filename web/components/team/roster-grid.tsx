@@ -15,8 +15,8 @@ import {
 import { cn } from "@/lib/utils";
 import { AddMemberDialog } from "./add-member-dialog";
 import { MemberDetailSheet } from "./member-detail-sheet";
+import { personName, type Person } from "@/lib/authorship";
 import type {
-  TeamMember,
   MemberKpi,
   MemberKpiPeriod,
   TeamRole,
@@ -31,9 +31,9 @@ const PERIOD_SHORT: Record<MemberKpiPeriod, string> = {
 };
 
 interface RosterGridProps {
-  members: TeamMember[];
+  members: Person[];
   kpis: MemberKpi[];
-  onMembersChange: (next: TeamMember[]) => void;
+  onMembersChange: (next: Person[]) => void;
   onKpisChange: (next: MemberKpi[]) => void;
 }
 
@@ -209,7 +209,7 @@ export function RosterGrid({
                 type="button"
                 onClick={() => setSelectedMemberId(m.id)}
                 className="text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-brand-electric)] rounded-xl"
-                aria-label={`Open detail for ${m.full_name}`}
+                aria-label={`Open detail for ${personName(m)}`}
               >
                 <Card className="h-full transition-shadow hover:shadow-md">
                   <CardContent className="flex flex-col gap-3">
@@ -219,17 +219,22 @@ export function RosterGrid({
                           // eslint-disable-next-line @next/next/no-img-element
                           <img
                             src={m.avatar_url}
-                            alt={m.full_name}
+                            alt={personName(m)}
                             className="size-full rounded-full object-cover"
                           />
                         ) : (
-                          getInitials(m.full_name)
+                          getInitials(personName(m))
                         )}
                       </div>
 
                       <div className="min-w-0 flex-1">
                         <p className="font-semibold text-sm leading-snug truncate">
-                          {m.full_name}
+                          {personName(m)}
+                          {m.pronouns && (
+                            <span className="ml-1.5 font-normal text-xs text-muted-foreground">
+                              {m.pronouns}
+                            </span>
+                          )}
                         </p>
                         {m.title && (
                           <p className="text-xs text-muted-foreground truncate">
@@ -316,7 +321,7 @@ export function RosterGrid({
         onOpenChange={setAddOpen}
         onCreated={(m) => {
           onMembersChange([...members, m].sort((a, b) =>
-            a.full_name.localeCompare(b.full_name)
+            personName(a).localeCompare(personName(b))
           ));
         }}
       />

@@ -1,8 +1,8 @@
 import { createClient } from "@/lib/supabase/server";
 import { getActiveOrgId } from "@/lib/active-org";
 import { TeamView } from "@/components/team/team-view";
+import { asAuthoredRows, type Person } from "@/lib/authorship";
 import type {
-  TeamMember,
   MemberKpi,
   TeamSeat,
   SeatAssignment,
@@ -31,7 +31,9 @@ export default async function TeamPage() {
       .select("*"),
   ]);
 
-  const members: TeamMember[] = (membersResult.data as TeamMember[] | null) ?? [];
+  // `select("*")` returns `display_name` / `pronouns` from
+  // `phase15_authorship_everywhere`; the generated types don't declare them yet.
+  const members: Person[] = asAuthoredRows<Person>(membersResult.data);
   const seats: TeamSeat[] = (seatsResult.data as TeamSeat[] | null) ?? [];
   const assignments: SeatAssignment[] = (assignmentsResult.data as SeatAssignment[] | null) ?? [];
 

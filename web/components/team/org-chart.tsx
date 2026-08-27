@@ -19,19 +19,19 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { getInitials } from "./roster-grid";
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
-import type { TeamMember } from "@/lib/supabase/types";
+import { personName, personNameOr, type Person } from "@/lib/authorship";
 
 interface OrgChartProps {
-  members: TeamMember[];
-  onMembersChange: (next: TeamMember[]) => void;
+  members: Person[];
+  onMembersChange: (next: Person[]) => void;
 }
 
 interface TreeNode {
-  member: TeamMember;
+  member: Person;
   children: TreeNode[];
 }
 
-function buildTree(members: TeamMember[]): {
+function buildTree(members: Person[]): {
   roots: TreeNode[];
   byId: Map<string, TreeNode>;
 } {
@@ -50,7 +50,7 @@ function buildTree(members: TeamMember[]): {
   }
   // Stable order
   function sortRec(list: TreeNode[]) {
-    list.sort((a, b) => a.member.full_name.localeCompare(b.member.full_name));
+    list.sort((a, b) => personName(a.member).localeCompare(personName(b.member)));
     for (const n of list) sortRec(n.children);
   }
   sortRec(roots);
@@ -78,7 +78,7 @@ function getDescendantIds(
 }
 
 interface MemberCardProps {
-  member: TeamMember;
+  member: Person;
   isDragging?: boolean;
   isOver?: boolean;
   isInvalidDropTarget?: boolean;
@@ -113,7 +113,7 @@ function MemberCardInner({
             type="button"
             {...dragHandleProps}
             className="mt-0.5 cursor-grab active:cursor-grabbing text-[color:var(--color-brand-mist)] hover:text-[color:var(--color-brand-paper)] transition-colors touch-none"
-            aria-label={`Drag ${member.full_name}`}
+            aria-label={`Drag ${personName(member)}`}
           >
             <GripVertical className="size-4" />
           </button>
@@ -122,16 +122,16 @@ function MemberCardInner({
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={member.avatar_url}
-                alt={member.full_name}
+                alt={personName(member)}
                 className="size-full rounded-full object-cover"
               />
             ) : (
-              getInitials(member.full_name)
+              getInitials(personName(member))
             )}
           </div>
           <div className="min-w-0 flex-1">
             <p className="font-semibold text-sm leading-snug truncate">
-              {member.full_name}
+              {personName(member)}
             </p>
             {member.title && (
               <p className="text-[11px] text-muted-foreground truncate">
@@ -159,7 +159,7 @@ function MemberCardInner({
 }
 
 interface DraggableMemberCardProps {
-  member: TeamMember;
+  member: Person;
   invalidDropIds: Set<string>;
   draggingId: string | null;
   onSetRoot: () => void;
@@ -292,9 +292,9 @@ export function OrgChart({ members, onMembersChange }: OrgChartProps) {
     const descendants = getDescendantIds(draggedId, byId);
     if (descendants.has(targetId)) {
       const draggedName =
-        members.find((m) => m.id === draggedId)?.full_name ?? "Member";
+        personNameOr(members.find((m) => m.id === draggedId), "Member");
       const targetName =
-        members.find((m) => m.id === targetId)?.full_name ?? "target";
+        personNameOr(members.find((m) => m.id === targetId), "target");
       setErrorMsg(
         `Cannot make ${draggedName} report to ${targetName} — that would create a cycle.`
       );
@@ -306,7 +306,7 @@ export function OrgChart({ members, onMembersChange }: OrgChartProps) {
     if (dragged.reports_to === targetId) return; // no change
 
     // Optimistic update
-    const updated: TeamMember = { ...dragged, reports_to: targetId };
+    const updated: Person = { ...dragged, reports_to: targetId };
     onMembersChange(members.map((m) => (m.id === dragged.id ? updated : m)));
 
     const supabase = createClient();
@@ -325,7 +325,7 @@ export function OrgChart({ members, onMembersChange }: OrgChartProps) {
   async function handleSetRoot(memberId: string) {
     const member = members.find((m) => m.id === memberId);
     if (!member || member.reports_to === null) return;
-    const updated: TeamMember = { ...member, reports_to: null };
+    const updated: Person = { ...member, reports_to: null };
     onMembersChange(members.map((m) => (m.id === member.id ? updated : m)));
 
     const supabase = createClient();

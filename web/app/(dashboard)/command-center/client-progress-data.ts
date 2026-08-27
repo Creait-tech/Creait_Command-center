@@ -25,13 +25,17 @@ import {
   type ClientRollupRow,
   type ProposalRow,
 } from "@/components/command-center/client-progress-types";
+import {
+  asAgentProposal,
+  type AgentProposal,
+} from "@/components/proposals/proposal-payload";
 import type {
-  CcAgentProposal,
   CcClient,
   CcClientActivity,
   CcClientJourney,
   JourneyDeliverable,
   JourneyMilestone,
+  Kpi,
 } from "@/lib/supabase/types";
 
 export {
@@ -65,56 +69,71 @@ export async function loadClientProgress(): Promise<ClientProgressData> {
   const errors: string[] = [];
   const proposalErrors: string[] = [];
 
-  const [clientsRes, milestonesRes, journeyRes, activityRes, pendingRes, decidedRes] =
-    await Promise.all([
-      supabase
-        .from("cc_clients")
-        .select("*")
-        .eq("org_id", orgId)
-        .order("name", { ascending: true }),
-      supabase
-        .from("journey_milestones")
-        .select("*")
-        .eq("org_id", orgId)
-        .order("sort_order", { ascending: true }),
-      supabase.from("cc_client_journey").select("*").eq("org_id", orgId),
-      supabase
-        .from("cc_client_activity")
-        .select("*")
-        .eq("org_id", orgId)
-        .order("created_at", { ascending: false })
-        .limit(ACTIVITY_WINDOW),
-      supabase
-        .from("cc_agent_proposals")
-        .select("*")
-        .eq("org_id", orgId)
-        .eq("status", "pending")
-        .order("created_at", { ascending: false }),
-      supabase
-        .from("cc_agent_proposals")
-        .select("*")
-        .eq("org_id", orgId)
-        .in("status", ["accepted", "rejected"])
-        .order("decided_at", { ascending: false })
-        .limit(5),
-    ]);
+  const [
+    clientsRes,
+    milestonesRes,
+    journeyRes,
+    activityRes,
+    kpisRes,
+    pendingRes,
+    decidedRes,
+  ] = await Promise.all([
+    supabase
+      .from("cc_clients")
+      .select("*")
+      .eq("org_id", orgId)
+      .order("name", { ascending: true }),
+    supabase
+      .from("journey_milestones")
+      .select("*")
+      .eq("org_id", orgId)
+      .order("sort_order", { ascending: true }),
+    supabase.from("cc_client_journey").select("*").eq("org_id", orgId),
+    supabase
+      .from("cc_client_activity")
+      .select("*")
+      .eq("org_id", orgId)
+      .order("created_at", { ascending: false })
+      .limit(ACTIVITY_WINDOW),
+    // Only ever read here to turn a KPI proposal's `target_id` into a name.
+    // The scoreboard itself is loaded by /level-10.
+    supabase
+      .from("kpis")
+      .select("id, name")
+      .eq("org_id", orgId)
+      .order("sort_order", { ascending: true }),
+    supabase
+      .from("cc_agent_proposals")
+      .select("*")
+      .eq("org_id", orgId)
+      .eq("status", "pending")
+      .order("created_at", { ascending: false }),
+    supabase
+      .from("cc_agent_proposals")
+      .select("*")
+      .eq("org_id", orgId)
+      .in("status", ["accepted", "rejected"])
+      .order("decided_at", { ascending: false })
+      .limit(5),
+  ]);
 
   for (const [label, res, bucket] of [
     ["clients", clientsRes, errors],
     ["journey template", milestonesRes, errors],
     ["journey progress", journeyRes, errors],
     ["activity", activityRes, errors],
+    ["scorecard KPIs", kpisRes, proposalErrors],
     ["pending proposals", pendingRes, proposalErrors],
     ["decided proposals", decidedRes, proposalErrors],
   ] as const) {
     if (res.error) bucket.push(`Could not load ${label}: ${res.error.message}`);
   }
 
-  // A client or template read that failed also breaks the inbox, because that
-  // is where proposal ids are turned into names. Say so there too.
-  if (clientsRes.error || milestonesRes.error) {
+  // A client, template or KPI read that failed also breaks the inbox, because
+  // that is where proposal ids are turned into names. Say so there too.
+  if (clientsRes.error || milestonesRes.error || kpisRes.error) {
     proposalErrors.push(
-      "Client and deliverable names could not be resolved, so some proposals may read as unknown",
+      "Client, deliverable and KPI names could not all be resolved, so some proposals may read as unknown",
     );
   }
 
@@ -159,9 +178,20 @@ export async function loadClientProgress(): Promise<ClientProgressData> {
   for (const c of (clientsRes.data as CcClient[] | null) ?? []) {
     clientNames[c.id] = c.name;
   }
+  // Configuration proposals name a milestone or a KPI through `target_id`, so
+  // both need the same id→name treatment the client families already had.
+  const milestoneLookup: Record<string, string> = {};
+  for (const m of milestones) milestoneLookup[m.id] = m.name;
+  const kpiNames: Record<string, string> = {};
+  for (const k of ((kpisRes.data as Pick<Kpi, "id" | "name">[] | null) ?? [])) {
+    kpiNames[k.id] = k.name;
+  }
+
   const lookups: ProposalLookups = {
     clients: clientNames,
     deliverables: deliverableRefs,
+    milestones: milestoneLookup,
+    kpis: kpiNames,
   };
 
   // ── per-client aggregation ────────────────────────────────────────────────
@@ -257,16 +287,16 @@ export async function loadClientProgress(): Promise<ClientProgressData> {
         : null,
     }));
 
-  const toRow = (proposal: CcAgentProposal): ProposalRow => ({
-    proposal,
-    ...resolveProposal(proposal, lookups),
-  });
+  const toRow = (row: unknown): ProposalRow => {
+    const proposal: AgentProposal = asAgentProposal(row);
+    return { proposal, ...resolveProposal(proposal, lookups) };
+  };
 
   return {
     clients: rollup,
     activity,
-    pending: ((pendingRes.data as CcAgentProposal[] | null) ?? []).map(toRow),
-    recentlyDecided: ((decidedRes.data as CcAgentProposal[] | null) ?? []).map(toRow),
+    pending: ((pendingRes.data as unknown[] | null) ?? []).map(toRow),
+    recentlyDecided: ((decidedRes.data as unknown[] | null) ?? []).map(toRow),
     totalDeliverables,
     errors,
     proposalErrors,

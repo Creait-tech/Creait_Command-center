@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Play, Pencil, Clock, Zap } from "lucide-react";
+import { Play, Pencil, Clock, Zap, AlertTriangle } from "lucide-react";
+import { toast } from "sonner";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -61,6 +62,10 @@ function SkillCard({ skill, stats, onToggle, onUpdated }: CardProps) {
   const [runOpen, setRunOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const badge = MODEL_BADGE[skill.preferred_model] ?? { label: skill.preferred_model, className: "bg-muted text-muted-foreground" };
+  // An empty prompt is not a cosmetic gap: the engine silently substitutes a
+  // one-line fallback, so the skill runs and looks healthy while producing
+  // generic output. Surface it where the team already looks.
+  const noPrompt = (skill.system_prompt ?? "").trim().length === 0;
 
   return (
     <>
@@ -74,6 +79,16 @@ function SkillCard({ skill, stats, onToggle, onUpdated }: CardProps) {
           </div>
           {skill.description && (
             <p className="text-xs text-muted-foreground line-clamp-2">{skill.description}</p>
+          )}
+          {noPrompt && (
+            <button
+              type="button"
+              onClick={() => setEditOpen(true)}
+              className="flex items-center gap-1.5 self-start rounded px-1.5 py-0.5 -mx-1.5 text-xs text-[color:var(--color-brand-warning)] transition-colors hover:bg-[color:var(--color-brand-warning)]/10"
+            >
+              <AlertTriangle className="size-3 shrink-0" />
+              No system prompt — running on fallback
+            </button>
           )}
           <div className="flex items-center gap-3 text-xs text-muted-foreground">
             <span className="flex items-center gap-1"><Clock className="size-3" /> {timeAgo(stats?.lastRunAt ?? null)}</span>
@@ -108,10 +123,30 @@ interface Props {
 export function SkillsGrid({ skills, runStatsMap }: Props) {
   const [localSkills, setLocalSkills] = useState<Skill[]>(() => sortSkills(skills, runStatsMap));
 
+  /**
+   * Optimistically flip the switch, then verify the write actually landed.
+   *
+   * A browser-side UPDATE rejected by RLS does not throw — it matches zero
+   * rows and reports success. Without `.select()` the toggle would look like
+   * it worked, the card would render enabled, and the next page load would
+   * quietly snap it back. Treat an empty result as the failure it is and
+   * revert.
+   */
   async function handleToggle(id: string, enabled: boolean) {
     setLocalSkills((prev) => prev.map((s) => (s.id === id ? { ...s, enabled } : s)));
     const supabase = createClient();
-    await supabase.from("skills").update({ enabled }).eq("id", id);
+    const { data, error } = await supabase
+      .from("skills")
+      .update({ enabled })
+      .eq("id", id)
+      .select("id, enabled");
+
+    if (error || !data || data.length === 0) {
+      setLocalSkills((prev) => prev.map((s) => (s.id === id ? { ...s, enabled: !enabled } : s)));
+      toast.error(error?.message ?? "Couldn't save — the change was rejected.");
+      return;
+    }
+    toast.success(enabled ? "Skill enabled" : "Skill disabled");
   }
 
   function handleUpdated(updated: Skill) {

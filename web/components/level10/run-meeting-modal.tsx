@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
 import { useActiveOrgId } from "@/lib/use-active-org";
 import { cn } from "@/lib/utils";
+import { createHeadline, createIdsItem, createTodo } from "@/lib/eos-actions";
 import { getAgenda, agendaBudgetSec, type MeetingType } from "@/lib/meeting-agendas";
 
 interface Props {
@@ -111,17 +112,19 @@ export function RunMeetingModal({ open, onOpenChange, meetingType = "level_10" }
     }
   }
 
+  // Everything captured mid-meeting goes through the same server actions the
+  // standalone pages use, so a To-Do raised in the room carries the same
+  // "added by" stamp as one typed on /todos. Skipping it here would make
+  // attribution look arbitrary, which is worse than not having it at all.
   async function addTodo() {
     if (!newTodo.trim() || !meetingId) return;
-    const supabase = createClient();
     const due = new Date(Date.now() + 7 * 86_400_000).toISOString().slice(0, 10);
-    const { error } = await supabase.from("cc_todos").insert({
-      org_id: orgId,
-      meeting_id: meetingId,
-      title: newTodo.trim(),
-      due_date: due,
+    const result = await createTodo({
+      title: newTodo,
+      dueDate: due,
+      meetingId,
     });
-    if (error) toast.error(error.message);
+    if (!result.ok) toast.error(result.error);
     else {
       setNewTodo("");
       toast.success("To-Do added (due in 7 days)");
@@ -130,14 +133,12 @@ export function RunMeetingModal({ open, onOpenChange, meetingType = "level_10" }
 
   async function addHeadline() {
     if (!newHeadline.trim() || !meetingId) return;
-    const supabase = createClient();
-    const { error } = await supabase.from("cc_headlines").insert({
-      org_id: orgId,
-      meeting_id: meetingId,
+    const result = await createHeadline({
+      text: newHeadline,
       category: "general",
-      text: newHeadline.trim(),
+      meetingId,
     });
-    if (error) toast.error(error.message);
+    if (!result.ok) toast.error(result.error);
     else {
       setNewHeadline("");
       toast.success("Headline captured");
@@ -146,15 +147,12 @@ export function RunMeetingModal({ open, onOpenChange, meetingType = "level_10" }
 
   async function addIssue() {
     if (!newIssue.trim() || !meetingId) return;
-    const supabase = createClient();
-    const { error } = await supabase.from("ids_items").insert({
-      org_id: orgId,
-      meeting_id: meetingId,
-      title: newIssue.trim(),
-      status: "open",
+    const result = await createIdsItem({
+      title: newIssue,
       priority: 5,
+      meetingId,
     });
-    if (error) toast.error(error.message);
+    if (!result.ok) toast.error(result.error);
     else {
       setNewIssue("");
       toast.success("Issue added to IDS");

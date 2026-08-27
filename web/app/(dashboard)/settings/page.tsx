@@ -1,5 +1,7 @@
 import { IntegrationsPanel } from "@/components/settings/integrations-panel";
+import { ProfileCard } from "@/components/settings/profile-card";
 import { getActiveOrgId } from "@/lib/active-org";
+import { getMyProfile } from "@/lib/profile-actions";
 import { createServiceClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -33,14 +35,22 @@ export default async function SettingsPage() {
     gmailConnectedEmail = null;
   }
 
+  // The caller's own roster record, resolved from the Clerk session. A failed
+  // lookup renders the card in its "nothing linked" state rather than blocking
+  // the rest of Settings.
+  const profile = await getMyProfile();
+  const member = profile.ok ? profile.data.member : null;
+  const fallbackName = profile.ok ? profile.data.fallbackName : null;
+
   return (
     <div className="flex flex-col gap-6 p-6">
       <div>
         <h1 className="text-2xl font-bold">Settings</h1>
         <p className="text-sm text-muted-foreground mt-1">
-          Integration setup, webhook credentials, and system info.
+          Your profile, integration setup, webhook credentials, and system info.
         </p>
       </div>
+      <ProfileCard member={member} fallbackName={fallbackName} />
       <IntegrationsPanel
         readaiSecret={readaiSecret}
         mcpUrl={mcpUrl}

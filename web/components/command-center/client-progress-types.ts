@@ -9,11 +9,12 @@
  */
 
 import type {
-  CcAgentProposal,
   CcClientActivity,
   CcClientHealth,
   CcClientStatus,
 } from "@/lib/supabase/types";
+import type { AgentProposal } from "@/components/proposals/proposal-payload";
+import type { ResolvedProposal } from "@/components/proposals/proposal-copy";
 
 /** A client this quiet is the signal the roll-up exists to surface. */
 export const STALE_AFTER_DAYS = 14;
@@ -54,13 +55,16 @@ export interface ActivityRow {
   deliverableTitle: string | null;
 }
 
-export interface ProposalRow {
-  proposal: CcAgentProposal;
-  clientName: string;
-  deliverableTitle: string | null;
-  milestoneName: string | null;
-  /** One sentence describing what accepting would change. */
-  summary: string;
+/**
+ * One proposal with every id already turned into a name.
+ *
+ * `ResolvedProposal` carries the resolution (client, deliverable, milestone,
+ * and — for configuration proposals — the live name of whatever `target_id`
+ * points at) plus the one-sentence summary. Nothing downstream ever sees a
+ * uuid, whichever family the proposal belongs to.
+ */
+export interface ProposalRow extends ResolvedProposal {
+  proposal: AgentProposal;
 }
 
 export interface ClientProgressData {

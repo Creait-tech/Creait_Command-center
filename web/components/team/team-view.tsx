@@ -7,8 +7,8 @@ import { RosterGrid } from "./roster-grid";
 import { OrgChart } from "./org-chart";
 import { SeatsBoard } from "./seats-board";
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
+import { asAuthoredRows, personName, type Person } from "@/lib/authorship";
 import type {
-  TeamMember,
   MemberKpi,
   TeamSeat,
   SeatAssignment,
@@ -18,15 +18,17 @@ const VALID = ["roster", "orgchart", "accountability"] as const;
 type Valid = (typeof VALID)[number];
 
 interface TeamViewProps {
-  members: TeamMember[];
+  members: Person[];
   kpis: MemberKpi[];
   seats: TeamSeat[];
   assignments: SeatAssignment[];
   orgId: string;
 }
 
-function sortMembers(list: TeamMember[]): TeamMember[] {
-  return [...list].sort((a, b) => a.full_name.localeCompare(b.full_name));
+function sortMembers(list: Person[]): Person[] {
+  // Sorted by the name people actually see, so the roster order matches the
+  // labels rather than the underlying roster names.
+  return [...list].sort((a, b) => personName(a).localeCompare(personName(b)));
 }
 
 function TeamViewInner({
@@ -43,7 +45,7 @@ function TeamViewInner({
     ? (raw as Valid)
     : "roster";
 
-  const [members, setMembers] = useState<TeamMember[]>(sortMembers(initialMembers));
+  const [members, setMembers] = useState<Person[]>(sortMembers(initialMembers));
   const [kpis, setKpis] = useState<MemberKpi[]>(initialKpis);
   const [seats, setSeats] = useState<TeamSeat[]>(initialSeats);
   const [assignments, setAssignments] = useState<SeatAssignment[]>(initialAssignments);
@@ -58,7 +60,7 @@ function TeamViewInner({
         .eq("org_id", orgId)
         .eq("status", "active")
         .order("full_name", { ascending: true });
-      if (data) setMembers(sortMembers(data as TeamMember[]));
+      if (data) setMembers(sortMembers(asAuthoredRows<Person>(data)));
     }
 
     async function refetchKpis() {

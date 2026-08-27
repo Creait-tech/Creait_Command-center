@@ -16,17 +16,19 @@ import {
 } from "@/components/ui/select";
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
-import type { Todo, TeamMember } from "@/lib/supabase/types";
+import { AuthorStamp } from "@/components/authorship/author-stamp";
+import { asAuthoredRows, personName, type AuthoredTodo, type Person } from "@/lib/authorship";
+import { createTodo, updateTodo } from "@/lib/eos-actions";
 
 type Filter = "all" | "open" | "done" | "overdue";
 
 interface Props {
-  initialTodos: Todo[];
-  members: TeamMember[];
+  initialTodos: AuthoredTodo[];
+  members: Person[];
   orgId: string;
 }
 
-function isOverdue(t: Todo): boolean {
+function isOverdue(t: AuthoredTodo): boolean {
   if (t.done || !t.due_date) return false;
   return new Date(t.due_date) < new Date(new Date().toDateString());
 }
@@ -36,7 +38,7 @@ function defaultDueDate(): string {
 }
 
 export function TodosView({ initialTodos, members, orgId }: Props) {
-  const [todos, setTodos] = useState<Todo[]>(initialTodos);
+  const [todos, setTodos] = useState<AuthoredTodo[]>(initialTodos);
   const [filter, setFilter] = useState<Filter>("open");
   const [newTitle, setNewTitle] = useState("");
   const [newOwnerId, setNewOwnerId] = useState("");
@@ -56,7 +58,7 @@ export function TodosView({ initialTodos, members, orgId }: Props) {
             .eq("org_id", orgId)
             .order("done")
             .order("due_date", { nullsFirst: false });
-          if (data) setTodos(data as Todo[]);
+          if (data) setTodos(asAuthoredRows<AuthoredTodo>(data));
         },
       )
       .subscribe();
@@ -85,46 +87,49 @@ export function TodosView({ initialTodos, members, orgId }: Props) {
     overdue: todos.filter((t) => isOverdue(t)).length,
   };
 
+  // Writes go through server actions rather than the browser client: the
+  // author recorded on the row has to be resolved from the Clerk session on
+  // the server, and a name the browser could choose is not an audit trail.
   async function addTodo() {
     if (!newTitle.trim()) return;
-    const supabase = createClient();
-    const { error } = await supabase.from("cc_todos").insert({
-      org_id: orgId,
-      title: newTitle.trim(),
-      owner_id: newOwnerId || null,
-      due_date: newDue || null,
+    const result = await createTodo({
+      title: newTitle,
+      ownerId: newOwnerId || null,
+      dueDate: newDue || null,
     });
-    if (error) {
-      toast.error(error.message);
+    if (!result.ok) {
+      toast.error(result.error);
       return;
     }
+    setTodos((p) => [result.data, ...p.filter((x) => x.id !== result.data.id)]);
     setNewTitle("");
     setNewOwnerId("");
     setNewDue(defaultDueDate());
     toast.success("To-Do added");
   }
 
-  async function toggle(t: Todo) {
-    const supabase = createClient();
+  async function toggle(t: AuthoredTodo) {
     setTodos((p) => p.map((x) => (x.id === t.id ? { ...x, done: !t.done } : x)));
-    const { error } = await supabase
-      .from("cc_todos")
-      .update({ done: !t.done, updated_at: new Date().toISOString() })
-      .eq("id", t.id);
-    if (error) {
+    const result = await updateTodo(t.id, { done: !t.done });
+    if (!result.ok) {
       // revert
       setTodos((p) => p.map((x) => (x.id === t.id ? { ...x, done: t.done } : x)));
-      toast.error(error.message);
+      toast.error(result.error);
+      return;
     }
+    setTodos((p) => p.map((x) => (x.id === t.id ? result.data : x)));
   }
 
-  async function updateField(id: string, field: Partial<Todo>) {
-    const supabase = createClient();
-    const { error } = await supabase
-      .from("cc_todos")
-      .update({ ...field, updated_at: new Date().toISOString() })
-      .eq("id", id);
-    if (error) toast.error(error.message);
+  async function updateField(
+    id: string,
+    field: { ownerId?: string | null; dueDate?: string | null },
+  ) {
+    const result = await updateTodo(id, field);
+    if (!result.ok) {
+      toast.error(result.error);
+      return;
+    }
+    setTodos((p) => p.map((x) => (x.id === id ? result.data : x)));
   }
 
   async function remove(id: string) {
@@ -171,7 +176,7 @@ export function TodosView({ initialTodos, members, orgId }: Props) {
               <SelectTrigger className="md:col-span-3"><SelectValue placeholder="Owner (optional)" /></SelectTrigger>
               <SelectContent>
                 {members.map((m) => (
-                  <SelectItem key={m.id} value={m.id}>{m.full_name}</SelectItem>
+                  <SelectItem key={m.id} value={m.id}>{personName(m)}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -230,13 +235,13 @@ export function TodosView({ initialTodos, members, orgId }: Props) {
                     />
                     <div className="flex-1 min-w-0">
                       <p className={cn("text-sm", t.done && "line-through")}>{t.title}</p>
-                      <div className="flex items-center gap-3 mt-1 text-[11px] text-muted-foreground">
+                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1 text-[11px] text-muted-foreground">
                         {owner && (
                           <span className="flex items-center gap-1">
                             <span className="size-4 rounded-full bg-[color:var(--color-brand-slate)] flex items-center justify-center text-[9px] font-medium">
-                              {owner.full_name.slice(0, 1).toUpperCase()}
+                              {personName(owner).slice(0, 1).toUpperCase()}
                             </span>
-                            {owner.full_name}
+                            {personName(owner)}
                           </span>
                         )}
                         {t.due_date && (
@@ -250,16 +255,30 @@ export function TodosView({ initialTodos, members, orgId }: Props) {
                             Carried {t.carried_forward_count}×
                           </span>
                         )}
+                        <AuthorStamp
+                          name={t.created_by_name}
+                          actorId={t.created_by}
+                          at={t.created_at}
+                        />
+                        {t.updated_by_name &&
+                          t.updated_by_name !== t.created_by_name && (
+                            <AuthorStamp
+                              label="last edited by"
+                              name={t.updated_by_name}
+                              actorId={t.updated_by}
+                              at={t.updated_at}
+                            />
+                          )}
                       </div>
                     </div>
                     <Select
                       value={t.owner_id ?? ""}
-                      onValueChange={(v) => typeof v === "string" && updateField(t.id, { owner_id: v || null })}
+                      onValueChange={(v) => typeof v === "string" && updateField(t.id, { ownerId: v || null })}
                     >
                       <SelectTrigger className="w-32 h-7 text-xs"><SelectValue placeholder="Owner" /></SelectTrigger>
                       <SelectContent>
                         {members.map((m) => (
-                          <SelectItem key={m.id} value={m.id}>{m.full_name}</SelectItem>
+                          <SelectItem key={m.id} value={m.id}>{personName(m)}</SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
@@ -267,7 +286,7 @@ export function TodosView({ initialTodos, members, orgId }: Props) {
                       className="w-32 h-7 text-xs"
                       type="date"
                       value={t.due_date ?? ""}
-                      onChange={(e) => updateField(t.id, { due_date: e.target.value || null })}
+                      onChange={(e) => updateField(t.id, { dueDate: e.target.value || null })}
                     />
                     <Button variant="ghost" size="icon" aria-label="Delete" onClick={() => remove(t.id)}>
                       <Trash className="size-3.5" />

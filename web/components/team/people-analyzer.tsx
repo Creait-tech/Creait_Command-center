@@ -3,15 +3,15 @@
 import { useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { personName, type Person } from "@/lib/authorship";
 import type {
-  TeamMember,
   TeamSeat,
   SeatAssignment,
   GwcRating,
 } from "@/lib/supabase/types";
 
 interface Props {
-  members: TeamMember[];
+  members: Person[];
   seats: TeamSeat[];
   assignments: SeatAssignment[];
 }
@@ -146,9 +146,9 @@ export function PeopleAnalyzer({ members, seats, assignments }: Props) {
                     <td className="py-2 px-2">
                       <div className="flex items-center gap-2">
                         <span className="size-6 rounded-full bg-[color:var(--color-brand-slate)] flex items-center justify-center text-[10px] font-medium">
-                          {member.full_name.slice(0, 2).toUpperCase()}
+                          {personName(member).slice(0, 2).toUpperCase()}
                         </span>
-                        <span className="font-medium">{member.full_name}</span>
+                        <span className="font-medium">{personName(member)}</span>
                       </div>
                     </td>
                     <td className="py-2 px-2">

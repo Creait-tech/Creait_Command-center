@@ -182,7 +182,7 @@ export function RunHistoryTable({ initialRuns, skills, orgId }: Props) {
               <tbody>
                 {paginated.map((r) => {
                   const isOpen = expanded[r.id] ?? false;
-                  const out = typeof r.output === "string" ? r.output : JSON.stringify(r.output, null, 2);
+                  const out = runOutputText(r.output);
                   return (
                     <Row key={r.id}>
                       <tr className="border-b border-border cursor-pointer hover:bg-muted/30" onClick={() => toggle(r.id)}>
@@ -234,6 +234,22 @@ export function RunHistoryTable({ initialRuns, skills, orgId }: Props) {
       )}
     </div>
   );
+}
+
+/**
+ * The skills engine writes `output` as `{ text, model, model_routing }`, so
+ * stringifying the whole column buried the actual answer under routing
+ * telemetry. Show the text a human is meant to read; fall back to the raw
+ * JSON for rows written in any other shape.
+ */
+function runOutputText(output: RunHistory["output"]): string {
+  if (typeof output === "string") return output;
+  if (output && typeof output === "object" && !Array.isArray(output)) {
+    const text = (output as Record<string, unknown>).text;
+    if (typeof text === "string") return text;
+  }
+  if (output === null || output === undefined) return "";
+  return JSON.stringify(output, null, 2);
 }
 
 function Row({ children }: { children: React.ReactNode }) {

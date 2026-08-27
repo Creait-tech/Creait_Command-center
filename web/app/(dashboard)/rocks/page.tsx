@@ -1,12 +1,8 @@
 import { createClient } from "@/lib/supabase/server";
 import { getActiveOrgId } from "@/lib/active-org";
 import { RocksView } from "@/components/rocks/rocks-view";
-import type {
-  Rock,
-  RockMilestone,
-  RockStatusUpdate,
-  TeamMember,
-} from "@/lib/supabase/types";
+import { asAuthoredRows, type AuthoredRock, type Person } from "@/lib/authorship";
+import type { RockMilestone, RockStatusUpdate } from "@/lib/supabase/types";
 
 export const dynamic = "force-dynamic";
 
@@ -44,10 +40,12 @@ export default async function RocksPage() {
       .order("full_name"),
   ]);
 
-  const rocks = (rocksRes.data as Rock[] | null) ?? [];
+  // `select("*")` returns the authorship and profile columns from
+  // `phase15_authorship_everywhere`; the generated types don't declare them yet.
+  const rocks = asAuthoredRows<AuthoredRock>(rocksRes.data);
   const milestones = (milestonesRes.data as RockMilestone[] | null) ?? [];
   const status = (statusRes.data as RockStatusUpdate[] | null) ?? [];
-  const members = (membersRes.data as TeamMember[] | null) ?? [];
+  const members = asAuthoredRows<Person>(membersRes.data);
 
   return (
     <div className="flex flex-col gap-6 p-6">

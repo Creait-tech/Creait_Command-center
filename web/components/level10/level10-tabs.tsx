@@ -7,20 +7,15 @@ import { WinsFeed } from "./wins-feed";
 import { Scoreboard } from "./scoreboard";
 import { InitiativesReview } from "./initiatives-review";
 import { IdsSection } from "./ids-section";
-import type {
-  Win,
-  Kpi,
-  KpiHistory,
-  IdsItem,
-  Initiative,
-} from "@/lib/supabase/types";
+import type { AuthoredIdsItem, AuthoredWin } from "@/lib/authorship";
+import type { Kpi, KpiHistory, Initiative } from "@/lib/supabase/types";
 
 interface Level10TabsProps {
   meetingId: string | null;
-  wins: Win[];
+  wins: AuthoredWin[];
   kpis: Kpi[];
   kpiHistory: KpiHistory[];
-  idsItems: IdsItem[];
+  idsItems: AuthoredIdsItem[];
   initiatives: Initiative[];
 }
 

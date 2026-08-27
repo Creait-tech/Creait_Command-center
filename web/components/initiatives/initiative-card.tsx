@@ -33,6 +33,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
+import { createIdsItem } from "@/lib/eos-actions";
 import type {
   InitiativeStatus,
   InitiativeTask,
@@ -167,7 +168,6 @@ export function InitiativeCard({
 
   async function submitEscalate() {
     setEscalating(true);
-    const supabase = createClient();
     const description = [
       initiative.description?.trim() || "",
       escalateNote.trim() ? `\n\n${escalateNote.trim()}` : "",
@@ -175,19 +175,21 @@ export function InitiativeCard({
       .join("")
       .trim();
 
-    const { error } = await supabase.from("ids_items").insert({
-      org_id: initiative.org_id,
+    // The same server action every other IDS creation path uses, so an issue
+    // escalated from an initiative carries the same "added by" stamp as one
+    // raised on /level-10. Attribution that only holds on some paths is worse
+    // than none, because it can't be trusted anywhere.
+    const result = await createIdsItem({
       title: `ESCALATED: ${initiative.title}`,
       description: description || null,
-      status: "open",
       priority: 8,
-      owner_id: initiative.owner_id,
+      ownerId: initiative.owner_id,
     });
 
     setEscalating(false);
 
-    if (error) {
-      toast.error("Failed to escalate to IDS");
+    if (!result.ok) {
+      toast.error(`Failed to escalate to IDS — ${result.error}`);
       return;
     }
     toast.success("Escalated to IDS");

@@ -2,12 +2,11 @@ import { createClient } from "@/lib/supabase/server";
 import { getActiveOrgId } from "@/lib/active-org";
 import { Level10Tabs } from "@/components/level10/level10-tabs";
 import { StartMeetingButton } from "@/components/level10/start-meeting-button";
+import { asAuthoredRows, type AuthoredIdsItem, type AuthoredWin } from "@/lib/authorship";
 import type {
   Meeting,
-  Win,
   Kpi,
   KpiHistory,
-  IdsItem,
   Initiative,
 } from "@/lib/supabase/types";
 
@@ -84,9 +83,13 @@ export default async function Level10Page() {
       .order("recorded_at", { ascending: true }),
   ]);
 
-  const wins: Win[] = (winsResult.data as Win[] | null) ?? [];
+  // `select("*")` returns the authorship columns from
+  // `phase15_authorship_everywhere`; the generated types don't declare them yet.
+  const wins: AuthoredWin[] = asAuthoredRows<AuthoredWin>(winsResult.data);
   const kpis: Kpi[] = (kpisResult.data as Kpi[] | null) ?? [];
-  const idsItems: IdsItem[] = (idsResult.data as IdsItem[] | null) ?? [];
+  const idsItems: AuthoredIdsItem[] = asAuthoredRows<AuthoredIdsItem>(
+    idsResult.data,
+  );
   const initiatives: Initiative[] =
     (initiativesResult.data as Initiative[] | null) ?? [];
   const kpiHistory: KpiHistory[] =

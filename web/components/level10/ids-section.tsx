@@ -30,10 +30,13 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuIte
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
 import { useActiveOrgId } from "@/lib/use-active-org";
 import { cn } from "@/lib/utils";
-import type { IdsItem, IdsStatus } from "@/lib/supabase/types";
+import { AuthorStamp } from "@/components/authorship/author-stamp";
+import { asAuthoredRows, type AuthoredIdsItem } from "@/lib/authorship";
+import { createIdsItem, deleteIdsItem, updateIdsItem } from "@/lib/eos-actions";
+import type { IdsStatus } from "@/lib/supabase/types";
 
 interface IdsSectionProps {
-  initialItems: IdsItem[];
+  initialItems: AuthoredIdsItem[];
   meetingId: string | null;
 }
 
@@ -46,7 +49,7 @@ const COLUMNS: { key: Column; label: string; accent: string }[] = [
   { key: "solved", label: "Solved", accent: "text-[color:var(--color-brand-success)]" },
 ];
 
-function sortItems(items: IdsItem[]): IdsItem[] {
+function sortItems(items: AuthoredIdsItem[]): AuthoredIdsItem[] {
   return [...items].sort((a, b) => {
     if (a.priority !== b.priority) return b.priority - a.priority;
     return b.created_at.localeCompare(a.created_at);
@@ -60,9 +63,9 @@ function priorityBadgeClass(priority: number): string {
 }
 
 interface IdsCardProps {
-  item: IdsItem;
-  onToggleLongTerm: (item: IdsItem) => void;
-  onDelete: (item: IdsItem) => void;
+  item: AuthoredIdsItem;
+  onToggleLongTerm: (item: AuthoredIdsItem) => void;
+  onDelete: (item: AuthoredIdsItem) => void;
 }
 
 function IdsCard({ item, onToggleLongTerm, onDelete }: IdsCardProps) {
@@ -83,10 +86,10 @@ function IdsCardBody({
   onToggleLongTerm,
   onDelete,
 }: {
-  item: IdsItem;
+  item: AuthoredIdsItem;
   dragHandle?: Record<string, unknown>;
-  onToggleLongTerm?: (item: IdsItem) => void;
-  onDelete?: (item: IdsItem) => void;
+  onToggleLongTerm?: (item: AuthoredIdsItem) => void;
+  onDelete?: (item: AuthoredIdsItem) => void;
 }) {
   return (
     <Card>
@@ -132,7 +135,26 @@ function IdsCardBody({
         {item.status === "solved" && item.resolution && (
           <p className="text-xs text-[color:var(--color-brand-success)] line-clamp-3 italic">"{item.resolution}"</p>
         )}
-        {item.owner_id && <p className="text-xs text-muted-foreground">Owner: {item.owner_id}</p>}
+        {/* Guarded so the ~40 issues that predate authorship don't each carry
+            an empty row's worth of vertical rhythm. */}
+        {(item.created_by_name || item.updated_by_name) && (
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+            <AuthorStamp
+              name={item.created_by_name}
+              actorId={item.created_by}
+              at={item.created_at}
+            />
+            {item.updated_by_name &&
+              item.updated_by_name !== item.created_by_name && (
+                <AuthorStamp
+                  label="last moved by"
+                  name={item.updated_by_name}
+                  actorId={item.updated_by}
+                  at={item.updated_at}
+                />
+              )}
+          </div>
+        )}
       </CardContent>
     </Card>
   );
@@ -142,9 +164,9 @@ interface ColumnProps {
   column: Column;
   label: string;
   accent: string;
-  items: IdsItem[];
-  onToggleLongTerm: (item: IdsItem) => void;
-  onDelete: (item: IdsItem) => void;
+  items: AuthoredIdsItem[];
+  onToggleLongTerm: (item: AuthoredIdsItem) => void;
+  onDelete: (item: AuthoredIdsItem) => void;
 }
 
 function IdsColumn({ column, label, accent, items, onToggleLongTerm, onDelete }: ColumnProps) {
@@ -176,7 +198,7 @@ function IdsColumn({ column, label, accent, items, onToggleLongTerm, onDelete }:
 
 export function IdsSection({ initialItems, meetingId }: IdsSectionProps) {
   const orgId = useActiveOrgId();
-  const [items, setItems] = useState<IdsItem[]>(sortItems(initialItems));
+  const [items, setItems] = useState<AuthoredIdsItem[]>(sortItems(initialItems));
   const [bucket, setBucket] = useState<Bucket>("short");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -204,7 +226,7 @@ export function IdsSection({ initialItems, meetingId }: IdsSectionProps) {
         .order("priority", { ascending: false })
         .order("created_at", { ascending: false })
         .limit(200);
-      if (data) setItems(sortItems(data as IdsItem[]));
+      if (data) setItems(sortItems(asAuthoredRows<AuthoredIdsItem>(data)));
     }
     const channel = supabase
       .channel("ids-items-realtime")
@@ -219,7 +241,7 @@ export function IdsSection({ initialItems, meetingId }: IdsSectionProps) {
   const longItems = items.filter((i) => i.is_long_term);
 
   const itemsByColumn = useMemo(() => {
-    const grouped: Record<Column, IdsItem[]> = { open: [], discussing: [], solved: [] };
+    const grouped: Record<Column, AuthoredIdsItem[]> = { open: [], discussing: [], solved: [] };
     for (const item of shortItems) {
       if (item.status === "open") grouped.open.push(item);
       else if (item.status === "discussing") grouped.discussing.push(item);
@@ -247,35 +269,42 @@ export function IdsSection({ initialItems, meetingId }: IdsSectionProps) {
 
     const previous = items;
     setItems((prev) => sortItems(prev.map((i) => (i.id === movedId ? { ...i, status: newStatus } : i))));
-    const supabase = createClient();
-    const { error: dbError } = await supabase.from("ids_items").update({ status: newStatus }).eq("id", movedId);
-    if (dbError) {
+    // Server action: moving an issue between columns is an edit worth
+    // attributing, and the action selects the row back so a rejected UPDATE
+    // (which matches zero rows and still reports success) can't look like a
+    // save that landed.
+    const result = await updateIdsItem(movedId, { status: newStatus });
+    if (!result.ok) {
       setItems(previous);
-      toast.error(`Failed to move: ${dbError.message}`);
+      toast.error(`Failed to move: ${result.error}`);
       return;
     }
+    setItems((prev) => sortItems(prev.map((i) => (i.id === movedId ? result.data : i))));
     toast.success(`Moved to ${newStatus}`);
   }
 
-  async function toggleLongTerm(item: IdsItem) {
+  async function toggleLongTerm(item: AuthoredIdsItem) {
     const next = !item.is_long_term;
-    const supabase = createClient();
     setItems((p) => p.map((x) => (x.id === item.id ? { ...x, is_long_term: next } : x)));
-    const { error: e } = await supabase.from("ids_items").update({ is_long_term: next }).eq("id", item.id);
-    if (e) {
+    const result = await updateIdsItem(item.id, { isLongTerm: next });
+    if (!result.ok) {
       setItems((p) => p.map((x) => (x.id === item.id ? { ...x, is_long_term: !next } : x)));
-      toast.error(e.message);
-    } else {
-      toast.success(next ? "Parked as long-term" : "Moved to short-term");
+      toast.error(result.error);
+      return;
     }
+    setItems((p) => p.map((x) => (x.id === item.id ? result.data : x)));
+    toast.success(next ? "Parked as long-term" : "Moved to short-term");
   }
 
-  async function deleteItem(item: IdsItem) {
+  async function deleteItem(item: AuthoredIdsItem) {
     if (!confirm(`Delete "${item.title}"?`)) return;
-    const supabase = createClient();
-    const { error: e } = await supabase.from("ids_items").delete().eq("id", item.id);
-    if (e) toast.error(e.message);
-    else toast.success("Deleted");
+    const result = await deleteIdsItem(item.id);
+    if (!result.ok) {
+      toast.error(result.error);
+      return;
+    }
+    setItems((p) => p.filter((x) => x.id !== item.id));
+    toast.success("Deleted");
   }
 
   async function handleAddSubmit(e: React.FormEvent) {
@@ -286,21 +315,19 @@ export function IdsSection({ initialItems, meetingId }: IdsSectionProps) {
     }
     setSubmitting(true);
     setError(null);
-    const supabase = createClient();
-    const { error: dbError } = await supabase.from("ids_items").insert({
-      org_id: orgId,
-      meeting_id: meetingId,
-      title: title.trim(),
-      description: description.trim() || null,
-      status: "open",
+    const result = await createIdsItem({
+      title,
+      description,
       priority,
-      is_long_term: isLongTermNew,
+      isLongTerm: isLongTermNew,
+      meetingId,
     });
     setSubmitting(false);
-    if (dbError) {
-      setError(dbError.message);
+    if (!result.ok) {
+      setError(result.error);
       return;
     }
+    setItems((p) => sortItems([result.data, ...p.filter((x) => x.id !== result.data.id)]));
     setTitle("");
     setDescription("");
     setPriority(5);

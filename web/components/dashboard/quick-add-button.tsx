@@ -33,8 +33,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { createBrowserClient as createClient } from "@/lib/supabase/client";
-import { useActiveOrgId } from "@/lib/use-active-org";
+import {
+  createHeadline,
+  createIdsItem,
+  createRock,
+  createTodo,
+  createWin,
+} from "@/lib/eos-actions";
+import type { ActionResult } from "@/lib/authorship";
 
 type QuickKind = "todo" | "issue" | "headline" | "win" | "rock";
 
@@ -55,7 +61,6 @@ function defaultDue(): string {
 }
 
 export function QuickAddButton() {
-  const orgId = useActiveOrgId();
   const [openKind, setOpenKind] = useState<QuickKind | null>(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -72,53 +77,43 @@ export function QuickAddButton() {
     setDueDate(defaultDue());
   }
 
+  // Quick-add is the loosest capture path in the app, which makes it the one
+  // most likely to be forgotten. It goes through the same server actions as
+  // every other creation path so a Rock added from the top bar carries the
+  // same author as one added on /rocks — inconsistent attribution is worse
+  // than none, because it makes the stamps unreliable everywhere.
   async function submit() {
     if (!title.trim() || !openKind) return;
     setSubmitting(true);
-    const supabase = createClient();
-    let error: { message: string } | null = null;
+    let result: ActionResult<{ id: string }>;
     switch (openKind) {
-      case "todo": {
-        const res = await supabase.from("cc_todos").insert({
-          org_id: orgId, title: title.trim(), description: description.trim() || null, due_date: dueDate || null,
-        });
-        error = res.error;
+      case "todo":
+        result = await createTodo({ title, description, dueDate: dueDate || null });
         break;
-      }
-      case "issue": {
-        const res = await supabase.from("ids_items").insert({
-          org_id: orgId, title: title.trim(), description: description.trim() || null, status: "open", priority,
-        });
-        error = res.error;
+      case "issue":
+        result = await createIdsItem({ title, description, priority });
         break;
-      }
-      case "headline": {
-        const res = await supabase.from("cc_headlines").insert({
-          org_id: orgId, text: title.trim(), category: headlineCategory,
-        });
-        error = res.error;
+      case "headline":
+        result = await createHeadline({ text: title, category: headlineCategory });
         break;
-      }
-      case "win": {
-        const res = await supabase.from("wins").insert({
-          org_id: orgId, title: title.trim(), description: description.trim() || null,
-        });
-        error = res.error;
+      case "win":
+        result = await createWin({ title, description });
         break;
-      }
       case "rock": {
         const q = currentQuarter();
-        const res = await supabase.from("cc_rocks").insert({
-          org_id: orgId, title: title.trim(), description: description.trim() || null,
-          rock_type: "company", quarter: q, status: "on_track", due_date: quarterEnd(q), sort_order: 0,
+        result = await createRock({
+          title,
+          description,
+          rockType: "company",
+          quarter: q,
+          dueDate: quarterEnd(q),
         });
-        error = res.error;
         break;
       }
     }
     setSubmitting(false);
-    if (error) {
-      toast.error(error.message);
+    if (!result.ok) {
+      toast.error(result.error);
       return;
     }
     toast.success(`${LABEL[openKind]} added`);

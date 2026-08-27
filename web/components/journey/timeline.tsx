@@ -1,13 +1,32 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { ChevronDown, MessageSquarePlus, Plus, Star, StickyNote } from "lucide-react";
+import { useRouter } from "next/navigation";
+import {
+  ArrowDown,
+  ArrowLeft,
+  ArrowRight,
+  ArrowUp,
+  ChevronDown,
+  MessageSquarePlus,
+  Pencil,
+  Plus,
+  Star,
+  StickyNote,
+} from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 import { AddMilestoneDialog } from "./add-milestone-dialog";
 import { AddDeliverableDialog } from "./add-deliverable-dialog";
+import { EditMilestoneDialog } from "./edit-milestone-dialog";
+import { EditDeliverableDialog } from "./edit-deliverable-dialog";
 import { ActorStamp } from "./actor-stamp";
+import {
+  reorderDeliverables,
+  reorderMilestones,
+} from "@/app/(dashboard)/journey/actions";
 import type { ClientProgressMap } from "./progress-map";
 import type {
   JourneyMilestone,
@@ -59,6 +78,7 @@ export function Timeline({
   onToggleDeliverable,
   onOpenNote,
 }: TimelineProps) {
+  const router = useRouter();
   const [expandedId, setExpandedId] = useState<string | null>(
     milestones[0]?.id ?? null,
   );
@@ -66,6 +86,16 @@ export function Timeline({
   const [addDeliverableFor, setAddDeliverableFor] = useState<string | null>(
     null,
   );
+  // Ids, not snapshots: the row is re-derived from props on every render, so a
+  // refresh landing while a dialog is open shows current values rather than a
+  // copy taken when it was opened.
+  const [editingMilestoneId, setEditingMilestoneId] = useState<string | null>(
+    null,
+  );
+  const [editingDeliverableId, setEditingDeliverableId] = useState<
+    string | null
+  >(null);
+  const [reordering, setReordering] = useState(false);
 
   const isClient = mode === "client";
 
@@ -99,12 +129,79 @@ export function Timeline({
     return map;
   }, [isClient, progress, milestones, deliverables]);
 
-  const expandedMilestone = expandedId
-    ? milestones.find((m) => m.id === expandedId)
-    : null;
+  const expandedIndex = expandedId
+    ? milestones.findIndex((m) => m.id === expandedId)
+    : -1;
+  const expandedMilestone = expandedIndex >= 0 ? milestones[expandedIndex] : null;
   const expandedDeliverables = expandedMilestone
     ? deliverables.filter((d) => d.milestone_id === expandedMilestone.id)
     : [];
+
+  const editingMilestone =
+    milestones.find((m) => m.id === editingMilestoneId) ?? null;
+  const editingDeliverable =
+    deliverables.find((d) => d.id === editingDeliverableId) ?? null;
+
+  /**
+   * Move one item and rewrite the whole list's positions.
+   *
+   * Absolute `sort_order = 0..n-1` rather than swapping two values: nothing in
+   * the schema stops duplicate or gappy positions (the numeric field in the
+   * edit dialogs can create them), and a swap would preserve the mess.
+   */
+  function swapped(ids: string[], from: number, to: number): string[] {
+    return ids.map((id, i) => (i === from ? ids[to] : i === to ? ids[from] : id));
+  }
+
+  async function moveMilestone(from: number, delta: number) {
+    const to = from + delta;
+    if (reordering || to < 0 || to >= milestones.length) return;
+
+    setReordering(true);
+    const result = await reorderMilestones(
+      swapped(
+        milestones.map((m) => m.id),
+        from,
+        to,
+      ),
+    );
+    setReordering(false);
+
+    if (!result.ok) {
+      toast.error(result.error);
+      return;
+    }
+    router.refresh();
+  }
+
+  async function moveDeliverable(from: number, delta: number) {
+    const to = from + delta;
+    if (
+      reordering ||
+      !expandedMilestone ||
+      to < 0 ||
+      to >= expandedDeliverables.length
+    ) {
+      return;
+    }
+
+    setReordering(true);
+    const result = await reorderDeliverables({
+      milestoneId: expandedMilestone.id,
+      orderedIds: swapped(
+        expandedDeliverables.map((d) => d.id),
+        from,
+        to,
+      ),
+    });
+    setReordering(false);
+
+    if (!result.ok) {
+      toast.error(result.error);
+      return;
+    }
+    router.refresh();
+  }
 
   return (
     <div className="space-y-6">
@@ -232,14 +329,47 @@ export function Timeline({
               )}
             </div>
             {!isClient && (
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => setAddDeliverableFor(expandedMilestone.id)}
-              >
-                <Plus className="size-3.5" />
-                Deliverable
-              </Button>
+              <div className="flex shrink-0 items-center gap-1">
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  onClick={() => moveMilestone(expandedIndex, -1)}
+                  disabled={reordering || expandedIndex <= 0}
+                  aria-label={`Move ${expandedMilestone.name} earlier`}
+                  title="Move earlier"
+                >
+                  <ArrowLeft className="size-3.5" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  onClick={() => moveMilestone(expandedIndex, 1)}
+                  disabled={
+                    reordering || expandedIndex >= milestones.length - 1
+                  }
+                  aria-label={`Move ${expandedMilestone.name} later`}
+                  title="Move later"
+                >
+                  <ArrowRight className="size-3.5" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  onClick={() => setEditingMilestoneId(expandedMilestone.id)}
+                  aria-label={`Edit ${expandedMilestone.name}`}
+                  title="Edit or delete milestone"
+                >
+                  <Pencil className="size-3.5" />
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setAddDeliverableFor(expandedMilestone.id)}
+                >
+                  <Plus className="size-3.5" />
+                  Deliverable
+                </Button>
+              </div>
             )}
           </div>
 
@@ -252,7 +382,7 @@ export function Timeline({
               </p>
             ) : (
               <ul className="space-y-2">
-                {expandedDeliverables.map((d) => {
+                {expandedDeliverables.map((d, index) => {
                   const row = isClient ? progress?.[d.id] : undefined;
                   const checked = Boolean(row?.done);
                   const pending = Boolean(pendingIds?.has(d.id));
@@ -334,6 +464,42 @@ export function Timeline({
                           <MessageSquarePlus className="size-3.5" />
                         </Button>
                       )}
+                      {!isClient && (
+                        <div className="flex shrink-0 items-center gap-0.5 text-muted-foreground">
+                          <Button
+                            variant="ghost"
+                            size="icon-xs"
+                            onClick={() => moveDeliverable(index, -1)}
+                            disabled={reordering || index === 0}
+                            aria-label={`Move ${d.title} up`}
+                            title="Move up"
+                          >
+                            <ArrowUp className="size-3" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon-xs"
+                            onClick={() => moveDeliverable(index, 1)}
+                            disabled={
+                              reordering ||
+                              index === expandedDeliverables.length - 1
+                            }
+                            aria-label={`Move ${d.title} down`}
+                            title="Move down"
+                          >
+                            <ArrowDown className="size-3" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon-sm"
+                            onClick={() => setEditingDeliverableId(d.id)}
+                            aria-label={`Edit ${d.title}`}
+                            title="Edit or delete deliverable"
+                          >
+                            <Pencil className="size-3.5" />
+                          </Button>
+                        </div>
+                      )}
                     </li>
                   );
                 })}
@@ -354,6 +520,22 @@ export function Timeline({
             onOpenChange={(o) => !o && setAddDeliverableFor(null)}
             milestoneId={addDeliverableFor}
           />
+          {/* Mounted only while editing and keyed by id, so each form starts
+              from the row it is actually editing. */}
+          {editingMilestone && (
+            <EditMilestoneDialog
+              key={editingMilestone.id}
+              milestone={editingMilestone}
+              onClose={() => setEditingMilestoneId(null)}
+            />
+          )}
+          {editingDeliverable && (
+            <EditDeliverableDialog
+              key={editingDeliverable.id}
+              deliverable={editingDeliverable}
+              onClose={() => setEditingDeliverableId(null)}
+            />
+          )}
         </>
       )}
     </div>

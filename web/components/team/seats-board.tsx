@@ -25,15 +25,15 @@ import { createBrowserClient as createClient } from "@/lib/supabase/client";
 import { useActiveOrgId } from "@/lib/use-active-org";
 import { cn } from "@/lib/utils";
 import { PeopleAnalyzer } from "./people-analyzer";
+import { personName, type Person } from "@/lib/authorship";
 import type {
-  TeamMember,
   TeamSeat,
   SeatAssignment,
   GwcRating,
 } from "@/lib/supabase/types";
 
 interface Props {
-  members: TeamMember[];
+  members: Person[];
   seats: TeamSeat[];
   assignments: SeatAssignment[];
 }
@@ -174,9 +174,9 @@ export function SeatsBoard({ members, seats, assignments }: Props) {
                           return (
                             <li key={a.id} className="flex items-center gap-2 text-xs">
                               <span className="size-6 rounded-full bg-[color:var(--color-brand-slate)] flex items-center justify-center text-[10px] font-medium">
-                                {(m?.full_name ?? "??").slice(0, 2).toUpperCase()}
+                                {(m ? personName(m) : "??").slice(0, 2).toUpperCase()}
                               </span>
-                              <span className="flex-1 truncate">{m?.full_name ?? "Unknown"}</span>
+                              <span className="flex-1 truncate">{m ? personName(m) : "Unknown"}</span>
                               <button
                                 type="button"
                                 onClick={() => cycleGwc(a.id, "gwc_get", a.gwc_get)}
@@ -381,7 +381,7 @@ function AssignMemberDialog({
   open: boolean;
   onOpenChange: (open: boolean) => void;
   seatId: string | null;
-  members: TeamMember[];
+  members: Person[];
   existingAssignments: SeatAssignment[];
 }) {
   const [memberId, setMemberId] = useState("");
@@ -426,7 +426,7 @@ function AssignMemberDialog({
                 <SelectTrigger><SelectValue placeholder="Choose…" /></SelectTrigger>
                 <SelectContent>
                   {available.map((m) => (
-                    <SelectItem key={m.id} value={m.id}>{m.full_name}</SelectItem>
+                    <SelectItem key={m.id} value={m.id}>{personName(m)}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>

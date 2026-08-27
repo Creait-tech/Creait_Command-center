@@ -61,6 +61,18 @@ import {
   ccAddClientNote, ccAddClientNoteInput,
 } from "./tools/client-journey.js";
 import {
+  ccProposeJourneyChange, ccProposeJourneyChangeInput,
+} from "./tools/journey-proposals.js";
+import {
+  ccProposeKpiChange, ccProposeKpiChangeInput,
+} from "./tools/kpi-proposals.js";
+import {
+  ccProposeClientChange, ccProposeClientChangeInput,
+} from "./tools/client-record-proposals.js";
+import {
+  ccListPendingProposals, ccListPendingProposalsInput,
+} from "./tools/proposal-queue.js";
+import {
   ccMemorySet, ccMemorySetInput,
   ccMemoryGet, ccMemoryGetInput,
   ccMemorySearch, ccMemorySearchInput,
@@ -85,6 +97,8 @@ const TOOL_NAMES = [
   "cc_add_win", "cc_add_headline", "cc_list_kpis",
   // Client delivery journey (Hermes proposes, humans confirm)
   "cc_list_clients", "cc_get_client_progress", "cc_propose_client_update", "cc_add_client_note",
+  // Configuration proposals (same inbox, same propose-then-confirm rule)
+  "cc_propose_journey_change", "cc_propose_kpi_change", "cc_propose_client_change", "cc_list_pending_proposals",
   // Cross-org memory
   "cc_memory_set", "cc_memory_get", "cc_memory_search", "cc_memory_list", "cc_memory_delete",
 ];
@@ -269,6 +283,35 @@ function buildMcpServer(): McpServer {
     "Append an observation to a client's activity timeline, attributed to Hermes as an agent. Use for context worth keeping — what came up on a call, a risk you noticed, a summary for the team. This is commentary only and writes immediately; it changes no delivery state. If a deliverable actually moved, use cc_propose_client_update instead so a human confirms it.",
     ccAddClientNoteInput,
     instrument("cc_add_client_note", ccAddClientNote),
+  );
+
+  // Configuration proposals — Hermes may propose changes to how the Command
+  // Center is set up. It may never propose changes to its own skills or
+  // agents: those tables are outside the allow-list, in code and in the
+  // database CHECK constraint both.
+  server.tool(
+    "cc_propose_journey_change",
+    "Propose a change to the CREAIT delivery journey TEMPLATE — add, edit, rename, reorder or remove a milestone or one of its deliverables. THIS CHANGES NOTHING. It files a pending proposal that a CREAIT teammate must accept in the Command Center; until they do, the template is exactly as it was. Use it when the way work actually gets delivered has drifted from the checklist — a step everyone does that is not on the board, a step nobody does any more, a stage in the wrong order. `rationale` is required. Removal proposals automatically report the tracked client progress that would be destroyed with the item, per client, so the approver sees the cost before accepting. A change that would be a no-op comes back as 'no change needed' rather than being filed.",
+    ccProposeJourneyChangeInput,
+    instrument("cc_propose_journey_change", ccProposeJourneyChange),
+  );
+  server.tool(
+    "cc_propose_kpi_change",
+    "Propose a change to the Level 10 scorecard KPIs — add one, edit its name, target, unit or source, or remove one. THIS CHANGES NOTHING. It files a pending proposal that a CREAIT teammate must accept in the Command Center; until they do, the scoreboard is untouched. A KPI's current value is deliberately not proposable — that is written by the GHL sync or entered by a teammate. If a rename or removal would break the hourly GHL sync (which matches KPIs by exact name and fails silently), the proposal says so explicitly in its impact. `rationale` is required.",
+    ccProposeKpiChangeInput,
+    instrument("cc_propose_kpi_change", ccProposeKpiChange),
+  );
+  server.tool(
+    "cc_propose_client_change",
+    "Propose edits to a client's record — lifecycle status, delivery health, offer tier, MRR, or company name. THIS CHANGES NOTHING. It files a pending proposal that a CREAIT teammate must accept in the Command Center; until they do, the record is unchanged. Accepts a human name like 'Rad Media' or a uuid; an ambiguous name comes back as candidates rather than a guess. Fields already holding the proposed value are dropped, and a proposal with nothing left to change comes back as 'no change needed' instead of being filed. `rationale` is required — say what led you to believe it, and put the source in `evidence`.",
+    ccProposeClientChangeInput,
+    instrument("cc_propose_client_change", ccProposeClientChange),
+  );
+  server.tool(
+    "cc_list_pending_proposals",
+    "Read-only. Every proposal waiting on a human decision — client deliverable ticks, client-record edits, journey-template changes and scorecard KPI changes — with what each one would do and why it was filed. Call this BEFORE proposing anything so you do not ask the team for the same decision twice; if it is already listed here, say it is with the team rather than filing again. status='accepted'/'rejected' shows decisions already made.",
+    ccListPendingProposalsInput,
+    instrument("cc_list_pending_proposals", ccListPendingProposals),
   );
 
   // Cross-org memory — Maurice's brain across all his businesses

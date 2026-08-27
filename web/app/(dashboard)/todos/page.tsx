@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { getActiveOrgId } from "@/lib/active-org";
 import { TodosView } from "@/components/todos/todos-view";
-import type { Todo, TeamMember } from "@/lib/supabase/types";
+import { asAuthoredRows, type AuthoredTodo, type Person } from "@/lib/authorship";
 
 export const dynamic = "force-dynamic";
 
@@ -25,8 +25,11 @@ export default async function TodosPage() {
       .order("full_name"),
   ]);
 
-  const todos = (todosRes.data as Todo[] | null) ?? [];
-  const members = (membersRes.data as TeamMember[] | null) ?? [];
+  // `select("*")` already returns the authorship and profile columns added by
+  // `phase15_authorship_everywhere`; the generated types in lib/supabase/types.ts
+  // just don't describe them yet, so the row shapes are widened here.
+  const todos = asAuthoredRows<AuthoredTodo>(todosRes.data);
+  const members = asAuthoredRows<Person>(membersRes.data);
 
   return (
     <div className="flex flex-col gap-6 p-6">

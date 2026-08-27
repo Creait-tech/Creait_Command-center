@@ -108,6 +108,9 @@ export interface Win {
   description: string | null;
   owner_id: string | null;
   win_date: string;
+  /** Who created the row. Null on rows predating authorship. */
+  created_by: string | null;
+  created_by_name: string | null;
   created_at: string;
 }
 
@@ -120,6 +123,9 @@ export interface Kpi {
   description: string | null;
   value: number;
   target: number | null;
+  goal_operator: KpiGoalOperator;
+  /** Who owns this number in the Level 10. */
+  owner_id: string | null;
   unit: string | null;
   source: KpiSource;
   source_query: string | null;
@@ -143,6 +149,13 @@ export interface IdsItem {
   resolution: string | null;
   is_long_term: boolean;
   vote_count: number;
+  /** Who created the row and who last changed it. Names are captured at write
+   *  time so the record survives a rename or a teammate leaving; the id is the
+   *  durable join back to a Clerk identity. Null on rows predating authorship. */
+  created_by: string | null;
+  created_by_name: string | null;
+  updated_by: string | null;
+  updated_by_name: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -189,6 +202,9 @@ export interface TeamMember {
   org_id: string;
   clerk_user_id: string | null;
   full_name: string;
+  /** Member-maintained; preferred over full_name wherever a person is named. */
+  display_name: string | null;
+  pronouns: string | null;
   email: string | null;
   role: TeamRole;
   title: string | null;
@@ -530,6 +546,13 @@ export interface Rock {
   smart_relevant: string | null;
   due_date: string;
   sort_order: number;
+  /** Who created the row and who last changed it. Names are captured at write
+   *  time so the record survives a rename or a teammate leaving; the id is the
+   *  durable join back to a Clerk identity. Null on rows predating authorship. */
+  created_by: string | null;
+  created_by_name: string | null;
+  updated_by: string | null;
+  updated_by_name: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -563,6 +586,13 @@ export interface Todo {
   done: boolean;
   due_date: string | null;
   carried_forward_count: number;
+  /** Who created the row and who last changed it. Names are captured at write
+   *  time so the record survives a rename or a teammate leaving; the id is the
+   *  durable join back to a Clerk identity. Null on rows predating authorship. */
+  created_by: string | null;
+  created_by_name: string | null;
+  updated_by: string | null;
+  updated_by_name: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -576,6 +606,9 @@ export interface Headline {
   category: HeadlineCategory;
   text: string;
   cascade: boolean;
+  /** Who created the row. Null on rows predating authorship. */
+  created_by: string | null;
+  created_by_name: string | null;
   created_at: string;
 }
 
@@ -1017,6 +1050,31 @@ export interface CcAgentProposal {
   created_at: string;
 }
 
+
+/** Goal comparison for a KPI. A `<=` metric (cost, churn, response time) is
+ *  green when it comes in *under* target; without this, such a metric scores
+ *  backwards. */
+export type KpiGoalOperator = ">=" | "<=" | "=";
+
+/** One number for one KPI for one week — the unit an EOS scorecard is made of.
+ *  `kpis.value` is only ever "latest" and is overwritten by the sync, so it
+ *  cannot answer "what did we do the week of Nov 14". */
+export interface CcKpiWeekly {
+  id: string;
+  org_id: string;
+  kpi_id: string;
+  /** Monday of the ISO week, in America/New_York. */
+  week_start: string;
+  value: number | null;
+  /** 'sync' rows are derived and may be refreshed; 'manual' rows were typed by
+   *  a person and must never be overwritten by a job. */
+  source: "manual" | "sync";
+  entered_by: string | null;
+  entered_by_name: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface Database {
   public: {
     Tables: {
@@ -1071,6 +1129,7 @@ export interface Database {
       cc_oauth_tokens: Table<CcOAuthToken>;
       // KPI history
       cc_kpi_history: Table<KpiHistory>;
+      cc_kpi_weekly: Table<CcKpiWeekly>;
       // Dashboard AI Assistant chat history
       cc_chat_conversations: Table<CcChatConversation>;
       cc_client_activity: Table<CcClientActivity>;

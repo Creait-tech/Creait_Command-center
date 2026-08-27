@@ -18,7 +18,11 @@ export default async function JourneyPage() {
     .from("journey_milestones")
     .select("*")
     .eq("org_id", orgId)
-    .order("sort_order", { ascending: true });
+    // `sort_order` is editable by hand and nothing in the schema makes it
+    // unique, so two rows can share a position. The created_at tiebreak keeps
+    // the order stable across renders instead of letting it flicker.
+    .order("sort_order", { ascending: true })
+    .order("created_at", { ascending: true });
 
   const milestones: JourneyMilestone[] =
     (milestonesData as JourneyMilestone[] | null) ?? [];
@@ -30,7 +34,8 @@ export default async function JourneyPage() {
       .from("journey_deliverables")
       .select("*")
       .in("milestone_id", milestoneIds)
-      .order("sort_order", { ascending: true });
+      .order("sort_order", { ascending: true })
+      .order("created_at", { ascending: true });
     deliverables =
       (deliverablesData as JourneyDeliverable[] | null) ?? [];
   }

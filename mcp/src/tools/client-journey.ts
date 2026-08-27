@@ -844,16 +844,19 @@ export async function ccProposeClientUpdate(args: {
   // Tell the human what the current value actually is, so accepting is a
   // one-glance decision rather than a research task.
   let currentDone: boolean | null = null;
+  let journeyRowId: string | null = null;
   if (deliverable) {
     const { data: existing, error: existingErr } = await supabase
       .from("cc_client_journey")
-      .select("done")
+      .select("id, done")
       .eq("org_id", ORG_ID)
       .eq("client_id", target.id)
       .eq("deliverable_id", deliverable.id)
       .maybeSingle();
     if (existingErr) return errorText("QUERY_FAILED", existingErr.message);
-    currentDone = (existing as { done: boolean | null } | null)?.done ?? false;
+    const row = existing as { id: string; done: boolean | null } | null;
+    currentDone = row?.done ?? false;
+    journeyRowId = row?.id ?? null;
   }
 
   if (args.action === "mark_done" && currentDone === true) {
@@ -881,6 +884,12 @@ export async function ccProposeClientUpdate(args: {
     note: args.note?.trim() ?? null,
   };
 
+  // `cc_agent_proposals` now carries both client-delivery and configuration
+  // proposals, so every row names the family it belongs to and the table an
+  // acceptance would land in. Stated explicitly rather than left to the column
+  // default, so the inbox can switch on target_kind instead of sniffing action.
+  const isStatusChange = args.action === "change_status";
+
   const { data, error } = await supabase
     .from("cc_agent_proposals")
     .insert({
@@ -889,6 +898,9 @@ export async function ccProposeClientUpdate(args: {
       deliverable_id: deliverable?.id ?? null,
       proposed_by: AGENT_ACTOR_ID,
       action: args.action,
+      target_kind: isStatusChange ? "client_record" : "client_journey",
+      target_table: isStatusChange ? "cc_clients" : "cc_client_journey",
+      target_id: isStatusChange ? target.id : journeyRowId,
       payload,
       rationale: args.rationale.trim(),
       evidence: args.evidence?.trim() ?? null,

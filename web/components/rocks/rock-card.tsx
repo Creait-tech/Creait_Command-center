@@ -8,13 +8,15 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
+import { AuthorStamp } from "@/components/authorship/author-stamp";
+import { personName, type AuthoredRock, type Person } from "@/lib/authorship";
+import { updateRockStatus } from "@/lib/eos-actions";
 import { UnstickButton } from "./unstick-button";
 import type {
   Rock,
   RockMilestone,
   RockStatusUpdate,
   RockStatusColor,
-  TeamMember,
 } from "@/lib/supabase/types";
 
 const STATUS_BTN: Record<RockStatusColor, string> = {
@@ -40,11 +42,11 @@ const ROCK_STATUS_COLOR: Record<Rock["status"], string> = {
 };
 
 interface Props {
-  rock: Rock;
+  rock: AuthoredRock;
   milestones: RockMilestone[];
   latestStatus: RockStatusUpdate | null;
-  members: TeamMember[];
-  onUpdated: (rock: Rock) => void;
+  members: Person[];
+  onUpdated: (rock: AuthoredRock) => void;
 }
 
 function daysUntil(dateStr: string): number {
@@ -72,25 +74,36 @@ export function RockCard({ rock, milestones, latestStatus, members, onUpdated }:
 
   async function toggleMilestone(id: string, done: boolean) {
     const supabase = createClient();
-    await supabase.from("cc_rock_milestones").update({ done }).eq("id", id);
-  }
-
-  async function setRockStatus(status: Rock["status"]) {
-    const supabase = createClient();
+    // A rejected UPDATE matches zero rows and reports success, so without the
+    // `.select()` a refused tick looks identical to a saved one.
     const { data, error } = await supabase
-      .from("cc_rocks")
-      .update({ status, updated_at: new Date().toISOString() })
-      .eq("id", rock.id)
-      .select()
-      .single();
+      .from("cc_rock_milestones")
+      .update({ done })
+      .eq("id", id)
+      .select("id");
     if (error) {
       toast.error(error.message);
       return;
     }
-    if (data) {
-      onUpdated(data as Rock);
-      toast.success(`Marked ${ROCK_STATUS_LABEL[status]}`);
+    if (!data || data.length === 0) {
+      toast.error(
+        "Couldn't save that milestone — your session doesn't have permission for it. Try reloading the page.",
+      );
     }
+  }
+
+  // Server action: changing a Rock's status is a record of who moved it, so
+  // the actor is resolved from the Clerk session rather than sent by the page.
+  // It also selects the row back, because an UPDATE the row-level security
+  // policy rejects matches zero rows and still reports success.
+  async function setRockStatus(status: Rock["status"]) {
+    const result = await updateRockStatus(rock.id, status);
+    if (!result.ok) {
+      toast.error(result.error);
+      return;
+    }
+    onUpdated(result.data);
+    toast.success(`Marked ${ROCK_STATUS_LABEL[status]}`);
   }
 
   return (
@@ -108,13 +121,13 @@ export function RockCard({ rock, milestones, latestStatus, members, onUpdated }:
           </span>
         </div>
 
-        <div className="flex items-center gap-3 text-xs text-muted-foreground">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
           {owner && (
             <span className="flex items-center gap-1.5">
               <span className="size-5 rounded-full bg-[color:var(--color-brand-slate)] flex items-center justify-center text-[10px] font-medium">
-                {owner.full_name.slice(0, 2).toUpperCase()}
+                {personName(owner).slice(0, 2).toUpperCase()}
               </span>
-              {owner.full_name}
+              {personName(owner)}
             </span>
           )}
           <span>
@@ -127,6 +140,20 @@ export function RockCard({ rock, milestones, latestStatus, members, onUpdated }:
           )}>
             {daysLeft < 0 ? `${-daysLeft}d overdue` : `${daysLeft}d left`}
           </span>
+          <AuthorStamp
+            name={rock.created_by_name}
+            actorId={rock.created_by}
+            at={rock.created_at}
+          />
+          {rock.updated_by_name &&
+            rock.updated_by_name !== rock.created_by_name && (
+              <AuthorStamp
+                label="last updated by"
+                name={rock.updated_by_name}
+                actorId={rock.updated_by}
+                at={rock.updated_at}
+              />
+            )}
         </div>
 
         {milestones.length > 0 && (

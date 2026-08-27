@@ -86,10 +86,97 @@ export async function snapshotKpis(orgId: string): Promise<{ inserted: number }>
       console.error('[inngest] snapshotKpis insert failed:', insertError.message)
       return { inserted: 0 }
     }
+
+    await maintainWeeklyScorecard(orgId, rows)
     return { inserted: rows.length }
   } catch (err) {
     console.error('[inngest] snapshotKpis threw:', err)
     return { inserted: 0 }
+  }
+}
+
+
+/**
+ * Keep the weekly scorecard current.
+ *
+ * `cc_kpi_history` is an hourly snapshot; the Level 10 scorecard reads one
+ * number per KPI per week. Without this, the grid would only ever hold the
+ * weeks that were backfilled once and every future column would be blank.
+ *
+ * The hard rule is that a human correction wins. An operator who fixes last
+ * week's "100 emails" to 80 must see 80 stay at 80 — a number that reverts an
+ * hour later is worse than no correction at all, because the team acts on it
+ * in the meeting. So rows the sync owns (`source='sync'`) are refreshed with
+ * the week's latest reading, and rows a person typed (`source='manual'`) are
+ * left alone forever.
+ *
+ * Best-effort: a scorecard write must never fail the sync that produced the
+ * numbers.
+ */
+async function maintainWeeklyScorecard(
+  orgId: string,
+  rows: Array<{ kpi_id: string; org_id: string; value: number }>,
+): Promise<void> {
+  if (rows.length === 0) return
+  try {
+    const supabase = createServiceClient()
+
+    // Monday of the current week in the company's timezone. Week boundaries
+    // are a local-calendar idea; bucketing by UTC would move Sunday evening
+    // entries into the following week for an Atlanta team.
+    const nowEastern = new Date(
+      new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }),
+    )
+    const dayOffset = (nowEastern.getDay() + 6) % 7 // Monday = 0
+    nowEastern.setDate(nowEastern.getDate() - dayOffset)
+    const weekStart = nowEastern.toISOString().slice(0, 10)
+
+    const kpiIds = rows.map((r) => r.kpi_id)
+    const { data: existing, error: readError } = await supabase
+      .from('cc_kpi_weekly')
+      .select('kpi_id, source')
+      .eq('org_id', orgId)
+      .eq('week_start', weekStart)
+      .in('kpi_id', kpiIds)
+
+    if (readError) {
+      console.error(
+        '[inngest] weekly scorecard read failed:',
+        readError.message,
+      )
+      return
+    }
+
+    const humanOwned = new Set(
+      ((existing as Array<{ kpi_id: string; source: string }> | null) ?? [])
+        .filter((r) => r.source === 'manual')
+        .map((r) => r.kpi_id),
+    )
+
+    const writable = rows
+      .filter((r) => !humanOwned.has(r.kpi_id))
+      .map((r) => ({
+        org_id: orgId,
+        kpi_id: r.kpi_id,
+        week_start: weekStart,
+        value: r.value,
+        source: 'sync' as const,
+        updated_at: new Date().toISOString(),
+      }))
+
+    if (writable.length === 0) return
+
+    const { error: upsertError } = await supabase
+      .from('cc_kpi_weekly')
+      .upsert(writable, { onConflict: 'kpi_id,week_start' })
+    if (upsertError) {
+      console.error(
+        '[inngest] weekly scorecard upsert failed:',
+        upsertError.message,
+      )
+    }
+  } catch (err) {
+    console.error('[inngest] maintainWeeklyScorecard threw:', err)
   }
 }
 

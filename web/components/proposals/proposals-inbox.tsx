@@ -4,20 +4,34 @@
  * Hermes proposals inbox — where a human confirms or refuses what the agent
  * suggests.
  *
+ * It now takes four families of proposal, not one: a client's delivery
+ * progress, a client's record, the journey template every client is measured
+ * against, and the scoreboard. They share this inbox because they share one
+ * lifecycle — pending, claimed, applied, audited — and splitting them would
+ * mean two places to look and two ways to get the claim wrong.
+ *
  * Design rules this panel is built around:
  *  - Every proposal shows **why**. A suggestion without a rationale is an
  *    instruction, and this team decided Hermes proposes rather than instructs.
- *  - No uuids. Ids are resolved to titles server-side; when a deliverable has
- *    been deleted from the template the card says so in words.
+ *  - No uuids. Ids are resolved to titles server-side — client, deliverable,
+ *    milestone and KPI alike; when the row a proposal points at has been
+ *    deleted, the card says so in words.
  *  - Accept never claims success it can't prove. The action returns only after
  *    the write came back with a row; anything else surfaces as an error and
  *    the proposal stays in the list.
+ *  - Anything that destroys recorded history or breaks the GHL sync goes
+ *    through a confirmation that re-reads the damage first.
+ *
+ * `skills` and `agents` are not in the allow-list this inbox can apply — the
+ * owner's rule is that agents never propose changes to their own instructions
+ * or schedules, and the database enforces it. There is deliberately no code
+ * path here that would accept one.
  */
 
 import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Bot, Check, Inbox, TriangleAlert, X } from "lucide-react";
+import { Bot, Inbox, TriangleAlert } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -35,11 +49,14 @@ import { FeatureEmptyState } from "@/components/empty-states/feature-empty-state
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
 import { useActiveOrgId } from "@/lib/use-active-org";
 import { cn } from "@/lib/utils";
+import { relativeTime } from "@/components/proposals/proposal-copy";
 import {
-  PROPOSAL_ACTION_LABEL,
-  UNKNOWN_DELIVERABLE,
-  relativeTime,
-} from "@/components/proposals/proposal-copy";
+  isDestructiveAction,
+  needsDestructiveConfirm,
+} from "@/components/proposals/proposal-payload";
+import { ProposalCard } from "@/components/proposals/proposal-card";
+import { ProposalConfirmDialog } from "@/components/proposals/proposal-confirm-dialog";
+import type { ProposalAcknowledgement } from "@/components/proposals/proposal-impact-types";
 import {
   PROPOSALS_INBOX_ANCHOR,
   type ProposalRow,
@@ -53,6 +70,12 @@ interface ProposalsInboxProps {
   errors?: string[];
 }
 
+/** "for Rad Media" / "to the journey template" — a scope a human recognises. */
+function scopeSuffix(row: ProposalRow): string {
+  if (row.clientName) return `for ${row.clientName}`;
+  return "to the workspace configuration";
+}
+
 export function ProposalsInbox({
   pending,
   recentlyDecided,
@@ -62,6 +85,7 @@ export function ProposalsInbox({
   const orgId = useActiveOrgId();
   const [busyId, setBusyId] = useState<string | null>(null);
   const [rejecting, setRejecting] = useState<ProposalRow | null>(null);
+  const [confirming, setConfirming] = useState<ProposalRow | null>(null);
   const [reason, setReason] = useState("");
   const [, startTransition] = useTransition();
 
@@ -92,14 +116,15 @@ export function ProposalsInbox({
   async function decide(
     row: ProposalRow,
     decision: "accepted" | "rejected",
-    why?: string,
+    options: { reason?: string; acknowledged?: ProposalAcknowledgement } = {},
   ) {
     setBusyId(row.proposal.id);
     try {
       const result = await decideProposal({
         proposalId: row.proposal.id,
         decision,
-        reason: why ?? null,
+        reason: options.reason ?? null,
+        acknowledged: options.acknowledged ?? null,
       });
 
       if (!result.ok) {
@@ -112,11 +137,12 @@ export function ProposalsInbox({
       } else {
         toast.success(
           decision === "accepted"
-            ? `Applied — ${result.summary}`
-            : `Rejected — ${row.clientName}`,
+            ? `Applied — ${result.detail ?? result.summary}`
+            : `Rejected — ${row.summary}`,
         );
       }
       setRejecting(null);
+      setConfirming(null);
       setReason("");
       startTransition(() => router.refresh());
     } catch (error) {
@@ -143,8 +169,9 @@ export function ProposalsInbox({
           )}
         </CardTitle>
         <p className="text-xs text-muted-foreground">
-          Hermes proposes, a human confirms. Accepting applies the change to the
-          client&rsquo;s journey exactly as if you had ticked it yourself.
+          Hermes proposes, a human confirms. Accepting applies the change
+          exactly as if you had made it yourself — on a client&rsquo;s journey,
+          on their record, on the journey template, or on the scoreboard.
         </p>
       </CardHeader>
 
@@ -168,13 +195,14 @@ export function ProposalsInbox({
             compact
             icon={<Inbox className="size-5" />}
             title="Nothing waiting on you"
-            description="Hermes hasn't proposed any client-journey changes yet. When it spots evidence that a deliverable has actually shipped — a transcript, an email, a GHL event — it files a proposal here instead of changing anything itself."
+            description="Hermes hasn't proposed anything yet. When it spots evidence that a deliverable has shipped, that a client's record is out of date, or that the journey template or scoreboard no longer matches how the team actually works, it files a proposal here instead of changing anything itself."
             useWhen={[
               "Hermes reports a deliverable as done and you want to check its reasoning before it counts",
-              "You're reviewing what the agent has been doing on client accounts this week",
+              "Hermes wants to add, rename, reorder or remove part of the journey template every client is measured against",
+              "Hermes wants to change what the scoreboard measures — where a rename can quietly stop a number updating",
               "A client's progress looks wrong and you want to see what was accepted, by whom",
             ]}
-            footnote="Nothing Hermes proposes changes a client record until someone here accepts it."
+            footnote="Nothing Hermes proposes changes a record until someone here accepts it. Agents can never propose changes to their own instructions or schedules — the database refuses them."
           />
         ) : (
           <ul className="space-y-3">
@@ -184,7 +212,16 @@ export function ProposalsInbox({
                 row={row}
                 busy={busyId === row.proposal.id}
                 disabled={busyId !== null && busyId !== row.proposal.id}
-                onAccept={() => void decide(row, "accepted")}
+                onAccept={() => {
+                  // Anything that can destroy history or break the GHL sync
+                  // never applies straight from the card. The confirmation
+                  // re-reads what it would cost before it can be accepted.
+                  if (needsDestructiveConfirm(row.proposal)) {
+                    setConfirming(row);
+                    return;
+                  }
+                  void decide(row, "accepted");
+                }}
                 onReject={() => {
                   setReason("");
                   setRejecting(row);
@@ -219,7 +256,7 @@ export function ProposalsInbox({
                       {row.proposal.decided_by_name ?? "Someone"}
                     </span>{" "}
                     {row.proposal.status === "accepted" ? "accepted" : "rejected"}{" "}
-                    &ldquo;{row.summary}&rdquo; for {row.clientName} ·{" "}
+                    &ldquo;{row.summary}&rdquo; {scopeSuffix(row)} ·{" "}
                     {relativeTime(row.proposal.decided_at)}
                   </span>
                 </li>
@@ -228,6 +265,19 @@ export function ProposalsInbox({
           </div>
         )}
       </CardContent>
+
+      <ProposalConfirmDialog
+        proposalId={confirming?.proposal.id ?? null}
+        summary={confirming?.summary ?? ""}
+        destructive={confirming ? isDestructiveAction(confirming.proposal) : false}
+        busy={busyId !== null}
+        onOpenChange={(open) => {
+          if (!open) setConfirming(null);
+        }}
+        onConfirm={(acknowledged) => {
+          if (confirming) void decide(confirming, "accepted", { acknowledged });
+        }}
+      />
 
       <Dialog
         open={rejecting !== null}
@@ -243,7 +293,7 @@ export function ProposalsInbox({
             <DialogTitle>Reject this proposal?</DialogTitle>
             <DialogDescription>
               {rejecting
-                ? `${rejecting.summary} — for ${rejecting.clientName}. Nothing on the client's journey changes.`
+                ? `${rejecting.summary} — ${scopeSuffix(rejecting)}. Nothing changes.`
                 : ""}
             </DialogDescription>
           </DialogHeader>
@@ -253,7 +303,11 @@ export function ProposalsInbox({
               htmlFor="reject-reason"
               className="text-xs font-medium text-[color:var(--color-brand-mist)]"
             >
-              Why? (optional — saved to the client&rsquo;s activity feed)
+              Why? (optional — saved{" "}
+              {rejecting?.clientName
+                ? "to the client’s activity feed"
+                : "on the proposal itself"}
+              )
             </label>
             <Textarea
               id="reject-reason"
@@ -278,7 +332,9 @@ export function ProposalsInbox({
               variant="destructive"
               disabled={busyId !== null}
               onClick={() => {
-                if (rejecting) void decide(rejecting, "rejected", reason.trim());
+                if (rejecting) {
+                  void decide(rejecting, "rejected", { reason: reason.trim() });
+                }
               }}
             >
               {busyId ? "Rejecting…" : "Reject"}
@@ -287,112 +343,5 @@ export function ProposalsInbox({
         </DialogContent>
       </Dialog>
     </Card>
-  );
-}
-
-function ProposalCard({
-  row,
-  busy,
-  disabled,
-  onAccept,
-  onReject,
-}: {
-  row: ProposalRow;
-  busy: boolean;
-  disabled: boolean;
-  onAccept: () => void;
-  onReject: () => void;
-}) {
-  const { proposal } = row;
-  const missingDeliverable =
-    proposal.deliverable_id !== null && row.deliverableTitle === null;
-
-  return (
-    <li className="rounded-lg border border-[color:var(--color-brand-fog)] bg-[color:var(--color-brand-charcoal)]/40 p-3">
-      <div className="flex flex-wrap items-center gap-2">
-        <Badge className="bg-[color:var(--color-brand-electric)]/15 text-[color:var(--color-brand-electric)]">
-          {PROPOSAL_ACTION_LABEL[proposal.action]}
-        </Badge>
-        <span className="text-sm font-semibold">{row.clientName}</span>
-        {/* Relative times are re-derived at hydration; the server's clock and
-            the browser's can straddle a boundary ("59m" vs "1h"). */}
-        <span
-          suppressHydrationWarning
-          className="ml-auto text-[11px] text-muted-foreground"
-        >
-          {relativeTime(proposal.created_at)}
-        </span>
-      </div>
-
-      <p className="mt-2 text-sm leading-snug">
-        {row.deliverableTitle ? (
-          <>
-            <span className="text-[color:var(--color-brand-mist)]">
-              {PROPOSAL_ACTION_LABEL[proposal.action]}:
-            </span>{" "}
-            <span className="font-medium">{row.deliverableTitle}</span>
-          </>
-        ) : (
-          row.summary
-        )}
-      </p>
-      {row.milestoneName && (
-        <p className="text-[11px] text-muted-foreground">{row.milestoneName}</p>
-      )}
-
-      {missingDeliverable && (
-        <p className="mt-2 flex items-start gap-1.5 text-[11px] text-[color:var(--color-brand-warning)]">
-          <TriangleAlert className="mt-0.5 size-3 shrink-0" />
-          This points at {UNKNOWN_DELIVERABLE}. Accepting will fail until the
-          template is restored — reject it instead.
-        </p>
-      )}
-
-      <div className="mt-2.5 space-y-2">
-        <div>
-          <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-            Why Hermes thinks so
-          </p>
-          <p className="mt-0.5 text-xs leading-relaxed text-[color:var(--color-brand-mist)]">
-            {proposal.rationale?.trim() || (
-              <span className="italic text-muted-foreground">
-                Hermes filed no rationale — treat this as unverified and check
-                the client record before accepting.
-              </span>
-            )}
-          </p>
-        </div>
-
-        {proposal.evidence?.trim() && (
-          <div>
-            <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-              Evidence
-            </p>
-            <p className="mt-0.5 max-h-28 overflow-y-auto whitespace-pre-wrap rounded border border-[color:var(--color-brand-fog)]/60 bg-black/20 p-2 font-mono text-[11px] leading-relaxed text-[color:var(--color-brand-mist)]">
-              {proposal.evidence.trim()}
-            </p>
-          </div>
-        )}
-      </div>
-
-      <div className="mt-3 flex items-center gap-2">
-        <Button size="sm" disabled={busy || disabled} onClick={onAccept}>
-          <Check />
-          {busy ? "Applying…" : "Accept"}
-        </Button>
-        <Button
-          size="sm"
-          variant="outline"
-          disabled={busy || disabled}
-          onClick={onReject}
-        >
-          <X />
-          Reject
-        </Button>
-        <span className="ml-auto text-[10px] text-muted-foreground">
-          proposed by {proposal.proposed_by}
-        </span>
-      </div>
-    </li>
   );
 }

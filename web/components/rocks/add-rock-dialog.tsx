@@ -7,15 +7,17 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { createBrowserClient as createClient } from "@/lib/supabase/client";
-import { useActiveOrgId } from "@/lib/use-active-org";
-import type { RockType, TeamMember } from "@/lib/supabase/types";
+import { personName, type AuthoredRock, type Person } from "@/lib/authorship";
+import { createRock } from "@/lib/eos-actions";
+import type { RockType } from "@/lib/supabase/types";
 
 interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   defaultQuarter: string;
-  members: TeamMember[];
+  members: Person[];
+  /** Lets the list show the new Rock — and its author — without a refetch. */
+  onCreated?: (rock: AuthoredRock) => void;
 }
 
 function quarterEnd(quarter: string): string {
@@ -27,8 +29,7 @@ function quarterEnd(quarter: string): string {
   return `${year}-${String(monthEnd).padStart(2, "0")}-${String(lastDay).padStart(2, "0")}`;
 }
 
-export function AddRockDialog({ open, onOpenChange, defaultQuarter, members }: Props) {
-  const orgId = useActiveOrgId();
+export function AddRockDialog({ open, onOpenChange, defaultQuarter, members, onCreated }: Props) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [rockType, setRockType] = useState<RockType>("company");
@@ -55,26 +56,25 @@ export function AddRockDialog({ open, onOpenChange, defaultQuarter, members }: P
       return;
     }
     setSubmitting(true);
-    const supabase = createClient();
-    const { error } = await supabase.from("cc_rocks").insert({
-      org_id: orgId,
-      title: title.trim(),
-      description: description.trim() || null,
-      rock_type: rockType,
-      owner_id: ownerId || null,
+    // Server action, not the browser client: the Rock records who created it,
+    // and that name has to come from the Clerk session rather than the page.
+    const result = await createRock({
+      title,
+      description,
+      rockType,
+      ownerId: ownerId || null,
       quarter: defaultQuarter,
-      status: "on_track",
-      smart_specific: smartSpecific.trim() || null,
-      smart_measurable: smartMeasurable.trim() || null,
-      smart_relevant: smartRelevant.trim() || null,
-      due_date: quarterEnd(defaultQuarter),
-      sort_order: 0,
+      dueDate: quarterEnd(defaultQuarter),
+      smartSpecific,
+      smartMeasurable,
+      smartRelevant,
     });
     setSubmitting(false);
-    if (error) {
-      toast.error(error.message);
+    if (!result.ok) {
+      toast.error(result.error);
       return;
     }
+    onCreated?.(result.data);
     reset();
     onOpenChange(false);
     toast.success("Rock added");
@@ -123,7 +123,7 @@ export function AddRockDialog({ open, onOpenChange, defaultQuarter, members }: P
                 <SelectTrigger><SelectValue placeholder="Pick owner" /></SelectTrigger>
                 <SelectContent>
                   {members.map((m) => (
-                    <SelectItem key={m.id} value={m.id}>{m.full_name}</SelectItem>
+                    <SelectItem key={m.id} value={m.id}>{personName(m)}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>

@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/select";
 import { getInitials } from "./roster-grid";
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
+import { personName, type Person } from "@/lib/authorship";
 import type {
   TeamMember,
   MemberKpi,
@@ -30,11 +31,11 @@ import type {
 } from "@/lib/supabase/types";
 
 interface MemberDetailSheetProps {
-  member: TeamMember | null;
+  member: Person | null;
   kpis: MemberKpi[];
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onMemberUpdated: (next: TeamMember) => void;
+  onMemberUpdated: (next: Person) => void;
   onKpisUpdated: (memberId: string, next: MemberKpi[]) => void;
 }
 
@@ -77,7 +78,7 @@ const PERIOD_OPTIONS: { value: MemberKpiPeriod; label: string }[] = [
   { value: "quarter", label: "Quarter" },
 ];
 
-function memberToEditable(m: TeamMember): EditableMember {
+function memberToEditable(m: Person): EditableMember {
   return {
     title: m.title ?? "",
     department: m.department ?? "",
@@ -287,7 +288,7 @@ export function MemberDetailSheet({
     setSaving(false);
 
     if (memberData) {
-      onMemberUpdated(memberData as TeamMember);
+      onMemberUpdated(memberData as unknown as Person);
     }
     if (refreshed) {
       onKpisUpdated(member.id, refreshed as MemberKpi[]);
@@ -305,15 +306,22 @@ export function MemberDetailSheet({
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={member.avatar_url}
-                  alt={member.full_name}
+                  alt={personName(member)}
                   className="size-full rounded-full object-cover"
                 />
               ) : (
-                getInitials(member.full_name)
+                getInitials(personName(member))
               )}
             </div>
             <div className="min-w-0">
-              <SheetTitle className="truncate">{member.full_name}</SheetTitle>
+              <SheetTitle className="truncate">
+                {personName(member)}
+                {member.pronouns && (
+                  <span className="ml-1.5 text-xs font-normal text-muted-foreground">
+                    {member.pronouns}
+                  </span>
+                )}
+              </SheetTitle>
               {member.email && (
                 <SheetDescription className="truncate">
                   {member.email}
