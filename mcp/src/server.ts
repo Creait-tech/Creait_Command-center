@@ -55,6 +55,12 @@ import {
   ccListKpis, ccListKpisInput,
 } from "./tools/command-center.js";
 import {
+  ccListClients, ccListClientsInput,
+  ccGetClientProgress, ccGetClientProgressInput,
+  ccProposeClientUpdate, ccProposeClientUpdateInput,
+  ccAddClientNote, ccAddClientNoteInput,
+} from "./tools/client-journey.js";
+import {
   ccMemorySet, ccMemorySetInput,
   ccMemoryGet, ccMemoryGetInput,
   ccMemorySearch, ccMemorySearchInput,
@@ -77,6 +83,8 @@ const TOOL_NAMES = [
   "cc_list_todos", "cc_create_todo", "cc_complete_todo",
   "cc_list_issues", "cc_create_issue",
   "cc_add_win", "cc_add_headline", "cc_list_kpis",
+  // Client delivery journey (Hermes proposes, humans confirm)
+  "cc_list_clients", "cc_get_client_progress", "cc_propose_client_update", "cc_add_client_note",
   // Cross-org memory
   "cc_memory_set", "cc_memory_get", "cc_memory_search", "cc_memory_list", "cc_memory_delete",
 ];
@@ -235,6 +243,32 @@ function buildMcpServer(): McpServer {
     "Return the Scorecard KPIs with current value vs target.",
     ccListKpisInput,
     instrument("cc_list_kpis", ccListKpis),
+  );
+
+  // Client delivery journey — Hermes reads freely, but PROPOSES changes.
+  server.tool(
+    "cc_list_clients",
+    "The CREAIT client roster with delivery progress: status, health, tier, MRR, deliverables done vs total, percent complete, the milestone each client is currently sitting in, and how many days since anything moved. Use this whenever asked who the clients are, how a build is going, which accounts are stalling or behind, or where the delivery team should look first. sort='stalled' surfaces the longest-untouched clients; sort='progress' the least complete.",
+    ccListClientsInput,
+    instrument("cc_list_clients", ccListClients),
+  );
+  server.tool(
+    "cc_get_client_progress",
+    "Full delivery detail for ONE client: every journey milestone with each of its deliverables marked done or not, who last touched each and when (human vs agent), what is next up, the recent activity timeline, and any proposals still awaiting a human decision. Accepts a human name like 'Rad Media' or a uuid; an ambiguous name comes back as a candidate list to disambiguate rather than a guess. Call this before proposing any change so you cite the exact deliverable title.",
+    ccGetClientProgressInput,
+    instrument("cc_get_client_progress", ccGetClientProgress),
+  );
+  server.tool(
+    "cc_propose_client_update",
+    "Propose a change to a client's delivery record — mark a deliverable done, reopen one, attach a note to one, or change the client's lifecycle status. THIS DOES NOT CHANGE ANYTHING. It files a pending proposal that a CREAIT teammate must accept or reject in the Command Center; until they do, the client's record is untouched. Use it whenever you infer from a meeting, message, or document that delivery has moved — never state the work as done, say a proposal is waiting for approval. `rationale` is required: explain what led you to believe it, and put the source in `evidence`.",
+    ccProposeClientUpdateInput,
+    instrument("cc_propose_client_update", ccProposeClientUpdate),
+  );
+  server.tool(
+    "cc_add_client_note",
+    "Append an observation to a client's activity timeline, attributed to Hermes as an agent. Use for context worth keeping — what came up on a call, a risk you noticed, a summary for the team. This is commentary only and writes immediately; it changes no delivery state. If a deliverable actually moved, use cc_propose_client_update instead so a human confirms it.",
+    ccAddClientNoteInput,
+    instrument("cc_add_client_note", ccAddClientNote),
   );
 
   // Cross-org memory — Maurice's brain across all his businesses
