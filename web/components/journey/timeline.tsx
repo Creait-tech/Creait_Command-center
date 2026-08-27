@@ -307,7 +307,7 @@ export function Timeline({
                           />
                         )}
                         {isClient && row?.notes && (
-                          <p className="mt-1.5 flex items-start gap-1.5 rounded-md border-l-2 border-[color:var(--color-brand-mist)]/40 bg-[color:var(--color-brand-slate)]/20 px-2 py-1 text-xs text-foreground/90">
+                          <p className="mt-1.5 flex items-start gap-1.5 rounded-md border border-[color:var(--color-brand-mist)]/25 bg-[color:var(--color-brand-slate)]/20 px-2 py-1 text-xs text-foreground/90">
                             <StickyNote
                               className="mt-px size-3 shrink-0 text-[color:var(--color-brand-mist)]"
                               aria-hidden
