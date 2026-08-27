@@ -692,6 +692,11 @@ export interface CcClientJourney {
   done: boolean;
   completed_at: string | null;
   notes: string | null;
+  /** Who last changed this row: Clerk user id for a teammate, 'hermes' for the agent. */
+  updated_by: string | null;
+  /** Display name captured at write time, so the log survives a rename or departure. */
+  updated_by_name: string | null;
+  updated_by_type: ActorType | null;
   created_at: string;
   updated_at: string;
 }
@@ -965,6 +970,53 @@ type Table<TRow> = {
   Relationships: [];
 };
 
+
+// --- Shared client progress (multiplayer: 4 humans + Hermes) ------------------
+
+export type ActorType = "human" | "agent";
+
+export type ClientActivityKind =
+  | "deliverable_completed"
+  | "deliverable_reopened"
+  | "note"
+  | "status_change"
+  | "proposal_accepted"
+  | "proposal_rejected";
+
+export interface CcClientActivity {
+  id: string;
+  org_id: string;
+  client_id: string;
+  actor_type: ActorType;
+  actor_id: string | null;
+  actor_name: string;
+  kind: ClientActivityKind;
+  body: string | null;
+  deliverable_id: string | null;
+  milestone_id: string | null;
+  created_at: string;
+}
+
+export type ProposalAction = "mark_done" | "reopen" | "add_note" | "change_status";
+export type ProposalStatus = "pending" | "accepted" | "rejected";
+
+export interface CcAgentProposal {
+  id: string;
+  org_id: string;
+  client_id: string;
+  deliverable_id: string | null;
+  proposed_by: string;
+  action: ProposalAction;
+  payload: Json | null;
+  rationale: string | null;
+  evidence: string | null;
+  status: ProposalStatus;
+  decided_by: string | null;
+  decided_by_name: string | null;
+  decided_at: string | null;
+  created_at: string;
+}
+
 export interface Database {
   public: {
     Tables: {
@@ -1021,6 +1073,8 @@ export interface Database {
       cc_kpi_history: Table<KpiHistory>;
       // Dashboard AI Assistant chat history
       cc_chat_conversations: Table<CcChatConversation>;
+      cc_client_activity: Table<CcClientActivity>;
+      cc_agent_proposals: Table<CcAgentProposal>;
       cc_chat_messages: Table<CcChatMessage>;
     };
     Views: { [_ in never]: never };

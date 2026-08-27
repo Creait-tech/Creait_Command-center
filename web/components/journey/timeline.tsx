@@ -1,13 +1,14 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { ChevronDown, Plus, Star } from "lucide-react";
+import { ChevronDown, MessageSquarePlus, Plus, Star, StickyNote } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 import { AddMilestoneDialog } from "./add-milestone-dialog";
 import { AddDeliverableDialog } from "./add-deliverable-dialog";
-import type { ClientProgressMap } from "./journey-view";
+import { ActorStamp } from "./actor-stamp";
+import type { ClientProgressMap } from "./progress-map";
 import type {
   JourneyMilestone,
   JourneyDeliverable,
@@ -27,6 +28,8 @@ interface TimelineProps {
     deliverable: JourneyDeliverable,
     nextDone: boolean,
   ) => void;
+  /** Client mode only — opens the shared note editor for one deliverable. */
+  onOpenNote?: (deliverable: JourneyDeliverable) => void;
 }
 
 interface NodeData {
@@ -54,6 +57,7 @@ export function Timeline({
   loadingProgress = false,
   pendingIds,
   onToggleDeliverable,
+  onOpenNote,
 }: TimelineProps) {
   const [expandedId, setExpandedId] = useState<string | null>(
     milestones[0]?.id ?? null,
@@ -249,9 +253,8 @@ export function Timeline({
             ) : (
               <ul className="space-y-2">
                 {expandedDeliverables.map((d) => {
-                  const checked = isClient
-                    ? Boolean(progress?.[d.id]?.done)
-                    : false;
+                  const row = isClient ? progress?.[d.id] : undefined;
+                  const checked = Boolean(row?.done);
                   const pending = Boolean(pendingIds?.has(d.id));
                   return (
                     <li
@@ -293,7 +296,44 @@ export function Timeline({
                             {d.description}
                           </p>
                         )}
+                        {/* Attribution stays silent on untouched deliverables —
+                            ActorStamp renders nothing without a name. */}
+                        {isClient && (
+                          <ActorStamp
+                            name={row?.updatedByName ?? null}
+                            type={row?.updatedByType ?? null}
+                            at={row?.updatedAt ?? null}
+                            className="mt-1"
+                          />
+                        )}
+                        {isClient && row?.notes && (
+                          <p className="mt-1.5 flex items-start gap-1.5 rounded-md border-l-2 border-[color:var(--color-brand-mist)]/40 bg-[color:var(--color-brand-slate)]/20 px-2 py-1 text-xs text-foreground/90">
+                            <StickyNote
+                              className="mt-px size-3 shrink-0 text-[color:var(--color-brand-mist)]"
+                              aria-hidden
+                            />
+                            <span className="min-w-0 break-words">
+                              {row.notes}
+                            </span>
+                          </p>
+                        )}
                       </div>
+                      {isClient && onOpenNote && (
+                        <Button
+                          variant="ghost"
+                          size="icon-sm"
+                          className="shrink-0 text-muted-foreground hover:text-foreground"
+                          onClick={() => onOpenNote(d)}
+                          aria-label={
+                            row?.notes
+                              ? `Edit note on ${d.title}`
+                              : `Add note on ${d.title}`
+                          }
+                          title={row?.notes ? "Edit note" : "Add note"}
+                        >
+                          <MessageSquarePlus className="size-3.5" />
+                        </Button>
+                      )}
                     </li>
                   );
                 })}

@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { getActiveOrgId } from "@/lib/active-org";
+import { getCurrentActor } from "./actions";
 import { JourneyView } from "@/components/journey/journey-view";
 import type {
   JourneyMilestone,
@@ -42,13 +43,18 @@ export default async function JourneyPage() {
 
   const clients: CcClient[] = (clientsData as CcClient[] | null) ?? [];
 
+  // Resolved here so a checkbox can carry the right name the instant it's
+  // ticked, rather than waiting on the round trip that persists it.
+  const currentActor = await getCurrentActor();
+
   return (
     <div className="flex flex-col gap-6 p-6">
       <div>
         <h1 className="text-2xl font-bold">Customer Journey</h1>
         <p className="text-sm text-muted-foreground mt-1">
           The standard CREAIT customer journey from intake to 90-day review.
-          Switch to "By Client" to track per-client progress.
+          Switch to &ldquo;By Client&rdquo; to track one client&rsquo;s progress
+          — every tick, note and update is shared with the team as it happens.
         </p>
       </div>
 
@@ -56,6 +62,7 @@ export default async function JourneyPage() {
         milestones={milestones}
         deliverables={deliverables}
         clients={clients}
+        currentActor={currentActor}
       />
     </div>
   );
