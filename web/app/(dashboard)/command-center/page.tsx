@@ -3,10 +3,19 @@ import { getActiveOrgId } from "@/lib/active-org";
 import { CompanyPrioritiesBar } from "@/components/command-center/company-priorities-bar";
 import { TimeHorizonColumns } from "@/components/command-center/time-horizon-columns";
 import { DailyDashboard } from "@/components/command-center/daily-dashboard";
+import { ExecutiveActionCockpit } from "@/components/command-center/executive-action-cockpit";
 import { ClientProgressRollup } from "@/components/command-center/client-progress-rollup";
 import { ProposalsInbox } from "@/components/proposals/proposals-inbox";
 import { loadClientProgress } from "./client-progress-data";
-import type { Goal, Subtask, CompanyPriority } from "@/lib/supabase/types";
+import type {
+  CompanyPriority,
+  Goal,
+  IdsItem,
+  Kpi,
+  Subtask,
+  TeamMember,
+  Todo,
+} from "@/lib/supabase/types";
 
 export const dynamic = "force-dynamic";
 
@@ -14,7 +23,15 @@ export default async function CommandCenterPage() {
   const supabase = await createClient();
   const orgId = await getActiveOrgId();
 
-  const [prioritiesResult, goalsResult, clientProgress] = await Promise.all([
+  const [
+    prioritiesResult,
+    goalsResult,
+    clientProgress,
+    todosResult,
+    issuesResult,
+    kpisResult,
+    membersResult,
+  ] = await Promise.all([
     supabase
       .from("company_priorities")
       .select("*")
@@ -29,10 +46,39 @@ export default async function CommandCenterPage() {
     // Client roll-up + Hermes inbox share one server fetch; see
     // ./client-progress-data.ts for why the ids are resolved up here.
     loadClientProgress(),
+    supabase
+      .from("cc_todos")
+      .select("*")
+      .eq("org_id", orgId)
+      .eq("done", false)
+      .order("due_date", { ascending: true, nullsFirst: false })
+      .limit(50),
+    supabase
+      .from("ids_items")
+      .select("*")
+      .eq("org_id", orgId)
+      .in("status", ["open", "discussing"])
+      .order("priority", { ascending: false })
+      .limit(20),
+    supabase
+      .from("kpis")
+      .select("*")
+      .eq("org_id", orgId)
+      .order("sort_order", { ascending: true }),
+    supabase
+      .from("team_members")
+      .select("id, full_name, display_name")
+      .eq("org_id", orgId)
+      .eq("status", "active"),
   ]);
 
   const priorities: CompanyPriority[] = (prioritiesResult.data as CompanyPriority[] | null) ?? [];
   const goals: Goal[] = (goalsResult.data as Goal[] | null) ?? [];
+  const todos: Todo[] = (todosResult.data as Todo[] | null) ?? [];
+  const issues: IdsItem[] = (issuesResult.data as IdsItem[] | null) ?? [];
+  const kpis: Kpi[] = (kpisResult.data as Kpi[] | null) ?? [];
+  const members: Pick<TeamMember, "id" | "full_name" | "display_name">[] =
+    (membersResult.data as Pick<TeamMember, "id" | "full_name" | "display_name">[] | null) ?? [];
 
   const goalIds = goals.map((g) => g.id);
   let subtasks: Subtask[] = [];
@@ -54,6 +100,13 @@ export default async function CommandCenterPage() {
       </div>
 
       <CompanyPrioritiesBar priorities={priorities} />
+      <ExecutiveActionCockpit
+        todos={todos}
+        issues={issues}
+        clients={clientProgress.clients}
+        kpis={kpis}
+        members={members}
+      />
       <DailyDashboard />
 
       <ClientProgressRollup
