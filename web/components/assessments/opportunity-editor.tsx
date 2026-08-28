@@ -208,6 +208,17 @@ function OpportunityDialog({
               placeholder="What the evidence shows, and the basis for the numbers below…"
             />
           </div>
+          {/* The report states these as "profit impact" and adds the expected
+              figure straight onto operating profit to compute the margin
+              shift. An advisor who enters recovered *revenue* here would
+              overstate that headline by the whole cost of delivery — on a
+              10%-margin business, by roughly 10x. The label has to carry the
+              definition; the arithmetic downstream cannot infer it. */}
+          <p className="text-[11px] text-muted-foreground">
+            Enter <strong>annual profit impact</strong>, not recovered revenue —
+            what reaches operating profit after the cost of delivering it. The
+            report adds the expected figure directly to operating profit.
+          </p>
           <div className="grid grid-cols-3 gap-3">
             <div className="space-y-1">
               <label className="text-xs font-medium text-muted-foreground">
@@ -222,7 +233,7 @@ function OpportunityDialog({
             </div>
             <div className="space-y-1">
               <label className="text-xs font-medium text-muted-foreground">
-                Expected $
+                Expected profit $
               </label>
               <Input
                 type="number"
