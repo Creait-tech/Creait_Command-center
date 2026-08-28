@@ -1,7 +1,11 @@
 import { IntegrationsPanel } from "@/components/settings/integrations-panel";
 import { MeetingAgendasPanel } from "@/components/settings/meeting-agendas-panel";
 import { ProfileCard } from "@/components/settings/profile-card";
+import { TeamPanel } from "@/components/settings/team-panel";
+import { fetchRoster } from "./invite-actions";
 import { loadStoredAgendas } from "@/components/meeting-agendas/agenda-source";
+import { auth } from "@clerk/nextjs/server";
+
 import { getActiveOrgId } from "@/lib/active-org";
 import { getMyProfile } from "@/lib/profile-actions";
 import { createServiceClient } from "@/lib/supabase/server";
@@ -49,6 +53,13 @@ export default async function SettingsPage() {
   // values rather than flashing the standard first.
   const agendas = await loadStoredAgendas();
 
+  // The roster, plus whether this viewer may invite. Clerk's org role is the
+  // authority; the action re-checks it server-side, so this only decides
+  // whether the form is worth rendering.
+  const { orgRole } = await auth();
+  const rosterResult = await fetchRoster();
+  const roster = rosterResult.ok ? rosterResult.data : [];
+
   return (
     <div className="flex flex-col gap-6 p-6">
       <div>
@@ -58,6 +69,7 @@ export default async function SettingsPage() {
         </p>
       </div>
       <ProfileCard member={member} fallbackName={fallbackName} />
+      <TeamPanel roster={roster} isAdmin={orgRole === "org:admin"} />
       <MeetingAgendasPanel agendas={agendas} />
       <IntegrationsPanel
         readaiSecret={readaiSecret}

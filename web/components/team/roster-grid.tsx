@@ -54,6 +54,7 @@ const ROLE_STYLES: Record<TeamRole, string> = {
 
 const STATUS_LABELS: Record<TeamStatus, string> = {
   active: "Active",
+  invited: "Invited",
   inactive: "Inactive",
   offboarded: "Offboarded",
 };
@@ -61,6 +62,9 @@ const STATUS_LABELS: Record<TeamStatus, string> = {
 const STATUS_STYLES: Record<TeamStatus, string> = {
   active:
     "bg-[color:var(--color-brand-success)]/20 text-[color:var(--color-brand-success)]",
+  // Amber, not green: an invitation is outstanding work, not a working account.
+  invited:
+    "bg-[color:var(--color-brand-warning)]/20 text-[color:var(--color-brand-warning)]",
   inactive:
     "bg-[color:var(--color-brand-fog)]/40 text-[color:var(--color-brand-mist)]",
   offboarded:
