@@ -24,16 +24,11 @@ import { auth, currentUser } from "@clerk/nextjs/server";
 import { getActiveOrgId } from "@/lib/active-org";
 import { sendEmail } from "@/lib/email";
 import { createServiceClient } from "@/lib/supabase/server";
+import { INVITE_ROLES, type InviteRole } from "@/lib/team-roles";
+
+export type { InviteRole };
 
 const CLERK_API = "https://api.clerk.com/v1";
-
-/** Roles a teammate can be invited as, mapped to Clerk's role keys. */
-export const INVITE_ROLES = [
-  { value: "member", clerk: "org:member", label: "Member" },
-  { value: "admin", clerk: "org:admin", label: "Admin" },
-] as const;
-
-export type InviteRole = (typeof INVITE_ROLES)[number]["value"];
 
 export interface InviteResult {
   email: string;

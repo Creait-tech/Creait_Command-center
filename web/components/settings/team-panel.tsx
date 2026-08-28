@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { inviteTeammateAction } from "@/app/(dashboard)/settings/invite-actions";
-import { INVITE_ROLES, type InviteRole } from "@/lib/team-invites";
+import { INVITE_ROLES, type InviteRole } from "@/lib/team-roles";
 import { personName } from "@/lib/authorship";
 import type { TeamMember } from "@/lib/supabase/types";
 

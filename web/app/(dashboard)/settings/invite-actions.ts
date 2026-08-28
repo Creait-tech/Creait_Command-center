@@ -14,11 +14,8 @@ import { auth } from "@clerk/nextjs/server";
 
 import { getActiveOrgId } from "@/lib/active-org";
 import { createServiceClient } from "@/lib/supabase/server";
-import {
-  inviteTeammate,
-  type InviteResult,
-  type InviteRole,
-} from "@/lib/team-invites";
+import { inviteTeammate, type InviteResult } from "@/lib/team-invites";
+import type { InviteRole } from "@/lib/team-roles";
 import type { TeamMember } from "@/lib/supabase/types";
 
 export type ActionResult<T = undefined> =
