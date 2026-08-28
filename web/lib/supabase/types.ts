@@ -121,7 +121,10 @@ export interface Kpi {
   org_id: string;
   name: string;
   description: string | null;
-  value: number;
+  /** Latest reading. `null` means not measured — never render it as 0.
+   *  A 0 on a scorecard is a claim ("no calls were booked"); an absence of a
+   *  reading is not. Weekly history lives in `cc_kpi_weekly`. */
+  value: number | null;
   target: number | null;
   goal_operator: KpiGoalOperator;
   /** Who owns this number in the Level 10. */
@@ -195,7 +198,10 @@ export interface InitiativeTask {
 }
 
 export type TeamRole = "admin" | "member" | "viewer";
-export type TeamStatus = "active" | "inactive" | "offboarded";
+/** `invited` (phase19) is its own state: the invitation exists in Clerk but no
+ *  account does yet, so the person can neither sign in (not `active`) nor has
+ *  anyone taken their access away (not `inactive`). */
+export type TeamStatus = "active" | "invited" | "inactive" | "offboarded";
 
 export interface TeamMember {
   id: string;

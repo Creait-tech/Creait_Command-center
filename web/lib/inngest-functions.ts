@@ -863,10 +863,11 @@ export const goalCheck = inngest.createFunction(
  * name. If MCP isn't available, the run is a no-op.
  *
  * KPI names (must match seeded rows):
- *   - "MRR" -- sum of monetaryValue across open opportunities
- *   - "Active Deals" -- count of opportunities NOT in won/lost
+ *   - "MRR" -- sum of `mrr` across active clients (never pipeline value)
+ *   - "Sales Pipeline Deals" -- open opportunities in SALES_PIPELINE_IDS
+ *   - "Sales Pipeline Value" -- their summed monetaryValue
  *   - "Conversations 7d" -- count of conversations in the last 7 days
- *   - "Calls Booked 7d" -- placeholder; populated when calendar MCP lands
+ *   - "Calls Booked 7d" -- opportunities that reached the Call Booked stage
  *   - "New Contacts 7d" -- count of contacts created in the last 7 days
  */
 export const ghlSync = inngest.createFunction(
@@ -909,7 +910,7 @@ export const ghlSync = inngest.createFunction(
       for (const [name, exact] of [
         ['New Contacts 7d', contacts.exact],
         ['Conversations 7d', conversations.exact],
-        ['Active Deals', deals.exact],
+        ['Sales Pipeline Deals', deals.exact],
       ] as const) {
         if (!exact) {
           console.warn(
@@ -926,9 +927,12 @@ export const ghlSync = inngest.createFunction(
           name: 'Conversations 7d',
           value: conversations.exact ? conversations.count : null,
         },
-        { name: 'Active Deals', value: deals.exact ? deals.activeDeals : null },
         {
-          name: 'Open Pipeline Value',
+          name: 'Sales Pipeline Deals',
+          value: deals.exact ? deals.activeDeals : null,
+        },
+        {
+          name: 'Sales Pipeline Value',
           value: deals.exact ? deals.openPipelineValue : null,
         },
         { name: 'MRR', value: mrr },
@@ -1065,49 +1069,62 @@ function pickArray(parsed: unknown): unknown[] {
 }
 
 /**
- * Open-deal rollups. `exact` is false when the scan didn't reach GHL's full
- * opportunity population — the rollups are computed over fetched rows, so a
- * short walk yields a floor.
+ * The pipelines that represent deals CREAIT is actually working.
+ *
+ * Without this, "Active Deals" counted every opportunity the account has ever
+ * held — 1,253 of them, against a target of 20 — and "Open Pipeline Value"
+ * summed to $20.1M against a $150K target. Both numbers were accurate and
+ * neither meant anything, because 1,242 of those opportunities sit in
+ * `zz Archived · General Opportunities` and four deals in `Datacenter` carry
+ * $15M between them.
+ *
+ * An explicit allow-list rather than a "not archived" name test: a pipeline
+ * belongs on the scoreboard because someone decided it does, not because of
+ * how it happens to be named today. Add an id here to include it.
+ */
+const SALES_PIPELINE_IDS: readonly string[] = [
+  '7Sc2j1zwFJzgA3rH4NJe', // CREAiT Sales Pipeline (Contacted -> Won, 7 stages)
+]
+
+/**
+ * Open-deal rollups, scoped to SALES_PIPELINE_IDS. `exact` is false when the
+ * scan didn't reach GHL's full opportunity population — the rollups are
+ * computed over fetched rows, so a short walk yields a floor.
+ *
+ * The MCP tool's own `openCount`/`openValue` are deliberately NOT used here:
+ * they describe every pipeline in the location, which is the number this
+ * scoping exists to stop reporting.
  */
 function summarizeOpportunities(result: unknown): {
   activeDeals: number
   openPipelineValue: number
   exact: boolean
 } {
-  const parsed = extractMcpJson(result)
   const { items, total, truncated } = parseMcpList(result)
 
-  // The MCP tool computes the open-only rollups itself so every consumer
-  // agrees on what "open" means. Derive them locally only if it didn't.
-  let activeDeals: number | null = null
-  let openPipelineValue: number | null = null
-  if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
-    const obj = parsed as Record<string, unknown>
-    if (typeof obj.openCount === 'number') activeDeals = obj.openCount
-    if (typeof obj.openValue === 'number') openPipelineValue = obj.openValue
-  }
-
-  if (activeDeals === null || openPipelineValue === null) {
-    let deals = 0
-    let value = 0
-    for (const item of items) {
-      const status = String(item.status ?? '').toLowerCase()
-      const isOpen =
-        status !== 'won' && status !== 'lost' && status !== 'abandoned'
-      if (!isOpen) continue
-      deals++
-      // Only open deals count toward pipeline. Summing won and lost as well is
-      // what produced a $5,015,685 "MRR" — the all-time gross of every
-      // opportunity the account has ever held.
-      const amount = Number(item.monetaryValue ?? item.value ?? 0)
-      if (Number.isFinite(amount)) value += amount
-    }
-    activeDeals = deals
-    openPipelineValue = Number(value.toFixed(2))
+  let deals = 0
+  let value = 0
+  for (const item of items) {
+    const pipelineId = String(item.pipelineId ?? '')
+    if (!SALES_PIPELINE_IDS.includes(pipelineId)) continue
+    const status = String(item.status ?? '').toLowerCase()
+    const isOpen =
+      status !== 'won' && status !== 'lost' && status !== 'abandoned'
+    if (!isOpen) continue
+    deals++
+    // Only open deals count toward pipeline. Summing won and lost as well is
+    // what produced a $5,015,685 "MRR" — the all-time gross of every
+    // opportunity the account has ever held.
+    const amount = Number(item.monetaryValue ?? item.value ?? 0)
+    if (Number.isFinite(amount)) value += amount
   }
 
   const exact = !truncated && (total === null || items.length >= total)
-  return { activeDeals, openPipelineValue, exact }
+  return {
+    activeDeals: deals,
+    openPipelineValue: Number(value.toFixed(2)),
+    exact,
+  }
 }
 
 /**

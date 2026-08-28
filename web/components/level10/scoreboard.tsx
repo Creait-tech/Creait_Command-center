@@ -299,9 +299,17 @@ interface KpiCardProps {
   onDelete: (kpi: KpiRow) => Promise<void>;
 }
 
+/**
+ * A null reading is "nobody measured this", so the editor opens empty rather
+ * than pre-filled with the string "null" for someone to delete first.
+ */
+function draftFor(value: number | null): string {
+  return value === null ? "" : String(value);
+}
+
 function KpiCard({ kpi, points, onSave, onEdit, onDelete }: KpiCardProps) {
   const [editing, setEditing] = useState(false);
-  const [draft, setDraft] = useState<string>(String(kpi.value));
+  const [draft, setDraft] = useState<string>(draftFor(kpi.value));
   const [saving, setSaving] = useState(false);
   const [showTrend, setShowTrend] = useState(false);
   const [confirmingDelete, setConfirmingDelete] = useState(false);
@@ -320,12 +328,12 @@ function KpiCard({ kpi, points, onSave, onEdit, onDelete }: KpiCardProps) {
   }, [editing]);
 
   function startEdit() {
-    setDraft(String(kpi.value));
+    setDraft(draftFor(kpi.value));
     setEditing(true);
   }
 
   function cancelEdit() {
-    setDraft(String(kpi.value));
+    setDraft(draftFor(kpi.value));
     setEditing(false);
   }
 
@@ -449,7 +457,7 @@ function KpiCard({ kpi, points, onSave, onEdit, onDelete }: KpiCardProps) {
               className="text-3xl font-bold leading-none font-data hover:text-[color:var(--color-brand-electric)] hover:glow-electric-text transition-colors cursor-text text-left"
               aria-label={`Edit value for ${kpi.name}`}
             >
-              {formatKpiValue(kpi.value, kpi.unit)}
+              {kpi.value === null ? "–" : formatKpiValue(kpi.value, kpi.unit)}
             </button>
           )}
           {kpi.target != null && !editing && (
