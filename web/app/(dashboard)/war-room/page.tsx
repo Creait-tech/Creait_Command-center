@@ -11,8 +11,8 @@ export const dynamic = "force-dynamic";
 /**
  * The War Room — the company brain.
  *
- * One searchable timeline over every meeting the org has held: Zoom
- * backfill, Read.ai deliveries, and Level 10s. Search hits look inside
+ * One searchable transcript timeline over every recorded Zoom and Read.ai
+ * call. EOS team meetings have their own operating surface. Search hits look inside
  * full transcripts and show the matching line in context. `?open=<id>`
  * renders one meeting's complete transcript inline (server-rendered, no
  * client JS) so nothing heavy loads until asked for.
@@ -25,8 +25,8 @@ const TYPE_FILTERS = [
   { key: "all", label: "Everything" },
   { key: "client", label: "Client calls" },
   { key: "internal", label: "Internal" },
-  { key: "level_10", label: "Level 10s" },
-  { key: "other", label: "Events & classes" },
+  { key: "sales", label: "Sales calls" },
+  { key: "other", label: "Other recorded calls" },
 ] as const;
 
 const LIST_COLUMNS =
@@ -70,6 +70,7 @@ export default async function WarRoomPage({
     .from("meetings")
     .select(q ? `${LIST_COLUMNS}, transcript` : LIST_COLUMNS)
     .eq("org_id", orgId)
+    .in("source", ["zoom", "readai"])
     .order("scheduled_at", { ascending: false, nullsFirst: false })
     .limit(q ? 40 : 200);
 
@@ -103,7 +104,6 @@ export default async function WarRoomPage({
     opened = (row as Meeting | null) ?? null;
   }
 
-  const withTranscript = meetings.filter((m) => q === "" || m.snippet || m.transcript !== undefined).length;
   const grouped = new Map<string, SearchHit[]>();
   for (const m of meetings) {
     const key = monthKey(m.scheduled_at);
@@ -127,8 +127,8 @@ export default async function WarRoomPage({
           <Brain className="size-6 text-primary" /> War Room
         </h1>
         <p className="text-sm text-muted-foreground mt-1">
-          The company brain. Every meeting, searchable down to the word that
-          was said. Calendar, Drive, and email land here next.
+          The company brain for every recorded Zoom and Read.ai call, searchable down to the word that
+          was said. EOS team meetings run separately in Team Meetings.
         </p>
       </div>
 

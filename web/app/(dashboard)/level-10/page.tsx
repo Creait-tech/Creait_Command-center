@@ -5,6 +5,7 @@ import { StartMeetingButton } from "@/components/level10/start-meeting-button";
 import {
   asAuthoredRows,
   type AuthoredIdsItem,
+  type AuthoredRock,
   type AuthoredWin,
   type Person,
 } from "@/lib/authorship";
@@ -18,9 +19,20 @@ import {
   recentWeekStarts,
   WEEK_COLUMN_COUNT,
 } from "@/components/level10/weeks";
-import type { Meeting, KpiHistory, Initiative } from "@/lib/supabase/types";
+import type {
+  Meeting,
+  KpiHistory,
+  Initiative,
+  RockMilestone,
+  RockStatusUpdate,
+} from "@/lib/supabase/types";
 
 export const dynamic = "force-dynamic";
+
+function currentQuarter(): string {
+  const d = new Date();
+  return `${d.getFullYear()}-Q${Math.floor(d.getMonth() / 3) + 1}`;
+}
 
 export default async function Level10Page() {
   const supabase = await createClient();
@@ -54,6 +66,9 @@ export default async function Level10Page() {
         .limit(20);
 
   const thirtyDaysAgoIso = new Date(
+    // The page is intentionally dynamic: this server-side query window must be
+    // anchored to the request time, not a cached module value.
+    // eslint-disable-next-line react-hooks/purity
     Date.now() - 30 * 24 * 60 * 60 * 1000
   ).toISOString();
 
@@ -72,6 +87,9 @@ export default async function Level10Page() {
     kpiHistoryResult,
     kpiWeeklyResult,
     peopleResult,
+    rocksResult,
+    rockMilestonesResult,
+    rockStatusResult,
   ] = await Promise.all([
     winsQuery,
     supabase
@@ -114,6 +132,20 @@ export default async function Level10Page() {
       .eq("org_id", orgId)
       .eq("status", "active")
       .order("full_name", { ascending: true }),
+    supabase
+      .from("cc_rocks")
+      .select("*")
+      .eq("org_id", orgId)
+      .order("quarter", { ascending: false })
+      .order("sort_order", { ascending: true }),
+    supabase
+      .from("cc_rock_milestones")
+      .select("*")
+      .order("sort_order", { ascending: true }),
+    supabase
+      .from("cc_rock_status_updates")
+      .select("*")
+      .order("created_at", { ascending: false }),
   ]);
 
   // `select("*")` returns the authorship columns from
@@ -131,6 +163,11 @@ export default async function Level10Page() {
   // `select("*")` returns `display_name`/`pronouns` from the profile migration;
   // the generated types don't declare them yet (see `lib/authorship.ts`).
   const people: Person[] = asAuthoredRows<Person>(peopleResult.data);
+  const rocks: AuthoredRock[] = asAuthoredRows<AuthoredRock>(rocksResult.data);
+  const rockMilestones: RockMilestone[] =
+    (rockMilestonesResult.data as RockMilestone[] | null) ?? [];
+  const rockStatusUpdates: RockStatusUpdate[] =
+    (rockStatusResult.data as RockStatusUpdate[] | null) ?? [];
 
   return (
     <div className="flex flex-col gap-6 p-6">
@@ -141,7 +178,20 @@ export default async function Level10Page() {
             EOS weekly leadership rhythm. Same day, same time, same agenda. 90 minutes.
           </p>
         </div>
-        <StartMeetingButton />
+        <StartMeetingButton
+          workspace={{
+            kpis,
+            kpiWeekly,
+            kpiHistory,
+            weekStarts,
+            people,
+            rocks,
+            rockMilestones,
+            rockStatusUpdates,
+            idsItems,
+            currentQuarter: currentQuarter(),
+          }}
+        />
       </div>
 
       <Level10Tabs

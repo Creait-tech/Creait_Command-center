@@ -9,16 +9,24 @@ import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { Textarea } from "@/components/ui/textarea";
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
-import { useActiveOrgId } from "@/lib/use-active-org";
+
 import { cn } from "@/lib/utils";
 import { createHeadline, createIdsItem, createTodo } from "@/lib/eos-actions";
 import { getAgenda, agendaBudgetSec, type MeetingType } from "@/lib/meeting-agendas";
+import { Scorecard } from "./scorecard";
+import { RocksView } from "@/components/rocks/rocks-view";
+import { IdsSection } from "./ids-section";
+import type { MeetingWorkspaceData } from "./start-meeting-button";
 
 interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  /** The meeting record was created by the explicit Start button click. */
+  meetingId: string;
   /** Which EOS meeting to run. Defaults to the weekly Level 10. */
   meetingType?: MeetingType;
+  /** Live EOS tools supplied by the Level 10 server page. */
+  workspace: MeetingWorkspaceData;
 }
 
 function fmt(sec: number): string {
@@ -28,15 +36,13 @@ function fmt(sec: number): string {
   return `${m}:${String(s).padStart(2, "0")}`;
 }
 
-export function RunMeetingModal({ open, onOpenChange, meetingType = "level_10" }: Props) {
-  const orgId = useActiveOrgId();
+export function RunMeetingModal({ open, onOpenChange, meetingId, meetingType = "level_10", workspace }: Props) {
   const agenda = getAgenda(meetingType);
   const SECTIONS = agenda.sections;
   const totalBudgetSec = agendaBudgetSec(agenda);
-  const [meetingId, setMeetingId] = useState<string | null>(null);
   const [activeIdx, setActiveIdx] = useState(0);
   const [elapsed, setElapsed] = useState<number[]>(Array(SECTIONS.length).fill(0));
-  const [running, setRunning] = useState(false);
+  const [running, setRunning] = useState(true);
   const [newTodo, setNewTodo] = useState("");
   const [newHeadline, setNewHeadline] = useState("");
   const [newIssue, setNewIssue] = useState("");
@@ -45,22 +51,6 @@ export function RunMeetingModal({ open, onOpenChange, meetingType = "level_10" }
   const [finishing, setFinishing] = useState(false);
   const tickRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // Reset when modal opens
-  useEffect(() => {
-    if (open && !meetingId) {
-      void startMeeting();
-    }
-    if (!open) {
-      setMeetingId(null);
-      setActiveIdx(0);
-      setElapsed(Array(SECTIONS.length).fill(0));
-      setRunning(false);
-      setRating(null);
-      setRatingComment("");
-    }
-    // Agendas differ in length, so switching type must reset the timer array too.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, meetingType]);
 
   // Timer
   useEffect(() => {
@@ -78,30 +68,6 @@ export function RunMeetingModal({ open, onOpenChange, meetingType = "level_10" }
     }
   }, [running, activeIdx]);
 
-  async function startMeeting() {
-    const supabase = createClient();
-    const today = new Date();
-    const { data, error } = await supabase
-      .from("meetings")
-      .insert({
-        org_id: orgId,
-        title: `${agenda.titlePrefix} — ${today.toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" })}`,
-        meeting_type: agenda.type,
-        scheduled_at: today.toISOString(),
-        source: "manual",
-      })
-      .select()
-      .single();
-    if (error) {
-      toast.error(`Couldn't start meeting: ${error.message}`);
-      return;
-    }
-    if (data) {
-      setMeetingId((data as { id: string }).id);
-      setRunning(true);
-      toast.success(`${agenda.label} started — ${SECTIONS[0].label} first.`);
-    }
-  }
 
   function next() {
     if (activeIdx < SECTIONS.length - 1) {
@@ -198,7 +164,7 @@ export function RunMeetingModal({ open, onOpenChange, meetingType = "level_10" }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-6xl max-h-[92vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center justify-between gap-2">
             <span>{agenda.label}</span>
@@ -273,6 +239,42 @@ export function RunMeetingModal({ open, onOpenChange, meetingType = "level_10" }
                 <Button onClick={addIssue} disabled={!newIssue.trim()}>Add Issue</Button>
               </div>
               <p className="text-[10px] text-muted-foreground">Identify root cause → discuss until clear → solve permanently. Off-topic? Make it a To-Do.</p>
+              <div className="rounded-lg border border-border p-3">
+                <p className="mb-3 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                  Active IDS board
+                </p>
+                <IdsSection initialItems={workspace.idsItems} meetingId={meetingId} />
+              </div>
+            </div>
+          )}
+
+          {section.key === "scorecard" && (
+            <div className="rounded-lg border border-border p-3">
+              <p className="mb-3 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                Live scorecard — enter or correct the number here; off-track items go to IDS
+              </p>
+              <Scorecard
+                initialKpis={workspace.kpis}
+                initialWeekly={workspace.kpiWeekly}
+                initialHistory={workspace.kpiHistory}
+                people={workspace.people}
+                weekStarts={workspace.weekStarts}
+              />
+            </div>
+          )}
+
+          {section.key === "rocks" && (
+            <div className="rounded-lg border border-border p-3">
+              <p className="mb-3 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                Live rock review — update the actual Rock here; blockers go to IDS
+              </p>
+              <RocksView
+                initialRocks={workspace.rocks}
+                milestones={workspace.rockMilestones}
+                statusUpdates={workspace.rockStatusUpdates}
+                members={workspace.people}
+                currentQuarter={workspace.currentQuarter}
+              />
             </div>
           )}
 
