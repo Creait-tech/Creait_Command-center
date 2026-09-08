@@ -17,9 +17,9 @@
 - 🔴 Decline/redirect: <$300K or pre-revenue · cash/legal/tax crisis (refer to the right professional) · wants guaranteed outcomes · wants tools without process change · owner won't participate · primarily needs a certified valuation → refer out
 
 **Frame & close (5 min):**
-> "Here's how it works. You'll complete a guided intake — 45 to 60 minutes, estimates are fine. Then we spend four focused hours together going through the business system by system. Then I do the analysis personally, and about a week later we sit down for 90 minutes and I show you three things: your CREAiT Score, the one constraint that's actually holding the business back, and exactly what it's costing you every year — plus the 90-day plan to start fixing it. Everything is yours to keep and act on, with or without us. It's $7,500 — half to schedule, and the balance only after you've sat through your results session and seen the findings. And if you decide to work with us on implementation within 60 days, the full $7,500 comes back as credit — half off every invoice until it's used up."
+> "Here's how it works. You'll complete a guided intake — 45 to 60 minutes, estimates are fine. Then we spend four focused hours together going through the business system by system. Then I do the analysis personally, and about a week later we sit down for 90 minutes and I show you three things: your CREAiT Score, the one constraint that's actually holding the business back, and exactly what it's costing you every year — plus the 90-day plan to start fixing it. Everything is yours to keep and act on, with or without us. It's $7,500 — half to schedule, and the balance only after you've sat through your results session and seen the findings. And if you decide to work with us on implementation within 60 days of that session, the full $7,500 is applied as credit, in full."
 
-Send: agreement + invoice + intake link + prep note ("have your P&L handy if easy — estimates are fine if not").
+Send: agreement + invoice + intake link + **Data Room Checklist** (see `CREAIT-Data-Room-Checklist.md`). Prep note: "Estimates get you a good diagnostic; documents get you a defensible one. The P&L, revenue by customer and AR aging are the three that matter most." Without a P&L on file the report prints a disclosure and widens Profit ranges — tell them that plainly; most owners send it.
 
 ---
 
@@ -49,7 +49,7 @@ Send: agreement + invoice + intake link + prep note ("have your P&L handy if eas
 **Block 5 — Risk & Close (30 min).** Concentration, key people, contracts, cash pressure, data hygiene. Then close:
 > "Here's what happens next. I've heard several patterns today — [name 2–3 openly, as questions, not verdicts]. I'll now score all thirty factors, run the numbers on every opportunity we've touched, and pressure-test what the real constraint is. We meet [date] for 90 minutes. I'll show you the whole picture — and the plan. Between now and then, you don't need to do anything."
 
-**After:** same day, while fresh — score all 30 indicators in the calculator, log evidence levels, fill the opportunity and automation tables, check overlay flags, draft the Primary Constraint.
+**After:** same day, while fresh — score all 30 indicators in the Command Center against the v2 anchors (all five levels are written; use them), set evidence level and a note with the quote or document behind every score, fill the opportunity and automation tables, check overlay flags, draft the Primary Constraint. N/A only where the indicator cannot apply; "don't know" scores the lowest supportable anchor and is flagged Reported.
 
 ## 4. Analysis Window (days 2–8)
 
@@ -58,8 +58,8 @@ Send: agreement + invoice + intake link + prep note ("have your P&L handy if eas
 3. Build the top-3 AI Workflow Blueprints (these are CREAiT Lane-1 proposals — scope them like you'd build them).
 4. Pick the Primary Business Constraint. Test it: does it explain the symptoms across sections? Compare against their Q8 belief.
 5. Pick the Early Momentum Initiative (measurable inside 30 days, low risk, in their control).
-6. Generate the report (06), review every number, cut anything you can't defend.
-7. Build the results deck. Send calendar confirmation + final invoice.
+6. Generate the report in the Command Center. Run the **release gate** in the review step: every blocker must clear (25+ resolved, no thin pillar, evidence on every score, 10+ Demonstrated/Documented, notes everywhere, constraint + cost, ordered ranges with a finding, reviewer named). Acknowledge warnings (no P&L, concentration, potential below current). A second founder reads Appendix B and checks five numbers by hand. Cut anything you can't defend.
+7. Mark delivered — this freezes the snapshot and locks the rows. Build the results deck from the delivered report. Send calendar confirmation + final invoice.
 
 ## 5. The Results Session (90 min) — Mirror → Gap → Fork
 
@@ -79,14 +79,14 @@ Send: agreement + invoice + intake link + prep note ("have your P&L handy if eas
 
 **8. The Fork (10 min).** Then, permission-based:
 > "Would it be useful if I showed you where support would make the biggest difference?"
-If yes — two lanes, briefly: **CREAiT Builds** (we build the top workflow blueprints — they're already scoped in your report) and **CREAiT Advisory** (we run the plan with you, monthly). "Your full $7,500 comes back as credit — half off every implementation invoice until it's used up — if you start within 60 days of today. No decision needed today — let's book a 30-minute scoping call if you want to explore it."
+If yes — two lanes, briefly: **CREAiT Builds** (we build the top workflow blueprints — they're already scoped in your report) and **CREAiT Advisory** (we run the plan with you, monthly). "Your full $7,500 is applied as credit, in full, toward either lane if you start within 60 days of today's session. No decision needed today — let's book a 30-minute scoping call if you want to explore it."
 Balance is due within 48 hours of this session; the full package releases on payment. **Non-payment protocol:** one friendly reminder at 48h, one call at day 5, package held meanwhile; day 10 unpaid → formal notice per the agreement. (Deposit already covers delivery cost — stay calm, stay kind, hold the document.)
 
 ## 6. Follow-through
 
 - **Day 7:** revision window closes (one reasonable revision included).
 - **Day 30:** 45-min progress review (included) — priorities status, KPI movement, barriers. Not consulting; accountability. Natural second Fork moment.
-- **Day 60:** credit-forward expires — one honest reminder a week before, no pressure theater.
+- **Day 60 (from the results session):** credit expires — one honest reminder a week before, no pressure theater.
 - **Day 90:** 10-min digital outcome check → one-page planned-vs-actual snapshot.
 - **Month 6:** free re-score invitation — "let's see what moved."
 - Non-buyers: enroll in email Sequence 5 (see 12-Email-Campaigns); tag their weakest pillar for personalization.
