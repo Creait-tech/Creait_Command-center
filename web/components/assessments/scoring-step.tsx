@@ -479,7 +479,7 @@ export function ScoringStep({
                     )}
                     title={
                       thin
-                        ? `Only ${p.scored} of 10 ${p.label} indicators examined — too few to report as a pillar score`
+                        ? `Only ${p.scored} of 10 ${p.label} indicators examined — too few to report as a pillar score, and excluded from the composite`
                         : undefined
                     }
                   >

@@ -842,7 +842,7 @@ export default async function ExecutiveBlueprintPage({
         {computed.provisional && !isDraft && (
           <p style={{ fontSize: 12, color: muted, marginTop: 12, lineHeight: 1.6 }}>
             {thinPillarLabels
-              ? `The composite is provisional: ${thinPillarLabels} rests on too few indicators to state as a pillar score. It still contributes at its full weight, so treat the headline number as directional until those indicators are examined.`
+              ? `The composite is provisional: ${thinPillarLabels} rests on too few indicators to state as a pillar score, so it is left out of the composite entirely and its weight is redistributed across the pillars we did examine. Treat the headline number as directional until those indicators are examined.`
               : `The composite is provisional — fewer than ${MIN_REPORT_RESOLVED} of ${INDICATORS.length} indicators have been resolved.`}
           </p>
         )}
@@ -1202,7 +1202,7 @@ export default async function ExecutiveBlueprintPage({
             <p style={{ fontSize: 11, color: muted, marginTop: 2 }}>
               {examined} of 10 indicators examined
               {thinPillar
-                ? " — too few to state a pillar score; treat the rows below as observations, not a verdict."
+                ? " — too few to state a pillar score, and too few to weigh in the composite; treat the rows below as observations, not a verdict."
                 : ""}
             </p>
             <table style={{ width: "100%", borderCollapse: "collapse", marginTop: 8, fontSize: 12 }}>

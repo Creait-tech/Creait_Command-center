@@ -686,7 +686,7 @@ export function AssessmentWorkbench({
                   )}
                   title={
                     thin
-                      ? `Only ${n} of 10 ${p.label} indicators examined — too few to report as a pillar score`
+                      ? `Only ${n} of 10 ${p.label} indicators examined — too few to report as a pillar score, and excluded from the composite`
                       : undefined
                   }
                 >
