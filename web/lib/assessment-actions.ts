@@ -8,6 +8,7 @@
  */
 
 import { revalidatePath } from "next/cache";
+import { headers } from "next/headers";
 import { auth, currentUser } from "@clerk/nextjs/server";
 
 import { createClient } from "@/lib/supabase/server";
@@ -23,8 +24,12 @@ import {
   toScoreMap,
 } from "@/lib/assessment-instrument";
 import { BLOCK_IDS, ENGINE_METRICS } from "@/lib/assessment-session";
+import { intakePrefill, type IntakePrefill } from "@/lib/assessment-intake";
+import { parseCalc } from "@/lib/opportunity-calculators";
 import type {
   AssessmentDocument,
+  AssessmentOutcomeReview,
+  AssessmentOutcomes,
   AssessmentPillar,
   AssessmentStatus,
   CcAssessment,
@@ -334,6 +339,20 @@ export async function updateAssessment(
     ) {
       update.reviewed_by = null;
       update.reviewed_at = null;
+    }
+
+    /**
+     * Leaving "intake" retires the owner's link. The token is the only thing
+     * standing between a URL in an inbox and a writable row, so it dies with
+     * the phase it belongs to rather than staying live for the rest of the
+     * engagement. Re-issuing from the workbench mints a fresh one.
+     */
+    if (
+      storedStatus === "intake" &&
+      patch.status !== undefined &&
+      patch.status !== "intake"
+    ) {
+      update.intake_token = null;
     }
   }
 
@@ -693,6 +712,19 @@ export async function updateSessionNotes(
     notes?: string;
     elapsedSeconds?: number;
     metrics?: Record<string, string>;
+    /**
+     * Live cross-check outcomes, keyed by check id (CROSS_CHECKS in
+     * lib/assessment-session.ts). Merged per id so the facilitator's note and a
+     * later recomputed status cannot overwrite each other. The ids are not
+     * enumerated here on purpose — parseSessionNotes is the authority on which
+     * checks render, so a check that is renamed or retired stops being read
+     * without needing a second list kept in step; this side only guards the
+     * shape and the key.
+     */
+    crossChecks?: Record<
+      string,
+      { status?: string; detail?: string; note?: string }
+    >;
   }
 ): Promise<ActionResult<{ assessment: CcAssessment }>> {
   const ctx = await requireOrg();
@@ -747,6 +779,35 @@ export async function updateSessionNotes(
         base[key] = value;
       }
     }
+  }
+
+  if (patch.crossChecks) {
+    const stored: Record<string, Json> =
+      base.crossChecks &&
+      typeof base.crossChecks === "object" &&
+      !Array.isArray(base.crossChecks)
+        ? { ...(base.crossChecks as Record<string, Json>) }
+        : {};
+    for (const [key, value] of Object.entries(patch.crossChecks)) {
+      if (!/^[a-z][a-z0-9_]{2,39}$/.test(key)) continue;
+      if (!value || typeof value !== "object") continue;
+      const prior =
+        stored[key] && typeof stored[key] === "object" && !Array.isArray(stored[key])
+          ? (stored[key] as Record<string, Json>)
+          : {};
+      const merged: Record<string, Json> = { ...prior };
+      if (
+        value.status === "pass" ||
+        value.status === "flag" ||
+        value.status === "insufficient"
+      ) {
+        merged.status = value.status;
+      }
+      if (typeof value.detail === "string") merged.detail = value.detail;
+      if (typeof value.note === "string") merged.note = value.note;
+      stored[key] = merged;
+    }
+    base.crossChecks = stored;
   }
 
   const { data, error } = await supabase
@@ -983,6 +1044,13 @@ export interface OpportunityInput {
    * the ±25% widening and the "based on your estimates" line in the report.
    */
   basis_reported_only?: boolean;
+  /**
+   * The calculator record behind the range (migration 0013). `null` clears it —
+   * which is what the editor sends the moment someone types over a computed
+   * figure, because the range is no longer derived. `undefined` leaves the
+   * stored record alone, so a client that predates calculators cannot wipe one.
+   */
+  calc?: unknown;
 }
 
 export async function saveOpportunity(
@@ -1027,6 +1095,20 @@ export async function saveOpportunity(
   }
   if (input.basis_reported_only !== undefined) {
     row.basis_reported_only = Boolean(input.basis_reported_only);
+  }
+  // The calculator record. Same undefined/null rule as above, and a record
+  // that does not validate is refused rather than stored — the report prints
+  // this arithmetic to the client, so a half-written chain is worse than none.
+  if (input.calc !== undefined) {
+    if (input.calc === null) {
+      row.calc = null;
+    } else {
+      const parsed = parseCalc(input.calc);
+      if (!parsed) {
+        return { ok: false, error: "Calculator record is not valid" };
+      }
+      row.calc = parsed;
+    }
   }
 
   const query = input.id
@@ -1113,4 +1195,361 @@ export async function deleteOpportunity(
   }
   revalidateReport(assessmentId);
   return { ok: true };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Owner intake — the coordinator's side of the tokenised link (migration 0013)
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * The absolute origin to hand the client, for a link that will be pasted into
+ * an email. The request's own host first — a preview deployment must produce a
+ * preview link, not a production one — with NEXT_PUBLIC_APP_URL as the answer
+ * for any context that has no request headers.
+ */
+async function requestOrigin(): Promise<string> {
+  try {
+    const h = await headers();
+    const host = h.get("x-forwarded-host") ?? h.get("host");
+    if (host) {
+      const proto =
+        h.get("x-forwarded-proto") ??
+        (host.startsWith("localhost") || host.startsWith("127.0.0.1")
+          ? "http"
+          : "https");
+      return `${proto}://${host}`;
+    }
+  } catch {
+    // No request scope (a job, a test) — fall through to the configured URL.
+  }
+  return (process.env.NEXT_PUBLIC_APP_URL ?? "https://cc.getcreait.com").replace(
+    /\/+$/,
+    ""
+  );
+}
+
+export interface IntakeLink {
+  token: string;
+  url: string;
+}
+
+/**
+ * Mint a fresh intake link.
+ *
+ * Rotation is the point: every issue replaces the previous token, so a link
+ * forwarded to the wrong inbox stops working the moment the coordinator
+ * re-sends. Issuing also clears `intake_submitted_at` — the only reason to
+ * issue a link on a submitted intake is to let the owner finish or correct it,
+ * and a submitted timestamp with a live link would be a lie either way.
+ *
+ * Only while the engagement is in intake: the token is a phase, not a feature.
+ */
+export async function issueIntakeLink(
+  id: string
+): Promise<ActionResult<{ link: IntakeLink; assessment: CcAssessment }>> {
+  const ctx = await requireOrg();
+  if ("error" in ctx) return { ok: false, error: ctx.error };
+
+  const supabase = await createClient();
+  const { data: row, error: readError } = await supabase
+    .from("cc_assessments")
+    .select("status")
+    .eq("id", id)
+    .eq("org_id", ctx.orgId)
+    .maybeSingle();
+  if (readError) return { ok: false, error: readError.message };
+  if (!row) return { ok: false, error: "Assessment not found" };
+  if ((row as { status: AssessmentStatus }).status !== "intake") {
+    return {
+      ok: false,
+      error:
+        "The intake link only works while the engagement is in Intake. Move it back to Intake to re-open the owner's form.",
+    };
+  }
+
+  const token = crypto.randomUUID();
+  const { data, error } = await supabase
+    .from("cc_assessments")
+    .update({
+      intake_token: token,
+      intake_submitted_at: null,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", id)
+    .eq("org_id", ctx.orgId)
+    .eq("status", "intake")
+    .select("*")
+    .maybeSingle();
+
+  if (error) return { ok: false, error: error.message };
+  // A refused UPDATE matches zero rows and reports success (CLAUDE.md) — an
+  // empty result here is a refusal, not a link.
+  if (!data) {
+    return { ok: false, error: "The link was not issued — try reloading." };
+  }
+
+  const origin = await requestOrigin();
+  revalidate(id);
+  return {
+    ok: true,
+    data: {
+      link: { token, url: `${origin}/intake/${token}` },
+      assessment: data as CcAssessment,
+    },
+  };
+}
+
+/** Kill the link without touching a single answer the owner already gave. */
+export async function revokeIntakeLink(
+  id: string
+): Promise<ActionResult<{ assessment: CcAssessment }>> {
+  const ctx = await requireOrg();
+  if ("error" in ctx) return { ok: false, error: ctx.error };
+
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("cc_assessments")
+    .update({ intake_token: null, updated_at: new Date().toISOString() })
+    .eq("id", id)
+    .eq("org_id", ctx.orgId)
+    .select("*")
+    .maybeSingle();
+
+  if (error) return { ok: false, error: error.message };
+  if (!data) return { ok: false, error: "Assessment not found" };
+  revalidate(id);
+  return { ok: true, data: { assessment: data as CcAssessment } };
+}
+
+/** One field the pre-fill wrote, or refused to write, with its reason. */
+export interface PrefillOutcome {
+  field: string;
+  label: string;
+  value: string;
+  /** false = the advisor had already typed something, so nothing was touched. */
+  applied: boolean;
+}
+
+const PREFILL_LABELS: Record<string, string> = {
+  owner_objective: "Owner objective",
+  owner_belief: "Their bottleneck belief",
+  annual_revenue: "Annual revenue",
+  gross_margin: "Gross margin %",
+  operating_profit: "Operating profit",
+};
+
+/**
+ * Copy the intake's baseline into the assessment — and ONLY into columns that
+ * are still empty.
+ *
+ * An advisor's typed number outranks an owner's form answer every time: they
+ * may have seen the P&L, corrected a misread question, or agreed a different
+ * figure in the room. So this fills blanks and reports what it skipped; it
+ * never overwrites, and it is safe to press twice.
+ *
+ * The figures with no column of their own — largest-customer share, headcount,
+ * repetitive hours, loaded rates — are returned for the workbench to show
+ * beside S8, L4 and the opportunity calculators rather than being written
+ * somewhere they would go stale.
+ */
+export async function applyIntakePrefill(id: string): Promise<
+  ActionResult<{
+    assessment: CcAssessment;
+    outcomes: PrefillOutcome[];
+    reference: IntakePrefill;
+  }>
+> {
+  const ctx = await requireOrg();
+  if ("error" in ctx) return { ok: false, error: ctx.error };
+
+  const supabase = await createClient();
+  const { data: row, error: readError } = await supabase
+    .from("cc_assessments")
+    .select("*")
+    .eq("id", id)
+    .eq("org_id", ctx.orgId)
+    .maybeSingle();
+  if (readError) return { ok: false, error: readError.message };
+  if (!row) return { ok: false, error: "Assessment not found" };
+  const stored = row as CcAssessment;
+
+  if (stored.status === "delivered") {
+    return {
+      ok: false,
+      error:
+        "This engagement is delivered. Reopen the engagement (status → review) before editing.",
+    };
+  }
+
+  const prefill = intakePrefill(stored.intake);
+  const candidates: Array<{ field: keyof CcAssessment; value: string | number | null }> = [
+    { field: "owner_objective", value: prefill.owner_objective },
+    { field: "owner_belief", value: prefill.owner_belief },
+    { field: "annual_revenue", value: prefill.annual_revenue },
+    { field: "gross_margin", value: prefill.gross_margin },
+    { field: "operating_profit", value: prefill.operating_profit },
+  ];
+
+  const update: Record<string, unknown> = {};
+  const outcomes: PrefillOutcome[] = [];
+  for (const { field, value } of candidates) {
+    if (value === null || value === undefined || value === "") continue;
+    const existing = stored[field];
+    const empty =
+      existing === null ||
+      existing === undefined ||
+      (typeof existing === "string" && existing.trim() === "");
+    if (empty) update[field as string] = value;
+    outcomes.push({
+      field: field as string,
+      label: PREFILL_LABELS[field as string] ?? (field as string),
+      value: String(value),
+      applied: empty,
+    });
+  }
+
+  if (Object.keys(update).length === 0) {
+    return {
+      ok: true,
+      data: { assessment: stored, outcomes, reference: prefill },
+    };
+  }
+
+  update.updated_at = new Date().toISOString();
+  const { data, error } = await supabase
+    .from("cc_assessments")
+    .update(update)
+    .eq("id", id)
+    .eq("org_id", ctx.orgId)
+    .select("*")
+    .maybeSingle();
+
+  if (error) return { ok: false, error: error.message };
+  if (!data) return { ok: false, error: "Nothing was pre-filled — try reloading." };
+  revalidate(id);
+  return {
+    ok: true,
+    data: {
+      assessment: data as CcAssessment,
+      outcomes,
+      reference: prefill,
+    },
+  };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Follow-through — the day-30 and day-90 reviews (migration 0013)
+// ─────────────────────────────────────────────────────────────────────────────
+
+export type OutcomeDay = "day30" | "day90";
+
+const OUTCOME_DAYS: OutcomeDay[] = ["day30", "day90"];
+const OUTCOME_STATUSES: AssessmentOutcomeReview["items"][number]["status"][] = [
+  "not_started",
+  "in_progress",
+  "done",
+  "dropped",
+];
+
+function cleanLine(value: unknown, max = 400): string | null {
+  if (typeof value !== "string") return null;
+  const trimmed = value.trim().slice(0, max);
+  return trimmed.length > 0 ? trimmed : null;
+}
+
+/**
+ * Record one follow-through review.
+ *
+ * Writes ONLY `outcomes`, which is deliberately absent from the delivered-lock
+ * field list in migration 0012: a day-30 review by definition happens after
+ * delivery, and a lock that refused it would make the instrument unable to
+ * learn from its own deliveries. Nothing here can change a word of the
+ * document that was handed over.
+ */
+export async function saveOutcomes(
+  id: string,
+  day: OutcomeDay,
+  review: {
+    reviewed_on?: string | null;
+    reviewer?: string | null;
+    items?: Array<{
+      plan_item?: string;
+      status?: string;
+      kpi?: string | null;
+      baseline?: string | null;
+      actual?: string | null;
+      note?: string | null;
+    }>;
+    summary?: string | null;
+  }
+): Promise<ActionResult<{ assessment: CcAssessment }>> {
+  const ctx = await requireOrg();
+  if ("error" in ctx) return { ok: false, error: ctx.error };
+  if (!OUTCOME_DAYS.includes(day)) {
+    return { ok: false, error: `Unknown review: ${day}` };
+  }
+
+  const supabase = await createClient();
+  const { data: row, error: readError } = await supabase
+    .from("cc_assessments")
+    .select("outcomes")
+    .eq("id", id)
+    .eq("org_id", ctx.orgId)
+    .maybeSingle();
+  if (readError) return { ok: false, error: readError.message };
+  if (!row) return { ok: false, error: "Assessment not found" };
+
+  const storedOutcomes = (row as { outcomes: unknown }).outcomes;
+  const base: AssessmentOutcomes =
+    storedOutcomes && typeof storedOutcomes === "object" && !Array.isArray(storedOutcomes)
+      ? ({ ...(storedOutcomes as AssessmentOutcomes) } as AssessmentOutcomes)
+      : {};
+
+  const items: AssessmentOutcomeReview["items"] = [];
+  for (const item of review.items ?? []) {
+    const planItem = cleanLine(item?.plan_item, 600);
+    if (!planItem) continue;
+    const status = OUTCOME_STATUSES.includes(
+      item?.status as AssessmentOutcomeReview["items"][number]["status"]
+    )
+      ? (item!.status as AssessmentOutcomeReview["items"][number]["status"])
+      : "not_started";
+    items.push({
+      plan_item: planItem,
+      status,
+      kpi: cleanLine(item?.kpi),
+      baseline: cleanLine(item?.baseline, 120),
+      actual: cleanLine(item?.actual, 120),
+      note: cleanLine(item?.note, 1000),
+    });
+  }
+
+  base[day] = {
+    // A review with no date is a review nobody can place in time.
+    reviewed_on: cleanLine(review.reviewed_on, 10) ?? etDate(),
+    reviewer: cleanLine(review.reviewer, 120) ?? (await reviewerName()),
+    items,
+    summary: cleanLine(review.summary, 4000),
+  };
+
+  const { data, error } = await supabase
+    .from("cc_assessments")
+    .update({
+      outcomes: base as unknown as Json,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", id)
+    .eq("org_id", ctx.orgId)
+    .select("*")
+    .maybeSingle();
+
+  if (error) return { ok: false, error: error.message };
+  if (!data) {
+    return {
+      ok: false,
+      error: "The review did not save — you may not have access to this engagement.",
+    };
+  }
+  revalidate(id);
+  return { ok: true, data: { assessment: data as CcAssessment } };
 }

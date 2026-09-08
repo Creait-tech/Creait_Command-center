@@ -20,6 +20,7 @@ import { cn } from "@/lib/utils";
 
 export type StepId =
   | "setup"
+  | "intake"
   | "session"
   | "scoring"
   | "opportunities"
@@ -29,6 +30,7 @@ export type StepId =
 
 export const STEP_IDS: StepId[] = [
   "setup",
+  "intake",
   "session",
   "scoring",
   "opportunities",
@@ -56,6 +58,13 @@ export const STEPS: Record<StepId, StepMeta> = {
     label: "Setup",
     purpose:
       "Name the engagement the way it should read on the report cover, and who you'll be sitting with.",
+    when: "Before the intensive",
+  },
+  intake: {
+    id: "intake",
+    label: "Intake",
+    purpose:
+      "Send the owner their link, read what comes back, and carry the baseline over without re-keying it.",
     when: "Before the intensive",
   },
   session: {
