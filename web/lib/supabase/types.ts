@@ -802,8 +802,43 @@ export interface CcAssessment {
    */
   session_notes: Json;
   overlap_factor: number;
+  /**
+   * Release gate (migration 0012). `reviewed_by` is the display name of the
+   * person who signed off, captured at write time so it survives a rename.
+   */
+  reviewed_by: string | null;
+  reviewed_at: string | null;
+  /**
+   * What was actually handed over: scores, opportunities, computed scores and
+   * the readiness result at the moment of release. The report re-renders from
+   * live rows, so this is the only record of the delivered document.
+   */
+  delivered_snapshot: Json;
+  /**
+   * Whether a real P&L is on file. false makes the report print the
+   * unaudited-figures disclosure and widens Reported-only ranges by ±25%.
+   */
+  pnl_on_file: boolean;
+  /** Data-room checklist — AssessmentDocument[] (see ASSESSMENT_DOCUMENT_KINDS). */
+  documents: Json;
+  /** The results session in `meetings`, when one has been linked. */
+  meeting_id: string | null;
   created_at: string;
   updated_at: string;
+}
+
+/** One item of the data room, as stored in cc_assessments.documents. */
+export interface AssessmentDocument {
+  name: string;
+  kind:
+    | "pnl"
+    | "revenue_by_customer"
+    | "ar_aging"
+    | "rate_card"
+    | "job_cost"
+    | "other";
+  /** YYYY-MM-DD, America/New_York — when we received it. */
+  received_on: string | null;
 }
 
 export interface CcAssessmentScore {
@@ -857,6 +892,13 @@ export interface CcAssessmentOpportunity {
    * the advisor visibly lowering the number is the trust act.
    */
   owner_estimate_annual: number | null;
+  /**
+   * The advisor's statement that every indicator behind this finding is
+   * Reported (migration 0012). Forces the ±25% widening and the "based on your
+   * estimates" line even when a P&L is on file — there is no
+   * indicator→opportunity mapping to derive it from.
+   */
+  basis_reported_only: boolean;
   created_at: string;
   updated_at: string;
 }
