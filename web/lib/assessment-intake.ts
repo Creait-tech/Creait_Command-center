@@ -30,6 +30,7 @@
  */
 
 import type { IndicatorKey } from "@/lib/assessment-instrument";
+import { parseLooseNumber } from "@/lib/loose-number";
 
 /**
  * The literal stored for "Not currently known". A string, deliberately: it
@@ -1479,12 +1480,34 @@ export function parseIntake(json: unknown): IntakeAnswers {
 }
 
 /**
+ * True where an answer says "this question now holds nothing" rather than
+ * "this question was not in the patch" — an empty array from a multi or a
+ * table the owner emptied out. The write path deletes the key rather than
+ * storing `[]`, so a reload agrees with the screen the owner is looking at.
+ */
+export function isClearedAnswer(value: IntakeAnswer | undefined): boolean {
+  return Array.isArray(value) && value.length === 0;
+}
+
+/**
  * Narrow one patch of answers to what may actually be stored: known ids only,
  * shape-checked per question. This is the function the public server action
  * trusts — everything reaching it came from the open internet.
+ *
+ * One thing it keeps that parseIntake drops: an explicit `[]` on a multi or a
+ * table question. Reading storage, an empty array is noise; in a patch it is
+ * the owner deleting the last row, and it comes back as a clear (see
+ * isClearedAnswer) so the answer is removed instead of quietly persisting.
  */
 export function sanitizeIntakePatch(patch: unknown): IntakeAnswers {
-  return parseIntake(patch);
+  const out = parseIntake(patch);
+  if (!patch || typeof patch !== "object" || Array.isArray(patch)) return out;
+  for (const [key, raw] of Object.entries(patch as Record<string, unknown>)) {
+    const q = INTAKE_QUESTIONS_BY_ID[key];
+    if (!q || (q.type !== "multi" && q.type !== "table")) continue;
+    if (Array.isArray(raw) && raw.length === 0) out[q.id] = [];
+  }
+  return out;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1526,25 +1549,23 @@ export function tableRows(value: IntakeAnswer | undefined): IntakeTableRow[] {
   );
 }
 
-const MULTIPLIERS: Record<string, number> = { k: 1_000, m: 1_000_000, b: 1_000_000_000 };
-
 /**
  * The first number an owner wrote, with $ / commas / k / m understood and a
  * range read as its low end. Returns null — never zero — for "unknown", for
  * an empty box, and for anything with no number in it at all.
+ *
+ * The reading itself is parseLooseNumber, shared with the live session
+ * workbench so the two never disagree about what "1.2m" is worth. A k/m/b
+ * multiplier counts only where it ends the token.
+ *
+ * // examples: "3 managers" → 3 · "1.2m" → 1,200,000 · "$45k" → 45,000 ·
+ * //           "40 min" → 40 · "unknown" → null
  */
 export function parseNumeric(raw: string | null | undefined): number | null {
   if (typeof raw !== "string") return null;
   const text = raw.trim();
   if (!text || text.toLowerCase() === UNKNOWN) return null;
-  const match = text
-    .replace(/,/g, "")
-    .match(/(-?\d+(?:\.\d+)?)\s*([kmb])?/i);
-  if (!match) return null;
-  const value = Number(match[1]);
-  if (!Number.isFinite(value)) return null;
-  const suffix = match[2]?.toLowerCase();
-  return suffix ? value * (MULTIPLIERS[suffix] ?? 1) : value;
+  return parseLooseNumber(text);
 }
 
 /** A percent as a whole number (60 for "about 60%"), matching gross_margin. */

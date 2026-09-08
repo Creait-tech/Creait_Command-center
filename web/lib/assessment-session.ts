@@ -20,6 +20,10 @@ import {
   isTriagePrompt,
   type SessionPrompt,
 } from "@/lib/assessment-facilitation";
+// The intake module never imports this one, so the dependency runs one way and
+// there is no cycle to break.
+import { intakePrefill, type IntakePrefill } from "@/lib/assessment-intake";
+import { parseLooseNumber } from "@/lib/loose-number";
 import type { AssessmentPillar, Json } from "@/lib/supabase/types";
 
 export type BlockId = "b1" | "b2" | "b3" | "b4" | "b5";
@@ -307,21 +311,14 @@ export function pacedPromptIndex(
  * they arrive as "$12,500", "about 40", "1.2m" or "35%". Anything that does not
  * contain a number returns null, which every check below reports as
  * insufficient rather than guessing.
+ *
+ * The reader is shared with the intake (lib/loose-number.ts) — the two used to
+ * be separate copies, and both read "40 monthly" as forty million.
+ *
+ * // examples: "3 managers" → 3 · "1.2m" → 1,200,000 · "$45k" → 45,000 ·
+ * //           "40 min" → 40
  */
-export function parseLooseNumber(
-  raw: string | null | undefined
-): number | null {
-  if (typeof raw !== "string") return null;
-  const cleaned = raw.toLowerCase().replace(/[$,\s]/g, "");
-  const match = cleaned.match(/-?\d+(?:\.\d+)?/);
-  if (!match) return null;
-  const value = Number(match[0]);
-  if (!Number.isFinite(value)) return null;
-  const suffix = cleaned.slice(match.index! + match[0].length, match.index! + match[0].length + 1);
-  if (suffix === "k") return value * 1_000;
-  if (suffix === "m") return value * 1_000_000;
-  return value;
-}
+export { parseLooseNumber };
 
 /**
  * Percentages, in the three shapes owners give them.
@@ -380,29 +377,20 @@ export function parseHoursRows(raw: string | null | undefined): HoursRow[] {
 }
 
 /**
- * Read one value out of the owner's pre-assessment intake.
+ * What the owner's pre-assessment intake already told us.
  *
- * The intake is stored as free JSON keyed by question id (migration 0013). The
- * question catalogue it references does not exist in this tree yet, so rather
- * than import a module that may be renamed, each check names the keys it would
- * accept and takes the first one present. "unknown" is the intake's explicit
- * not-known answer and is never a value.
+ * The intake is stored as free JSON keyed by QUESTION ID (migration 0013) —
+ * `q17`, not `gross_margin` — so reading it by business name finds nothing.
+ * intakePrefill is the one place that knows which question holds which figure,
+ * and it returns the typed values with "not currently known" left as null, so
+ * every check below asks it rather than guessing at key names.
  */
-function intakeValue(
-  intake: Json | null | undefined,
-  keys: readonly string[]
-): string | null {
+function intakeFigures(
+  assessment: CrossCheckAssessment
+): IntakePrefill | null {
+  const intake = assessment.intake;
   if (!intake || typeof intake !== "object" || Array.isArray(intake)) return null;
-  const raw = intake as Record<string, unknown>;
-  for (const key of keys) {
-    const v = raw[key];
-    if (typeof v === "number" && Number.isFinite(v)) return String(v);
-    if (typeof v === "string") {
-      const trimmed = v.trim();
-      if (trimmed && trimmed.toLowerCase() !== "unknown") return trimmed;
-    }
-  }
-  return null;
+  return intakePrefill(intake);
 }
 
 // ── Live cross-checks ───────────────────────────────────────────────────────
@@ -499,13 +487,8 @@ export const CROSS_CHECKS: CrossCheck[] = [
     run(notes, assessment) {
       const stated =
         parseLoosePercent(notes.gross_margin_pct) ??
-        parseLoosePercent(
-          intakeValue(assessment.intake, [
-            "gross_margin",
-            "gross_margin_pct",
-            "margin",
-          ])
-        );
+        intakeFigures(assessment)?.gross_margin ??
+        null;
       const filed =
         typeof assessment.gross_margin === "number" &&
         Number.isFinite(assessment.gross_margin)
@@ -552,7 +535,12 @@ export const CROSS_CHECKS: CrossCheck[] = [
       const perMonth = parseLooseNumber(notes.leads_per_month);
       const close = parseLoosePercent(notes.conversion_rate);
       const value = parseLooseNumber(notes.avg_deal_value);
-      const revenue = assessment.annual_revenue;
+      // The engagement's own revenue first; the intake's is the fallback for a
+      // session running before the baseline was copied across.
+      const revenue =
+        assessment.annual_revenue ??
+        intakeFigures(assessment)?.annual_revenue ??
+        null;
 
       const missing = [
         perMonth === null ? "leads" : null,
@@ -579,14 +567,7 @@ export const CROSS_CHECKS: CrossCheck[] = [
     fromBlock: "b5",
     run(notes, assessment) {
       const session = parseLoosePercent(notes.largest_customer_pct);
-      const intake = parseLoosePercent(
-        intakeValue(assessment.intake, [
-          "largest_customer_pct",
-          "largest_customer",
-          "customer_concentration",
-          "concentration",
-        ])
-      );
+      const intake = intakeFigures(assessment)?.largest_customer_pct ?? null;
       if (session === null && intake === null) {
         return insufficient("Largest-customer share not captured yet.");
       }
@@ -613,17 +594,24 @@ export const CROSS_CHECKS: CrossCheck[] = [
     askOnFlag:
       "By these numbers a third of the payroll is doing repetitive work — does that match what you see?",
     fromBlock: "b4",
-    run(notes) {
+    run(notes, assessment) {
+      const intake = intakeFigures(assessment);
       const rows = parseHoursRows(notes.repetitive_hours_week);
-      const heads = parseLooseNumber(notes.headcount);
-      if (!rows.length) {
+      // The intake's q44 inventory stands in for the live list until the
+      // facilitator has built one out loud, but it is a single total — there
+      // are no per-role rows in it to overload.
+      const intakeHours = intake?.repetitive_hours_weekly ?? null;
+      const heads = parseLooseNumber(notes.headcount) ?? intake?.headcount ?? null;
+      if (!rows.length && (intakeHours === null || intakeHours <= 0)) {
         return insufficient("No repetitive-hours rows captured yet.");
       }
       if (heads === null || heads <= 0) {
         return insufficient("Headcount not captured yet.");
       }
 
-      const total = rows.reduce((sum, r) => sum + r.hours, 0);
+      const total = rows.length
+        ? rows.reduce((sum, r) => sum + r.hours, 0)
+        : (intakeHours as number);
       const capacity = heads * 40;
       const share = total / capacity;
       const overloaded = rows.filter((r) => r.hours > 40);

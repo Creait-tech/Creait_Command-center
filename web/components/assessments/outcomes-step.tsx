@@ -28,6 +28,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { saveOutcomes, type OutcomeDay } from "@/lib/assessment-actions";
+/** The same business date the server actions stamp — see lib/business-date.ts. */
+import { todayInET } from "@/lib/business-date";
 import type {
   AssessmentOutcomeReview,
   AssessmentOutcomes,
@@ -49,16 +51,6 @@ const DAYS: Array<{ id: OutcomeDay; label: string; when: string }> = [
   { id: "day30", label: "Day 30", when: "one month after the results session" },
   { id: "day90", label: "Day 90", when: "at the end of the plan" },
 ];
-
-/** Today in America/New_York — the same business date the rest of the module uses. */
-function etToday(): string {
-  return new Intl.DateTimeFormat("en-CA", {
-    timeZone: "America/New_York",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).format(new Date());
-}
 
 interface ItemDraft {
   status: ItemStatus;
@@ -88,7 +80,7 @@ function draftFor(
   const byItem = new Map<string, AssessmentOutcomeReview["items"][number]>();
   for (const item of stored?.items ?? []) byItem.set(item.plan_item, item);
   return {
-    reviewed_on: stored?.reviewed_on ?? etToday(),
+    reviewed_on: stored?.reviewed_on ?? todayInET(),
     reviewer: stored?.reviewer ?? reviewer,
     summary: stored?.summary ?? "",
     items: planItems.map((plan) => {

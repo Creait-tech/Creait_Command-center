@@ -13,6 +13,9 @@ import { auth, currentUser } from "@clerk/nextjs/server";
 
 import { createClient } from "@/lib/supabase/server";
 import { getActiveOrgId } from "@/lib/active-org";
+// Every session date in this module is a business date in the office's own
+// timezone — see lib/business-date.ts for why UTC was wrong on report covers.
+import { todayInET } from "@/lib/business-date";
 import { displayNameOf } from "@/lib/display-name";
 import {
   ASSESSMENT_DOCUMENT_KINDS,
@@ -94,23 +97,6 @@ async function reviewerName(): Promise<string | null> {
   return displayNameOf(await currentUser());
 }
 
-/**
- * Today in America/New_York, as YYYY-MM-DD.
- *
- * `new Date().toISOString().slice(0, 10)` is UTC, so an engagement started at
- * 8pm in Atlanta was being stamped with tomorrow's date — on the cover of the
- * client's report. Every session date in this module is a business date in the
- * office's own timezone.
- */
-function etDate(): string {
-  return new Intl.DateTimeFormat("en-CA", {
-    timeZone: "America/New_York",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).format(new Date());
-}
-
 /** Verify the assessment exists and belongs to the caller's org. */
 async function ownAssessment(
   supabase: Awaited<ReturnType<typeof createClient>>,
@@ -177,7 +163,7 @@ export async function createAssessment(input: {
       industry: input.industry?.trim() || null,
       status: (isPractice ? "practice" : "intake") satisfies AssessmentStatus,
       is_practice: isPractice,
-      started_at: etDate(),
+      started_at: todayInET(),
     })
     .select("id")
     .single();
@@ -462,7 +448,7 @@ async function deliveryGate(
   }
 
   const now = new Date().toISOString();
-  const deliveredAt = patch.delivered_at?.trim() || etDate();
+  const deliveredAt = patch.delivered_at?.trim() || todayInET();
 
   /**
    * The snapshot has to be enough to reconstruct the delivered document on its
@@ -881,7 +867,7 @@ export async function setAssessmentDocuments(
       docs.push({
         name,
         kind: doc.kind as AssessmentDocument["kind"],
-        received_on: doc.received_on?.trim() || etDate(),
+        received_on: doc.received_on?.trim() || todayInET(),
       });
     }
     update.documents = docs;
@@ -1526,7 +1512,7 @@ export async function saveOutcomes(
 
   base[day] = {
     // A review with no date is a review nobody can place in time.
-    reviewed_on: cleanLine(review.reviewed_on, 10) ?? etDate(),
+    reviewed_on: cleanLine(review.reviewed_on, 10) ?? todayInET(),
     reviewer: cleanLine(review.reviewer, 120) ?? (await reviewerName()),
     items,
     summary: cleanLine(review.summary, 4000),

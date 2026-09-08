@@ -14,6 +14,7 @@
 
 import {
   INTAKE_QUESTIONS_BY_ID,
+  isClearedAnswer,
   missingRequired,
   parseIntake,
   sanitizeIntakePatch,
@@ -67,7 +68,10 @@ export async function saveIntakeAnswers(
   let touched = 0;
   for (const [id, value] of Object.entries(incoming)) {
     if (!INTAKE_QUESTIONS_BY_ID[id]) continue;
-    merged[id as keyof IntakeAnswers] = value;
+    // An emptied table or multi arrives as `[]` — the owner deleted the last
+    // row, which is a clear, not an answer worth storing.
+    if (isClearedAnswer(value)) delete merged[id as keyof IntakeAnswers];
+    else merged[id as keyof IntakeAnswers] = value;
     touched += 1;
   }
 

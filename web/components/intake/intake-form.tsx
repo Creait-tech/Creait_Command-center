@@ -27,10 +27,10 @@ import {
   intakeProgress,
   isAnswered,
   isUnknown,
-  missingRequired,
   moduleEApplies,
   questionsInSection,
   TABLE_ROW_KEY,
+  tableRows,
   UNKNOWN,
   UNKNOWN_LABEL,
   type IntakeAnswer,
@@ -50,20 +50,13 @@ const AUTOSAVE_MS = 800;
 // Table helpers — one storage shape, two behaviours
 // ─────────────────────────────────────────────────────────────────────────────
 
-function rowsOf(value: IntakeAnswer | undefined): IntakeTableRow[] {
-  if (!Array.isArray(value)) return [];
-  return value.filter(
-    (r): r is IntakeTableRow => !!r && typeof r === "object" && !Array.isArray(r)
-  );
-}
-
 /** A fixed-row table always renders its written rows, filled or not. */
 function fixedCell(
   value: IntakeAnswer | undefined,
   label: string,
   column: string
 ): string {
-  const row = rowsOf(value).find((r) => r[TABLE_ROW_KEY] === label);
+  const row = tableRows(value).find((r) => r[TABLE_ROW_KEY] === label);
   return row?.[column] ?? "";
 }
 
@@ -73,7 +66,7 @@ function setFixedCell(
   column: string,
   next: string
 ): IntakeTableRow[] {
-  const rows = rowsOf(value).filter((r) => r[TABLE_ROW_KEY] !== undefined);
+  const rows = tableRows(value).filter((r) => r[TABLE_ROW_KEY] !== undefined);
   const index = rows.findIndex((r) => r[TABLE_ROW_KEY] === label);
   if (index === -1) {
     return [...rows, { [TABLE_ROW_KEY]: label, [column]: next }];
@@ -83,13 +76,23 @@ function setFixedCell(
   return copy;
 }
 
+/**
+ * A free-row table after one cell edit — or `undefined` once the owner has
+ * emptied every row.
+ *
+ * The undefined matters: an empty array is not a stored answer of "no rows",
+ * it is dropped on the way in, so sending `[]` would leave yesterday's rows
+ * sitting in the database while the screen shows an empty grid. Undefined
+ * routes the question through the patch's `__cleared` list instead, and the
+ * answer is actually deleted.
+ */
 function setFreeCell(
   value: IntakeAnswer | undefined,
   index: number,
   column: string,
   next: string
-): IntakeTableRow[] {
-  const rows = rowsOf(value);
+): IntakeTableRow[] | undefined {
+  const rows = tableRows(value);
   const copy = [...rows];
   while (copy.length <= index) copy.push({});
   copy[index] = { ...copy[index], [column]: next };
@@ -101,7 +104,7 @@ function setFreeCell(
   ) {
     copy.pop();
   }
-  return copy;
+  return copy.length > 0 ? copy : undefined;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -140,11 +143,24 @@ export function IntakeForm({
       }
       if (cleared.length > 0) patch.__cleared = cleared;
 
+      /**
+       * A write that did not land leaves its questions dirty again, so "Try
+       * again" re-sends them and the next keystroke carries them along. The
+       * ids are cleared optimistically above — without this, a failed save
+       * would silently drop the patch and the retry would post nothing.
+       */
+      const keepDirty = () => {
+        for (const id of ids) dirty.current.add(id);
+      };
+
       const run = async () => {
         setSave("saving");
         try {
           const res = await saveIntakeAnswers(token, patch, submit);
           if (!res.ok) {
+            // A closed link is final — re-queueing would only retry into the
+            // same refusal — but every other failure is worth another go.
+            if (!res.closed) keepDirty();
             setSave(res.closed ? "closed" : "error");
             setError(res.error);
             return;
@@ -153,6 +169,7 @@ export function IntakeForm({
           setSave("saved");
           if (res.submitted) setSubmitted(true);
         } catch {
+          keepDirty();
           setSave("error");
           setError("Couldn't reach the server — your answers are still here.");
         }
@@ -187,7 +204,12 @@ export function IntakeForm({
 
   const progress = useMemo(() => intakeProgress(answers), [answers]);
   const moduleE = useMemo(() => moduleEApplies(answers), [answers]);
-  const missing = useMemo(() => missingRequired(answers), [answers]);
+  // Already worked out per section, so it is a flatten rather than a second
+  // parse of every answer on every keystroke.
+  const missing = useMemo(
+    () => progress.flatMap((p) => p.missingRequired),
+    [progress]
+  );
 
   const totals = progress.reduce(
     (acc, p) => ({ done: acc.done + p.done, total: acc.total + p.total }),
@@ -595,10 +617,11 @@ function FreeTable({
 }: {
   question: IntakeQuestion;
   value: IntakeAnswer | undefined;
-  onChange: (value: IntakeAnswer) => void;
+  /** undefined when the last row was emptied — the answer is cleared, not `[]`. */
+  onChange: (value: IntakeAnswer | undefined) => void;
 }) {
   const columns = question.columns ?? [];
-  const rows = rowsOf(value);
+  const rows = tableRows(value);
   const max = question.maxRows ?? 10;
   // One blank row is always offered, so adding a line never needs a button.
   const shown = rows.length < max ? rows.length + 1 : rows.length;

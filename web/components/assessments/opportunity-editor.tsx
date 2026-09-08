@@ -56,6 +56,7 @@ import type {
   CalcField,
   CalcKind,
   CalcOutputs,
+  ComputeResult,
   RawCalcInputs,
 } from "@/lib/opportunity-calculators";
 import type {
@@ -198,7 +199,10 @@ function OpportunityDialog({
   onOpenChange: (o: boolean) => void;
   onSaved: (o: CcAssessmentOpportunity) => void;
 }) {
-  const storedCalc = editing ? parseCalc(editing.calc) : null;
+  const storedCalc = useMemo(
+    () => (editing ? parseCalc(editing.calc) : null),
+    [editing]
+  );
   const [form, setForm] = useState<OppForm>(
     editing ? toOppForm(editing) : EMPTY_OPP
   );
@@ -208,6 +212,12 @@ function OpportunityDialog({
   );
   /** Set when a hand edit dropped a calculator record, so the dialog can say so. */
   const [calcDropped, setCalcDropped] = useState(false);
+  /**
+   * Whether a calculator input has actually been touched since the dialog
+   * opened. Until it has, the stored record stands — opening a finding to fix
+   * a typo in its title must not silently republish a different range.
+   */
+  const [calcEdited, setCalcEdited] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [lastEditingId, setLastEditingId] = useState<string | null>(
     editing?.id ?? null
@@ -220,14 +230,36 @@ function OpportunityDialog({
     setSource(next?.kind ?? "manual");
     setDraft(next ? draftFrom(next.inputs) : {});
     setCalcDropped(false);
+    setCalcEdited(false);
   }
 
   const calcKind = source === "manual" ? null : source;
   const inputs = useMemo(() => draftToInputs(draft), [draft]);
-  const result = useMemo(
+  const computed = useMemo(
     () => (calcKind ? compute(calcKind, inputs, baseline) : null),
     [calcKind, inputs, baseline]
   );
+  /**
+   * The saved arithmetic, replayed rather than re-run. A recomputation on open
+   * would quietly move the range whenever the assessment's baseline (or this
+   * module) had changed since the finding was priced — the advisor would never
+   * be told, and the report would print a number nobody chose.
+   */
+  const unchangedCalc =
+    !calcEdited && storedCalc && storedCalc.kind === calcKind ? storedCalc : null;
+  const result: ComputeResult | null = unchangedCalc
+    ? {
+        ok: true,
+        low: unchangedCalc.outputs.low,
+        expected: unchangedCalc.outputs.expected,
+        high: unchangedCalc.outputs.high,
+        chain: unchangedCalc.chain,
+        inputs: unchangedCalc.inputs,
+        ...(unchangedCalc.outputs.capacityHoursWeekly !== undefined
+          ? { capacityHoursWeekly: unchangedCalc.outputs.capacityHoursWeekly }
+          : {}),
+      }
+    : computed;
   const outputs: CalcOutputs | null =
     result && result.ok ? { ...result } : null;
 
@@ -258,11 +290,19 @@ function OpportunityDialog({
     setCalcDropped(false);
     setSource(next);
     if (next === "manual") return;
-    setDraft((prev) =>
-      storedCalc?.kind === next && Object.keys(prev).length > 0
-        ? prev
-        : draftFrom(defaultInputs(next, baseline))
-    );
+    // Back to the calculator this finding was saved with: its own inputs come
+    // back, and with nothing edited its stored range stands. Any other
+    // calculator starts from defaults, which is itself a change.
+    if (storedCalc?.kind === next) {
+      setDraft((prev) =>
+        calcEdited && Object.keys(prev).length > 0
+          ? prev
+          : draftFrom(storedCalc.inputs)
+      );
+      return;
+    }
+    setDraft(draftFrom(defaultInputs(next, baseline)));
+    setCalcEdited(true);
   }
 
   /**
@@ -325,9 +365,12 @@ function OpportunityDialog({
       replaces: form.replaces,
       hours_recovered_weekly: shown.hours_recovered_weekly,
       // null, not undefined: a hand-entered range must actively clear any
-      // calculator record still on the row.
+      // calculator record still on the row. An untouched calculator keeps the
+      // record it already had, timestamp included — nothing was recalculated.
       calc:
-        calcKind && outputs ? toCalcRecord(calcKind, inputs, outputs) : null,
+        calcKind && outputs
+          ? (unchangedCalc ?? toCalcRecord(calcKind, outputs))
+          : null,
     });
     setSubmitting(false);
     if (!res.ok) {
@@ -429,9 +472,10 @@ function OpportunityDialog({
               kind={calcKind}
               baseline={baseline}
               draft={draft}
-              onDraftChange={(key, value) =>
-                setDraft((p) => ({ ...p, [key]: value }))
-              }
+              onDraftChange={(key, value) => {
+                setCalcEdited(true);
+                setDraft((p) => ({ ...p, [key]: value }));
+              }}
               result={result}
             />
           )}

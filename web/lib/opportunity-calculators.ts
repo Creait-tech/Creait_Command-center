@@ -484,7 +484,8 @@ export const CALCULATOR_LIST: CalculatorMeta[] = CALC_KINDS.map(
 // Results
 // ─────────────────────────────────────────────────────────────────────────────
 
-export interface CalcOutputs {
+/** What one calculator works out, before the inputs it ran on are stapled on. */
+export interface CalcFigures {
   low: number;
   expected: number;
   high: number;
@@ -492,6 +493,17 @@ export interface CalcOutputs {
   chain: string[];
   /** Always returned by automation_hours; undefined elsewhere. */
   capacityHoursWeekly?: number;
+}
+
+export interface CalcOutputs extends CalcFigures {
+  /**
+   * The inputs the arithmetic ACTUALLY ran on: what the advisor typed, with
+   * any figure that fell back to the assessment's baseline merged in. Stored
+   * as the record's inputs so a saved finding is self-describing — a record
+   * holding only the typed half omits the gross margin and revenue the
+   * numbers depend on, and cannot be re-derived once the baseline moves.
+   */
+  inputs: RawCalcInputs;
 }
 
 export type ComputeResult =
@@ -594,7 +606,7 @@ function readerFor(kind: CalcKind, inputs: RawCalcInputs) {
 // The calculators
 // ─────────────────────────────────────────────────────────────────────────────
 
-function closeRateLift(inputs: RawCalcInputs): CalcOutputs {
+function closeRateLift(inputs: RawCalcInputs): CalcFigures {
   const r = readerFor("close_rate_lift", inputs);
   const quoted = r.n("quotedVolume", { min: 0 });
   const current = r.n("currentClosePct", { min: 0, max: 100 });
@@ -647,7 +659,7 @@ function closeRateLift(inputs: RawCalcInputs): CalcOutputs {
   };
 }
 
-function priceChange(inputs: RawCalcInputs): CalcOutputs {
+function priceChange(inputs: RawCalcInputs): CalcFigures {
   const r = readerFor("price_change", inputs);
   const affected = r.n("revenueAffected", { min: 0 });
   const margin = r.n("grossMarginPct", { min: 0, max: 100 });
@@ -718,7 +730,7 @@ function priceChange(inputs: RawCalcInputs): CalcOutputs {
   };
 }
 
-function reactivation(inputs: RawCalcInputs): CalcOutputs {
+function reactivation(inputs: RawCalcInputs): CalcFigures {
   const r = readerFor("reactivation", inputs);
   const dormant = r.n("dormantCustomers", { min: 0 });
   const value = r.n("averageAnnualValue", { min: 0 });
@@ -761,7 +773,7 @@ function reactivation(inputs: RawCalcInputs): CalcOutputs {
   };
 }
 
-function responseTime(inputs: RawCalcInputs): CalcOutputs {
+function responseTime(inputs: RawCalcInputs): CalcFigures {
   const r = readerFor("response_time", inputs);
   const leads = r.n("leadsPerYear", { min: 0 });
   const shareLost = r.n("shareLostPct", { min: 0, max: 100 });
@@ -813,7 +825,7 @@ function responseTime(inputs: RawCalcInputs): CalcOutputs {
   };
 }
 
-function automationHours(inputs: RawCalcInputs): CalcOutputs {
+function automationHours(inputs: RawCalcInputs): CalcFigures {
   const r = readerFor("automation_hours", inputs);
   const hours = r.n("hoursPerWeek", { min: 0 });
   const rate = r.n("loadedHourlyRate", { min: 0 });
@@ -861,7 +873,7 @@ function automationHours(inputs: RawCalcInputs): CalcOutputs {
   };
 }
 
-const RUNNERS: Record<CalcKind, (inputs: RawCalcInputs) => CalcOutputs> = {
+const RUNNERS: Record<CalcKind, (inputs: RawCalcInputs) => CalcFigures> = {
   close_rate_lift: closeRateLift,
   price_change: priceChange,
   reactivation: reactivation,
@@ -935,7 +947,10 @@ export function compute<K extends CalcKind>(
   }
 
   try {
-    return { ok: true, ...runner(merged) };
+    // The merged inputs travel with the result: whatever the arithmetic ran
+    // on is what gets stored, so a record never omits the gross margin or the
+    // revenue the numbers actually depend on.
+    return { ok: true, inputs: merged, ...runner(merged) };
   } catch (err) {
     if (err instanceof InputError) return { ok: false, error: err.message };
     return {
@@ -945,16 +960,21 @@ export function compute<K extends CalcKind>(
   }
 }
 
-/** Build the record that gets stored on the opportunity's `calc` column. */
+/**
+ * Build the record that gets stored on the opportunity's `calc` column.
+ *
+ * The inputs come off the result, not from the caller's draft: the two differ
+ * wherever a figure was filled from the assessment's baseline, and storing the
+ * draft leaves a record nobody can re-derive once the baseline moves.
+ */
 export function toCalcRecord(
   kind: CalcKind,
-  inputs: RawCalcInputs,
   outputs: CalcOutputs,
   computedAt: string = new Date().toISOString()
 ): CalcRecord {
   return {
     kind,
-    inputs: { ...inputs },
+    inputs: { ...outputs.inputs },
     outputs: {
       low: outputs.low,
       expected: outputs.expected,
