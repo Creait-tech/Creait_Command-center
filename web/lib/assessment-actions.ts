@@ -8,19 +8,27 @@
  */
 
 import { revalidatePath } from "next/cache";
-import { auth } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 
 import { createClient } from "@/lib/supabase/server";
 import { getActiveOrgId } from "@/lib/active-org";
 import {
+  ASSESSMENT_DOCUMENT_KINDS,
+  assessmentReadiness,
+  computeScores,
   INDICATORS,
   normalizeOverlapFactor,
+  OVERLAY_FLAGS,
+  toScoreMap,
 } from "@/lib/assessment-instrument";
 import { BLOCK_IDS, ENGINE_METRICS } from "@/lib/assessment-session";
 import type {
+  AssessmentDocument,
+  AssessmentPillar,
   AssessmentStatus,
   CcAssessment,
   CcAssessmentOpportunity,
+  CcAssessmentScore,
   EvidenceConfidence,
   Json,
   OpportunityConfidence,
@@ -47,12 +55,49 @@ const EVIDENCE: EvidenceConfidence[] = [
   "unknown",
 ];
 const CONFIDENCE: OpportunityConfidence[] = ["high", "medium", "low"];
-const INDICATOR_KEYS = new Map(INDICATORS.map((i) => [i.key, i.pillar]));
+const INDICATOR_KEYS = new Map<string, AssessmentPillar>(
+  INDICATORS.map((i) => [i.key, i.pillar])
+);
+const OVERLAY_KEYS = new Set(OVERLAY_FLAGS.map((f) => f.key));
+const DOCUMENT_KINDS = new Set<string>(ASSESSMENT_DOCUMENT_KINDS);
 
 async function requireOrg(): Promise<{ orgId: string } | { error: string }> {
   const { userId } = await auth();
   if (!userId) return { error: "Not signed in" };
   return { orgId: await getActiveOrgId() };
+}
+
+/**
+ * The signed-in person's display name, for the release record. Same fallback
+ * ladder the rest of the app uses (see lib/eos-actions.ts): a name if Clerk has
+ * one, otherwise the email — an audit line that says "Teammate" records nothing.
+ */
+async function reviewerName(): Promise<string | null> {
+  const user = await currentUser();
+  return (
+    user?.fullName?.trim() ||
+    [user?.firstName, user?.lastName].filter(Boolean).join(" ").trim() ||
+    user?.username?.trim() ||
+    user?.primaryEmailAddress?.emailAddress?.trim() ||
+    null
+  );
+}
+
+/**
+ * Today in America/New_York, as YYYY-MM-DD.
+ *
+ * `new Date().toISOString().slice(0, 10)` is UTC, so an engagement started at
+ * 8pm in Atlanta was being stamped with tomorrow's date — on the cover of the
+ * client's report. Every session date in this module is a business date in the
+ * office's own timezone.
+ */
+function etDate(): string {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/New_York",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date());
 }
 
 /** Verify the assessment exists and belongs to the caller's org. */
@@ -121,7 +166,7 @@ export async function createAssessment(input: {
       industry: input.industry?.trim() || null,
       status: (isPractice ? "practice" : "intake") satisfies AssessmentStatus,
       is_practice: isPractice,
-      started_at: new Date().toISOString().slice(0, 10),
+      started_at: etDate(),
     })
     .select("id")
     .single();
@@ -153,6 +198,10 @@ export interface AssessmentPatch {
   overlay_flags?: string[];
   plan_items?: string[];
   overlap_factor?: number | string | null;
+  /** Data-room evidence (migration 0012). */
+  pnl_on_file?: boolean;
+  /** Who signs the release. Defaults to the signed-in user at delivery. */
+  reviewed_by?: string | null;
 }
 
 export async function updateAssessment(
@@ -180,7 +229,7 @@ export async function updateAssessment(
     }
     update.status = patch.status;
     if (patch.status === "delivered" && patch.delivered_at === undefined) {
-      update.delivered_at = new Date().toISOString().slice(0, 10);
+      update.delivered_at = etDate();
     }
   }
   if (patch.started_at !== undefined) update.started_at = patch.started_at || null;
@@ -195,8 +244,26 @@ export async function updateAssessment(
   if (patch.constraint_cost !== undefined) update.constraint_cost = patch.constraint_cost?.trim() || null;
   if (patch.constraint_fix !== undefined) update.constraint_fix = patch.constraint_fix?.trim() || null;
   if (patch.momentum_initiative !== undefined) update.momentum_initiative = patch.momentum_initiative?.trim() || null;
+  if (patch.pnl_on_file !== undefined) {
+    update.pnl_on_file = Boolean(patch.pnl_on_file);
+  }
+  if (patch.reviewed_by !== undefined) {
+    update.reviewed_by = patch.reviewed_by?.trim() || null;
+  }
   if (patch.overlay_flags !== undefined) {
-    update.overlay_flags = patch.overlay_flags.filter((f) => typeof f === "string");
+    // Every flag is checked against OVERLAY_FLAGS. An unrecognised key would
+    // store silently and then simply fail to render in the report — a critical
+    // constraint warning that disappears is the one failure this module cannot
+    // have.
+    const flags = patch.overlay_flags.filter((f) => typeof f === "string");
+    const unknown = flags.filter((f) => !OVERLAY_KEYS.has(f));
+    if (unknown.length > 0) {
+      return {
+        ok: false,
+        error: `Unknown overlay flag${unknown.length > 1 ? "s" : ""}: ${unknown.join(", ")}`,
+      };
+    }
+    update.overlay_flags = Array.from(new Set(flags));
   }
   if (patch.plan_items !== undefined) {
     update.plan_items = patch.plan_items
@@ -212,6 +279,20 @@ export async function updateAssessment(
   }
 
   const supabase = await createClient();
+
+  /**
+   * "Delivered" is a release, not a status. The same readiness rules the
+   * workbench shows are re-run here against the stored rows — a client with a
+   * stale checklist, a second tab, or a direct action call cannot mark an
+   * engagement delivered that would not pass the gate — and the moment it
+   * passes we write down who released it and exactly what was released.
+   */
+  if (patch.status === "delivered") {
+    const gate = await deliveryGate(supabase, id, ctx.orgId, patch, update);
+    if ("error" in gate) return { ok: false, error: gate.error };
+    Object.assign(update, gate.fields);
+  }
+
   const { data, error } = await supabase
     .from("cc_assessments")
     .update(update)
@@ -223,6 +304,93 @@ export async function updateAssessment(
   if (error) return { ok: false, error: error.message };
   revalidate(id);
   return { ok: true, data: { assessment: data as CcAssessment } };
+}
+
+/**
+ * Run the release gate and build the columns that record the release.
+ * Readiness is computed from the STORED rows merged with this patch, so the
+ * gate judges the engagement as it will exist after the write.
+ */
+async function deliveryGate(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  id: string,
+  orgId: string,
+  patch: AssessmentPatch,
+  update: Record<string, unknown>
+): Promise<{ fields: Record<string, unknown> } | { error: string }> {
+  const { data: row, error: readError } = await supabase
+    .from("cc_assessments")
+    .select("*")
+    .eq("id", id)
+    .eq("org_id", orgId)
+    .maybeSingle();
+
+  if (readError) return { error: readError.message };
+  if (!row) return { error: "Assessment not found" };
+  const stored = row as CcAssessment;
+
+  const [scoresRes, oppsRes] = await Promise.all([
+    supabase.from("cc_assessment_scores").select("*").eq("assessment_id", id),
+    supabase
+      .from("cc_assessment_opportunities")
+      .select("*")
+      .eq("assessment_id", id)
+      .order("rank", { ascending: true }),
+  ]);
+  if (scoresRes.error) return { error: scoresRes.error.message };
+  if (oppsRes.error) return { error: oppsRes.error.message };
+
+  const scoreRows = (scoresRes.data as CcAssessmentScore[] | null) ?? [];
+  const oppRows = (oppsRes.data as CcAssessmentOpportunity[] | null) ?? [];
+  const scores = toScoreMap(scoreRows);
+
+  const reviewer =
+    (typeof update.reviewed_by === "string" ? update.reviewed_by : null) ||
+    stored.reviewed_by?.trim() ||
+    (await reviewerName());
+
+  const readiness = assessmentReadiness({
+    scores,
+    opportunities: oppRows,
+    assessment: {
+      primary_constraint:
+        (update.primary_constraint as string | null | undefined) ??
+        stored.primary_constraint,
+      constraint_cost:
+        (update.constraint_cost as string | null | undefined) ??
+        stored.constraint_cost,
+      pnl_on_file:
+        (update.pnl_on_file as boolean | undefined) ?? stored.pnl_on_file,
+      reviewed_by: reviewer,
+      overlay_flags:
+        (update.overlay_flags as unknown) ?? stored.overlay_flags,
+      overlap_factor:
+        (update.overlap_factor as number | undefined) ?? stored.overlap_factor,
+    },
+  });
+
+  if (!readiness.ready) {
+    return {
+      error: `Not ready to deliver:\n• ${readiness.blockers.join("\n• ")}`,
+    };
+  }
+
+  const now = new Date().toISOString();
+  return {
+    fields: {
+      reviewed_by: reviewer,
+      reviewed_at: now,
+      delivered_at: patch.delivered_at ?? etDate(),
+      delivered_snapshot: {
+        at: now,
+        reviewed_by: reviewer,
+        scores: scoreRows,
+        opportunities: oppRows,
+        computed: computeScores(scores),
+        readiness,
+      } as unknown as Json,
+    },
+  };
 }
 
 /**
@@ -500,20 +668,99 @@ export async function deleteAssessment(id: string): Promise<ActionResult> {
   if ("error" in ctx) return { ok: false, error: ctx.error };
 
   const supabase = await createClient();
-  const { error } = await supabase
+  // A refused DELETE under RLS matches zero rows and returns 204 — without the
+  // .select() the screen would say the engagement was deleted while it sits
+  // untouched in the database.
+  const { data, error } = await supabase
     .from("cc_assessments")
     .delete()
     .eq("id", id)
-    .eq("org_id", ctx.orgId);
+    .eq("org_id", ctx.orgId)
+    .select("id");
 
   if (error) return { ok: false, error: error.message };
+  if (!data || data.length === 0) {
+    return { ok: false, error: "Nothing was deleted — you may not have access to this engagement." };
+  }
   revalidate(id);
   return { ok: true };
+}
+
+/**
+ * The data room behind the Profit pillar: which documents we actually hold.
+ * Separate from updateAssessment because it is a list edit with its own
+ * validation, and because "we have the P&L" is the single fact that decides
+ * whether the report prints the unaudited-figures disclosure.
+ */
+export async function setAssessmentDocuments(
+  id: string,
+  input: {
+    pnl_on_file?: boolean;
+    documents?: Array<{ name: string; kind: string; received_on?: string | null }>;
+  }
+): Promise<ActionResult<{ assessment: CcAssessment }>> {
+  const ctx = await requireOrg();
+  if ("error" in ctx) return { ok: false, error: ctx.error };
+
+  const update: Record<string, unknown> = {
+    updated_at: new Date().toISOString(),
+  };
+
+  if (input.pnl_on_file !== undefined) {
+    update.pnl_on_file = Boolean(input.pnl_on_file);
+  }
+
+  if (input.documents !== undefined) {
+    const docs: AssessmentDocument[] = [];
+    for (const doc of input.documents) {
+      const name = typeof doc?.name === "string" ? doc.name.trim() : "";
+      if (!name) continue;
+      if (!DOCUMENT_KINDS.has(doc.kind)) {
+        return { ok: false, error: `Unknown document kind: ${doc.kind}` };
+      }
+      docs.push({
+        name,
+        kind: doc.kind as AssessmentDocument["kind"],
+        received_on: doc.received_on?.trim() || etDate(),
+      });
+    }
+    update.documents = docs;
+  }
+
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("cc_assessments")
+    .update(update)
+    .eq("id", id)
+    .eq("org_id", ctx.orgId)
+    .select("*")
+    .maybeSingle();
+
+  if (error) return { ok: false, error: error.message };
+  if (!data) return { ok: false, error: "Assessment not found" };
+  revalidate(id);
+  return { ok: true, data: { assessment: data as CcAssessment } };
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Indicator scores
 // ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * A whole 0–4 or null — or the error message to return. Anything fractional,
+ * infinite or NaN is refused rather than coerced.
+ */
+function wholeScore(
+  value: number | null | undefined,
+  label: string
+): number | null | string {
+  if (value === null || value === undefined) return null;
+  if (!Number.isFinite(value) || !Number.isInteger(value)) {
+    return `${label} must be a whole number 0–4`;
+  }
+  if (value < 0 || value > 4) return `${label} must be 0–4`;
+  return value;
+}
 
 export async function upsertIndicatorScore(input: {
   assessment_id: string;
@@ -533,31 +780,16 @@ export async function upsertIndicatorScore(input: {
     return { ok: false, error: `Unknown indicator: ${input.indicator_key}` };
   }
 
-  // Math.trunc(NaN) is NaN, and NaN fails both comparisons below — an
-  // unguarded NaN would serialize into the row and poison every pillar
-  // average. Reject anything that isn't a finite 0–4.
-  let score: number | null = null;
-  if (input.score !== null && input.score !== undefined) {
-    if (!Number.isFinite(input.score)) {
-      return { ok: false, error: "Score must be 0–4" };
-    }
-    score = Math.trunc(input.score);
-    if (score < 0 || score > 4) {
-      return { ok: false, error: "Score must be 0–4" };
-    }
-  }
-  let potential: number | null = null;
-  if (input.potential_score !== null && input.potential_score !== undefined) {
-    if (!Number.isFinite(input.potential_score)) {
-      return { ok: false, error: "Potential must be 0–4" };
-    }
-    potential = Math.trunc(input.potential_score);
-    if (potential < 0 || potential > 4) {
-      return { ok: false, error: "Potential must be 0–4" };
-    }
-  }
-  const evidence = input.evidence_confidence ?? "unknown";
-  if (!EVIDENCE.includes(evidence)) {
+  // A 0–4 behavioral scale has no in-between values, so a 2.5 is a mistake
+  // upstream, not a number to round: truncating it would store a score the
+  // facilitator never chose and print it as though they had. Rejected, loudly.
+  const score = wholeScore(input.score, "Score");
+  if (typeof score === "string") return { ok: false, error: score };
+  const potential = wholeScore(input.potential_score, "Potential");
+  if (typeof potential === "string") return { ok: false, error: potential };
+
+  const evidence = (input.evidence_confidence ?? "unknown") as EvidenceConfidence;
+  if (!(EVIDENCE as string[]).includes(evidence)) {
     return { ok: false, error: `Invalid evidence confidence: ${evidence}` };
   }
 
@@ -582,11 +814,22 @@ export async function upsertIndicatorScore(input: {
   if (input.potential_score !== undefined) {
     row.potential_score = notApplicable ? null : potential;
   }
-  const { error } = await supabase
+  // Under RLS a refused UPDATE matches zero rows and reports success, so the
+  // upsert has to hand a row back. It is also how the delivered-lock trigger
+  // surfaces: a score edited after release raises, and the facilitator sees it.
+  const { data, error } = await supabase
     .from("cc_assessment_scores")
-    .upsert(row, { onConflict: "assessment_id,indicator_key" });
+    .upsert(row, { onConflict: "assessment_id,indicator_key" })
+    .select("id")
+    .maybeSingle();
 
   if (error) return { ok: false, error: error.message };
+  if (!data) {
+    return {
+      ok: false,
+      error: `${input.indicator_key} did not save — the engagement may be delivered (move it back to Review to edit) or you may not have access.`,
+    };
+  }
   revalidateReport(input.assessment_id);
   return { ok: true };
 }
@@ -617,6 +860,11 @@ export interface OpportunityInput {
    * stored value alone, so an older client can never wipe it on update.
    */
   owner_estimate_annual?: number | string | null;
+  /**
+   * Every indicator behind this finding is Reported (migration 0012). Forces
+   * the ±25% widening and the "based on your estimates" line in the report.
+   */
+  basis_reported_only?: boolean;
 }
 
 export async function saveOpportunity(
@@ -658,6 +906,9 @@ export async function saveOpportunity(
   // potential_score, so a stale client can't wipe a stored estimate.
   if (input.owner_estimate_annual !== undefined) {
     row.owner_estimate_annual = num(input.owner_estimate_annual);
+  }
+  if (input.basis_reported_only !== undefined) {
+    row.basis_reported_only = Boolean(input.basis_reported_only);
   }
 
   const query = input.id
@@ -729,13 +980,19 @@ export async function deleteOpportunity(
     return { ok: false, error: "Assessment not found" };
   }
 
-  const { error } = await supabase
+  // Same RLS rule as deleteAssessment: an empty result is a refusal, not a
+  // success with nothing to do.
+  const { data, error } = await supabase
     .from("cc_assessment_opportunities")
     .delete()
     .eq("id", id)
-    .eq("assessment_id", assessmentId);
+    .eq("assessment_id", assessmentId)
+    .select("id");
 
   if (error) return { ok: false, error: error.message };
+  if (!data || data.length === 0) {
+    return { ok: false, error: "Nothing was deleted — the opportunity may already be gone." };
+  }
   revalidateReport(assessmentId);
   return { ok: true };
 }
