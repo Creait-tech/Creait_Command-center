@@ -3,6 +3,7 @@ import { currentUser } from "@clerk/nextjs/server";
 
 import { createClient } from "@/lib/supabase/server";
 import { getActiveOrgId } from "@/lib/active-org";
+import { displayNameOf } from "@/lib/display-name";
 import { AssessmentWorkbench } from "@/components/assessments/assessment-workbench";
 import type {
   CcAssessment,
@@ -54,14 +55,8 @@ export default async function AssessmentDetailPage({
     currentUser(),
   ]);
 
-  // The default reviewer on the release. Same fallback ladder the rest of the
-  // app uses — a name if Clerk has one, otherwise the email address.
-  const currentUserName =
-    user?.fullName?.trim() ||
-    [user?.firstName, user?.lastName].filter(Boolean).join(" ").trim() ||
-    user?.username?.trim() ||
-    user?.primaryEmailAddress?.emailAddress?.trim() ||
-    "";
+  /** The default reviewer on the release — the person at the keyboard. */
+  const currentUserName = displayNameOf(user) ?? "";
 
   return (
     <AssessmentWorkbench

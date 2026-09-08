@@ -16,11 +16,14 @@
 --                               America/New_York date into it — the report
 --                               prints a date, never a timestamp, and
 --                               reviewed_at below carries the exact instant.
---   delivered_snapshot          the exact scores, opportunities, computed
---                               scores and readiness result at release. The
---                               report re-renders from live rows, so without
---                               this there is no record of what was actually
---                               handed over.
+--   delivered_snapshot          the whole delivered document as data: the
+--                               parent's report-bearing fields (client,
+--                               baseline financials, constraint block, overlay
+--                               flags, plan, overlap factor, data room), every
+--                               score row, every opportunity row, the computed
+--                               scores and the readiness result. The report
+--                               re-renders from live rows, so without this
+--                               there is no record of what was handed over.
 --   pnl_on_file                 whether we hold a real P&L. false makes the
 --                               report print the unaudited-figures disclosure
 --                               and widens Reported-only ranges by ±25%.
@@ -83,12 +86,27 @@ CREATE INDEX IF NOT EXISTS idx_cc_assessments_meeting
 -- -----------------------------------------------------------------------------
 -- A delivered engagement stops moving.
 --
--- The client is holding a PDF built from these rows. An edit to a score or an
--- opportunity after release silently changes what the printed report claims to
--- say, with no version anywhere to reconcile against — the snapshot above is
--- the record of what was handed over, and it must stay the truth.
+-- The client is holding a PDF built from these rows. An edit to a score, an
+-- opportunity or the parent's own findings after release silently changes what
+-- the printed report claims to say, with no version anywhere to reconcile
+-- against — delivered_snapshot is the record of what was handed over, and it
+-- must stay the truth.
 --
--- This raises rather than silently ignoring the write: a facilitator who
+-- Two locks, because there are two ways to change the document:
+--
+--   cc_assessments_lock_delivered on the CHILD tables covers INSERT, UPDATE and
+--   DELETE. A row added or removed after release moves every total on the page
+--   exactly as an edit does, so all three are refused, not just UPDATE.
+--
+--   cc_assessments_lock_delivered on cc_assessments itself refuses an edit to
+--   any report-bearing field while the row stays delivered: the constraint
+--   block, the overlay flags, the plan, the overlap factor, the baseline
+--   financials, the owner's own words, and the data-room evidence. Deliberately
+--   still allowed on a delivered row, because none of them alter the delivered
+--   document: status (that IS the reopen path), meeting_id, reviewed_by,
+--   reviewed_at, delivered_at and delivered_snapshot.
+--
+-- These raise rather than silently ignoring the write: a facilitator who
 -- corrects a score after delivery has to make a decision, not lose a keystroke.
 --
 -- TO REOPEN an engagement (the only supported path):
@@ -97,7 +115,7 @@ CREATE INDEX IF NOT EXISTS idx_cc_assessments_meeting
 --   2. make the corrections
 --   3. mark it delivered again — readiness is re-run and a fresh
 --      delivered_snapshot, reviewed_by and reviewed_at are written.
--- Moving the parent back to 'review' is what lifts the lock; there is no
+-- Moving the parent back to 'review' is what lifts both locks; there is no
 -- bypass flag and none should be added.
 -- -----------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION public.cc_assessments_lock_delivered()
@@ -106,16 +124,82 @@ LANGUAGE plpgsql
 SET search_path = public, pg_temp
 AS $fn$
 DECLARE
-  v_status TEXT;
+  v_assessment UUID;
+  v_status     TEXT;
 BEGIN
+  -- Whichever row this operation has: NEW for INSERT/UPDATE, OLD for DELETE.
+  -- Branching rather than COALESCE(NEW.x, OLD.x) because the absent one of the
+  -- pair is not addressable in a PL/pgSQL trigger for that operation.
+  IF TG_OP = 'DELETE' THEN
+    v_assessment := OLD.assessment_id;
+  ELSE
+    v_assessment := NEW.assessment_id;
+  END IF;
+
   SELECT status INTO v_status
     FROM public.cc_assessments
-   WHERE id = OLD.assessment_id;
+   WHERE id = v_assessment;
 
+  -- v_status IS NULL means the parent is already gone — this row is being
+  -- removed by the ON DELETE CASCADE from deleting the whole engagement, which
+  -- is a deliberate act and is allowed to complete.
   IF v_status = 'delivered' THEN
     RAISE EXCEPTION
-      'Assessment % is delivered — move it back to status ''review'' before editing %.',
-      OLD.assessment_id, TG_TABLE_NAME
+      'Assessment % is delivered — move it back to status ''review'' before changing %.',
+      v_assessment, TG_TABLE_NAME
+      USING ERRCODE = 'check_violation';
+  END IF;
+
+  -- A DELETE has no NEW row; returning NULL there would cancel the delete.
+  IF TG_OP = 'DELETE' THEN
+    RETURN OLD;
+  END IF;
+  RETURN NEW;
+END;
+$fn$;
+
+DROP TRIGGER IF EXISTS cc_assessments_lock_delivered ON public.cc_assessment_scores;
+CREATE TRIGGER cc_assessments_lock_delivered
+  BEFORE INSERT OR UPDATE OR DELETE ON public.cc_assessment_scores
+  FOR EACH ROW
+  EXECUTE FUNCTION public.cc_assessments_lock_delivered();
+
+DROP TRIGGER IF EXISTS cc_assessments_lock_delivered ON public.cc_assessment_opportunities;
+CREATE TRIGGER cc_assessments_lock_delivered
+  BEFORE INSERT OR UPDATE OR DELETE ON public.cc_assessment_opportunities
+  FOR EACH ROW
+  EXECUTE FUNCTION public.cc_assessments_lock_delivered();
+
+-- The parent's own report-bearing fields. Note the guard is
+-- OLD.status = 'delivered' AND NEW.status = 'delivered': the reopen path
+-- (delivered → review) passes through untouched, and so does a DELETE of the
+-- whole engagement, which is a deliberate act with its own cascade.
+CREATE OR REPLACE FUNCTION public.cc_assessments_lock_delivered_row()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SET search_path = public, pg_temp
+AS $fn$
+BEGIN
+  IF OLD.status = 'delivered' AND NEW.status = 'delivered' AND (
+       NEW.primary_constraint  IS DISTINCT FROM OLD.primary_constraint  OR
+       NEW.constraint_symptoms IS DISTINCT FROM OLD.constraint_symptoms OR
+       NEW.constraint_cost     IS DISTINCT FROM OLD.constraint_cost     OR
+       NEW.constraint_fix      IS DISTINCT FROM OLD.constraint_fix      OR
+       NEW.momentum_initiative IS DISTINCT FROM OLD.momentum_initiative OR
+       NEW.overlay_flags       IS DISTINCT FROM OLD.overlay_flags       OR
+       NEW.plan_items          IS DISTINCT FROM OLD.plan_items          OR
+       NEW.overlap_factor      IS DISTINCT FROM OLD.overlap_factor      OR
+       NEW.annual_revenue      IS DISTINCT FROM OLD.annual_revenue      OR
+       NEW.gross_margin        IS DISTINCT FROM OLD.gross_margin        OR
+       NEW.operating_profit    IS DISTINCT FROM OLD.operating_profit    OR
+       NEW.owner_belief        IS DISTINCT FROM OLD.owner_belief        OR
+       NEW.owner_objective     IS DISTINCT FROM OLD.owner_objective     OR
+       NEW.pnl_on_file         IS DISTINCT FROM OLD.pnl_on_file         OR
+       NEW.documents           IS DISTINCT FROM OLD.documents
+     ) THEN
+    RAISE EXCEPTION
+      'Assessment % is delivered — move it back to status ''review'' before editing what the report says.',
+      OLD.id
       USING ERRCODE = 'check_violation';
   END IF;
 
@@ -123,14 +207,8 @@ BEGIN
 END;
 $fn$;
 
-DROP TRIGGER IF EXISTS cc_assessments_lock_delivered ON public.cc_assessment_scores;
+DROP TRIGGER IF EXISTS cc_assessments_lock_delivered ON public.cc_assessments;
 CREATE TRIGGER cc_assessments_lock_delivered
-  BEFORE UPDATE ON public.cc_assessment_scores
+  BEFORE UPDATE ON public.cc_assessments
   FOR EACH ROW
-  EXECUTE FUNCTION public.cc_assessments_lock_delivered();
-
-DROP TRIGGER IF EXISTS cc_assessments_lock_delivered ON public.cc_assessment_opportunities;
-CREATE TRIGGER cc_assessments_lock_delivered
-  BEFORE UPDATE ON public.cc_assessment_opportunities
-  FOR EACH ROW
-  EXECUTE FUNCTION public.cc_assessments_lock_delivered();
+  EXECUTE FUNCTION public.cc_assessments_lock_delivered_row();

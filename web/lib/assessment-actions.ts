@@ -12,6 +12,7 @@ import { auth, currentUser } from "@clerk/nextjs/server";
 
 import { createClient } from "@/lib/supabase/server";
 import { getActiveOrgId } from "@/lib/active-org";
+import { displayNameOf } from "@/lib/display-name";
 import {
   ASSESSMENT_DOCUMENT_KINDS,
   assessmentReadiness,
@@ -59,6 +60,22 @@ const INDICATOR_KEYS = new Map<string, AssessmentPillar>(
   INDICATORS.map((i) => [i.key, i.pillar])
 );
 const OVERLAY_KEYS = new Set(OVERLAY_FLAGS.map((f) => f.key));
+/**
+ * Columns that may still be written on a delivered engagement, because none of
+ * them change a word of the document that was handed over: the release record
+ * itself, the housekeeping timestamp, and the link to the results-session
+ * recording. Everything else needs the engagement reopened first. Mirrors the
+ * cc_assessments_lock_delivered trigger in migration 0012.
+ */
+const RELEASE_SAFE_FIELDS = new Set([
+  "updated_at",
+  "status",
+  "delivered_at",
+  "reviewed_by",
+  "reviewed_at",
+  "delivered_snapshot",
+  "meeting_id",
+]);
 const DOCUMENT_KINDS = new Set<string>(ASSESSMENT_DOCUMENT_KINDS);
 
 async function requireOrg(): Promise<{ orgId: string } | { error: string }> {
@@ -67,20 +84,9 @@ async function requireOrg(): Promise<{ orgId: string } | { error: string }> {
   return { orgId: await getActiveOrgId() };
 }
 
-/**
- * The signed-in person's display name, for the release record. Same fallback
- * ladder the rest of the app uses (see lib/eos-actions.ts): a name if Clerk has
- * one, otherwise the email — an audit line that says "Teammate" records nothing.
- */
+/** The signed-in person's display name, for the release record. */
 async function reviewerName(): Promise<string | null> {
-  const user = await currentUser();
-  return (
-    user?.fullName?.trim() ||
-    [user?.firstName, user?.lastName].filter(Boolean).join(" ").trim() ||
-    user?.username?.trim() ||
-    user?.primaryEmailAddress?.emailAddress?.trim() ||
-    null
-  );
+  return displayNameOf(await currentUser());
 }
 
 /**
@@ -228,12 +234,14 @@ export async function updateAssessment(
       return { ok: false, error: `Invalid status: ${patch.status}` };
     }
     update.status = patch.status;
-    if (patch.status === "delivered" && patch.delivered_at === undefined) {
-      update.delivered_at = etDate();
-    }
   }
-  if (patch.started_at !== undefined) update.started_at = patch.started_at || null;
-  if (patch.delivered_at !== undefined) update.delivered_at = patch.delivered_at || null;
+  if (patch.started_at !== undefined) {
+    update.started_at = patch.started_at?.trim() || null;
+  }
+  if (patch.delivered_at !== undefined) {
+    // Never let "" reach a DATE column — Postgres rejects it outright.
+    update.delivered_at = patch.delivered_at?.trim() || null;
+  }
   if (patch.annual_revenue !== undefined) update.annual_revenue = num(patch.annual_revenue);
   if (patch.gross_margin !== undefined) update.gross_margin = num(patch.gross_margin);
   if (patch.operating_profit !== undefined) update.operating_profit = num(patch.operating_profit);
@@ -279,6 +287,55 @@ export async function updateAssessment(
   }
 
   const supabase = await createClient();
+
+  /**
+   * A delivered engagement stops moving. The client is holding a PDF built
+   * from these fields, so anything that would change what that document says
+   * is refused until the engagement is reopened. The database enforces this
+   * too (trigger cc_assessments_lock_delivered in 0012); this check exists to
+   * say WHY in a sentence a person can act on.
+   */
+  const editsContent = Object.keys(update).some(
+    (k) => !RELEASE_SAFE_FIELDS.has(k)
+  );
+  if (editsContent || patch.status !== undefined) {
+    const { data: statusRow, error: statusError } = await supabase
+      .from("cc_assessments")
+      .select("status")
+      .eq("id", id)
+      .eq("org_id", ctx.orgId)
+      .maybeSingle();
+    if (statusError) return { ok: false, error: statusError.message };
+    if (!statusRow) return { ok: false, error: "Assessment not found" };
+    const storedStatus = (statusRow as { status: AssessmentStatus }).status;
+
+    if (
+      storedStatus === "delivered" &&
+      editsContent &&
+      patch.status !== "review"
+    ) {
+      return {
+        ok: false,
+        error:
+          "This engagement is delivered. Reopen the engagement (status → review) before editing.",
+      };
+    }
+
+    /**
+     * Leaving "delivered" retires the release: the signature and its timestamp
+     * belong to the document that went out, and the next release re-earns them.
+     * delivered_snapshot is deliberately kept — it is the history of what was
+     * actually handed over.
+     */
+    if (
+      storedStatus === "delivered" &&
+      patch.status !== undefined &&
+      patch.status !== "delivered"
+    ) {
+      update.reviewed_by = null;
+      update.reviewed_at = null;
+    }
+  }
 
   /**
    * "Delivered" is a release, not a status. The same readiness rules the
@@ -344,28 +401,38 @@ async function deliveryGate(
   const oppRows = (oppsRes.data as CcAssessmentOpportunity[] | null) ?? [];
   const scores = toScoreMap(scoreRows);
 
+  /**
+   * The value this field will HAVE after the write. `??` would resurrect the
+   * stored value whenever the same patch is clearing the field to null, and
+   * the gate would then pass on a constraint that is about to be erased.
+   */
+  const after = <T,>(field: keyof CcAssessment): T =>
+    (field in update ? update[field as string] : stored[field]) as T;
+
+  /**
+   * The signed-in person signs this release — not whoever signed the last one.
+   * A stored name is only a fallback for a session Clerk cannot name.
+   */
   const reviewer =
-    (typeof update.reviewed_by === "string" ? update.reviewed_by : null) ||
+    (typeof update.reviewed_by === "string"
+      ? update.reviewed_by.trim() || null
+      : null) ||
+    (await reviewerName()) ||
     stored.reviewed_by?.trim() ||
-    (await reviewerName());
+    null;
 
   const readiness = assessmentReadiness({
     scores,
     opportunities: oppRows,
     assessment: {
-      primary_constraint:
-        (update.primary_constraint as string | null | undefined) ??
-        stored.primary_constraint,
-      constraint_cost:
-        (update.constraint_cost as string | null | undefined) ??
-        stored.constraint_cost,
-      pnl_on_file:
-        (update.pnl_on_file as boolean | undefined) ?? stored.pnl_on_file,
+      primary_constraint: after<string | null>("primary_constraint"),
+      constraint_cost: after<string | null>("constraint_cost"),
+      pnl_on_file: after<boolean>("pnl_on_file"),
       reviewed_by: reviewer,
-      overlay_flags:
-        (update.overlay_flags as unknown) ?? stored.overlay_flags,
-      overlap_factor:
-        (update.overlap_factor as number | undefined) ?? stored.overlap_factor,
+      overlay_flags: after<unknown>("overlay_flags"),
+      overlap_factor: after<number>("overlap_factor"),
+      owner_belief: after<string | null>("owner_belief"),
+      plan_items: after<unknown>("plan_items"),
     },
   });
 
@@ -376,14 +443,46 @@ async function deliveryGate(
   }
 
   const now = new Date().toISOString();
+  const deliveredAt = patch.delivered_at?.trim() || etDate();
+
+  /**
+   * The snapshot has to be enough to reconstruct the delivered document on its
+   * own, so it carries the parent row's report-relevant fields as they will be
+   * after this write — not just the child rows.
+   */
+  const parent: Record<string, unknown> = {
+    client_name: after("client_name"),
+    company: after("company"),
+    industry: after("industry"),
+    started_at: after("started_at"),
+    delivered_at: deliveredAt,
+    annual_revenue: after("annual_revenue"),
+    gross_margin: after("gross_margin"),
+    operating_profit: after("operating_profit"),
+    owner_objective: after("owner_objective"),
+    owner_belief: after("owner_belief"),
+    primary_constraint: after("primary_constraint"),
+    constraint_symptoms: after("constraint_symptoms"),
+    constraint_cost: after("constraint_cost"),
+    constraint_fix: after("constraint_fix"),
+    momentum_initiative: after("momentum_initiative"),
+    overlay_flags: after("overlay_flags"),
+    plan_items: after("plan_items"),
+    overlap_factor: after("overlap_factor"),
+    pnl_on_file: after("pnl_on_file"),
+    documents: after("documents"),
+    is_practice: stored.is_practice,
+  };
+
   return {
     fields: {
       reviewed_by: reviewer,
       reviewed_at: now,
-      delivered_at: patch.delivered_at ?? etDate(),
+      delivered_at: deliveredAt,
       delivered_snapshot: {
         at: now,
         reviewed_by: reviewer,
+        assessment: parent,
         scores: scoreRows,
         opportunities: oppRows,
         computed: computeScores(scores),
@@ -728,6 +827,25 @@ export async function setAssessmentDocuments(
   }
 
   const supabase = await createClient();
+
+  // pnl_on_file and documents both change what the report says, so they are
+  // locked after release exactly like the constraint block is.
+  const { data: statusRow, error: statusError } = await supabase
+    .from("cc_assessments")
+    .select("status")
+    .eq("id", id)
+    .eq("org_id", ctx.orgId)
+    .maybeSingle();
+  if (statusError) return { ok: false, error: statusError.message };
+  if (!statusRow) return { ok: false, error: "Assessment not found" };
+  if ((statusRow as { status: AssessmentStatus }).status === "delivered") {
+    return {
+      ok: false,
+      error:
+        "This engagement is delivered. Reopen the engagement (status → review) before editing.",
+    };
+  }
+
   const { data, error } = await supabase
     .from("cc_assessments")
     .update(update)
