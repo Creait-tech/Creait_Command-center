@@ -18,7 +18,7 @@
 - **N/A** is allowed only when the indicator cannot apply to the business model. It is removed from the denominator and never counted as zero. See section 5.
 - **Evidence confidence** per indicator, tracked separately: **R** Reported (owner said so) · **D** Demonstrated (walked through it live) · **Doc** Documented (record, report or export seen). Confidence never changes the score. It widens financial ranges and is printed in Appendix A.
 - **Pillar score** = mean of scored indicators ÷ 4 × 100, shown to one decimal in the report's "check the math" block.
-- **CREAiT Score (0–100)** = Profit × 40% + Systems × 35% + Leverage × 25%. A pillar with fewer than **4** scored indicators is *insufficient data*: it is printed as such, excluded from the composite, and the remaining weights are renormalised. The report says so in one sentence.
+- **CREAiT Score (0–100)** = Profit × 40% + Systems × 35% + Leverage × 25%. A pillar with fewer than **4** scored indicators, or with **4 or more N/As**, is *insufficient data*: it is printed as such, excluded from the composite, and the remaining weights are renormalised. The report says so in one sentence.
 - **Maturity bands:** 0–20 **Reactive** · 21–40 **Stabilizing** · 41–60 **Building** · 61–80 **Scaling** · 81–100 **Self-Running**. Bands apply to the rounded composite.
 - **Critical Constraint Overlay** (section 6) sits alongside the score. A warning can never be averaged away.
 - Every report names **one Primary Business Constraint** (+ up to 3 contributors).
@@ -104,7 +104,7 @@ The constraint must: materially limit the owner's stated objective · show up in
 - **Overlap adjustment**: portfolio total = sum × overlap factor (default 0.7 unless justified in a note) — never sum raw maximums. Not applied to a single opportunity.
 - Every dollar figure traces through a visible chain in Appendix B: units → rate → revenue → margin → operating profit. Revenue lift is never booked as profit.
 - Automation savings = hours/wk × **loaded rate** (collected per role at intake) × 52 × automation share. Report **capacity recovered separately from cash profit**. An hour is never dollarized in payroll and also counted as owner hours.
-- **Evidence-to-range rule:** an opportunity resting on Reported-only evidence, or any Profit opportunity when no P&L is on file, has its low bound × 0.75 and its high bound × 1.25 and carries the words "based on your estimates". The report applies this automatically.
+- **Evidence-to-range rule:** an opportunity has its low bound × 0.75 and its high bound × 1.25 and carries the words "based on your estimates" when either (a) no P&L is on file, in which case **every** opportunity is widened, because every dollar figure rests on owner-reported revenue and margin, or (b) the advisor marks it *basis: Reported only*, meaning every indicator behind the finding is Reported. The report applies this automatically.
 - **P&L disclosure:** when no P&L is on file, the cover and the methodology block print: "Profit-pillar findings rest on unaudited figures provided by the owner."
 - Never compound unrelated percentages into one headline number. Margin shift is stated in **points**, never as a profit-lift percentage. No valuation language; no benchmark without a named source.
 

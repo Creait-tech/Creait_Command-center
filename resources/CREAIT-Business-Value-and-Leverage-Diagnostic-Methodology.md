@@ -25,7 +25,7 @@
 | **Target buyer** | $500K–$5M owner-operated service/trade/care businesses (to $10M by quote), 3+ years operating, engaged owner |
 | **Guarantee** | Deliverable-and-clarity guarantee + one revision within 7 days. No dollar-findings floor. |
 | **Ascension** | 100% of the $7,500 applied as credit, in full, toward either CREAiT lane when the client starts within **60 days of the results session** (ruled 8 Sep 2026; replaces the "half off every invoice" wording). |
-| **Evidence floor** | P&L requested, not required. Without one the report prints a disclosure and widens Profit ranges ±25% (see Rubrics v2 §8, Data Room Checklist). |
+| **Evidence floor** | P&L requested, not required. Without one the report prints a disclosure and widens every opportunity range ±25% (see Rubrics v2 §8, Data Room Checklist). |
 
 ---
 

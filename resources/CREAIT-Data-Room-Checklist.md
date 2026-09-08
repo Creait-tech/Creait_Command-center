@@ -5,7 +5,7 @@ Owner-facing wording: *"Estimates get you a good diagnostic. Documents get you a
 
 ## Required for a full-confidence Profit pillar
 
-If any of these is missing, the report prints a disclosure that Profit findings rest on unaudited owner figures and widens the Profit ranges by ±25%. Delivery is not blocked.
+If the P&L is missing, the report prints a disclosure that Profit findings rest on unaudited owner figures and widens **every** opportunity range by ±25%, because every dollar figure rests on owner-reported revenue and margin. Delivery is not blocked. The other four documents raise individual indicators from Reported to Documented.
 
 | Document | Verifies | Indicators | Notes |
 |---|---|---|---|

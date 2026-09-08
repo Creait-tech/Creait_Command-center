@@ -19,7 +19,7 @@
 **Frame & close (5 min):**
 > "Here's how it works. You'll complete a guided intake — 45 to 60 minutes, estimates are fine. Then we spend four focused hours together going through the business system by system. Then I do the analysis personally, and about a week later we sit down for 90 minutes and I show you three things: your CREAiT Score, the one constraint that's actually holding the business back, and exactly what it's costing you every year — plus the 90-day plan to start fixing it. Everything is yours to keep and act on, with or without us. It's $7,500 — half to schedule, and the balance only after you've sat through your results session and seen the findings. And if you decide to work with us on implementation within 60 days of that session, the full $7,500 is applied as credit, in full."
 
-Send: agreement + invoice + intake link + **Data Room Checklist** (see `CREAIT-Data-Room-Checklist.md`). Prep note: "Estimates get you a good diagnostic; documents get you a defensible one. The P&L, revenue by customer and AR aging are the three that matter most." Without a P&L on file the report prints a disclosure and widens Profit ranges — tell them that plainly; most owners send it.
+Send: agreement + invoice + intake link + **Data Room Checklist** (see `CREAIT-Data-Room-Checklist.md`). Prep note: "Estimates get you a good diagnostic; documents get you a defensible one. The P&L, revenue by customer and AR aging are the three that matter most." Without a P&L on file the report prints a disclosure and widens every dollar range by ±25% — tell them that plainly; most owners send it.
 
 ---
 
