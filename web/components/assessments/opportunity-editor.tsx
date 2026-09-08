@@ -9,7 +9,7 @@
  * raw sum is never what gets sold.
  */
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -40,6 +40,25 @@ import {
   portfolioTotals,
 } from "@/lib/assessment-instrument";
 import { deleteOpportunity, saveOpportunity } from "@/lib/assessment-actions";
+import {
+  CALCULATORS,
+  CALCULATOR_LIST,
+  compute,
+  defaultInputs,
+  describeCalc,
+  EMPTY_BASELINE,
+  missingBaseline,
+  parseCalc,
+  toCalcRecord,
+} from "@/lib/opportunity-calculators";
+import type {
+  CalcBaseline,
+  CalcField,
+  CalcKind,
+  CalcOutputs,
+  ComputeResult,
+  RawCalcInputs,
+} from "@/lib/opportunity-calculators";
 import type {
   CcAssessmentOpportunity,
   OpportunityConfidence,
@@ -86,6 +105,62 @@ const EMPTY_OPP: OppForm = {
   hours_recovered_weekly: "",
 };
 
+/**
+ * "How was this range produced?" — hand-entered, or one of the calculators.
+ * Stored as the `calc` record so the report can print the arithmetic instead
+ * of asking the client to trust three numbers someone typed.
+ */
+type RangeSource = "manual" | CalcKind;
+
+/** Calculator inputs as the boxes hold them: strings while being typed. */
+type CalcDraft = Record<string, string | boolean>;
+
+function draftFrom(inputs: RawCalcInputs): CalcDraft {
+  const out: CalcDraft = {};
+  for (const [k, v] of Object.entries(inputs)) {
+    out[k] = typeof v === "boolean" ? v : String(v);
+  }
+  return out;
+}
+
+/** Empty boxes are left OUT, so the calculator refuses by name instead of modelling on zero. */
+function draftToInputs(draft: CalcDraft): RawCalcInputs {
+  const out: RawCalcInputs = {};
+  for (const [k, v] of Object.entries(draft)) {
+    if (typeof v === "boolean") {
+      out[k] = v;
+      continue;
+    }
+    if (v.trim() === "") continue;
+    const n = Number(v);
+    if (Number.isFinite(n)) out[k] = n;
+  }
+  return out;
+}
+
+const UNIT_SUFFIX: Record<CalcField["unit"], string> = {
+  usd: "$",
+  pct: "%",
+  points: "pts",
+  hours: "h/wk",
+  count: "",
+  none: "",
+};
+
+/** Consecutive scenario fields (low/expected/high) share one three-up row. */
+function groupFields(fields: CalcField[]): CalcField[][] {
+  const rows: CalcField[][] = [];
+  for (const f of fields) {
+    const last = rows[rows.length - 1];
+    if (f.scenario && last && last[0]?.scenario && last.length < 3) {
+      last.push(f);
+    } else {
+      rows.push([f]);
+    }
+  }
+  return rows;
+}
+
 function toOppForm(o: CcAssessmentOpportunity): OppForm {
   return {
     title: o.title,
@@ -109,6 +184,7 @@ function toOppForm(o: CcAssessmentOpportunity): OppForm {
 
 function OpportunityDialog({
   assessmentId,
+  baseline,
   editing,
   nextRank,
   open,
@@ -116,15 +192,32 @@ function OpportunityDialog({
   onSaved,
 }: {
   assessmentId: string;
+  baseline: CalcBaseline;
   editing: CcAssessmentOpportunity | null;
   nextRank: number;
   open: boolean;
   onOpenChange: (o: boolean) => void;
   onSaved: (o: CcAssessmentOpportunity) => void;
 }) {
+  const storedCalc = useMemo(
+    () => (editing ? parseCalc(editing.calc) : null),
+    [editing]
+  );
   const [form, setForm] = useState<OppForm>(
     editing ? toOppForm(editing) : EMPTY_OPP
   );
+  const [source, setSource] = useState<RangeSource>(storedCalc?.kind ?? "manual");
+  const [draft, setDraft] = useState<CalcDraft>(
+    storedCalc ? draftFrom(storedCalc.inputs) : {}
+  );
+  /** Set when a hand edit dropped a calculator record, so the dialog can say so. */
+  const [calcDropped, setCalcDropped] = useState(false);
+  /**
+   * Whether a calculator input has actually been touched since the dialog
+   * opened. Until it has, the stored record stands — opening a finding to fix
+   * a typo in its title must not silently republish a different range.
+   */
+  const [calcEdited, setCalcEdited] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [lastEditingId, setLastEditingId] = useState<string | null>(
     editing?.id ?? null
@@ -133,15 +226,111 @@ function OpportunityDialog({
   if ((editing?.id ?? null) !== lastEditingId) {
     setLastEditingId(editing?.id ?? null);
     setForm(editing ? toOppForm(editing) : EMPTY_OPP);
+    const next = editing ? parseCalc(editing.calc) : null;
+    setSource(next?.kind ?? "manual");
+    setDraft(next ? draftFrom(next.inputs) : {});
+    setCalcDropped(false);
+    setCalcEdited(false);
   }
+
+  const calcKind = source === "manual" ? null : source;
+  const inputs = useMemo(() => draftToInputs(draft), [draft]);
+  const computed = useMemo(
+    () => (calcKind ? compute(calcKind, inputs, baseline) : null),
+    [calcKind, inputs, baseline]
+  );
+  /**
+   * The saved arithmetic, replayed rather than re-run. A recomputation on open
+   * would quietly move the range whenever the assessment's baseline (or this
+   * module) had changed since the finding was priced — the advisor would never
+   * be told, and the report would print a number nobody chose.
+   */
+  const unchangedCalc =
+    !calcEdited && storedCalc && storedCalc.kind === calcKind ? storedCalc : null;
+  const result: ComputeResult | null = unchangedCalc
+    ? {
+        ok: true,
+        low: unchangedCalc.outputs.low,
+        expected: unchangedCalc.outputs.expected,
+        high: unchangedCalc.outputs.high,
+        chain: unchangedCalc.chain,
+        inputs: unchangedCalc.inputs,
+        ...(unchangedCalc.outputs.capacityHoursWeekly !== undefined
+          ? { capacityHoursWeekly: unchangedCalc.outputs.capacityHoursWeekly }
+          : {}),
+      }
+    : computed;
+  const outputs: CalcOutputs | null =
+    result && result.ok ? { ...result } : null;
+
+  /**
+   * With a calculator running, the three figures ARE its outputs — the boxes
+   * show what the arithmetic says, not what someone typed last week.
+   */
+  const shown = {
+    annual_low: outputs ? String(outputs.low) : form.annual_low,
+    annual_expected: outputs ? String(outputs.expected) : form.annual_expected,
+    annual_high: outputs ? String(outputs.high) : form.annual_high,
+    hours_recovered_weekly:
+      outputs?.capacityHoursWeekly !== undefined
+        ? String(outputs.capacityHoursWeekly)
+        : form.hours_recovered_weekly,
+  };
 
   const previewPayback = paybackMonths(
     form.fix_cost.trim() ? Number(form.fix_cost) : null,
-    form.annual_expected.trim() ? Number(form.annual_expected) : null
+    shown.annual_expected.trim() ? Number(shown.annual_expected) : null
   );
 
   function set<K extends keyof OppForm>(k: K, v: OppForm[K]) {
     setForm((p) => ({ ...p, [k]: v }));
+  }
+
+  function chooseSource(next: RangeSource) {
+    setCalcDropped(false);
+    setSource(next);
+    if (next === "manual") return;
+    // Back to the calculator this finding was saved with: its own inputs come
+    // back, and with nothing edited its stored range stands. Any other
+    // calculator starts from defaults, which is itself a change.
+    if (storedCalc?.kind === next) {
+      setDraft((prev) =>
+        calcEdited && Object.keys(prev).length > 0
+          ? prev
+          : draftFrom(storedCalc.inputs)
+      );
+      return;
+    }
+    setDraft(draftFrom(defaultInputs(next, baseline)));
+    setCalcEdited(true);
+  }
+
+  /**
+   * Typing over a computed figure ends the derivation. The numbers on screen
+   * are frozen into the form first, so the hand-entered range starts from what
+   * the calculator last said rather than snapping back to a stale value.
+   */
+  function editRangeByHand(
+    field: "annual_low" | "annual_expected" | "annual_high",
+    value: string
+  ) {
+    if (calcKind) {
+      setForm((p) => ({
+        ...p,
+        annual_low: shown.annual_low,
+        annual_expected: shown.annual_expected,
+        annual_high: shown.annual_high,
+        hours_recovered_weekly: shown.hours_recovered_weekly,
+        [field]: value,
+      }));
+      setSource("manual");
+      setCalcDropped(true);
+      toast.message(
+        "Range is hand-entered now — the calculator record was cleared."
+      );
+      return;
+    }
+    set(field, value);
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -150,15 +339,21 @@ function OpportunityDialog({
       toast.error("Title required");
       return;
     }
+    if (calcKind && !outputs) {
+      toast.error(
+        result && !result.ok ? result.error : "The calculator has no result yet"
+      );
+      return;
+    }
     setSubmitting(true);
     const res = await saveOpportunity({
       id: editing?.id,
       assessment_id: assessmentId,
       title: form.title,
       finding: form.finding,
-      annual_low: form.annual_low,
-      annual_expected: form.annual_expected,
-      annual_high: form.annual_high,
+      annual_low: shown.annual_low,
+      annual_expected: shown.annual_expected,
+      annual_high: shown.annual_high,
       fix_cost: form.fix_cost,
       months_to_benefit: form.months_to_benefit,
       owner_estimate_annual: form.owner_estimate_annual,
@@ -168,7 +363,14 @@ function OpportunityDialog({
       include_in_report: editing?.include_in_report ?? true,
       blueprint: form.blueprint,
       replaces: form.replaces,
-      hours_recovered_weekly: form.hours_recovered_weekly,
+      hours_recovered_weekly: shown.hours_recovered_weekly,
+      // null, not undefined: a hand-entered range must actively clear any
+      // calculator record still on the row. An untouched calculator keeps the
+      // record it already had, timestamp included — nothing was recalculated.
+      calc:
+        calcKind && outputs
+          ? (unchangedCalc ?? toCalcRecord(calcKind, outputs))
+          : null,
     });
     setSubmitting(false);
     if (!res.ok) {
@@ -177,7 +379,12 @@ function OpportunityDialog({
     }
     onSaved(res.data!.opportunity);
     onOpenChange(false);
-    if (!editing) setForm(EMPTY_OPP);
+    if (!editing) {
+      setForm(EMPTY_OPP);
+      setSource("manual");
+      setDraft({});
+      setCalcDropped(false);
+    }
     toast.success(editing ? "Opportunity updated" : "Opportunity added");
   }
 
@@ -223,6 +430,56 @@ function OpportunityDialog({
             what reaches operating profit after the cost of delivering it. The
             report adds the expected figure directly to operating profit.
           </p>
+
+          {/* How the range was produced. A calculator writes the three figures
+              and stores its arithmetic, so Appendix B can print the derivation
+              instead of asking the client to trust three typed numbers. */}
+          <div className="space-y-1">
+            <label className="text-xs font-medium text-muted-foreground">
+              How was this range produced?
+            </label>
+            <Select
+              value={source}
+              onValueChange={(v) =>
+                typeof v === "string" && chooseSource(v as RangeSource)
+              }
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="manual">
+                  Hand-entered — I typed the range
+                </SelectItem>
+                {CALCULATOR_LIST.map((c) => (
+                  <SelectItem key={c.kind} value={c.kind}>
+                    {c.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {calcDropped && (
+              <p className="text-[11px] text-[color:var(--color-brand-danger)]">
+                You edited a figure by hand, so the range is no longer derived —
+                the calculator record has been cleared and the report will say
+                the range was entered by the advisor.
+              </p>
+            )}
+          </div>
+
+          {calcKind && (
+            <CalculatorPanel
+              kind={calcKind}
+              baseline={baseline}
+              draft={draft}
+              onDraftChange={(key, value) => {
+                setCalcEdited(true);
+                setDraft((p) => ({ ...p, [key]: value }));
+              }}
+              result={result}
+            />
+          )}
+
           <div className="grid grid-cols-3 gap-3">
             <div className="space-y-1">
               <label className="text-xs font-medium text-muted-foreground">
@@ -230,8 +487,8 @@ function OpportunityDialog({
               </label>
               <Input
                 type="number"
-                value={form.annual_low}
-                onChange={(e) => set("annual_low", e.target.value)}
+                value={shown.annual_low}
+                onChange={(e) => editRangeByHand("annual_low", e.target.value)}
                 className="tabular-nums"
               />
             </div>
@@ -241,8 +498,10 @@ function OpportunityDialog({
               </label>
               <Input
                 type="number"
-                value={form.annual_expected}
-                onChange={(e) => set("annual_expected", e.target.value)}
+                value={shown.annual_expected}
+                onChange={(e) =>
+                  editRangeByHand("annual_expected", e.target.value)
+                }
                 className="tabular-nums"
               />
             </div>
@@ -252,12 +511,18 @@ function OpportunityDialog({
               </label>
               <Input
                 type="number"
-                value={form.annual_high}
-                onChange={(e) => set("annual_high", e.target.value)}
+                value={shown.annual_high}
+                onChange={(e) => editRangeByHand("annual_high", e.target.value)}
                 className="tabular-nums"
               />
             </div>
           </div>
+          {calcKind && (
+            <p className="text-[11px] text-muted-foreground">
+              These three come from the calculator above. Type over any of them
+              and the range becomes hand-entered.
+            </p>
+          )}
           <div className="grid grid-cols-3 gap-3">
             <div className="space-y-1">
               <label className="text-xs font-medium text-muted-foreground">
@@ -386,12 +651,18 @@ function OpportunityDialog({
                 <Input
                   type="number"
                   min="0"
-                  value={form.hours_recovered_weekly}
+                  value={shown.hours_recovered_weekly}
+                  readOnly={outputs?.capacityHoursWeekly !== undefined}
                   onChange={(e) =>
                     set("hours_recovered_weekly", e.target.value)
                   }
                   className="tabular-nums"
                 />
+                {outputs?.capacityHoursWeekly !== undefined && (
+                  <p className="text-[11px] text-muted-foreground/70">
+                    from the calculator
+                  </p>
+                )}
               </div>
             </div>
           </div>
@@ -414,15 +685,167 @@ function OpportunityDialog({
   );
 }
 
+/**
+ * One calculator's inputs, its live result and the printed arithmetic.
+ *
+ * The chain is shown here and stored verbatim — the advisor reads the same
+ * lines in the dialog that the client reads in Appendix B, so a number that
+ * looks wrong on the page looked wrong here first.
+ */
+function CalculatorPanel({
+  kind,
+  baseline,
+  draft,
+  onDraftChange,
+  result,
+}: {
+  kind: CalcKind;
+  baseline: CalcBaseline;
+  draft: CalcDraft;
+  onDraftChange: (key: string, value: string | boolean) => void;
+  result: ReturnType<typeof compute> | null;
+}) {
+  const meta = CALCULATORS[kind];
+  const gaps = missingBaseline(kind, baseline);
+
+  return (
+    <div className="space-y-3 rounded-lg bg-[color:var(--color-brand-slate)]/35 p-3">
+      <p className="text-[11px] leading-relaxed text-muted-foreground">
+        {meta.description}
+      </p>
+      {gaps.length > 0 && (
+        <p className="text-[11px] leading-relaxed text-[color:var(--color-brand-danger)]">
+          This assessment has no{" "}
+          {gaps
+            .map((g) =>
+              g === "grossMarginPct"
+                ? "gross margin"
+                : g === "annualRevenue"
+                  ? "annual revenue"
+                  : "operating profit"
+            )
+            .join(" or ")}{" "}
+          recorded — nothing is prefilled, so type the figure below or capture it
+          in the session step.
+        </p>
+      )}
+
+      {groupFields(meta.fields).map((row, i) => (
+        <div
+          key={i}
+          className={cn(
+            "grid gap-3",
+            row.length === 3 ? "grid-cols-3" : "grid-cols-1"
+          )}
+        >
+          {row.map((f) =>
+            f.boolean ? (
+              <label
+                key={f.key}
+                className="flex cursor-pointer items-start gap-2.5 text-xs"
+              >
+                <Checkbox
+                  checked={draft[f.key] === true}
+                  onCheckedChange={(c) => onDraftChange(f.key, c === true)}
+                  className="mt-0.5"
+                />
+                <span>
+                  {f.label}
+                  {f.help && (
+                    <span className="ml-1.5 text-muted-foreground">
+                      {f.help}
+                    </span>
+                  )}
+                </span>
+              </label>
+            ) : (
+              <div key={f.key} className="space-y-1">
+                <label className="text-xs font-medium text-muted-foreground">
+                  {f.label}
+                  {UNIT_SUFFIX[f.unit] && (
+                    <span className="ml-1 font-normal text-muted-foreground/70">
+                      {UNIT_SUFFIX[f.unit]}
+                    </span>
+                  )}
+                </label>
+                <Input
+                  type="number"
+                  value={
+                    typeof draft[f.key] === "string"
+                      ? (draft[f.key] as string)
+                      : ""
+                  }
+                  onChange={(e) => onDraftChange(f.key, e.target.value)}
+                  className="tabular-nums"
+                />
+                {f.help && row.length < 3 && (
+                  <p className="text-[11px] leading-relaxed text-muted-foreground/70">
+                    {f.help}
+                  </p>
+                )}
+              </div>
+            )
+          )}
+          {row.length === 3 && row.find((f) => f.help)?.help && (
+            <p className="col-span-3 -mt-1 text-[11px] leading-relaxed text-muted-foreground/70">
+              {row.find((f) => f.help)?.help}
+            </p>
+          )}
+        </div>
+      ))}
+
+      {result && !result.ok && (
+        <p className="text-[11px] leading-relaxed text-[color:var(--color-brand-danger)]">
+          {result.error}
+        </p>
+      )}
+      {result?.ok && (
+        <div className="space-y-1.5 border-t border-border/60 pt-2.5">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+            The arithmetic, as the report will print it
+          </p>
+          <ol className="space-y-0.5 text-[11px] leading-relaxed tabular-nums">
+            {result.chain.map((line, i) => (
+              <li key={i} className="text-muted-foreground">
+                {line}
+              </li>
+            ))}
+          </ol>
+          <p className="pt-1 text-xs tabular-nums">
+            <span className="text-muted-foreground">Operating profit</span>{" "}
+            <b>{formatMoney(result.low)}</b>{" "}
+            <span className="text-muted-foreground">low ·</span>{" "}
+            <b className="text-[color:var(--color-brand-success)]">
+              {formatMoney(result.expected)}
+            </b>{" "}
+            <span className="text-muted-foreground">expected ·</span>{" "}
+            <b>{formatMoney(result.high)}</b>{" "}
+            <span className="text-muted-foreground">high</span>
+            {result.capacityHoursWeekly !== undefined && (
+              <span className="text-muted-foreground">
+                {" "}
+                · {result.capacityHoursWeekly} h/week capacity
+              </span>
+            )}
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ---------------------------------------------------------------------------
 export function OpportunityEditor({
   assessmentId,
+  baseline = EMPTY_BASELINE,
   opportunities,
   overlapFactor,
   onOpportunitiesChange,
   onOverlapChange,
 }: {
   assessmentId: string;
+  /** The assessment's engine figures — calculators prefill and refuse from these. */
+  baseline?: CalcBaseline;
   opportunities: CcAssessmentOpportunity[];
   overlapFactor: number;
   onOpportunitiesChange: (
@@ -472,6 +895,7 @@ export function OpportunityEditor({
         <ul className="divide-y divide-border/50">
           {opportunities.map((opp) => {
             const payback = paybackMonths(opp.fix_cost, opp.annual_expected);
+            const calc = parseCalc(opp.calc);
             return (
               <li
                 key={opp.id}
@@ -512,6 +936,13 @@ export function OpportunityEditor({
                     {opp.finding}
                   </p>
                 )}
+                {/* Whether the range is derived is a property of the finding,
+                    so it reads on the row, not only inside the dialog. */}
+                <p className="mt-1 text-[11px] text-muted-foreground/70">
+                  {calc
+                    ? describeCalc(calc)
+                    : "Hand-entered range — no calculator record."}
+                </p>
                 <div className="mt-2 flex flex-wrap items-center gap-x-5 gap-y-1 text-xs tabular-nums">
                   <span>
                     <span className="text-muted-foreground">Low</span>{" "}
@@ -629,6 +1060,7 @@ export function OpportunityEditor({
 
       <OpportunityDialog
         assessmentId={assessmentId}
+        baseline={baseline}
         editing={editing}
         nextRank={opportunities.length + 1}
         open={dialogOpen}

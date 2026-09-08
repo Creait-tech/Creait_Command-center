@@ -52,7 +52,10 @@ import {
   parseSessionNotes,
   sessionCapturedCount,
   type BlockId,
+  type CrossCheckId,
+  type CrossCheckRecord,
 } from "@/lib/assessment-session";
+import { intakeProgress } from "@/lib/assessment-intake";
 import {
   appendPlanItem,
   removePlanItem,
@@ -80,6 +83,8 @@ import {
 import { ProgressRing } from "@/components/assessments/progress-ring";
 import { SaveState, type SaveStatus } from "@/components/assessments/save-state";
 import { SessionStep } from "@/components/assessments/session-step";
+import { IntakeStep } from "@/components/assessments/intake-step";
+import { OutcomesStep } from "@/components/assessments/outcomes-step";
 import { ScoringStep } from "@/components/assessments/scoring-step";
 import { OpportunityEditor } from "@/components/assessments/opportunity-editor";
 import { PlanBuilder } from "@/components/assessments/plan-builder";
@@ -261,6 +266,10 @@ export function AssessmentWorkbench({
   const documents = useMemo(
     () => jsonToDocuments(assessment.documents),
     [assessment.documents]
+  );
+  const intakeSections = useMemo(
+    () => intakeProgress(assessment.intake),
+    [assessment.intake]
   );
   /**
    * The same function the server runs at the delivery transition, so the
@@ -457,6 +466,22 @@ export function AssessmentWorkbench({
     );
   }
 
+  function saveSessionCrossCheck(id: CrossCheckId, record: CrossCheckRecord) {
+    setAssessment((p) => {
+      const notes = parseSessionNotes(p.session_notes);
+      return {
+        ...p,
+        session_notes: {
+          ...(notes as Record<string, unknown>),
+          crossChecks: { ...(notes.crossChecks ?? {}), [id]: record },
+        } as unknown as CcAssessment["session_notes"],
+      };
+    });
+    queueWrite(() =>
+      updateSessionNotes(assessment.id, { crossChecks: { [id]: record } })
+    );
+  }
+
   function addPlanItem() {
     const item = planDraft.trim();
     if (!item) return;
@@ -532,8 +557,18 @@ export function AssessmentWorkbench({
   const capturedBlocks = sessionCapturedCount(sessionNotes);
   const constraintFilled = Boolean(assessment.primary_constraint?.trim());
 
+  // Intake progress counts a deliberate "not currently known" as answered —
+  // it is an answer, and the instrument never scores it as zero.
+  const intakeDone = intakeSections.reduce((sum, s) => sum + s.done, 0);
+  const intakeTotal = intakeSections.reduce((sum, s) => sum + s.total, 0);
+
   const statuses: Record<StepId, StepStatus> = {
     setup: assessment.company?.trim() ? "complete" : "partial",
+    intake: assessment.intake_submitted_at
+      ? "complete"
+      : intakeDone > 0 || assessment.intake_token
+        ? "partial"
+        : "empty",
     session:
       capturedBlocks === 0
         ? "empty"
@@ -558,6 +593,7 @@ export function AssessmentWorkbench({
   };
 
   const counts: Partial<Record<StepId, string>> = {
+    intake: intakeDone > 0 ? `${intakeDone}/${intakeTotal}` : undefined,
     session: `${capturedBlocks}/5`,
     scoring: `${resolvedCount}/30`,
     plan: planItems.length > 0 ? `${planItems.length}` : undefined,
@@ -789,6 +825,11 @@ export function AssessmentWorkbench({
           </div>
         )}
 
+        {/* ── Intake ───────────────────────────────────────────────────── */}
+        {step === "intake" && (
+          <IntakeStep assessment={assessment} onAssessment={setAssessment} />
+        )}
+
         {/* ── Session ──────────────────────────────────────────────────── */}
         {step === "session" && (
           <SessionStep
@@ -803,6 +844,7 @@ export function AssessmentWorkbench({
             onSaveNote={saveSessionNote}
             onSaveElapsed={saveSessionElapsed}
             onSaveMetric={saveSessionMetric}
+            onSaveCrossCheck={saveSessionCrossCheck}
             onPatchAssessment={(patch) =>
               patchAssessment(patch as AssessmentPatch)
             }
@@ -830,6 +872,11 @@ export function AssessmentWorkbench({
         {step === "opportunities" && (
           <OpportunityEditor
             assessmentId={assessment.id}
+            baseline={{
+              annualRevenue: assessment.annual_revenue,
+              grossMarginPct: assessment.gross_margin,
+              operatingProfit: assessment.operating_profit,
+            }}
             opportunities={opportunities}
             overlapFactor={assessment.overlap_factor}
             onOpportunitiesChange={setOpportunities}
@@ -1163,6 +1210,18 @@ export function AssessmentWorkbench({
                 </Button>
               )}
             </div>
+
+            {/* Follow-through appears only once the client has the document —
+                before that there is nothing to review against, and it would
+                read as part of the release gate rather than after it. */}
+            {assessment.status === "delivered" && (
+              <OutcomesStep
+                assessment={assessment}
+                planItems={planItems}
+                currentUserName={currentUserName}
+                onAssessment={setAssessment}
+              />
+            )}
           </div>
         )}
       </div>

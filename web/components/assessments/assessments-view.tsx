@@ -50,6 +50,30 @@ export function PracticeBadge({ className }: { className?: string }) {
   );
 }
 
+/**
+ * Which follow-through reviews exist on an engagement (migration 0013). A
+ * review counts as recorded once it carries a date — an empty draft written by
+ * a mis-click should not put a tick on the list.
+ */
+function outcomeMarks(value: unknown): Array<"30d" | "90d"> {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return [];
+  const outcomes = value as Record<string, unknown>;
+  const has = (key: string) => {
+    const review = outcomes[key];
+    return (
+      !!review &&
+      typeof review === "object" &&
+      !Array.isArray(review) &&
+      typeof (review as { reviewed_on?: unknown }).reviewed_on === "string" &&
+      ((review as { reviewed_on: string }).reviewed_on ?? "").trim().length > 0
+    );
+  };
+  const marks: Array<"30d" | "90d"> = [];
+  if (has("day30")) marks.push("30d");
+  if (has("day90")) marks.push("90d");
+  return marks;
+}
+
 function formatDate(d: string | null): string {
   if (!d) return "—";
   const date = new Date(`${d}T00:00:00`);
@@ -248,13 +272,24 @@ export function AssessmentsView({
                     {a.is_practice && <PracticeBadge />}
                   </div>
                   <div className="flex items-center justify-between gap-2">
-                    <span
-                      className={cn(
-                        "rounded-full px-2 py-0.5 text-xs font-medium",
-                        STATUS_STYLES[a.status]
-                      )}
-                    >
-                      {STATUS_LABELS[a.status]}
+                    <span className="flex items-center gap-1.5">
+                      <span
+                        className={cn(
+                          "rounded-full px-2 py-0.5 text-xs font-medium",
+                          STATUS_STYLES[a.status]
+                        )}
+                      >
+                        {STATUS_LABELS[a.status]}
+                      </span>
+                      {outcomeMarks(a.outcomes).map((mark) => (
+                        <span
+                          key={mark}
+                          title={`${mark === "30d" ? "Day 30" : "Day 90"} follow-through recorded`}
+                          className="rounded-full bg-[color:var(--color-brand-success)]/15 px-1.5 py-0.5 text-[10px] font-semibold tabular-nums text-[color:var(--color-brand-success)]"
+                        >
+                          {mark} ✓
+                        </span>
+                      ))}
                     </span>
                     <span className="text-xs text-muted-foreground">
                       {a.status === "delivered"

@@ -44,6 +44,7 @@ import {
   toScoreMap,
   widenOpportunities,
 } from "@/lib/assessment-instrument";
+import { parseCalc } from "@/lib/opportunity-calculators";
 
 import type {
   CcAssessment,
@@ -1960,6 +1961,64 @@ export default async function ExecutiveBlueprintPage({
                     </tr>
                   </tbody>
                 </table>
+                {/* How the range was derived, line by line, with the widening
+                    stated last so the printed figures can be re-derived from
+                    this block alone. A range with no calculator behind it says
+                    so plainly — the alternative is a client assuming arithmetic
+                    that was never done. */}
+                <div style={{ marginTop: 10 }}>
+                  <p
+                    style={{
+                      fontSize: 10,
+                      fontWeight: 800,
+                      letterSpacing: "0.08em",
+                      textTransform: "uppercase",
+                      color: muted,
+                    }}
+                  >
+                    How this range was produced
+                  </p>
+                  {(() => {
+                    const calc = parseCalc(opp.calc);
+                    if (!calc) {
+                      return (
+                        <p style={{ marginTop: 4, color: muted }}>
+                          Range entered by the advisor; no calculator record.
+                        </p>
+                      );
+                    }
+                    return (
+                      <ol
+                        style={{
+                          marginTop: 4,
+                          paddingLeft: 18,
+                          fontVariantNumeric: "tabular-nums",
+                        }}
+                      >
+                        {calc.chain.map((line, li) => (
+                          <li key={li} style={{ marginTop: 2 }}>
+                            {line}
+                          </li>
+                        ))}
+                        {opp.widened && (
+                          <li style={{ marginTop: 2 }}>
+                            Reported-only widening applied after this
+                            calculation: low ×{REPORTED_ONLY_LOW_FACTOR}, high ×
+                            {REPORTED_ONLY_HIGH_FACTOR} —{" "}
+                            {`${formatMoney(calc.outputs.low)} / ${formatMoney(
+                              calc.outputs.high
+                            )}`}{" "}
+                            becomes{" "}
+                            {`${formatMoney(opp.annual_low)} / ${formatMoney(
+                              opp.annual_high
+                            )}`}
+                            . The expected case is not widened.
+                          </li>
+                        )}
+                      </ol>
+                    );
+                  })()}
+                </div>
               </div>
             ))}
             <div

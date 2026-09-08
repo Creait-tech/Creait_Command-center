@@ -823,8 +823,44 @@ export interface CcAssessment {
   documents: Json;
   /** The results session in `meetings`, when one has been linked. */
   meeting_id: string | null;
+  /**
+   * Owner Pre-Assessment Intake answers keyed by question id (migration 0013,
+   * lib/assessment-intake.ts). "Not currently known" is the string "unknown",
+   * never 0 or null.
+   */
+  intake: Json;
+  /** Path segment of the owner's intake link; valid only while status = intake. */
+  intake_token: string | null;
+  intake_submitted_at: string | null;
+  /**
+   * Day-30 / day-90 follow-through — planned vs actual per plan item
+   * (migration 0013, AssessmentOutcomes). Recorded after delivery; never
+   * gates it.
+   */
+  outcomes: Json;
   created_at: string;
   updated_at: string;
+}
+
+/** One follow-through review, as stored in cc_assessments.outcomes.day30 / day90. */
+export interface AssessmentOutcomeReview {
+  /** YYYY-MM-DD, America/New_York. */
+  reviewed_on: string | null;
+  reviewer: string | null;
+  items: Array<{
+    plan_item: string;
+    status: "not_started" | "in_progress" | "done" | "dropped";
+    kpi: string | null;
+    baseline: string | null;
+    actual: string | null;
+    note: string | null;
+  }>;
+  summary: string | null;
+}
+
+export interface AssessmentOutcomes {
+  day30?: AssessmentOutcomeReview;
+  day90?: AssessmentOutcomeReview;
 }
 
 /** One item of the data room, as stored in cc_assessments.documents. */
@@ -899,6 +935,12 @@ export interface CcAssessmentOpportunity {
    * indicator→opportunity mapping to derive it from.
    */
   basis_reported_only: boolean;
+  /**
+   * The calculator record that produced the range (migration 0013):
+   * {kind, inputs, outputs, chain[]} per lib/opportunity-calculators.ts.
+   * null = the range was typed by hand, and the report says so.
+   */
+  calc: Json;
   created_at: string;
   updated_at: string;
 }
