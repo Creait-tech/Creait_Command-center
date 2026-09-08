@@ -27,6 +27,7 @@
  *  - Portfolio totals = sum × overlap factor (default 0.7). Never the raw sum.
  */
 
+import { parseCalc } from "@/lib/opportunity-calculators";
 import type {
   AssessmentPillar,
   CcAssessmentScore,
@@ -1146,6 +1147,11 @@ export interface ReadinessOpportunity extends WidenableOpportunity {
   title: string;
   finding: string | null;
   include_in_report: boolean;
+  /**
+   * The stored calculator record (migration 0013). Absent or unparseable means
+   * the range was typed by hand — a warning, never a blocker.
+   */
+  calc?: unknown;
 }
 
 export interface ReadinessInput {
@@ -1262,7 +1268,16 @@ export function assessmentReadiness(input: ReadinessInput): Readiness {
     const low = toFinite(opp.annual_low);
     const expected = toFinite(opp.annual_expected);
     const high = toFinite(opp.annual_high);
-    if (expected === null || expected <= 0) {
+    // A capacity-only automation finding (hours recovered, not redeployed)
+    // legitimately prices at $0: the rule is that recovered hours are only
+    // dollars if redeployed or removed, and the report shows it as hours.
+    const calc = parseCalc(opp.calc);
+    const capacityOnly =
+      calc !== null &&
+      calc.kind === "automation_hours" &&
+      calc.inputs.redeployed === false &&
+      (calc.outputs.capacityHoursWeekly ?? 0) > 0;
+    if ((expected === null || expected <= 0) && !capacityOnly) {
       blockers.push(`"${label}" has no expected annual impact.`);
     }
     if (low === null || high === null) {
@@ -1324,6 +1339,20 @@ export function assessmentReadiness(input: ReadinessInput): Readiness {
       `Target below the current score on ${potential.potentialBelowCurrent.join(
         ", "
       )} — treated as equal to today's score. Fix the target or clear it.`
+    );
+  }
+  // A hand-typed range is defensible only as far as the advisor's memory of
+  // how they got it. It does not block delivery — some findings genuinely have
+  // no formula — but Appendix B will print "entered by the advisor" next to it,
+  // so the reviewer should see that here before the client does.
+  const handEntered = included.filter((o) => parseCalc(o.calc) === null);
+  if (handEntered.length > 0) {
+    warnings.push(
+      `${handEntered.length} included opportunit${
+        handEntered.length === 1 ? "y has a hand-entered range" : "ies have hand-entered ranges"
+      } — no calculator record, so the report cannot print the arithmetic: ${handEntered
+        .map((o) => `"${o.title?.trim() || "Untitled opportunity"}"`)
+        .join(", ")}.`
     );
   }
   const factor = normalizeOverlapFactor(assessment.overlap_factor);
