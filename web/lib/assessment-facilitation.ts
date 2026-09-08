@@ -72,6 +72,22 @@ export type BlockKey = "b1" | "b2" | "b3" | "b4" | "b5";
 export interface SessionPrompt {
   /** Stable slug — safe to key notes and UI state from. */
   id: string;
+  /**
+   * The time box, in minutes. Every block's prompts sum exactly to that block's
+   * budget in `SESSION_BLOCKS` (b1 30, b2 60, b3 60, b4 45, b5 30), which
+   * `validateSessionScripts()` in lib/assessment-session.ts asserts. Weighting
+   * follows what the guide says earns the minutes: the live four-week test and
+   * the systems tour are the two longest questions in the day; mechanical
+   * one-answer questions get two or three minutes and no more.
+   */
+  minutes: number;
+  /**
+   * On the triage list — the questions a facilitator drops when the block is
+   * running over. Every prompt marked here feeds only indicators that another,
+   * unmarked prompt also feeds, so dropping the whole list costs coverage of no
+   * indicator. See `TRIAGE_PROMPT_IDS` below.
+   */
+  cutWhenLong?: boolean;
   /** Read aloud, verbatim. One question. */
   ask: string;
   /** One line for the facilitator only: why this question earns its minutes. */
@@ -112,6 +128,8 @@ export const SESSION_BLOCK_SCRIPTS: Record<BlockKey, BlockScript> = {
     prompts: [
       {
         id: "b1-role-today",
+        minutes: 4,
+        cutWhenLong: true,
         ask: "Walk me through a normal Tuesday for you — what do you actually spend the day doing?",
         why: "The gap between the role they describe and the role they perform is the first sighting of owner dependence.",
         listenFor: [
@@ -126,6 +144,7 @@ export const SESSION_BLOCK_SCRIPTS: Record<BlockKey, BlockScript> = {
       {
         // Master-Intake-Questionnaire.md Q4, verbatim.
         id: "b1-twelve-month",
+        minutes: 5,
         ask: "What three measurable outcomes would make the next twelve months a success?",
         why: "Everything in the results session gets measured against this answer, so it has to be in their words and it has to carry numbers.",
         listenFor: [
@@ -141,6 +160,7 @@ export const SESSION_BLOCK_SCRIPTS: Record<BlockKey, BlockScript> = {
       {
         // Master-Intake-Questionnaire.md Q5, verbatim.
         id: "b1-three-year",
+        minutes: 5,
         ask: "Describe the business you want to own three years from now — size, profit, team, systems, and your role in it.",
         why: "The destination. Their role in it is the part that matters most, and the part they answer last.",
         listenFor: [
@@ -155,6 +175,7 @@ export const SESSION_BLOCK_SCRIPTS: Record<BlockKey, BlockScript> = {
       },
       {
         id: "b1-stakeholders",
+        minutes: 2,
         ask: "Who else has a stake in that answer?",
         why: "Surfaces partners, family and managers whose agreement the ninety-day plan will quietly need.",
         listenFor: [
@@ -167,6 +188,7 @@ export const SESSION_BLOCK_SCRIPTS: Record<BlockKey, BlockScript> = {
       },
       {
         id: "b1-why-now",
+        minutes: 3,
         ask: "What's changed in the last year that made now the moment to do this?",
         why: "The trigger event tells you what they will actually act on, and what they will let slide.",
         listenFor: [
@@ -180,6 +202,7 @@ export const SESSION_BLOCK_SCRIPTS: Record<BlockKey, BlockScript> = {
       {
         // Master-Intake-Questionnaire.md Q7 🪞, verbatim.
         id: "b1-pull-back",
+        minutes: 4,
         ask: "What pulls you back in when you try to step away?",
         why: "The Mirror opening. Owners name their own bottleneck here more honestly than anywhere else in the session.",
         listenFor: [
@@ -193,6 +216,8 @@ export const SESSION_BLOCK_SCRIPTS: Record<BlockKey, BlockScript> = {
       },
       {
         id: "b1-longest-away",
+        minutes: 2,
+        cutWhenLong: true,
         ask: "What's the longest you've been completely away from the business in the past year?",
         why: "A number rather than a feeling, and it sets up the four-week test in Block 3.",
         listenFor: [
@@ -207,6 +232,7 @@ export const SESSION_BLOCK_SCRIPTS: Record<BlockKey, BlockScript> = {
       {
         // Facilitator-Guide.md Block 1 🪞, verbatim.
         id: "b1-bottleneck-live",
+        minutes: 5,
         ask: "Before we dig in — say it again in your own words: what do you believe is really holding this business back?",
         why: "The sentence the entire results session pivots on. Write it down where they can see you writing it.",
         listenFor: [
@@ -240,6 +266,7 @@ export const SESSION_BLOCK_SCRIPTS: Record<BlockKey, BlockScript> = {
     prompts: [
       {
         id: "b2-lead-sources",
+        minutes: 6,
         ask: "Take me through where last month's new leads came from.",
         why: "Opens the money path and tests immediately whether anything is being counted.",
         listenFor: [
@@ -255,6 +282,7 @@ export const SESSION_BLOCK_SCRIPTS: Record<BlockKey, BlockScript> = {
       {
         // snapshot.html Q1, verbatim.
         id: "b2-first-hour",
+        minutes: 7,
         ask: "If a new lead comes in at 9am, what usually happens?",
         why: "The single most diagnostic question in the Profit pillar. Response time and single capture both fall out of the answer.",
         listenFor: [
@@ -270,6 +298,7 @@ export const SESSION_BLOCK_SCRIPTS: Record<BlockKey, BlockScript> = {
       },
       {
         id: "b2-follow-up",
+        minutes: 5,
         ask: "When a lead doesn't buy right away, what happens after that first conversation?",
         why: "Separates follow-up that survives a busy week from follow-up that depends on someone remembering.",
         listenFor: [
@@ -285,6 +314,7 @@ export const SESSION_BLOCK_SCRIPTS: Record<BlockKey, BlockScript> = {
       {
         // Facilitator-Guide.md Block 2 🪞, verbatim.
         id: "b2-lost-lead",
+        minutes: 7,
         ask: "Walk me through the last lead you lost — what happened?",
         why: "A story, not an opinion. It exposes the sales process, the loss reason and whether anyone records either.",
         listenFor: [
@@ -299,6 +329,8 @@ export const SESSION_BLOCK_SCRIPTS: Record<BlockKey, BlockScript> = {
       },
       {
         id: "b2-quote-build",
+        minutes: 5,
+        cutWhenLong: true,
         ask: "Who builds a quote, start to finish?",
         why: "Quoting is where owner dependence and manual load meet in most service businesses. It usually names itself here.",
         listenFor: [
@@ -315,6 +347,7 @@ export const SESSION_BLOCK_SCRIPTS: Record<BlockKey, BlockScript> = {
         // snapshot.html Q2, verbatim; the follow-up is the second clause of
         // the Facilitator-Guide.md Block 2 🪞 key moment.
         id: "b2-price-change",
+        minutes: 5,
         ask: "When did you last raise your prices?",
         why: "A date is harder to soften than an opinion, and the answer usually arrives with the reasoning attached.",
         listenFor: [
@@ -329,6 +362,8 @@ export const SESSION_BLOCK_SCRIPTS: Record<BlockKey, BlockScript> = {
       },
       {
         id: "b2-price-authority",
+        minutes: 3,
+        cutWhenLong: true,
         ask: "When a customer pushes back on price, who decides whether to discount?",
         why: "Tests whether pricing is a rule the team can hold or an exception that walks back to the owner.",
         listenFor: [
@@ -341,6 +376,7 @@ export const SESSION_BLOCK_SCRIPTS: Record<BlockKey, BlockScript> = {
       },
       {
         id: "b2-offer-ladder",
+        minutes: 4,
         ask: "When someone buys your main service, what else do you routinely offer them?",
         why: "Distinguishes a deliberate ladder from add-ons that get mentioned when someone thinks of it.",
         listenFor: [
@@ -354,6 +390,7 @@ export const SESSION_BLOCK_SCRIPTS: Record<BlockKey, BlockScript> = {
       },
       {
         id: "b2-invoice-lag",
+        minutes: 4,
         ask: "Once a job is finished, how long until the invoice goes out?",
         why: "The end of the money path, and usually the cheapest cash win in the report. It also reveals an approval bottleneck.",
         listenFor: [
@@ -368,6 +405,7 @@ export const SESSION_BLOCK_SCRIPTS: Record<BlockKey, BlockScript> = {
       },
       {
         id: "b2-repeat-customers",
+        minutes: 5,
         ask: "Of the customers who bought from you two years ago, how many still buy from you?",
         why: "Retention as a number rather than a feeling, and it surfaces the dormant list nobody has contacted.",
         listenFor: [
@@ -382,6 +420,7 @@ export const SESSION_BLOCK_SCRIPTS: Record<BlockKey, BlockScript> = {
       },
       {
         id: "b2-margin",
+        minutes: 6,
         ask: "Which of your jobs makes the most money — not the biggest, the most profitable?",
         why: "Forces margin knowledge into the open. Owners who only track revenue answer with their largest job.",
         listenFor: [
@@ -396,6 +435,7 @@ export const SESSION_BLOCK_SCRIPTS: Record<BlockKey, BlockScript> = {
       },
       {
         id: "b2-growth-owner",
+        minutes: 3,
         ask: "Who is accountable for how many leads come in each month?",
         why: "Closes the block on ownership. If the answer is the owner, the growth engine has no operator.",
         listenFor: [
@@ -431,6 +471,7 @@ export const SESSION_BLOCK_SCRIPTS: Record<BlockKey, BlockScript> = {
     prompts: [
       {
         id: "b3-workflow-list",
+        minutes: 6,
         ask: "Which workflows does this business genuinely depend on?",
         why: "The inventory the rest of the block hangs on. Push for the ones that make money, deliver work, collect cash and hold quality.",
         listenFor: [
@@ -444,6 +485,8 @@ export const SESSION_BLOCK_SCRIPTS: Record<BlockKey, BlockScript> = {
       },
       {
         id: "b3-workflow-owner",
+        minutes: 3,
+        cutWhenLong: true,
         ask: "For the one that touches the most money, who owns it end to end?",
         why: "Ownership of a whole workflow, not a step, is what separates a real manager from a coordinator.",
         listenFor: [
@@ -456,6 +499,7 @@ export const SESSION_BLOCK_SCRIPTS: Record<BlockKey, BlockScript> = {
       },
       {
         id: "b3-what-breaks",
+        minutes: 5,
         ask: "Where in that chain do things most often go wrong?",
         why: "The guide's 'what breaks?' question. The failure they name first is usually the one that costs the most.",
         listenFor: [
@@ -471,6 +515,7 @@ export const SESSION_BLOCK_SCRIPTS: Record<BlockKey, BlockScript> = {
       {
         // snapshot.html Q6, verbatim.
         id: "b3-documentation",
+        minutes: 5,
         ask: "How much of your critical work is written down and actually followed?",
         why: "The two halves matter separately: written down is common, actually followed is rare.",
         listenFor: [
@@ -487,6 +532,7 @@ export const SESSION_BLOCK_SCRIPTS: Record<BlockKey, BlockScript> = {
       },
       {
         id: "b3-weekly-numbers",
+        minutes: 4,
         ask: "What numbers does your team look at every week?",
         why: "The scoreboard half of the rhythm. A team with no weekly numbers cannot self-correct.",
         listenFor: [
@@ -500,6 +546,7 @@ export const SESSION_BLOCK_SCRIPTS: Record<BlockKey, BlockScript> = {
       },
       {
         id: "b3-weekly-meeting",
+        minutes: 3,
         ask: "What does the first meeting of the week look like?",
         why: "The rhythm half. Ask about the meeting rather than 'do you have a rhythm' and you get the truth.",
         listenFor: [
@@ -513,6 +560,7 @@ export const SESSION_BLOCK_SCRIPTS: Record<BlockKey, BlockScript> = {
       {
         // Master-Intake-Questionnaire.md Q40, verbatim.
         id: "b3-unresolved",
+        minutes: 3,
         ask: "What happens to unresolved issues?",
         why: "The shortest test of accountability in the whole session. 'They come to me' is the answer to listen for.",
         listenFor: [
@@ -525,6 +573,8 @@ export const SESSION_BLOCK_SCRIPTS: Record<BlockKey, BlockScript> = {
       },
       {
         id: "b3-missed-number",
+        minutes: 3,
+        cutWhenLong: true,
         ask: "When someone misses a number or a deadline, who has that conversation with them?",
         why: "Separates managers who assign work from leaders who hold outcomes.",
         listenFor: [
@@ -539,6 +589,7 @@ export const SESSION_BLOCK_SCRIPTS: Record<BlockKey, BlockScript> = {
       {
         // Facilitator-Guide.md Block 3 🪞, verbatim (first of three).
         id: "b3-who-else-closes",
+        minutes: 3,
         ask: "Who besides you can close a sale?",
         why: "Sales independence, asked in five words. The hedge in the answer is the finding.",
         listenFor: [
@@ -554,6 +605,7 @@ export const SESSION_BLOCK_SCRIPTS: Record<BlockKey, BlockScript> = {
       {
         // Facilitator-Guide.md Block 3 🪞, verbatim (second of three).
         id: "b3-who-else-approves",
+        minutes: 2,
         ask: "Who besides you can approve an invoice?",
         why: "Approval authority is where owner dependence hides in businesses that believe they have delegated.",
         listenFor: [
@@ -567,6 +619,7 @@ export const SESSION_BLOCK_SCRIPTS: Record<BlockKey, BlockScript> = {
       {
         // Facilitator-Guide.md Block 3 🪞, verbatim (third of three).
         id: "b3-who-else-escalation",
+        minutes: 3,
         ask: "Who besides you can calm an angry customer?",
         why: "Escalations are the last thing owners hand over, and the answer tells you whether the relationships are institutional.",
         listenFor: [
@@ -580,6 +633,7 @@ export const SESSION_BLOCK_SCRIPTS: Record<BlockKey, BlockScript> = {
       {
         // Master-Intake-Questionnaire.md Q31 🪞, verbatim.
         id: "b3-capacity-20",
+        minutes: 4,
         ask: "If sales jumped 20% in the next 90 days, what breaks first?",
         why: "The capacity Mirror. Owners answer this one honestly because it flatters them to have thought about it.",
         listenFor: [
@@ -595,6 +649,7 @@ export const SESSION_BLOCK_SCRIPTS: Record<BlockKey, BlockScript> = {
       {
         // Facilitator-Guide.md Block 3 🪞, verbatim. The guide runs this live.
         id: "b3-four-week",
+        minutes: 16,
         ask: "You're unreachable for four weeks starting tomorrow. Walk me through week one, day by day.",
         why: "The most revealing question in the engagement. Let them talk. Week one always sounds fine — the finding arrives later.",
         listenFor: [
@@ -631,6 +686,8 @@ export const SESSION_BLOCK_SCRIPTS: Record<BlockKey, BlockScript> = {
       {
         // snapshot.html Q8, verbatim.
         id: "b4-repetitive-share",
+        minutes: 2,
+        cutWhenLong: true,
         ask: "How much of your team's week goes to repetitive manual tasks — data entry, chasing, copying between systems?",
         why: "Frames the block and gets a first estimate before you test it task by task. The estimate is usually low.",
         listenFor: [
@@ -643,6 +700,7 @@ export const SESSION_BLOCK_SCRIPTS: Record<BlockKey, BlockScript> = {
       },
       {
         id: "b4-most-repetitive",
+        minutes: 5,
         ask: "What is the most repetitive task anyone here does every week?",
         why: "Starts the inventory at the top. Whatever they name first is usually the strongest automation case in the report.",
         listenFor: [
@@ -659,6 +717,7 @@ export const SESSION_BLOCK_SCRIPTS: Record<BlockKey, BlockScript> = {
       {
         // Facilitator-Guide.md Block 4, verbatim. Ask of each key person.
         id: "b4-hours-go",
+        minutes: 6,
         ask: "Where do the hours actually go?",
         why: "Asked of each key person in turn. The guide's phrasing is deliberately open — people volunteer work they would never list on a form.",
         listenFor: [
@@ -672,6 +731,7 @@ export const SESSION_BLOCK_SCRIPTS: Record<BlockKey, BlockScript> = {
       },
       {
         id: "b4-systems-list",
+        minutes: 4,
         ask: "What software does the business actually run on day to day?",
         why: "Coverage, not brand names. Walk the core areas mentally: leads, quoting, scheduling, delivery, invoicing, reporting.",
         listenFor: [
@@ -688,6 +748,7 @@ export const SESSION_BLOCK_SCRIPTS: Record<BlockKey, BlockScript> = {
         // Facilitator-Guide.md Block 4 instructs a systems tour — "watch them
         // create a quote, an invoice, a report" — but supplies no wording.
         id: "b4-systems-tour",
+        minutes: 12,
         ask: "Could you build me a quote right now, the way you normally would?",
         why: "The Demonstrated-evidence moment. Watching beats asking: you see the swivel-chair double entry rather than hearing a summary of it.",
         listenFor: [
@@ -703,6 +764,7 @@ export const SESSION_BLOCK_SCRIPTS: Record<BlockKey, BlockScript> = {
       },
       {
         id: "b4-double-entry",
+        minutes: 4,
         ask: "Where does the same information get typed in more than once?",
         why: "Names the integration gaps in the owner's own words, and usually names the person acting as the glue.",
         listenFor: [
@@ -717,6 +779,7 @@ export const SESSION_BLOCK_SCRIPTS: Record<BlockKey, BlockScript> = {
       },
       {
         id: "b4-data-trust",
+        minutes: 3,
         ask: "When two of your systems disagree on a number, which one do you believe?",
         why: "Gets at data trust without asking whether they trust their data, which everyone answers yes to.",
         listenFor: [
@@ -731,6 +794,7 @@ export const SESSION_BLOCK_SCRIPTS: Record<BlockKey, BlockScript> = {
       },
       {
         id: "b4-automations",
+        minutes: 3,
         ask: "What happens in the business without anyone touching it?",
         why: "Asks for automation without using the word, so you get what is real rather than what was bought.",
         listenFor: [
@@ -746,6 +810,7 @@ export const SESSION_BLOCK_SCRIPTS: Record<BlockKey, BlockScript> = {
       {
         // snapshot.html Q9, verbatim.
         id: "b4-ai-today",
+        minutes: 2,
         ask: "Is AI doing real work in your business today?",
         why: "Record what exists. Do not coach, correct or promote anything here — the brand's position is that we show the math before they spend a dollar.",
         listenFor: [
@@ -760,6 +825,7 @@ export const SESSION_BLOCK_SCRIPTS: Record<BlockKey, BlockScript> = {
       },
       {
         id: "b4-ai-review",
+        minutes: 2,
         ask: "Before something automated goes out to a customer, who checks it?",
         why: "Discipline, asked concretely. A named checker is the difference between a 2 and a 3 on L7.",
         listenFor: [
@@ -773,6 +839,7 @@ export const SESSION_BLOCK_SCRIPTS: Record<BlockKey, BlockScript> = {
       },
       {
         id: "b4-team-rollout",
+        minutes: 2,
         ask: "The last time you rolled out a new tool or process, how did the team take it?",
         why: "Judges readiness on a real event rather than on how the owner describes the team's attitude.",
         listenFor: [
@@ -807,6 +874,7 @@ export const SESSION_BLOCK_SCRIPTS: Record<BlockKey, BlockScript> = {
       {
         // snapshot.html Q10, verbatim.
         id: "b5-largest-customer",
+        minutes: 4,
         ask: "Your largest customer is what share of revenue?",
         why: "Concentration is scored and separately flagged on the overlay, so get the number rather than a characterisation.",
         listenFor: [
@@ -823,6 +891,7 @@ export const SESSION_BLOCK_SCRIPTS: Record<BlockKey, BlockScript> = {
       {
         // snapshot.html Q3, verbatim.
         id: "b5-recurring-revenue",
+        minutes: 4,
         ask: "How much of your revenue repeats or renews without a new sales push?",
         why: "Predictability. Owners routinely count customers who happen to come back as recurring revenue, so listen for what is actually contracted.",
         listenFor: [
@@ -837,6 +906,7 @@ export const SESSION_BLOCK_SCRIPTS: Record<BlockKey, BlockScript> = {
       },
       {
         id: "b5-key-person",
+        minutes: 4,
         ask: "Who is the person this business could not lose right now?",
         why: "Key-person risk, asked so it is easy to answer honestly. The owner naming themselves is a finding, not an admission.",
         listenFor: [
@@ -851,6 +921,8 @@ export const SESSION_BLOCK_SCRIPTS: Record<BlockKey, BlockScript> = {
       },
       {
         id: "b5-contracts",
+        minutes: 3,
+        cutWhenLong: true,
         ask: "Which customer relationships are on paper, and which are on a handshake?",
         why: "Transferability in one question. 'Probably transferable, we've never checked' is the most common answer and scores a 2.",
         listenFor: [
@@ -865,6 +937,7 @@ export const SESSION_BLOCK_SCRIPTS: Record<BlockKey, BlockScript> = {
       {
         // snapshot.html Q7, verbatim.
         id: "b5-financials",
+        minutes: 4,
         ask: "How often do you see reliable financials?",
         why: "Cadence and trust in one question. The follow-up converts it into a hard number you can score against.",
         listenFor: [
@@ -880,6 +953,7 @@ export const SESSION_BLOCK_SCRIPTS: Record<BlockKey, BlockScript> = {
       },
       {
         id: "b5-cash",
+        minutes: 4,
         ask: "How tight is cash, honestly?",
         why: "Cash distress is an overlay flag and it gates every growth initiative in the plan. Ask it plainly and do not soften it.",
         listenFor: [
@@ -895,6 +969,7 @@ export const SESSION_BLOCK_SCRIPTS: Record<BlockKey, BlockScript> = {
       },
       {
         id: "b5-access",
+        minutes: 3,
         ask: "When someone leaves the company, what happens to their access?",
         why: "Data hygiene, asked through an event rather than a policy question. Policies get described; events get remembered.",
         listenFor: [
@@ -909,6 +984,7 @@ export const SESSION_BLOCK_SCRIPTS: Record<BlockKey, BlockScript> = {
       },
       {
         id: "b5-change-capacity",
+        minutes: 3,
         ask: "What's the last improvement you decided to make that never actually happened?",
         why: "Change capacity measured by evidence rather than by appetite. Stated willingness is not capacity.",
         listenFor: [
@@ -923,6 +999,7 @@ export const SESSION_BLOCK_SCRIPTS: Record<BlockKey, BlockScript> = {
       },
       {
         id: "b5-legal",
+        minutes: 1,
         ask: "Is there anything legal, tax, insurance or compliance-related I should know about?",
         why: "A referral question, not a diagnostic one. The guide's hard rule: anything legal, tax, HR or security goes to a professional.",
         listenFor: [
@@ -950,6 +1027,62 @@ export const SESSION_BLOCK_SCRIPTS: Record<BlockKey, BlockScript> = {
       "Here's what happens next. I've heard several patterns today — [name 2–3 openly, as questions, not verdicts]. I'll now score all thirty factors, run the numbers on every opportunity we've touched, and pressure-test what the real constraint is. We meet [date] for 90 minutes. I'll show you the whole picture — and the plan. Between now and then, you don't need to do anything.",
   },
 };
+
+/**
+ * The triage list, in the order a facilitator would drop them.
+ *
+ * A four-hour session with a talkative owner runs long in Block 2 or Block 3
+ * every time, and the rigor review found facilitators improvising the cut. That
+ * improvisation is where coverage gets lost: drop the wrong question and an
+ * indicator arrives at scoring with no evidence behind it, which is a 0 with no
+ * reason rather than a low score with one.
+ *
+ * So the cut is decided here, not in the room. Every id below is a prompt whose
+ * `feedsIndicators` are each fed by at least one prompt that is NOT on this
+ * list — verified for the list as a whole, not one at a time, by
+ * `validateSessionScripts()` in lib/assessment-session.ts. Drop all eight and
+ * every one of the thirty indicators still has a source.
+ *
+ * Nothing the Facilitator Guide marks as a 🪞 key moment appears here. Those are
+ * the questions the engagement is built on; if the clock has eaten them, the
+ * block was mismanaged and the fix is not a shorter Mirror.
+ *
+ * Typed as an eight-tuple so the list cannot quietly grow or shrink.
+ */
+export const TRIAGE_PROMPT_IDS: readonly [
+  string,
+  string,
+  string,
+  string,
+  string,
+  string,
+  string,
+  string,
+] = [
+  // Fed elsewhere: S1 by four remaining prompts, L4 by three.
+  "b1-role-today",
+  // S2 also comes from b1-pull-back and the four-week test.
+  "b1-longest-away",
+  // P5 survives in b2-price-change; S1 is fed all through Block 3.
+  "b2-price-authority",
+  // P4 survives in b2-lost-lead; L4 in the Block 4 inventory.
+  "b2-quote-build",
+  // S5 has four other sources, S4 two.
+  "b3-workflow-owner",
+  // S4 survives in b1-stakeholders and b3-who-else-escalation.
+  "b3-missed-number",
+  // The warm-up estimate for L4 — the task inventory that follows supersedes it.
+  "b4-repetitive-share",
+  // S10 survives in b5-key-person.
+  "b5-contracts",
+] as const;
+
+const TRIAGE_ID_SET = new Set<string>(TRIAGE_PROMPT_IDS);
+
+/** Is this prompt on the triage list? */
+export function isTriagePrompt(id: string): boolean {
+  return TRIAGE_ID_SET.has(id);
+}
 
 export interface FacilitationScript {
   /**

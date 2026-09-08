@@ -15,20 +15,37 @@
  * largest element and every facilitator-only instruction is smaller and muted.
  */
 
-import { useCallback, useEffect, useRef, useState } from "react";
-import { ArrowRight, ChevronDown, ChevronRight, Coffee, Pause, Play, Quote } from "lucide-react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  ArrowRight,
+  ChevronDown,
+  ChevronRight,
+  Coffee,
+  Pause,
+  Play,
+  Quote,
+  Scissors,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
+import { updateSessionNotes } from "@/lib/assessment-actions";
 import {
   BLOCK_IDS,
-  ENGINE_METRICS,
+  CROSS_CHECKS,
   SESSION_BLOCKS,
   blockNote,
+  engineMetricsForBlock,
   formatClock,
+  pacedPromptIndex,
+  promptSchedule,
+  runCrossChecks,
   type BlockId,
+  type CrossCheckId,
+  type CrossCheckRecord,
+  type CrossCheckResult,
   type SessionNotes,
 } from "@/lib/assessment-session";
 import {
@@ -79,6 +96,9 @@ function Field({
 }
 
 
+/** Where the block clock says this question sits. */
+type Pace = "done" | "now" | "ahead";
+
 /**
  * One question in the block, as an accordion row.
  *
@@ -86,22 +106,37 @@ function Field({
  * why the question earns its minutes, what to listen for, the probe for a vague
  * answer, what to write down — opens on demand. Six prompts with all of that
  * expanded is a wall of text you cannot use while looking someone in the eye.
+ *
+ * The right edge carries the pacing: the question's time box, and whether the
+ * clock says you should be on it, past it, or not there yet. When the block has
+ * gone over budget the triage questions gain a "cut if needed" tag — the drop
+ * decision is made in `TRIAGE_PROMPT_IDS`, not in the room, so the facilitator
+ * only has to read it.
  */
 function PromptItem({
   prompt,
   index,
   open,
+  pace,
+  showCutTag,
   onToggle,
 }: {
   prompt: SessionPrompt;
   index: number;
   open: boolean;
+  pace: Pace;
+  showCutTag: boolean;
   onToggle: () => void;
 }) {
   const [showFollowUp, setShowFollowUp] = useState(false);
 
   return (
-    <li className="border-b border-border/40 last:border-b-0">
+    <li
+      className={cn(
+        "border-b border-border/40 last:border-b-0",
+        showCutTag && "bg-[color:var(--color-brand-warning)]/6"
+      )}
+    >
       <button
         type="button"
         onClick={onToggle}
@@ -121,10 +156,40 @@ function PromptItem({
         <span
           className={cn(
             "min-w-0 flex-1 leading-snug",
-            open ? "text-[16px] font-medium" : "text-[14px]"
+            open ? "text-[16px] font-medium" : "text-[14px]",
+            pace === "done" && !open && "text-muted-foreground"
           )}
         >
           {prompt.ask}
+        </span>
+        <span className="mt-px flex shrink-0 items-center gap-1.5">
+          {showCutTag && (
+            <span className="inline-flex items-center gap-1 rounded-full bg-[color:var(--color-brand-warning)]/15 px-1.5 py-0.5 text-[10px] font-medium text-[color:var(--color-brand-warning)]">
+              <Scissors className="size-2.5" />
+              Cut if needed
+            </span>
+          )}
+          <span
+            className={cn(
+              "font-data text-[11px] tabular-nums",
+              pace === "now"
+                ? "font-semibold text-[color:var(--color-brand-electric)]"
+                : "text-muted-foreground/70"
+            )}
+            title={
+              pace === "now"
+                ? `${prompt.minutes} min — the clock says you should be here now`
+                : `${prompt.minutes} min`
+            }
+          >
+            {pace === "now" && (
+              <span
+                aria-hidden
+                className="mr-1 inline-block size-1.5 rounded-full bg-[color:var(--color-brand-electric)] align-middle"
+              />
+            )}
+            {prompt.minutes}m
+          </span>
         </span>
       </button>
 
@@ -195,6 +260,96 @@ function PromptItem({
   );
 }
 
+const CROSS_CHECK_TONE: Record<
+  CrossCheckResult["status"],
+  { dot: string; label: string; text: string }
+> = {
+  pass: {
+    dot: "bg-[color:var(--color-brand-success)]",
+    label: "Reconciles",
+    text: "text-[color:var(--color-brand-success)]",
+  },
+  flag: {
+    dot: "bg-[color:var(--color-brand-warning)]",
+    label: "Ask about it",
+    text: "text-[color:var(--color-brand-warning)]",
+  },
+  insufficient: {
+    dot: "bg-[color:var(--color-brand-fog)]",
+    label: "Not yet",
+    text: "text-muted-foreground",
+  },
+};
+
+/**
+ * The four live cross-checks.
+ *
+ * Deliberately arithmetic and deliberately quiet: a flag is a reason to ask one
+ * more question, never a verdict, and the guide's rule that the day ends without
+ * one still holds. The panel appears from Block 2, the first block whose numbers
+ * make any of it computable, and each check keeps a one-line note so the answer
+ * is captured in the room rather than reconstructed at midnight.
+ */
+function CrossCheckPanel({
+  results,
+  notes,
+  onSaveNote,
+}: {
+  results: CrossCheckResult[];
+  notes: SessionNotes;
+  onSaveNote: (result: CrossCheckResult, note: string) => void;
+}) {
+  const flags = results.filter((r) => r.status === "flag").length;
+
+  return (
+    <section className="flex flex-col gap-2.5 border-t border-border/60 pt-4">
+      <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+        Cross-checks
+        <span className="ml-2 font-normal normal-case tracking-normal text-muted-foreground/70">
+          {flags > 0
+            ? `${flags} to ask about — no verdicts today`
+            : "their numbers against the file"}
+        </span>
+      </p>
+      <ul className="flex flex-col gap-2.5">
+        {results.map((result) => {
+          const tone = CROSS_CHECK_TONE[result.status];
+          const check = CROSS_CHECKS.find((c) => c.id === result.id);
+          return (
+            <li key={result.id} className="flex flex-col gap-1">
+              <div className="flex items-baseline gap-1.5">
+                <span
+                  aria-hidden
+                  className={cn("mt-1 size-1.5 shrink-0 rounded-full", tone.dot)}
+                />
+                <span className="text-[12px] font-medium">{result.title}</span>
+                <span className={cn("text-[10px] uppercase tracking-[0.08em]", tone.text)}>
+                  {tone.label}
+                </span>
+              </div>
+              <p className="pl-3 text-[11.5px] leading-snug text-muted-foreground">
+                {result.detail}
+              </p>
+              {result.status === "flag" && check && (
+                <p className="pl-3 text-[11.5px] leading-snug text-[color:var(--color-brand-aqua)]">
+                  Ask: {check.askOnFlag}
+                </p>
+              )}
+              <Input
+                aria-label={`Note on ${result.title}`}
+                defaultValue={notes.crossChecks?.[result.id]?.note ?? ""}
+                onBlur={(e) => onSaveNote(result, e.target.value)}
+                placeholder="What they said when you asked"
+                className="ml-3 h-7 text-[12px]"
+              />
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  );
+}
+
 export function SessionStep({
   assessment,
   notes,
@@ -203,6 +358,7 @@ export function SessionStep({
   onSaveNote,
   onSaveElapsed,
   onSaveMetric,
+  onSaveCrossCheck,
   onPatchAssessment,
   onFinish,
 }: {
@@ -213,6 +369,13 @@ export function SessionStep({
   onSaveNote: (id: BlockId, text: string) => void;
   onSaveElapsed: (id: BlockId, seconds: number) => void;
   onSaveMetric: (key: string, value: string) => void;
+  /**
+   * Optional: the workbench serialises its session writes through one queue, so
+   * pass this to put cross-check notes in the same line. Without it the note is
+   * written straight to `session_notes.crossChecks` from here, which is correct
+   * but not ordered against a note or a timer landing in the same second.
+   */
+  onSaveCrossCheck?: (id: CrossCheckId, record: CrossCheckRecord) => void;
   onPatchAssessment: (patch: Record<string, string>) => void;
   onFinish: () => void;
 }) {
@@ -282,6 +445,41 @@ export function SessionStep({
   const blockIndex = BLOCK_IDS.indexOf(activeBlock);
   const nextBlock = SESSION_BLOCKS[blockIndex + 1] ?? null;
 
+  /** Cumulative time boxes for this block's questions. Fixed per block. */
+  const schedule = useMemo(() => promptSchedule(activeBlock), [activeBlock]);
+  const paceIndex = pacedPromptIndex(schedule, elapsed);
+  const cutCount = schedule.filter((s) => s.triage).length;
+
+  /**
+   * Recomputed on every keystroke in a metric field, which is the point — the
+   * facilitator sees the check turn while the owner is still on the subject.
+   */
+  const crossChecks = useMemo(
+    () => runCrossChecks(notes, assessment),
+    [notes, assessment]
+  );
+  const blockMetrics = engineMetricsForBlock(activeBlock);
+
+  const saveCrossCheckNote = useCallback(
+    (result: CrossCheckResult, note: string) => {
+      const priorNote = notes.crossChecks?.[result.id]?.note ?? "";
+      if (note === priorNote) return;
+      const record: CrossCheckRecord = {
+        status: result.status,
+        detail: result.detail,
+        note,
+      };
+      if (onSaveCrossCheck) {
+        onSaveCrossCheck(result.id, record);
+        return;
+      }
+      void updateSessionNotes(assessment.id, {
+        crossChecks: { [result.id]: record },
+      });
+    },
+    [assessment.id, notes.crossChecks, onSaveCrossCheck]
+  );
+
   function commitDraft() {
     if (draft !== blockNote(notes, activeBlock)) onSaveNote(activeBlock, draft);
   }
@@ -348,6 +546,15 @@ export function SessionStep({
         </div>
 
         <div className="flex items-center gap-2">
+          {over && cutCount > 0 && (
+            <span className="inline-flex items-center gap-1 rounded-full bg-[color:var(--color-brand-warning)]/12 px-2 py-0.5 text-[11px] text-[color:var(--color-brand-warning)]">
+              <Scissors className="size-3" />
+              {formatClock(elapsed - budgetSec)} over —{" "}
+              {cutCount === 1
+                ? "1 question tagged to cut"
+                : `${cutCount} questions tagged to cut`}
+            </span>
+          )}
           <span
             className={cn(
               "font-data text-[15px] tabular-nums",
@@ -417,18 +624,31 @@ export function SessionStep({
                   <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
                     Work through
                     <span className="ml-2 font-normal normal-case tracking-normal text-muted-foreground/70">
-                      {script.prompts.length} questions
+                      {script.prompts.length} questions · {block.minutes} min
+                      {paceIndex >= 0
+                        ? ` · the clock says question ${paceIndex + 1}`
+                        : " · past the budget"}
                     </span>
                   </p>
                   <ol className="mt-1.5">
-                    {script.prompts.map((p, i) => (
+                    {schedule.map((slot, i) => (
                       <PromptItem
-                        key={p.id}
-                        prompt={p}
+                        key={slot.prompt.id}
+                        prompt={slot.prompt}
                         index={i}
-                        open={openPrompt === p.id}
+                        open={openPrompt === slot.prompt.id}
+                        pace={
+                          paceIndex === i
+                            ? "now"
+                            : elapsed >= slot.endsAt
+                              ? "done"
+                              : "ahead"
+                        }
+                        showCutTag={over && slot.triage}
                         onToggle={() =>
-                          setOpenPrompt((cur) => (cur === p.id ? null : p.id))
+                          setOpenPrompt((cur) =>
+                            cur === slot.prompt.id ? null : slot.prompt.id
+                          )
                         }
                       />
                     ))}
@@ -557,23 +777,49 @@ export function SessionStep({
             </div>
           )}
 
-          {activeBlock === "b2" && (
+          {blockMetrics.length > 0 && (
             <div className="flex flex-col gap-3 border-t border-border/60 pt-4">
               <p className="text-[11px] text-muted-foreground">
-                The four engine numbers. Estimates are fine — say so out loud and
-                mark the evidence as Reported when you score.
+                {activeBlock === "b2"
+                  ? "The engine numbers. Estimates are fine — say so out loud and mark the evidence as Reported when you score."
+                  : "Numbers the cross-checks below run on. Estimates are fine; say so out loud."}
               </p>
               <div className="grid grid-cols-2 gap-2">
-                {ENGINE_METRICS.map((m) => (
-                  <Field key={m.key} label={m.label} hint={m.hint}>
-                    <Input
-                      defaultValue={notes[m.key] ?? ""}
-                      onBlur={(e) => onSaveMetric(m.key, e.target.value)}
-                    />
-                  </Field>
-                ))}
+                {blockMetrics.map((m) => {
+                  const multiline = "multiline" in m && m.multiline;
+                  return (
+                    <div
+                      key={m.key}
+                      className={cn("min-w-0", multiline && "col-span-2")}
+                    >
+                      <Field label={m.label} hint={m.hint}>
+                        {multiline ? (
+                          <Textarea
+                            defaultValue={notes[m.key] ?? ""}
+                            onBlur={(e) => onSaveMetric(m.key, e.target.value)}
+                            placeholder={"Admin 22\nOwner 9\nDispatcher 15"}
+                            className="min-h-[72px] text-[13px]"
+                          />
+                        ) : (
+                          <Input
+                            defaultValue={notes[m.key] ?? ""}
+                            onBlur={(e) => onSaveMetric(m.key, e.target.value)}
+                          />
+                        )}
+                      </Field>
+                    </div>
+                  );
+                })}
               </div>
             </div>
+          )}
+
+          {blockIndex >= 1 && (
+            <CrossCheckPanel
+              results={crossChecks}
+              notes={notes}
+              onSaveNote={saveCrossCheckNote}
+            />
           )}
 
           <div className="mt-auto flex items-center justify-between gap-2 border-t border-border/60 pt-4">
