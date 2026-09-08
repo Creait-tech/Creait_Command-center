@@ -29,7 +29,12 @@ import { ChevronDown, ChevronRight } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { SCALE_LABELS, type IndicatorDef } from "@/lib/assessment-instrument";
+import {
+  anchorsOf,
+  NA_RULE,
+  SCALE_LABELS,
+  type IndicatorDef,
+} from "@/lib/assessment-instrument";
 import type { FacilitationScript } from "@/lib/assessment-facilitation";
 import type {
   CcAssessmentScore,
@@ -50,14 +55,10 @@ const EVIDENCE_LABEL: Record<EvidenceConfidence, string> = {
   documented: "Documented",
 };
 
-/** Which written anchors explain a given score. */
-const ANCHORS_FOR_SCORE: Record<number, number[]> = {
-  0: [0],
-  1: [0, 1],
-  2: [1],
-  3: [1, 2],
-  4: [2],
-};
+/**
+ * Rubric v2 writes an anchor at every level, so the score and the anchor it
+ * matched are the same index — no more "somewhere between these two".
+ */
 
 export interface IndicatorPatch {
   score?: number | null;
@@ -110,12 +111,13 @@ export function IndicatorCard({
     return () => clearTimeout(t);
   }, [flash]);
 
-  const anchors = [
-    { n: 0, label: "Absent", text: indicator.anchor0 },
-    { n: 2, label: "Developing", text: indicator.anchor2 },
-    { n: 4, label: "Scalable", text: indicator.anchor4 },
-  ];
-  const litAnchors = score === null ? [] : (ANCHORS_FOR_SCORE[score] ?? []);
+  const anchors = anchorsOf(indicator).map((text, n) => ({
+    n,
+    label: SCALE_LABELS[n],
+    text,
+  }));
+  const targetBelowScore =
+    potential !== null && score !== null && potential < score;
 
   function commitNote() {
     if ((row?.notes ?? "") !== note) onChange({ notes: note });
@@ -264,7 +266,7 @@ export function IndicatorCard({
               type="button"
               aria-pressed={isNa}
               aria-label="Not applicable"
-              title="Not applicable — removed from the denominator, never counted as zero"
+              title={`Not applicable — removed from the denominator, never counted as zero. ${NA_RULE}`}
               onClick={() => {
                 onChange({ score: null, not_applicable: !isNa });
                 setFlash("na");
@@ -291,11 +293,14 @@ export function IndicatorCard({
           </div>
         </div>
 
-        <dl className="mt-3 grid gap-x-6 gap-y-2.5 sm:grid-cols-3">
-          {anchors.map((a, i) => {
-            const lit = litAnchors.includes(i);
+        {/* All five anchors, in scale order. The whole scale is written in
+            rubric v2, so the card shows the whole scale — a facilitator cannot
+            defend a 3 against an anchor the card never printed. */}
+        <dl className="mt-3 grid grid-cols-[auto_minmax(0,1fr)] gap-x-4 gap-y-1.5">
+          {anchors.map((a) => {
+            const lit = score === a.n;
             return (
-              <div key={a.n}>
+              <div key={a.n} className="contents">
                 <dt
                   className={cn(
                     "text-[11px] font-semibold tabular-nums transition-colors duration-150 motion-reduce:transition-none",
@@ -306,7 +311,7 @@ export function IndicatorCard({
                 </dt>
                 <dd
                   className={cn(
-                    "mt-0.5 text-[12.5px] leading-snug transition-colors duration-150 motion-reduce:transition-none",
+                    "text-[12.5px] leading-snug transition-colors duration-150 motion-reduce:transition-none",
                     lit ? "text-foreground/90" : "text-muted-foreground/70"
                   )}
                 >
@@ -316,6 +321,18 @@ export function IndicatorCard({
             );
           })}
         </dl>
+
+        {indicator.note && (
+          <p className="mt-2.5 max-w-[74ch] text-[11.5px] leading-snug text-muted-foreground">
+            {indicator.note}
+          </p>
+        )}
+
+        {isNa && (
+          <p className="mt-2.5 max-w-[74ch] rounded-lg bg-[color:var(--color-brand-warning)]/10 px-3 py-2 text-[11.5px] leading-relaxed text-muted-foreground">
+            {NA_RULE}
+          </p>
+        )}
 
         {/* Target — deliberately secondary to the score: small, outlined, and
             optional. Click the same value again to clear it. Hidden for N/A —
@@ -354,6 +371,11 @@ export function IndicatorCard({
               optional — where this lands with the 90-day plan executed. Set
               only what you&apos;d defend.
             </span>
+            {targetBelowScore && (
+              <p className="w-full text-[11.5px] leading-snug text-[color:var(--color-brand-warning)]">
+                {`Target ${potential} is below today's score of ${score}. The math treats it as ${score} — a potential that goes backwards is a typo, not a target. Raise it or clear it.`}
+              </p>
+            )}
           </div>
         )}
       </section>

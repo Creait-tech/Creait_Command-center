@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { currentUser } from "@clerk/nextjs/server";
 
 import { createClient } from "@/lib/supabase/server";
 import { getActiveOrgId } from "@/lib/active-org";
@@ -42,7 +43,7 @@ export default async function AssessmentDetailPage({
 
   if (!assessment) notFound();
 
-  const [scoresRes, oppsRes] = await Promise.all([
+  const [scoresRes, oppsRes, user] = await Promise.all([
     supabase.from("cc_assessment_scores").select("*").eq("assessment_id", id),
     supabase
       .from("cc_assessment_opportunities")
@@ -50,10 +51,21 @@ export default async function AssessmentDetailPage({
       .eq("assessment_id", id)
       .order("rank", { ascending: true })
       .order("created_at", { ascending: true }),
+    currentUser(),
   ]);
+
+  // The default reviewer on the release. Same fallback ladder the rest of the
+  // app uses — a name if Clerk has one, otherwise the email address.
+  const currentUserName =
+    user?.fullName?.trim() ||
+    [user?.firstName, user?.lastName].filter(Boolean).join(" ").trim() ||
+    user?.username?.trim() ||
+    user?.primaryEmailAddress?.emailAddress?.trim() ||
+    "";
 
   return (
     <AssessmentWorkbench
+      currentUserName={currentUserName}
       initialAssessment={assessment as CcAssessment}
       initialScores={(scoresRes.data as CcAssessmentScore[] | null) ?? []}
       initialOpportunities={
