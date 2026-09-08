@@ -1,7 +1,9 @@
 import { notFound } from "next/navigation";
+import { currentUser } from "@clerk/nextjs/server";
 
 import { createClient } from "@/lib/supabase/server";
 import { getActiveOrgId } from "@/lib/active-org";
+import { displayNameOf } from "@/lib/display-name";
 import { AssessmentWorkbench } from "@/components/assessments/assessment-workbench";
 import type {
   CcAssessment,
@@ -42,7 +44,7 @@ export default async function AssessmentDetailPage({
 
   if (!assessment) notFound();
 
-  const [scoresRes, oppsRes] = await Promise.all([
+  const [scoresRes, oppsRes, user] = await Promise.all([
     supabase.from("cc_assessment_scores").select("*").eq("assessment_id", id),
     supabase
       .from("cc_assessment_opportunities")
@@ -50,10 +52,15 @@ export default async function AssessmentDetailPage({
       .eq("assessment_id", id)
       .order("rank", { ascending: true })
       .order("created_at", { ascending: true }),
+    currentUser(),
   ]);
+
+  /** The default reviewer on the release — the person at the keyboard. */
+  const currentUserName = displayNameOf(user) ?? "";
 
   return (
     <AssessmentWorkbench
+      currentUserName={currentUserName}
       initialAssessment={assessment as CcAssessment}
       initialScores={(scoresRes.data as CcAssessmentScore[] | null) ?? []}
       initialOpportunities={

@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { auth } from "@clerk/nextjs/server";
@@ -19,6 +20,7 @@ import {
   roadmapRows,
 } from "@/components/assessments/report/roadmap-to-goal";
 import {
+  anchorFor,
   computePotentialScores,
   computeScores,
   EVIDENCE_LABELS,
@@ -27,15 +29,20 @@ import {
   INDICATORS,
   INDICATORS_BY_PILLAR,
   marginShift,
+  MAX_PILLAR_NA,
   MIN_PILLAR_SAMPLE,
   MIN_POTENTIAL_SET,
   MIN_REPORT_RESOLVED,
+  NA_RULE,
   OVERLAY_FLAGS,
   paybackMonths,
   PILLARS,
   portfolioTotals,
+  REPORTED_ONLY_HIGH_FACTOR,
+  REPORTED_ONLY_LOW_FACTOR,
   SCALE_LABELS,
   toScoreMap,
+  widenOpportunities,
 } from "@/lib/assessment-instrument";
 
 import type {
@@ -45,6 +52,16 @@ import type {
 } from "@/lib/supabase/types";
 
 export const dynamic = "force-dynamic";
+
+/** The product's name, client-facing. One string, used everywhere it appears. */
+const PRODUCT_NAME = "CREAiT Growth & AI Diagnostic";
+
+/**
+ * The terms line. One credit rule, one clock — the engagement agreement, the
+ * report and the results session all say exactly this.
+ */
+const CREDIT_RULE =
+  "Your full $7,500 is applied as credit toward CREAiT Builds or Advisory when you start within 60 days of your results session.";
 
 /**
  * The template supplies the quotation marks around the owner's verbatim, so
@@ -268,7 +285,7 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { userId } = await auth();
-  if (!userId) return { title: "Growth & AI Diagnostic" };
+  if (!userId) return { title: PRODUCT_NAME };
 
   const { id } = await params;
   const supabase = await createClient();
@@ -284,11 +301,11 @@ export async function generateMetadata({
     CcAssessment,
     "client_name" | "company" | "is_practice"
   > | null;
-  if (!row) return { title: "Growth & AI Diagnostic" };
+  if (!row) return { title: PRODUCT_NAME };
 
   const who = row.company || row.client_name;
   return {
-    title: `${row.is_practice ? "PRACTICE — " : ""}Growth & AI Diagnostic — ${who}`,
+    title: `${row.is_practice ? "PRACTICE — " : ""}${PRODUCT_NAME} — ${who}`,
     robots: { index: false, follow: false },
   };
 }
@@ -329,7 +346,28 @@ export default async function ExecutiveBlueprintPage({
     (scoresRes.data as CcAssessmentScore[] | null) ?? []
   );
   const allOpps = (oppsRes.data as CcAssessmentOpportunity[] | null) ?? [];
-  const opportunities = allOpps.filter((o) => o.include_in_report);
+
+  /**
+   * The evidence rule, applied once, here.
+   *
+   * A "Reported-only" opportunity has its low multiplied by 0.75 and its high
+   * by 1.25 before anything renders. Two ways in: no P&L on file, which makes
+   * EVERY figure reported (each one is derived from revenue and margin we
+   * could not check against a statement), or the advisor marking a finding as
+   * resting entirely on Reported indicators.
+   *
+   * Widening the card but not the total would be worse than not widening at
+   * all, so every downstream exhibit (money map, payback, roadmap, portfolio,
+   * appendix) is built from THESE rows, not the raw ones.
+   */
+  const pnlOnFile = Boolean(assessment.pnl_on_file);
+  const opportunities = widenOpportunities(
+    allOpps.filter((o) => o.include_in_report),
+    pnlOnFile
+  );
+  const anyWidened = opportunities.some((o) => o.widened);
+  const pnlDisclosure =
+    "Profit-pillar findings rest on unaudited figures provided by the owner. Ranges for Reported-only opportunities are widened by ±25%.";
 
   const computed = computeScores(scores);
   const potential = computePotentialScores(scores);
@@ -345,9 +383,6 @@ export default async function ExecutiveBlueprintPage({
   const clientLine = assessment.company
     ? `${assessment.company} · ${assessment.client_name}`
     : assessment.client_name;
-  const hasEstimateBasedOpp = opportunities.some(
-    (o) => o.confidence === "low"
-  );
 
   // Report-readiness. Below the threshold the pillar averages rest on a
   // handful of indicators and the document reads as an unfinished checklist —
@@ -413,6 +448,39 @@ export default async function ExecutiveBlueprintPage({
     ? `Operating margin: ${margin.currentPct.toFixed(1)}% → ${margin.expectedPct.toFixed(1)}% (+${margin.deltaPts.toFixed(1)} points) in the expected case, with revenue held flat.`
     : null;
 
+  /**
+   * "Check the math" — the composite, reproducible by hand.
+   *
+   * The pillar bars print rounded whole numbers, and three rounded numbers
+   * weighted together do not reliably land on the printed composite. So this
+   * block prints the unrounded pillar values to one decimal and the exact
+   * weighted average built from them, which is the number on the cover.
+   */
+  const countedPillars = PILLARS.filter(
+    (p) => computed.pillarsRaw[p.key] !== null && !computed.thinPillars[p.key]
+  );
+  const mathTerms = countedPillars.map((p) => ({
+    label: p.label,
+    value: (computed.pillarsRaw[p.key] as number).toFixed(1),
+    weight: p.weight,
+    product: ((computed.pillarsRaw[p.key] as number) * p.weight).toFixed(2),
+  }));
+  const mathWeightSum = countedPillars.reduce((sum, p) => sum + p.weight, 0);
+  const mathProductSum = countedPillars.reduce(
+    (sum, p) => sum + (computed.pillarsRaw[p.key] as number) * p.weight,
+    0
+  );
+  /** Named with the rule that dropped them, so the sentence is checkable too. */
+  const excludedPillarLabels = PILLARS.filter((p) =>
+    computed.excludedPillars.includes(p.key)
+  )
+    .map((p) =>
+      computed.pillarExclusions[p.key] === "too_many_na"
+        ? `${p.label} (${computed.pillarNaCounts[p.key]} of 10 not applicable)`
+        : `${p.label} (${computed.pillarScoredCounts[p.key]} of 10 examined)`
+    )
+    .join(", ");
+
   /** The lowest-scored indicators — the evidence standing behind the mirror. */
   const weakest = INDICATORS.map((ind) => ({ ind, row: scores[ind.key] }))
     .filter(
@@ -465,7 +533,7 @@ export default async function ExecutiveBlueprintPage({
             C R E A i T
           </p>
           <h1 style={{ fontSize: 40, fontWeight: 800, lineHeight: 1.15, marginTop: 20 }}>
-            Growth &amp; AI Diagnostic
+            {PRODUCT_NAME}
           </h1>
           {roadmapIdentity ? (
             <>
@@ -502,11 +570,32 @@ export default async function ExecutiveBlueprintPage({
             </p>
           </div>
         </div>
-        <p style={{ marginTop: "auto", fontSize: 11, color: muted }}>
-          Confidential. Prepared for the named recipient. Figures are
-          evidence-based estimates, not guarantees, and are shown as ranges
-          with their basis. This is not a business valuation or appraisal.
-        </p>
+        <div style={{ marginTop: "auto" }}>
+          {/* The disclosure sits on the cover, not only in the appendix: a
+              reader who never reaches page fourteen still learns what the
+              Profit figures rest on. */}
+          {!pnlOnFile && (
+            <p
+              style={{
+                fontSize: 11.5,
+                lineHeight: 1.6,
+                color: ink,
+                border: `1px solid ${line}`,
+                borderLeft: `4px solid ${blue}`,
+                borderRadius: 8,
+                padding: "10px 14px",
+                marginBottom: 14,
+              }}
+            >
+              {pnlDisclosure}
+            </p>
+          )}
+          <p style={{ fontSize: 11, color: muted }}>
+            Confidential. Prepared for the named recipient. Figures are
+            evidence-based estimates, not guarantees, and are shown as ranges
+            with their basis. This is not a business valuation or appraisal.
+          </p>
+        </div>
       </section>
 
       {/* ── Advisor letter ────────────────────────────────────────────── */}
@@ -753,7 +842,7 @@ export default async function ExecutiveBlueprintPage({
             />
           </div>
           <p style={{ fontSize: 11, color: muted, marginTop: 2, lineHeight: 1.6 }}>
-            {`Fewer than ${MIN_PILLAR_SAMPLE} of a pillar\u2019s 10 indicators reads as insufficient data, never as a number \u2014 a hatched rail means we did not look at enough of it.`}
+            {`A pillar scored from fewer than ${MIN_PILLAR_SAMPLE} of its 10 indicators \u2014 or with ${MAX_PILLAR_NA} or more that do not apply \u2014 reads as insufficient data, never as a number. A hatched rail means we did not see enough of it to state one.`}
             {showPotential &&
               " Outlined bars are the advisor-set targets with the 90-day plan executed \u2014 not projections."}
           </p>
@@ -762,7 +851,7 @@ export default async function ExecutiveBlueprintPage({
         {computed.provisional && !isDraft && (
           <p style={{ fontSize: 12, color: muted, marginTop: 12, lineHeight: 1.6 }}>
             {thinPillarLabels
-              ? `The composite is provisional: ${thinPillarLabels} rests on too few indicators to state as a pillar score. It still contributes at its full weight, so treat the headline number as directional until those indicators are examined.`
+              ? `The composite is provisional: ${thinPillarLabels} carries too little that applies to this business to state as a pillar score, so it is left out of the composite entirely and its weight is redistributed across the pillars we did examine. Treat the headline number as directional until that changes.`
               : `The composite is provisional — fewer than ${MIN_REPORT_RESOLVED} of ${INDICATORS.length} indicators have been resolved.`}
           </p>
         )}
@@ -1087,6 +1176,7 @@ export default async function ExecutiveBlueprintPage({
 
         {PILLARS.map((pillar) => {
           const examined = computed.pillarScoredCounts[pillar.key];
+          const naCount = computed.pillarNaCounts[pillar.key];
           const thinPillar = computed.thinPillars[pillar.key];
           const unexamined = INDICATORS_BY_PILLAR[pillar.key].filter((ind) => {
             const row = scores[ind.key];
@@ -1120,9 +1210,12 @@ export default async function ExecutiveBlueprintPage({
               </span>
             </p>
             <p style={{ fontSize: 11, color: muted, marginTop: 2 }}>
-              {examined} of 10 indicators examined
+              {`${examined} of 10 indicators examined`}
+              {naCount > 0 ? `, ${naCount} not applicable` : ""}
               {thinPillar
-                ? " — too few to state a pillar score; treat the rows below as observations, not a verdict."
+                ? computed.pillarExclusions[pillar.key] === "too_many_na"
+                  ? ` — with ${naCount} of ten outside this business model there is too little pillar left to state a score, so it carries no weight in the composite; treat the rows below as observations, not a verdict.`
+                  : " — too few to state a pillar score, and too few to weigh in the composite; treat the rows below as observations, not a verdict."
                 : ""}
             </p>
             <table style={{ width: "100%", borderCollapse: "collapse", marginTop: 8, fontSize: 12 }}>
@@ -1177,6 +1270,63 @@ export default async function ExecutiveBlueprintPage({
           </div>
           );
         })}
+
+        {/* Check the math — the arithmetic, in full, from the unrounded pillar
+            values. A client who reproduces this on paper must land on the
+            number printed on the cover, not one point either side of it. */}
+        {mathTerms.length > 0 && computed.creaitScore !== null && (
+          <div
+            className="avoid-break"
+            style={{
+              border: `1px solid ${line}`,
+              background: tint,
+              borderRadius: 10,
+              padding: "14px 18px",
+              marginTop: 24,
+              fontSize: 12,
+              lineHeight: 1.7,
+            }}
+          >
+            <p style={{ ...labelCap, color: blue }}>Check the math</p>
+            <table
+              style={{
+                width: "100%",
+                borderCollapse: "collapse",
+                marginTop: 8,
+                fontVariantNumeric: "tabular-nums",
+              }}
+            >
+              <tbody>
+                {mathTerms.map((t) => (
+                  <tr key={t.label}>
+                    <td style={{ ...tdStyle, width: "34%" }}>{t.label}</td>
+                    <td style={tdStyle}>
+                      {`${t.value} × ${t.weight} = ${t.product}`}
+                    </td>
+                  </tr>
+                ))}
+                <tr>
+                  <td style={{ ...tdStyle, fontWeight: 700 }}>CREAiT Score</td>
+                  <td style={{ ...tdStyle, fontWeight: 700 }}>
+                    {`${mathProductSum.toFixed(2)} ÷ ${mathWeightSum.toFixed(
+                      2
+                    )} = ${(mathProductSum / mathWeightSum).toFixed(1)} → ${
+                      computed.creaitScore
+                    }`}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <p style={{ fontSize: 11.5, color: muted, marginTop: 8 }}>
+              {`Pillar score = (sum of that pillar's scores ÷ number of indicators examined) ÷ 4 × 100, shown here to one decimal. The weights are divided by their own total (${mathWeightSum.toFixed(
+                2
+              )}) so they always add to one.`}
+              {excludedPillarLabels
+                ? ` ${excludedPillarLabels} carries too little evidence to weigh — fewer than ${MIN_PILLAR_SAMPLE} indicators examined, or ${MAX_PILLAR_NA} or more that do not apply — so it is left out of this calculation entirely and its share is redistributed across the pillars above.`
+                : ""}
+            </p>
+          </div>
+        )}
       </section>
 
       {/* ── Primary constraint ────────────────────────────────────────── */}
@@ -1238,8 +1388,10 @@ export default async function ExecutiveBlueprintPage({
           {portfolio.overlapApplied
             ? `The portfolio total is overlap-adjusted (×${portfolio.overlapFactor}) because initiatives share the same customers and hours — we never add raw maximums.`
             : "There is a single initiative here, so there is no overlap to discount — the total is that initiative's own range."}
-          {hasEstimateBasedOpp &&
-            " Items marked low-confidence are based on your estimates; treat the ranges as wide."}
+          {anyWidened &&
+            (pnlOnFile
+              ? ` Items marked "based on your estimates" rest only on what you told us, so their ranges are widened — low ×${REPORTED_ONLY_LOW_FACTOR}, high ×${REPORTED_ONLY_HIGH_FACTOR} — before they are totalled.`
+              : ` With no profit-and-loss statement on file, every figure below is built on revenue and margin you reported, so every range is widened — low ×${REPORTED_ONLY_LOW_FACTOR}, high ×${REPORTED_ONLY_HIGH_FACTOR} — before it is totalled.`)}
           {hasBlueprints &&
             " Where a build is named, it is scoped the way we would build it: the automation or AI workflow, the manual work it replaces, and the hours it hands back."}
         </p>
@@ -1357,10 +1509,13 @@ export default async function ExecutiveBlueprintPage({
                       .
                     </p>
                   )}
-                {opp.confidence === "low" && (
+                {opp.widened && (
                   <p style={{ fontSize: 11.5, color: muted, marginTop: 8 }}>
-                    Based on your estimates — we widened this range and will
-                    firm it up with real measurement in the first 30 days.
+                    {`Based on your estimates — this range is widened (low ×${REPORTED_ONLY_LOW_FACTOR}, high ×${REPORTED_ONLY_HIGH_FACTOR}) because ${
+                      pnlOnFile
+                        ? "every indicator behind it is something you told us rather than a record we saw"
+                        : "it is built on revenue and margin you reported, with no profit-and-loss statement on file to check them against"
+                    }. We will firm it up with real measurement in the first 30 days.`}
                   </p>
                 )}
                 {opp.blueprint && (
@@ -1533,9 +1688,8 @@ export default async function ExecutiveBlueprintPage({
               builds, or run the whole plan alongside you on advisory — weekly
               rhythm, a scoreboard, builds folded in, and the score re-tested
               each quarter. Working together starts exactly where this document
-              ends: same numbers, same priorities, no re-discovery. Your
-              diagnostic fee returns as 50% credit on everything we build. The
-              final page lays both options out.
+              ends: same numbers, same priorities, no re-discovery. {CREDIT_RULE}{" "}
+              The final page lays both options out.
             </p>
           </li>
           <li style={pathCard} className="avoid-break">
@@ -1569,9 +1723,16 @@ export default async function ExecutiveBlueprintPage({
           apply to your business is excluded from the average entirely — it is
           never counted as a zero. Pillar scores average the indicators we
           examined; the composite weighs Profit at 40%, Systems at 35% and
-          Leverage at 25%, renormalized over whatever pillars carry data. An
-          indicator we did not examine is disclosed as exactly that.
+          Leverage at 25%, renormalized over the pillars we examined deeply
+          enough to state — a pillar scored from fewer than {MIN_PILLAR_SAMPLE}{" "}
+          of its ten indicators, or with {MAX_PILLAR_NA} or more that do not
+          apply to your business, is reported as insufficient data and carries
+          no weight in the composite at all. An indicator we did not examine is
+          disclosed as exactly that.
         </p>
+
+        <p style={aboutHead}>When an indicator is marked N/A</p>
+        <p style={aboutBody}>{NA_RULE}</p>
 
         <p style={aboutHead}>How we know what we claim</p>
         <p style={aboutBody}>
@@ -1593,9 +1754,18 @@ export default async function ExecutiveBlueprintPage({
           because initiatives share the same customers and the same hours — we
           never add raw maximums. Payback is the cost to fix divided by the
           expected monthly recovery.
+          {anyWidened &&
+            ` An opportunity that rests only on figures you reported has its range widened before it is totalled — low ×${REPORTED_ONLY_LOW_FACTOR}, high ×${REPORTED_ONLY_HIGH_FACTOR} — and says so on its own card. That applies to every opportunity when we hold no profit-and-loss statement, because then every dollar figure traces back to revenue and margin we could not check. The expected case is left alone: widening is a statement about how well we know the edges, not a re-estimate of the middle.`}
           {showPotential &&
             " Where a target score appears, it is your advisor's judgement of where an indicator lands with the 90-day plan executed — set by hand, labeled as such, and never a projection."}
         </p>
+
+        {!pnlOnFile && (
+          <>
+            <p style={aboutHead}>What we did not see</p>
+            <p style={aboutBody}>{pnlDisclosure}</p>
+          </>
+        )}
 
         <p style={aboutHead}>What this report is not</p>
         <p style={aboutBody}>
@@ -1612,14 +1782,220 @@ export default async function ExecutiveBlueprintPage({
         </p>
       </section>
 
+      {/* ── Appendix A — indicator register ───────────────────────────── */}
+      <section className="report-page">
+        {pageBanners}
+        <SectionHeading
+          title="Appendix A — Indicator register"
+          deck="All thirty indicators, the anchor each score matched, how we know, and the note behind it. Nothing here is summarised."
+        />
+        <table
+          style={{
+            width: "100%",
+            borderCollapse: "collapse",
+            marginTop: 16,
+            fontSize: 10.5,
+          }}
+        >
+          <thead>
+            <tr>
+              <th style={{ ...thStyle, width: 34 }}>ID</th>
+              <th style={{ ...thStyle, width: "20%" }}>Indicator</th>
+              <th style={{ ...thStyle, width: 74 }}>Score</th>
+              <th style={{ ...thStyle }}>Anchor it matched</th>
+              <th style={{ ...thStyle, width: 66 }}>Evidence</th>
+              <th style={{ ...thStyle, width: "24%" }}>Note</th>
+            </tr>
+          </thead>
+          <tbody>
+            {PILLARS.map((pillar) => (
+              <Fragment key={pillar.key}>
+                <tr>
+                  <td
+                    colSpan={6}
+                    style={{
+                      ...tdStyle,
+                      fontWeight: 800,
+                      color: blue,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.07em",
+                      fontSize: 10,
+                      paddingTop: 10,
+                    }}
+                  >
+                    {`${pillar.label} · ${Math.round(pillar.weight * 100)}%`}
+                  </td>
+                </tr>
+                {INDICATORS_BY_PILLAR[pillar.key].map((ind) => {
+                  const row = scores[ind.key];
+                  const isNa = row?.not_applicable ?? false;
+                  const score = isNa ? null : (row?.score ?? null);
+                  const anchor = anchorFor(ind, score);
+                  return (
+                    <tr key={ind.key}>
+                      <td style={{ ...tdStyle, fontWeight: 700 }}>{ind.key}</td>
+                      <td style={tdStyle}>{ind.label}</td>
+                      <td style={tdStyle}>
+                        {isNa
+                          ? "N/A"
+                          : score === null
+                            ? "not examined"
+                            : `${score} · ${SCALE_LABELS[score]}`}
+                      </td>
+                      <td style={{ ...tdStyle, color: muted }}>
+                        {anchor ??
+                          (isNa
+                            ? "Cannot apply to this business model."
+                            : "—")}
+                      </td>
+                      <td style={tdStyle}>
+                        {row && !isNa && score !== null
+                          ? EVIDENCE_LABELS[row.evidence_confidence]
+                          : "—"}
+                      </td>
+                      <td style={{ ...tdStyle, color: muted }}>
+                        {row?.notes ?? ""}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </Fragment>
+            ))}
+          </tbody>
+        </table>
+        <p style={{ fontSize: 11, color: muted, marginTop: 10, lineHeight: 1.6 }}>
+          Evidence: Reported (you told us), Demonstrated (we watched it work),
+          Documented (we saw the record). {NA_RULE}
+        </p>
+      </section>
+
+      {/* ── Appendix B — assumptions ──────────────────────────────────── */}
+      <section className="report-page">
+        {pageBanners}
+        <SectionHeading
+          title="Appendix B — Assumptions behind every figure"
+          deck="One row per priced initiative: what it rests on, the range, whether that range was widened, what it costs and when it starts paying."
+        />
+        {opportunities.length === 0 ? (
+          <p style={{ fontSize: 13, color: muted, marginTop: 16 }}>
+            No priced opportunities in this report.
+          </p>
+        ) : (
+          <>
+            {opportunities.map((opp, i) => (
+              <div
+                key={opp.id}
+                className="avoid-break"
+                style={{
+                  border: `1px solid ${line}`,
+                  borderRadius: 8,
+                  padding: "12px 16px",
+                  marginTop: 12,
+                  fontSize: 11.5,
+                  lineHeight: 1.65,
+                }}
+              >
+                <p style={{ fontSize: 13, fontWeight: 800 }}>
+                  {i + 1}. {opp.title}
+                </p>
+                <p style={{ color: muted, marginTop: 4 }}>
+                  {opp.finding || "No basis recorded."}
+                </p>
+                <table
+                  style={{
+                    width: "100%",
+                    borderCollapse: "collapse",
+                    marginTop: 8,
+                    fontVariantNumeric: "tabular-nums",
+                  }}
+                >
+                  <tbody>
+                    <tr>
+                      <td style={{ ...tdStyle, width: "38%", color: muted }}>
+                        Annual low / expected / high
+                      </td>
+                      <td style={tdStyle}>
+                        {`${formatMoney(opp.annual_low)} / ${formatMoney(
+                          opp.annual_expected
+                        )} / ${formatMoney(opp.annual_high)}`}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style={{ ...tdStyle, color: muted }}>
+                        Widening applied
+                      </td>
+                      <td style={tdStyle}>
+                        {opp.widened
+                          ? `Yes — ${
+                              pnlOnFile
+                                ? "the indicators behind this finding are all Reported"
+                                : "no P&L on file, so the revenue and margin underneath it are Reported"
+                            }: low ×${REPORTED_ONLY_LOW_FACTOR}, high ×${REPORTED_ONLY_HIGH_FACTOR}. The figures above are the widened ones.`
+                          : "No — the range is as modeled."}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style={{ ...tdStyle, color: muted }}>Cost to fix</td>
+                      <td style={tdStyle}>{formatMoney(opp.fix_cost)}</td>
+                    </tr>
+                    <tr>
+                      <td style={{ ...tdStyle, color: muted }}>
+                        Months to first benefit
+                      </td>
+                      <td style={tdStyle}>
+                        {opp.months_to_benefit !== null
+                          ? `${opp.months_to_benefit} ${
+                              Number(opp.months_to_benefit) === 1
+                                ? "month"
+                                : "months"
+                            }`
+                          : "—"}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style={{ ...tdStyle, color: muted }}>
+                        Evidence confidence
+                      </td>
+                      <td style={tdStyle}>{opp.confidence}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            ))}
+            <div
+              className="avoid-break"
+              style={{
+                borderTop: `2px solid ${ink}`,
+                marginTop: 18,
+                paddingTop: 12,
+                fontSize: 12,
+                lineHeight: 1.7,
+              }}
+            >
+              <p>
+                <b>Overlap factor:</b>{" "}
+                {portfolio.overlapApplied
+                  ? `×${portfolio.overlapFactor} — applied because these ${portfolio.includedCount} initiatives share the same customers and the same hours. The raw sum is ${formatMoney(portfolio.rawExpected)} expected.`
+                  : `not applied — a single initiative has nothing to overlap with, so the total is its own range. The configured factor is ×${portfolio.configuredFactor}.`}
+              </p>
+              <p style={{ marginTop: 6 }}>
+                <b>Portfolio:</b>{" "}
+                {`${formatMoney(portfolio.adjLow)} low · ${formatMoney(
+                  portfolio.adjExpected
+                )} expected · ${formatMoney(portfolio.adjHigh)} high, per year.`}
+              </p>
+            </div>
+          </>
+        )}
+      </section>
+
       {/* ── What's next ───────────────────────────────────────────────── */}
       <section className="report-page">
         {pageBanners}
         <SectionHeading title="What's Next" deck="If you want help." />
         <p style={{ fontSize: 13.5, lineHeight: 1.7, marginTop: 12 }}>
           The plan above is yours either way. If you want us alongside you,
-          there are two ways we work — and your diagnostic fee returns as 50%
-          credit on everything we build.
+          there are two ways we work.
         </p>
         <div style={{ display: "flex", gap: 14, marginTop: 20 }}>
           <div style={nextCard}>
@@ -1655,9 +2031,7 @@ export default async function ExecutiveBlueprintPage({
             lineHeight: 1.6,
           }}
         >
-          <b>The credit, plainly:</b>{" "}
-          your diagnostic fee returns as 50% credit on everything we build,
-          until it&apos;s used up.
+          <b>Terms:</b> {CREDIT_RULE}
         </div>
         {/* The document ends on the owner, not on a price. */}
         <div style={{ borderTop: `2px solid ${line}`, marginTop: 44, paddingTop: 28 }}>
@@ -1675,7 +2049,7 @@ export default async function ExecutiveBlueprintPage({
           </p>
         </div>
         <p style={{ fontSize: 12, color: muted, marginTop: 40 }}>
-          CREAiT · Growth &amp; AI Diagnostic · {reportDate} · Info@creait.tech
+          {PRODUCT_NAME} · {reportDate} · Info@creait.tech
         </p>
       </section>
     </div>

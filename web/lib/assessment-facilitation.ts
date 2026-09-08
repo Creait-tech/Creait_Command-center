@@ -45,14 +45,17 @@
  *    guide's posture: curious operator, not interrogator; no verdict on the day.
  *
  * SCORING CONVENTIONS these entries assume:
- *  - Anchors live at 0 / 2 / 4 in `assessment-instrument.ts`; 1 and 3 are the
- *    in-betweens, which is why every `scoreHint` names the 2-to-3 line.
+ *  - Anchors live at every level 0–4 in `assessment-instrument.ts` (rubric v2
+ *    wrote 1 and 3 out); the `scoreHint`s still name the 2-to-3 line because
+ *    that is the boundary facilitators get wrong most often.
  *  - "Not currently known" is a valid answer and is never scored as zero — it
  *    is a low score with a reason, or N/A, which leaves the denominator.
  *  - Evidence confidence (Reported / Demonstrated / Documented) is logged
  *    separately and never changes the score; it widens the financial ranges.
  *    Prompts that ask to see something are how Reported becomes Documented.
  */
+
+import type { IndicatorKey } from "@/lib/assessment-instrument";
 
 /** Where a line came from. See the PROVENANCE note above. */
 export type FacilitationSource = "guide" | "authored";
@@ -970,7 +973,12 @@ export interface FacilitationScript {
   source: FacilitationSource;
 }
 
-export const FACILITATION: Record<string, FacilitationScript> = {
+/**
+ * Keyed by IndicatorKey rather than string: a mistyped or stale indicator key
+ * here used to render an empty card in the middle of a scoring session. Now it
+ * fails the typecheck, and a new indicator cannot ship without its script.
+ */
+export const FACILITATION: Record<IndicatorKey, FacilitationScript> = {
   // ── PROFIT ────────────────────────────────────────────────────────────────
   P1: {
     ask: "Take me through where last month's new leads came from.",
@@ -1337,7 +1345,7 @@ export const FACILITATION: Record<string, FacilitationScript> = {
     ],
     followUp: "How many hours a week does that one take?",
     scoreHint:
-      "Mind the direction here — a heavy manual load scores LOW, not high; the 'reverse-scored' label on this indicator refers to the burden being inverted, not the anchors. 0 if repetitive manual work is everywhere and nothing has been fixed. 2 if the load is real but a few things have been cleaned up. The 2-to-3 line is whether the worst offender has been addressed: at 3 the big ones are handled and what remains is minor; at 2 the biggest task is still fully manual. 4 means little manual repetition and work that moves without someone pushing it. Always get the hours-per-week number — the report's capacity math runs on it.",
+      "This indicator reads like every other one: more manual work eliminated scores HIGHER. 0 if repetitive manual work is everywhere and nothing has been fixed. 2 if the load is real but a few things have been cleaned up. The 2-to-3 line is whether the worst offender has been addressed: at 3 the big ones are handled and what remains is minor; at 2 the biggest task is still fully manual. 4 means little manual repetition and work that moves without someone pushing it. Always get the hours-per-week number — the report's capacity math runs on it.",
     askIfMissing:
       "Could you list your five most repetitive weekly tasks, with who does each and how long it takes?",
     source: "guide",

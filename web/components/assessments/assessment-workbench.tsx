@@ -33,16 +33,18 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import {
+  ASSESSMENT_DOCUMENT_KINDS,
+  assessmentReadiness,
   computeScores,
+  DOCUMENT_KIND_LABELS,
   formatMoney,
   INDICATORS,
-  MIN_PILLAR_SAMPLE,
-  MIN_REPORT_RESOLVED,
   normalizeOverlapFactor,
   OVERLAY_FLAGS,
   PILLARS,
   portfolioTotals,
   toScoreMap,
+  type AssessmentDocumentKind,
   type IndicatorDef,
 } from "@/lib/assessment-instrument";
 import {
@@ -55,6 +57,7 @@ import {
   appendPlanItem,
   removePlanItem,
   reorderPlanItems,
+  setAssessmentDocuments,
   updateAssessment,
   updateSessionNotes,
   upsertIndicatorScore,
@@ -82,6 +85,7 @@ import { OpportunityEditor } from "@/components/assessments/opportunity-editor";
 import { PlanBuilder } from "@/components/assessments/plan-builder";
 import type { IndicatorPatch } from "@/components/assessments/indicator-card";
 import type {
+  AssessmentDocument,
   AssessmentStatus,
   CcAssessment,
   CcAssessmentOpportunity,
@@ -103,6 +107,30 @@ function jsonToStrings(value: unknown): string[] {
   return Array.isArray(value)
     ? value.filter((v): v is string => typeof v === "string")
     : [];
+}
+
+const DOCUMENT_KINDS: AssessmentDocumentKind[] = [...ASSESSMENT_DOCUMENT_KINDS];
+
+/** The stored data-room list, defensively — it is free-form JSON in Postgres. */
+function jsonToDocuments(value: unknown): AssessmentDocument[] {
+  if (!Array.isArray(value)) return [];
+  return value.flatMap((entry) => {
+    if (!entry || typeof entry !== "object" || Array.isArray(entry)) return [];
+    const row = entry as Record<string, unknown>;
+    const name = typeof row.name === "string" ? row.name.trim() : "";
+    const kind = typeof row.kind === "string" ? row.kind : "other";
+    if (!name) return [];
+    return [
+      {
+        name,
+        kind: (DOCUMENT_KINDS as string[]).includes(kind)
+          ? (kind as AssessmentDocument["kind"])
+          : "other",
+        received_on:
+          typeof row.received_on === "string" ? row.received_on : null,
+      },
+    ];
+  });
 }
 
 function median(values: number[]): number {
@@ -147,6 +175,7 @@ export function AssessmentWorkbench({
   initialStep,
   initialBlock,
   initialIndicator,
+  currentUserName,
 }: {
   initialAssessment: CcAssessment;
   initialScores: CcAssessmentScore[];
@@ -154,11 +183,22 @@ export function AssessmentWorkbench({
   initialStep?: string;
   initialBlock?: string;
   initialIndicator?: string;
+  /** The signed-in person — the default reviewer on the release. */
+  currentUserName: string;
 }) {
   const [assessment, setAssessment] = useState(initialAssessment);
   const [scores, setScores] = useState(() => toScoreMap(initialScores));
   const [opportunities, setOpportunities] = useState(initialOpportunities);
   const [planDraft, setPlanDraft] = useState("");
+  // The person at the keyboard signs this release, not whoever signed the last
+  // one — a stored name is only the fallback when Clerk can't name the session.
+  const [reviewer, setReviewer] = useState(
+    () => currentUserName || initialAssessment.reviewed_by?.trim() || ""
+  );
+  const [docDraft, setDocDraft] = useState<{
+    name: string;
+    kind: AssessmentDocumentKind;
+  }>({ name: "", kind: "pnl" });
 
   const [step, setStep] = useState<StepId>(() =>
     isStepId(initialStep) ? initialStep : "setup"
@@ -202,7 +242,6 @@ export function AssessmentWorkbench({
     const delta = (now - previous) / 1000;
     if (delta > 1 && delta < 300) setPaceSamples((prev) => [...prev, delta]);
   }, [resolvedCount]);
-  const reportReady = resolvedCount >= MIN_REPORT_RESOLVED;
   const sessionNotes = useMemo(
     () => parseSessionNotes(assessment.session_notes),
     [assessment.session_notes]
@@ -218,6 +257,44 @@ export function AssessmentWorkbench({
   const portfolio = useMemo(
     () => portfolioTotals(opportunities, assessment.overlap_factor),
     [opportunities, assessment.overlap_factor]
+  );
+  const documents = useMemo(
+    () => jsonToDocuments(assessment.documents),
+    [assessment.documents]
+  );
+  /**
+   * The same function the server runs at the delivery transition, so the
+   * checklist on this screen and the refusal from the server can never
+   * disagree about what "ready" means.
+   */
+  const readiness = useMemo(
+    () =>
+      assessmentReadiness({
+        scores,
+        opportunities,
+        assessment: {
+          primary_constraint: assessment.primary_constraint,
+          constraint_cost: assessment.constraint_cost,
+          pnl_on_file: assessment.pnl_on_file,
+          reviewed_by: reviewer,
+          overlay_flags: assessment.overlay_flags,
+          overlap_factor: assessment.overlap_factor,
+          owner_belief: assessment.owner_belief,
+          plan_items: assessment.plan_items,
+        },
+      }),
+    [
+      scores,
+      opportunities,
+      assessment.primary_constraint,
+      assessment.constraint_cost,
+      assessment.pnl_on_file,
+      assessment.overlay_flags,
+      assessment.overlap_factor,
+      assessment.owner_belief,
+      assessment.plan_items,
+      reviewer,
+    ]
   );
 
   // ── URL ──────────────────────────────────────────────────────────────────
@@ -412,6 +489,37 @@ export function AssessmentWorkbench({
     queueWrite(() => reorderPlanItems(assessment.id, item, index, direction));
   }
 
+  /** The data room: whether we hold a P&L, and what else came in. */
+  function saveDocuments(next: {
+    pnl_on_file?: boolean;
+    documents?: AssessmentDocument[];
+  }) {
+    const previous = assessment;
+    setAssessment((p) => ({
+      ...p,
+      ...(next.pnl_on_file !== undefined
+        ? { pnl_on_file: next.pnl_on_file }
+        : {}),
+      ...(next.documents !== undefined
+        ? { documents: next.documents as unknown as CcAssessment["documents"] }
+        : {}),
+    }));
+    void runSave(
+      () => setAssessmentDocuments(assessment.id, next),
+      (data) => data && setAssessment(data.assessment),
+      () => setAssessment(previous)
+    );
+  }
+
+  function addDocument() {
+    const name = docDraft.name.trim();
+    if (!name) return;
+    setDocDraft({ name: "", kind: docDraft.kind });
+    saveDocuments({
+      documents: [...documents, { name, kind: docDraft.kind, received_on: null }],
+    });
+  }
+
   function toggleOverlay(key: string) {
     patchAssessment({
       overlay_flags: overlayFlags.includes(key)
@@ -459,8 +567,6 @@ export function AssessmentWorkbench({
   const paceSeconds =
     paceSamples.length >= 3 ? median(paceSamples) : DEFAULT_SECONDS_PER_INDICATOR;
   const minutesLeft = Math.max(1, Math.round((remaining * paceSeconds) / 60));
-
-  const thinPillars = PILLARS.filter((p) => computed.thinPillars[p.key]);
 
   const inSession = step === "session";
   const meta = STEPS[step];
@@ -581,7 +687,7 @@ export function AssessmentWorkbench({
                   )}
                   title={
                     thin
-                      ? `Only ${n} of 10 ${p.label} indicators examined — too few to report as a pillar score`
+                      ? `Only ${n} of 10 ${p.label} indicators examined — too few to report as a pillar score, and excluded from the composite`
                       : undefined
                   }
                 >
@@ -862,91 +968,173 @@ export function AssessmentWorkbench({
         {/* ── Review ───────────────────────────────────────────────────── */}
         {step === "review" && (
           <div className="flex max-w-3xl flex-col gap-5">
-            {!reportReady && (
-              <div className="rounded-xl bg-[color:var(--color-brand-warning)]/10 px-5 py-3.5 ring-1 ring-inset ring-[color:var(--color-brand-warning)]/40">
-                <p className="text-sm font-semibold">
-                  Not ready to deliver — {resolvedCount} of 30 indicators
-                  resolved
-                </p>
-                <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-                  Below {MIN_REPORT_RESOLVED} the report reads as an unfinished
-                  checklist, and pillar scores drawn from a handful of indicators
-                  mislead. Score every indicator or mark it N/A with a reason
-                  before this goes to a client.
-                </p>
-              </div>
-            )}
-
+            {/* The release gate. Blockers are refusals — the server runs this
+                same function and will not accept "delivered" while any stand.
+                Warnings are things a reviewer must have a reason for. */}
             <div>
-              <h3 className="text-[13px] font-semibold">Before you deliver</h3>
-              <ul className="mt-2 divide-y divide-border/50">
-                {[
-                  {
-                    ok: resolvedCount >= INDICATORS.length,
-                    label: `All 30 indicators resolved (${resolvedCount}/30)`,
-                    fix: () => goStep("scoring"),
-                  },
-                  {
-                    ok: thinPillars.length === 0,
-                    label:
-                      thinPillars.length === 0
-                        ? "Every pillar has enough data to report"
-                        : `${thinPillars.map((p) => p.label).join(", ")} scored from fewer than ${MIN_PILLAR_SAMPLE} indicators`,
-                    fix: () => goStep("scoring"),
-                  },
-                  {
-                    ok: Boolean(assessment.owner_belief?.trim()),
-                    label: "Their bottleneck belief captured verbatim",
-                    fix: () => goStep("session"),
-                  },
-                  {
-                    ok: opportunities.some((o) => o.include_in_report),
-                    label: "At least one priced opportunity in the report",
-                    fix: () => goStep("opportunities"),
-                  },
-                  {
-                    ok: constraintFilled,
-                    label: "Primary Business Constraint named",
-                    fix: () => goStep("constraint"),
-                  },
-                  {
-                    ok: planItems.length >= 3,
-                    label: `90-day plan has at least three priorities (${planItems.length})`,
-                    fix: () => goStep("plan"),
-                  },
-                ].map((row) => (
-                  <li
-                    key={row.label}
-                    className="flex items-center gap-3 py-2 text-[13px]"
-                  >
-                    <span
-                      aria-hidden
-                      className={cn(
-                        "size-1.5 shrink-0 rounded-full",
-                        row.ok
-                          ? "bg-[color:var(--color-brand-success)]"
-                          : "bg-[color:var(--color-brand-warning)]"
-                      )}
-                    />
-                    <span
-                      className={cn(
-                        "min-w-0 flex-1",
-                        !row.ok && "text-muted-foreground"
-                      )}
+              <h3 className="text-[13px] font-semibold">
+                Release gate
+                <span className="ml-2 font-normal text-muted-foreground">
+                  {readiness.ready
+                    ? "clear — this can be delivered"
+                    : `${readiness.blockers.length} blocker${readiness.blockers.length === 1 ? "" : "s"}`}
+                </span>
+              </h3>
+
+              {readiness.blockers.length > 0 && (
+                <ul className="mt-2 flex flex-col gap-1.5">
+                  {readiness.blockers.map((b) => (
+                    <li
+                      key={b}
+                      className="flex gap-2.5 rounded-lg bg-[color:var(--color-brand-danger)]/10 px-3.5 py-2 text-[12.5px] leading-relaxed ring-1 ring-inset ring-[color:var(--color-brand-danger)]/30"
                     >
-                      {row.label}
-                    </span>
-                    {!row.ok && (
-                      <Button size="xs" variant="ghost" onClick={row.fix}>
-                        Fix
+                      <span
+                        aria-hidden
+                        className="mt-[7px] size-1.5 shrink-0 rounded-full bg-[color:var(--color-brand-danger)]"
+                      />
+                      <span>{b}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+
+              {readiness.warnings.length > 0 && (
+                <ul className="mt-2 flex flex-col gap-1.5">
+                  {readiness.warnings.map((w) => (
+                    <li
+                      key={w}
+                      className="flex gap-2.5 rounded-lg bg-[color:var(--color-brand-warning)]/10 px-3.5 py-2 text-[12.5px] leading-relaxed text-muted-foreground ring-1 ring-inset ring-[color:var(--color-brand-warning)]/30"
+                    >
+                      <span
+                        aria-hidden
+                        className="mt-[7px] size-1.5 shrink-0 rounded-full bg-[color:var(--color-brand-warning)]"
+                      />
+                      <span>{w}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+
+            {/* The data room. "We have the P&L" is the one fact that decides
+                whether the report prints the unaudited-figures disclosure and
+                widens Reported-only ranges, so it is a deliberate tick. */}
+            <div className="border-t border-border/60 pt-4">
+              <h3 className="text-[13px] font-semibold">Documents on file</h3>
+              <label className="mt-2.5 flex cursor-pointer items-start gap-2.5 text-[13px]">
+                <Checkbox
+                  checked={assessment.pnl_on_file}
+                  onCheckedChange={(c) =>
+                    saveDocuments({ pnl_on_file: c === true })
+                  }
+                  className="mt-0.5"
+                />
+                <span>
+                  P&amp;L on file
+                  <span className="ml-1.5 text-muted-foreground">
+                    without it the report discloses that Profit findings rest on
+                    unaudited owner figures, and Reported-only ranges widen ±25%
+                  </span>
+                </span>
+              </label>
+
+              {documents.length > 0 && (
+                <ul className="mt-3 divide-y divide-border/50">
+                  {documents.map((doc, i) => (
+                    <li
+                      key={`${i}-${doc.name}`}
+                      className="flex items-center gap-3 py-1.5 text-[12.5px]"
+                    >
+                      <span className="min-w-0 flex-1 truncate">{doc.name}</span>
+                      <span className="shrink-0 text-muted-foreground">
+                        {DOCUMENT_KIND_LABELS[doc.kind]}
+                      </span>
+                      {doc.received_on && (
+                        <span className="shrink-0 tabular-nums text-muted-foreground/70">
+                          {doc.received_on}
+                        </span>
+                      )}
+                      <Button
+                        size="xs"
+                        variant="ghost"
+                        onClick={() =>
+                          saveDocuments({
+                            documents: documents.filter((_, x) => x !== i),
+                          })
+                        }
+                      >
+                        Remove
                       </Button>
-                    )}
-                    <span className="sr-only">
-                      {row.ok ? "complete" : "incomplete"}
-                    </span>
-                  </li>
-                ))}
-              </ul>
+                    </li>
+                  ))}
+                </ul>
+              )}
+
+              <div className="mt-3 flex flex-wrap items-end gap-2">
+                <Input
+                  value={docDraft.name}
+                  onChange={(e) =>
+                    setDocDraft((p) => ({ ...p, name: e.target.value }))
+                  }
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      addDocument();
+                    }
+                  }}
+                  placeholder="e.g. 2025–2026 P&L (24 months)"
+                  aria-label="Document name"
+                  className="h-8 w-64 text-xs"
+                />
+                <Select
+                  value={docDraft.kind}
+                  onValueChange={(v) =>
+                    typeof v === "string" &&
+                    setDocDraft((p) => ({
+                      ...p,
+                      kind: v as AssessmentDocumentKind,
+                    }))
+                  }
+                >
+                  <SelectTrigger className="h-8 w-44 text-xs">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {DOCUMENT_KINDS.map((k) => (
+                      <SelectItem key={k} value={k}>
+                        {DOCUMENT_KIND_LABELS[k]}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Button size="sm" variant="outline" onClick={addDocument}>
+                  Add document
+                </Button>
+              </div>
+            </div>
+
+            <div className="border-t border-border/60 pt-4">
+              <Labelled
+                label="Reviewer"
+                hint="the name recorded on the release — defaults to you"
+                className="max-w-sm"
+              >
+                <Input
+                  value={reviewer}
+                  onChange={(e) => setReviewer(e.target.value)}
+                  onBlur={() =>
+                    patchAssessment({ reviewed_by: reviewer.trim() || null })
+                  }
+                  placeholder="Maurice Grant"
+                />
+              </Labelled>
+              {assessment.reviewed_at && (
+                <p className="mt-2 text-[11.5px] text-muted-foreground">
+                  {`Released by ${assessment.reviewed_by ?? "—"} on ${new Date(
+                    assessment.reviewed_at
+                  ).toLocaleString("en-US")}.`}
+                </p>
+              )}
             </div>
 
             <div className="flex flex-wrap items-center gap-3 border-t border-border/60 pt-4">
@@ -958,7 +1146,18 @@ export function AssessmentWorkbench({
               {assessment.status !== "delivered" && (
                 <Button
                   variant="outline"
-                  onClick={() => patchAssessment({ status: "delivered" })}
+                  disabled={!readiness.ready}
+                  title={
+                    readiness.ready
+                      ? "Records the reviewer and snapshots exactly what was released"
+                      : readiness.blockers[0]
+                  }
+                  onClick={() =>
+                    patchAssessment({
+                      status: "delivered",
+                      reviewed_by: reviewer.trim() || null,
+                    })
+                  }
                 >
                   Mark delivered
                 </Button>

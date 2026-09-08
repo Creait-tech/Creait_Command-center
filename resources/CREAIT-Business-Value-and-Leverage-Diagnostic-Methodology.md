@@ -18,13 +18,14 @@
 | Element | Decision |
 |---|---|
 | **Company brand** | CREAIT |
-| **Product name** | The CREAIT Growth & AI Diagnostic (working name — Maurice finalizes) |
-| **Branded score** | One proprietary 0–100 score. Working options: **CREAIT Score** or keep **Freedom Score**. Maurice picks. |
+| **Product name** | **The CREAiT Growth & AI Diagnostic** (ruled 8 Sep 2026; short form "the Diagnostic"). Landing pages, report cover, deck and agreement all use it. |
+| **Branded score** | **CREAiT Score**, 0–100 (ruled 8 Sep 2026). |
 | **Core promise** | "Find every bottleneck. Unlock the hidden profit. See exactly what AI can take off your plate — and what your business becomes when it runs without you." |
 | **Price** | $7,500 standard (virtual) · $10,000 in-person · complex quoted to $10K · 50/50 payment |
 | **Target buyer** | $500K–$5M owner-operated service/trade/care businesses (to $10M by quote), 3+ years operating, engaged owner |
 | **Guarantee** | Deliverable-and-clarity guarantee + one revision within 7 days. No dollar-findings floor. |
-| **Ascension** | 100% fee credit toward either CREAIT lane within 60 days. |
+| **Ascension** | 100% of the $7,500 applied as credit, in full, toward either CREAiT lane when the client starts within **60 days of the results session** (ruled 8 Sep 2026; replaces the "half off every invoice" wording). |
+| **Evidence floor** | P&L requested, not required. Without one the report prints a disclosure and widens every opportunity range ±25% (see Rubrics v2 §8, Data Room Checklist). |
 
 ---
 
@@ -97,7 +98,8 @@ Perpetual internal-use license to configured deliverables; methodology and maste
 7. **Composite validation** — full dry run on a fictional ~$2.4M property-services company before the first paid client. Launch gate: full package producible in 7–10 business days.
 
 ## 8. Open items
-- Final product name + score name (CREAIT Score vs. Freedom Score vs. other).
+- ~~Final product name + score name~~ — ruled 8 Sep 2026: CREAiT Growth & AI Diagnostic / CREAiT Score.
+- ~~Credit rule and clock~~ — ruled 8 Sep 2026: 100% in full, 60 days from the results session.
 - CREAIT brand kit for report design.
 - Franchise/license agreement review (Exit Factor + PAS) for own-brand clearance.
 - Engagement agreement + privacy/consent language → professional review.
