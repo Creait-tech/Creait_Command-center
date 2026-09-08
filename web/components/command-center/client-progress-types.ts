@@ -35,6 +35,8 @@ export interface ClientRollupRow {
   company: string | null;
   status: CcClientStatus;
   health: CcClientHealth;
+  /** Current monthly recurring revenue tracked on the client record. */
+  mrr: number | null;
   /** Deliverables ticked for this client. */
   done: number;
   /** Deliverables in the journey template. */

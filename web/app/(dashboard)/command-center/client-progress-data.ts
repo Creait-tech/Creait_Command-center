@@ -257,6 +257,7 @@ export async function loadClientProgress(): Promise<ClientProgressData> {
       company: client.company,
       status: client.status,
       health: client.health ?? "green",
+      mrr: client.mrr,
       done: doneIds.size,
       total: totalDeliverables,
       percent: percentOf(doneIds.size, totalDeliverables),
