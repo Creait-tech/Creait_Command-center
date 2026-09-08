@@ -64,6 +64,7 @@ interface OppForm {
   months_to_benefit: string;
   owner_estimate_annual: string;
   confidence: OpportunityConfidence;
+  basis_reported_only: boolean;
   blueprint: string;
   replaces: string;
   hours_recovered_weekly: string;
@@ -79,6 +80,7 @@ const EMPTY_OPP: OppForm = {
   months_to_benefit: "",
   owner_estimate_annual: "",
   confidence: "medium",
+  basis_reported_only: false,
   blueprint: "",
   replaces: "",
   hours_recovered_weekly: "",
@@ -97,6 +99,7 @@ function toOppForm(o: CcAssessmentOpportunity): OppForm {
     owner_estimate_annual:
       o.owner_estimate_annual !== null ? String(o.owner_estimate_annual) : "",
     confidence: o.confidence,
+    basis_reported_only: o.basis_reported_only ?? false,
     blueprint: o.blueprint ?? "",
     replaces: o.replaces ?? "",
     hours_recovered_weekly:
@@ -160,6 +163,7 @@ function OpportunityDialog({
       months_to_benefit: form.months_to_benefit,
       owner_estimate_annual: form.owner_estimate_annual,
       confidence: form.confidence,
+      basis_reported_only: form.basis_reported_only,
       rank: editing?.rank ?? nextRank,
       include_in_report: editing?.include_in_report ?? true,
       blueprint: form.blueprint,
@@ -301,6 +305,24 @@ function OpportunityDialog({
               </Select>
             </div>
           </div>
+          {/* The evidence rule, as a tick. There is no indicator→opportunity
+              mapping in the schema, so whether a finding rests only on what the
+              owner told us is the advisor's statement — and it widens the
+              printed range by ±25% wherever this opportunity appears. */}
+          <label className="flex cursor-pointer items-start gap-2.5 text-xs">
+            <Checkbox
+              checked={form.basis_reported_only}
+              onCheckedChange={(c) => set("basis_reported_only", c === true)}
+              className="mt-0.5"
+            />
+            <span>
+              Based only on Reported evidence
+              <span className="ml-1.5 text-muted-foreground">
+                every indicator behind this finding is Reported — the report
+                widens the range ±25% and says it is based on their estimates
+              </span>
+            </span>
+          </label>
           <div className="space-y-1">
             <label className="text-xs font-medium text-muted-foreground">
               Owner&apos;s own estimate (annual $){" "}

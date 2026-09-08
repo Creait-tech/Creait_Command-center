@@ -10,13 +10,12 @@
 --   reviewed_by / reviewed_at   who signed the release and when. Written by
 --                               updateAssessment() at the transition to
 --                               'delivered', from the Clerk user in session.
---   delivered_at                already exists from 0004 as DATE. The ADD
---                               COLUMN below is a no-op on any database that
---                               ran 0004 (Postgres skips it on IF NOT EXISTS
---                               without checking the type) and exists only so
---                               a fresh database gets the column. Either way
---                               the app writes an America/New_York date — the
---                               report prints a date, never a timestamp.
+--   delivered_at                NOT added here: it already exists from 0004 as
+--                               DATE and stays that way (verified against the
+--                               live schema). The release writes an
+--                               America/New_York date into it — the report
+--                               prints a date, never a timestamp, and
+--                               reviewed_at below carries the exact instant.
 --   delivered_snapshot          the exact scores, opportunities, computed
 --                               scores and readiness result at release. The
 --                               report re-renders from live rows, so without
@@ -57,7 +56,6 @@
 ALTER TABLE public.cc_assessments
   ADD COLUMN IF NOT EXISTS reviewed_by        TEXT,
   ADD COLUMN IF NOT EXISTS reviewed_at        TIMESTAMPTZ,
-  ADD COLUMN IF NOT EXISTS delivered_at       TIMESTAMPTZ,
   ADD COLUMN IF NOT EXISTS delivered_snapshot JSONB,
   ADD COLUMN IF NOT EXISTS pnl_on_file        BOOLEAN NOT NULL DEFAULT false,
   ADD COLUMN IF NOT EXISTS documents          JSONB   NOT NULL DEFAULT '[]'::jsonb,
