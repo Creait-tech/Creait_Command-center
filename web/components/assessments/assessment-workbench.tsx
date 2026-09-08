@@ -39,8 +39,6 @@ import {
   DOCUMENT_KIND_LABELS,
   formatMoney,
   INDICATORS,
-  MIN_PILLAR_SAMPLE,
-  MIN_REPORT_RESOLVED,
   normalizeOverlapFactor,
   OVERLAY_FLAGS,
   PILLARS,
@@ -192,8 +190,10 @@ export function AssessmentWorkbench({
   const [scores, setScores] = useState(() => toScoreMap(initialScores));
   const [opportunities, setOpportunities] = useState(initialOpportunities);
   const [planDraft, setPlanDraft] = useState("");
+  // The person at the keyboard signs this release, not whoever signed the last
+  // one — a stored name is only the fallback when Clerk can't name the session.
   const [reviewer, setReviewer] = useState(
-    () => initialAssessment.reviewed_by?.trim() || currentUserName
+    () => currentUserName || initialAssessment.reviewed_by?.trim() || ""
   );
   const [docDraft, setDocDraft] = useState<{
     name: string;
@@ -242,7 +242,6 @@ export function AssessmentWorkbench({
     const delta = (now - previous) / 1000;
     if (delta > 1 && delta < 300) setPaceSamples((prev) => [...prev, delta]);
   }, [resolvedCount]);
-  const reportReady = resolvedCount >= MIN_REPORT_RESOLVED;
   const sessionNotes = useMemo(
     () => parseSessionNotes(assessment.session_notes),
     [assessment.session_notes]
@@ -280,6 +279,8 @@ export function AssessmentWorkbench({
           reviewed_by: reviewer,
           overlay_flags: assessment.overlay_flags,
           overlap_factor: assessment.overlap_factor,
+          owner_belief: assessment.owner_belief,
+          plan_items: assessment.plan_items,
         },
       }),
     [
@@ -290,6 +291,8 @@ export function AssessmentWorkbench({
       assessment.pnl_on_file,
       assessment.overlay_flags,
       assessment.overlap_factor,
+      assessment.owner_belief,
+      assessment.plan_items,
       reviewer,
     ]
   );
@@ -564,8 +567,6 @@ export function AssessmentWorkbench({
   const paceSeconds =
     paceSamples.length >= 3 ? median(paceSamples) : DEFAULT_SECONDS_PER_INDICATOR;
   const minutesLeft = Math.max(1, Math.round((remaining * paceSeconds) / 60));
-
-  const thinPillars = PILLARS.filter((p) => computed.thinPillars[p.key]);
 
   const inSession = step === "session";
   const meta = STEPS[step];
@@ -967,21 +968,6 @@ export function AssessmentWorkbench({
         {/* ── Review ───────────────────────────────────────────────────── */}
         {step === "review" && (
           <div className="flex max-w-3xl flex-col gap-5">
-            {!reportReady && (
-              <div className="rounded-xl bg-[color:var(--color-brand-warning)]/10 px-5 py-3.5 ring-1 ring-inset ring-[color:var(--color-brand-warning)]/40">
-                <p className="text-sm font-semibold">
-                  Not ready to deliver — {resolvedCount} of 30 indicators
-                  resolved
-                </p>
-                <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-                  Below {MIN_REPORT_RESOLVED} the report reads as an unfinished
-                  checklist, and pillar scores drawn from a handful of indicators
-                  mislead. Score every indicator or mark it N/A with a reason
-                  before this goes to a client.
-                </p>
-              </div>
-            )}
-
             {/* The release gate. Blockers are refusals — the server runs this
                 same function and will not accept "delivered" while any stand.
                 Warnings are things a reviewer must have a reason for. */}
@@ -1149,78 +1135,6 @@ export function AssessmentWorkbench({
                   ).toLocaleString("en-US")}.`}
                 </p>
               )}
-            </div>
-
-            <div className="border-t border-border/60 pt-4">
-              <h3 className="text-[13px] font-semibold">Before you deliver</h3>
-              <ul className="mt-2 divide-y divide-border/50">
-                {[
-                  {
-                    ok: resolvedCount >= INDICATORS.length,
-                    label: `All 30 indicators resolved (${resolvedCount}/30)`,
-                    fix: () => goStep("scoring"),
-                  },
-                  {
-                    ok: thinPillars.length === 0,
-                    label:
-                      thinPillars.length === 0
-                        ? "Every pillar has enough data to report"
-                        : `${thinPillars.map((p) => p.label).join(", ")} scored from fewer than ${MIN_PILLAR_SAMPLE} indicators`,
-                    fix: () => goStep("scoring"),
-                  },
-                  {
-                    ok: Boolean(assessment.owner_belief?.trim()),
-                    label: "Their bottleneck belief captured verbatim",
-                    fix: () => goStep("session"),
-                  },
-                  {
-                    ok: opportunities.some((o) => o.include_in_report),
-                    label: "At least one priced opportunity in the report",
-                    fix: () => goStep("opportunities"),
-                  },
-                  {
-                    ok: constraintFilled,
-                    label: "Primary Business Constraint named",
-                    fix: () => goStep("constraint"),
-                  },
-                  {
-                    ok: planItems.length >= 3,
-                    label: `90-day plan has at least three priorities (${planItems.length})`,
-                    fix: () => goStep("plan"),
-                  },
-                ].map((row) => (
-                  <li
-                    key={row.label}
-                    className="flex items-center gap-3 py-2 text-[13px]"
-                  >
-                    <span
-                      aria-hidden
-                      className={cn(
-                        "size-1.5 shrink-0 rounded-full",
-                        row.ok
-                          ? "bg-[color:var(--color-brand-success)]"
-                          : "bg-[color:var(--color-brand-warning)]"
-                      )}
-                    />
-                    <span
-                      className={cn(
-                        "min-w-0 flex-1",
-                        !row.ok && "text-muted-foreground"
-                      )}
-                    >
-                      {row.label}
-                    </span>
-                    {!row.ok && (
-                      <Button size="xs" variant="ghost" onClick={row.fix}>
-                        Fix
-                      </Button>
-                    )}
-                    <span className="sr-only">
-                      {row.ok ? "complete" : "incomplete"}
-                    </span>
-                  </li>
-                ))}
-              </ul>
             </div>
 
             <div className="flex flex-wrap items-center gap-3 border-t border-border/60 pt-4">

@@ -29,6 +29,7 @@ import {
   INDICATORS,
   INDICATORS_BY_PILLAR,
   marginShift,
+  MAX_PILLAR_NA,
   MIN_PILLAR_SAMPLE,
   MIN_POTENTIAL_SET,
   MIN_REPORT_RESOLVED,
@@ -349,9 +350,12 @@ export default async function ExecutiveBlueprintPage({
   /**
    * The evidence rule, applied once, here.
    *
-   * A "Reported-only" opportunity — no P&L on file and graded low-confidence,
-   * or one the advisor marked as resting entirely on Reported indicators — has
-   * its low multiplied by 0.75 and its high by 1.25 before anything renders.
+   * A "Reported-only" opportunity has its low multiplied by 0.75 and its high
+   * by 1.25 before anything renders. Two ways in: no P&L on file, which makes
+   * EVERY figure reported (each one is derived from revenue and margin we
+   * could not check against a statement), or the advisor marking a finding as
+   * resting entirely on Reported indicators.
+   *
    * Widening the card but not the total would be worse than not widening at
    * all, so every downstream exhibit (money map, payback, roadmap, portfolio,
    * appendix) is built from THESE rows, not the raw ones.
@@ -466,10 +470,15 @@ export default async function ExecutiveBlueprintPage({
     (sum, p) => sum + (computed.pillarsRaw[p.key] as number) * p.weight,
     0
   );
+  /** Named with the rule that dropped them, so the sentence is checkable too. */
   const excludedPillarLabels = PILLARS.filter((p) =>
     computed.excludedPillars.includes(p.key)
   )
-    .map((p) => `${p.label} (${computed.pillarScoredCounts[p.key]} of 10)`)
+    .map((p) =>
+      computed.pillarExclusions[p.key] === "too_many_na"
+        ? `${p.label} (${computed.pillarNaCounts[p.key]} of 10 not applicable)`
+        : `${p.label} (${computed.pillarScoredCounts[p.key]} of 10 examined)`
+    )
     .join(", ");
 
   /** The lowest-scored indicators — the evidence standing behind the mirror. */
@@ -833,7 +842,7 @@ export default async function ExecutiveBlueprintPage({
             />
           </div>
           <p style={{ fontSize: 11, color: muted, marginTop: 2, lineHeight: 1.6 }}>
-            {`Fewer than ${MIN_PILLAR_SAMPLE} of a pillar\u2019s 10 indicators reads as insufficient data, never as a number \u2014 a hatched rail means we did not look at enough of it.`}
+            {`A pillar scored from fewer than ${MIN_PILLAR_SAMPLE} of its 10 indicators \u2014 or with ${MAX_PILLAR_NA} or more that do not apply \u2014 reads as insufficient data, never as a number. A hatched rail means we did not see enough of it to state one.`}
             {showPotential &&
               " Outlined bars are the advisor-set targets with the 90-day plan executed \u2014 not projections."}
           </p>
@@ -842,7 +851,7 @@ export default async function ExecutiveBlueprintPage({
         {computed.provisional && !isDraft && (
           <p style={{ fontSize: 12, color: muted, marginTop: 12, lineHeight: 1.6 }}>
             {thinPillarLabels
-              ? `The composite is provisional: ${thinPillarLabels} rests on too few indicators to state as a pillar score, so it is left out of the composite entirely and its weight is redistributed across the pillars we did examine. Treat the headline number as directional until those indicators are examined.`
+              ? `The composite is provisional: ${thinPillarLabels} carries too little that applies to this business to state as a pillar score, so it is left out of the composite entirely and its weight is redistributed across the pillars we did examine. Treat the headline number as directional until that changes.`
               : `The composite is provisional — fewer than ${MIN_REPORT_RESOLVED} of ${INDICATORS.length} indicators have been resolved.`}
           </p>
         )}
@@ -1167,6 +1176,7 @@ export default async function ExecutiveBlueprintPage({
 
         {PILLARS.map((pillar) => {
           const examined = computed.pillarScoredCounts[pillar.key];
+          const naCount = computed.pillarNaCounts[pillar.key];
           const thinPillar = computed.thinPillars[pillar.key];
           const unexamined = INDICATORS_BY_PILLAR[pillar.key].filter((ind) => {
             const row = scores[ind.key];
@@ -1200,9 +1210,12 @@ export default async function ExecutiveBlueprintPage({
               </span>
             </p>
             <p style={{ fontSize: 11, color: muted, marginTop: 2 }}>
-              {examined} of 10 indicators examined
+              {`${examined} of 10 indicators examined`}
+              {naCount > 0 ? `, ${naCount} not applicable` : ""}
               {thinPillar
-                ? " — too few to state a pillar score, and too few to weigh in the composite; treat the rows below as observations, not a verdict."
+                ? computed.pillarExclusions[pillar.key] === "too_many_na"
+                  ? ` — with ${naCount} of ten outside this business model there is too little pillar left to state a score, so it carries no weight in the composite; treat the rows below as observations, not a verdict.`
+                  : " — too few to state a pillar score, and too few to weigh in the composite; treat the rows below as observations, not a verdict."
                 : ""}
             </p>
             <table style={{ width: "100%", borderCollapse: "collapse", marginTop: 8, fontSize: 12 }}>
@@ -1309,7 +1322,7 @@ export default async function ExecutiveBlueprintPage({
                 2
               )}) so they always add to one.`}
               {excludedPillarLabels
-                ? ` ${excludedPillarLabels} was examined on too few indicators to carry weight, so it is left out of this calculation entirely and its share is redistributed across the pillars above.`
+                ? ` ${excludedPillarLabels} carries too little evidence to weigh — fewer than ${MIN_PILLAR_SAMPLE} indicators examined, or ${MAX_PILLAR_NA} or more that do not apply — so it is left out of this calculation entirely and its share is redistributed across the pillars above.`
                 : ""}
             </p>
           </div>
@@ -1376,7 +1389,9 @@ export default async function ExecutiveBlueprintPage({
             ? `The portfolio total is overlap-adjusted (×${portfolio.overlapFactor}) because initiatives share the same customers and hours — we never add raw maximums.`
             : "There is a single initiative here, so there is no overlap to discount — the total is that initiative's own range."}
           {anyWidened &&
-            ` Items marked "based on your estimates" rest only on what you told us, so their ranges are widened — low ×${REPORTED_ONLY_LOW_FACTOR}, high ×${REPORTED_ONLY_HIGH_FACTOR} — before they are totalled.`}
+            (pnlOnFile
+              ? ` Items marked "based on your estimates" rest only on what you told us, so their ranges are widened — low ×${REPORTED_ONLY_LOW_FACTOR}, high ×${REPORTED_ONLY_HIGH_FACTOR} — before they are totalled.`
+              : ` With no profit-and-loss statement on file, every figure below is built on revenue and margin you reported, so every range is widened — low ×${REPORTED_ONLY_LOW_FACTOR}, high ×${REPORTED_ONLY_HIGH_FACTOR} — before it is totalled.`)}
           {hasBlueprints &&
             " Where a build is named, it is scoped the way we would build it: the automation or AI workflow, the manual work it replaces, and the hours it hands back."}
         </p>
@@ -1496,7 +1511,11 @@ export default async function ExecutiveBlueprintPage({
                   )}
                 {opp.widened && (
                   <p style={{ fontSize: 11.5, color: muted, marginTop: 8 }}>
-                    {`Based on your estimates — this range is widened (low ×${REPORTED_ONLY_LOW_FACTOR}, high ×${REPORTED_ONLY_HIGH_FACTOR}) because the evidence behind it is what you told us rather than a document we saw. We will firm it up with real measurement in the first 30 days.`}
+                    {`Based on your estimates — this range is widened (low ×${REPORTED_ONLY_LOW_FACTOR}, high ×${REPORTED_ONLY_HIGH_FACTOR}) because ${
+                      pnlOnFile
+                        ? "every indicator behind it is something you told us rather than a record we saw"
+                        : "it is built on revenue and margin you reported, with no profit-and-loss statement on file to check them against"
+                    }. We will firm it up with real measurement in the first 30 days.`}
                   </p>
                 )}
                 {opp.blueprint && (
@@ -1706,8 +1725,9 @@ export default async function ExecutiveBlueprintPage({
           examined; the composite weighs Profit at 40%, Systems at 35% and
           Leverage at 25%, renormalized over the pillars we examined deeply
           enough to state — a pillar scored from fewer than {MIN_PILLAR_SAMPLE}{" "}
-          of its ten indicators is reported as insufficient data and carries no
-          weight in the composite at all. An indicator we did not examine is
+          of its ten indicators, or with {MAX_PILLAR_NA} or more that do not
+          apply to your business, is reported as insufficient data and carries
+          no weight in the composite at all. An indicator we did not examine is
           disclosed as exactly that.
         </p>
 
@@ -1735,7 +1755,7 @@ export default async function ExecutiveBlueprintPage({
           never add raw maximums. Payback is the cost to fix divided by the
           expected monthly recovery.
           {anyWidened &&
-            ` An opportunity that rests only on figures you reported has its range widened before it is totalled — low ×${REPORTED_ONLY_LOW_FACTOR}, high ×${REPORTED_ONLY_HIGH_FACTOR} — and says so on its own card. The expected case is left alone: widening is a statement about how well we know the edges, not a re-estimate of the middle.`}
+            ` An opportunity that rests only on figures you reported has its range widened before it is totalled — low ×${REPORTED_ONLY_LOW_FACTOR}, high ×${REPORTED_ONLY_HIGH_FACTOR} — and says so on its own card. That applies to every opportunity when we hold no profit-and-loss statement, because then every dollar figure traces back to revenue and margin we could not check. The expected case is left alone: widening is a statement about how well we know the edges, not a re-estimate of the middle.`}
           {showPotential &&
             " Where a target score appears, it is your advisor's judgement of where an indicator lands with the 90-day plan executed — set by hand, labeled as such, and never a projection."}
         </p>
@@ -1906,7 +1926,11 @@ export default async function ExecutiveBlueprintPage({
                       </td>
                       <td style={tdStyle}>
                         {opp.widened
-                          ? `Yes — Reported-only basis: low ×${REPORTED_ONLY_LOW_FACTOR}, high ×${REPORTED_ONLY_HIGH_FACTOR}. The figures above are the widened ones.`
+                          ? `Yes — ${
+                              pnlOnFile
+                                ? "the indicators behind this finding are all Reported"
+                                : "no P&L on file, so the revenue and margin underneath it are Reported"
+                            }: low ×${REPORTED_ONLY_LOW_FACTOR}, high ×${REPORTED_ONLY_HIGH_FACTOR}. The figures above are the widened ones.`
                           : "No — the range is as modeled."}
                       </td>
                     </tr>

@@ -555,18 +555,26 @@ export interface ComputedScores {
   pillarsRaw: Record<AssessmentPillar, number | null>;
   /** How many of the ten indicators in each pillar carry a score. */
   pillarScoredCounts: Record<AssessmentPillar, number>;
+  /** How many of the ten are marked N/A — the second exclusion rule. */
+  pillarNaCounts: Record<AssessmentPillar, number>;
   /**
-   * Pillars carrying 1–3 scored indicators: too thinly sampled to state as a
-   * pillar score, and — since v2 — too thin to carry weight in the composite
-   * either. Every surface that shows a pillar number must show these as
-   * "insufficient data": the score detail and the dashboard can never disagree.
+   * Pillars that are INSUFFICIENT DATA: either scored from fewer than
+   * MIN_PILLAR_SAMPLE indicators, or carrying MAX_PILLAR_NA or more N/As. They
+   * are shown as "insufficient data" rather than a number, and — since v2 —
+   * they carry no weight in the composite either. Every surface that shows a
+   * pillar number must agree with this flag.
    */
   thinPillars: Record<AssessmentPillar, boolean>;
   /**
-   * Pillars left OUT of the composite because they are thin. Their weight is
-   * redistributed across the remaining pillars. Three indicators out of ten
-   * used to be able to pull the headline number several points; a pillar we
-   * cannot state on its own page has no business steering the composite.
+   * Which rule dropped a pillar, so a message can say which one tripped
+   * instead of guessing. null = the pillar counts normally.
+   */
+  pillarExclusions: Record<AssessmentPillar, PillarExclusionReason | null>;
+  /**
+   * Pillars left OUT of the composite. Their weight is redistributed across
+   * the remaining pillars. Three indicators out of ten used to be able to pull
+   * the headline number several points; a pillar we cannot state on its own
+   * page has no business steering the composite.
    */
   excludedPillars: AssessmentPillar[];
   /** Composite CREAiT Score 0–100, weights renormalized over counted pillars. */
@@ -592,8 +600,19 @@ export interface ComputedScores {
  */
 export const MIN_PILLAR_SAMPLE = 4;
 
+/**
+ * The other half of the N/A rule: at this many N/As a pillar is insufficient
+ * data no matter how well the remaining indicators scored. Six indicators can
+ * average beautifully while four whole areas of the business were never in
+ * scope, and the composite must not read that as strength.
+ */
+export const MAX_PILLAR_NA = 4;
+
 /** Engagements below this many resolved indicators are not report-ready. */
 export const MIN_REPORT_RESOLVED = 25;
+
+/** Why a pillar was dropped from the composite. */
+export type PillarExclusionReason = "thin_sample" | "too_many_na";
 
 export function pillarScoredCount(
   pillar: AssessmentPillar,
@@ -606,6 +625,33 @@ export function pillarScoredCount(
     count += 1;
   }
   return count;
+}
+
+export function pillarNaCount(
+  pillar: AssessmentPillar,
+  scores: ScoreMap
+): number {
+  let count = 0;
+  for (const ind of INDICATORS_BY_PILLAR[pillar]) {
+    if (scores[ind.key]?.not_applicable) count += 1;
+  }
+  return count;
+}
+
+/**
+ * The one place the exclusion rule lives: a pillar with data is dropped when
+ * it was scored from too few indicators, or when too much of it was N/A.
+ * Returns null when the pillar counts normally (including when it has no data
+ * at all — an unexamined pillar is "not examined", not "excluded").
+ */
+export function pillarExclusion(
+  scoredCount: number,
+  naCount: number
+): PillarExclusionReason | null {
+  if (scoredCount === 0) return null;
+  if (scoredCount < MIN_PILLAR_SAMPLE) return "thin_sample";
+  if (naCount >= MAX_PILLAR_NA) return "too_many_na";
+  return null;
 }
 
 export function computeScores(scores: ScoreMap): ComputedScores {
@@ -624,11 +670,20 @@ export function computeScores(scores: ScoreMap): ComputedScores {
     systems: 0,
     leverage: 0,
   };
+  const pillarNaCounts: Record<AssessmentPillar, number> = {
+    profit: 0,
+    systems: 0,
+    leverage: 0,
+  };
   const thinPillars: Record<AssessmentPillar, boolean> = {
     profit: false,
     systems: false,
     leverage: false,
   };
+  const pillarExclusions: Record<
+    AssessmentPillar,
+    PillarExclusionReason | null
+  > = { profit: null, systems: null, leverage: null };
   const excludedPillars: AssessmentPillar[] = [];
   let total = 0;
   let weightSum = 0;
@@ -636,15 +691,18 @@ export function computeScores(scores: ScoreMap): ComputedScores {
   for (const { key, weight } of PILLARS) {
     const raw = pillarRaw(key, scores);
     const examined = pillarScoredCount(key, scores);
+    const na = pillarNaCount(key, scores);
     pillars[key] = raw === null ? null : Math.round(raw);
     pillarsRaw[key] = raw;
     pillarScoredCounts[key] = examined;
-    const thin = examined > 0 && examined < MIN_PILLAR_SAMPLE;
-    thinPillars[key] = thin;
-    if (thin) excludedPillars.push(key);
-    // A thin pillar is displayed (as "insufficient data") but never weighted:
-    // its share is renormalized onto the pillars that carry enough evidence.
-    if (raw !== null && !thin) {
+    pillarNaCounts[key] = na;
+    const reason = pillarExclusion(examined, na);
+    pillarExclusions[key] = reason;
+    thinPillars[key] = reason !== null;
+    if (reason !== null) excludedPillars.push(key);
+    // An insufficient-data pillar is displayed as such but never weighted: its
+    // share is renormalized onto the pillars that carry enough evidence.
+    if (raw !== null && reason === null) {
       total += raw * weight;
       weightSum += weight;
     }
@@ -670,7 +728,9 @@ export function computeScores(scores: ScoreMap): ComputedScores {
     pillars,
     pillarsRaw,
     pillarScoredCounts,
+    pillarNaCounts,
     thinPillars,
+    pillarExclusions,
     excludedPillars,
     creaitScore,
     band: creaitScore === null ? null : bandFor(creaitScore),
@@ -737,8 +797,10 @@ export function computePotentialScores(scores: ScoreMap): PotentialScores {
   for (const { key, weight } of PILLARS) {
     let sum = 0;
     let count = 0;
+    let na = 0;
     for (const ind of INDICATORS_BY_PILLAR[key]) {
       const row = scores[ind.key];
+      if (row?.not_applicable) na += 1;
       if (!row || row.not_applicable || row.score === null) continue;
       let target = row.score;
       if (row.potential_score !== null && row.potential_score !== undefined) {
@@ -756,9 +818,11 @@ export function computePotentialScores(scores: ScoreMap): PotentialScores {
     }
     const raw = count > 0 ? (sum / count / 4) * 100 : null;
     pillars[key] = raw === null ? null : Math.round(raw);
-    const thin = count > 0 && count < MIN_PILLAR_SAMPLE;
-    if (thin) excludedPillars.push(key);
-    if (raw !== null && !thin) {
+    // Identical exclusion to the current composite — the two numbers are only
+    // comparable if they were built over the same pillars.
+    const reason = pillarExclusion(count, na);
+    if (reason !== null) excludedPillars.push(key);
+    if (raw !== null && reason === null) {
       total += raw * weight;
       weightSum += weight;
     }
@@ -1005,18 +1069,21 @@ export interface WidenableOpportunity {
 /**
  * "Reported-only" — the two ways a priced finding can rest on nothing but the
  * owner's word:
- *   1. no P&L on file AND the advisor graded the finding low-confidence, or
+ *   1. no P&L on file. Every dollar figure in the report is derived from
+ *      revenue and margin, so with no statement to check them against EVERY
+ *      opportunity rests on reported numbers — not just the ones the advisor
+ *      happened to grade low-confidence. Confidence is a separate judgement
+ *      about the finding and is disclosed on its own; it is deliberately not
+ *      part of this test.
  *   2. the advisor ticked `basis_reported_only` because every indicator the
- *      finding draws on is Reported.
- * (There is no indicator→opportunity mapping in the schema, so rule 2 is a
- * column the advisor sets rather than something we can derive.)
+ *      finding draws on is Reported. (There is no indicator→opportunity
+ *      mapping in the schema, so this is set by hand.)
  */
 export function isReportedOnly(
   opp: WidenableOpportunity,
   pnlOnFile: boolean
 ): boolean {
-  if (opp.basis_reported_only === true) return true;
-  return !pnlOnFile && opp.confidence === "low";
+  return !pnlOnFile || opp.basis_reported_only === true;
 }
 
 /**
@@ -1091,6 +1158,10 @@ export interface ReadinessInput {
     reviewed_by?: string | null;
     overlay_flags?: unknown;
     overlap_factor?: number | string | null;
+    /** Intake Q8 verbatim — warned about, never blocked. */
+    owner_belief?: string | null;
+    /** The 90-day plan lines — warned about below three. */
+    plan_items?: unknown;
   };
 }
 
@@ -1123,16 +1194,15 @@ export function assessmentReadiness(input: ReadinessInput): Readiness {
     );
   }
 
-  // 2 — no pillar scored from a handful of indicators.
-  const thin = PILLARS.filter((p) => computed.thinPillars[p.key]);
-  if (thin.length > 0) {
+  // 2 — no pillar dropped for insufficient data, and the message says which
+  // rule tripped: too few scored, or too much of it N/A.
+  for (const p of PILLARS) {
+    const reason = computed.pillarExclusions[p.key];
+    if (reason === null) continue;
     blockers.push(
-      `${thin
-        .map(
-          (p) =>
-            `${p.label} (${computed.pillarScoredCounts[p.key]} of 10)`
-        )
-        .join(", ")} scored from fewer than ${MIN_PILLAR_SAMPLE} indicators — the pillar is dropped from the composite.`
+      reason === "thin_sample"
+        ? `${p.label} is scored from ${computed.pillarScoredCounts[p.key]} of 10 indicators — fewer than ${MIN_PILLAR_SAMPLE}, so the pillar is dropped from the composite.`
+        : `${p.label} has ${computed.pillarNaCounts[p.key]} N/As — ${MAX_PILLAR_NA} or more makes the pillar insufficient data, so it is dropped from the composite.`
     );
   }
 
@@ -1260,6 +1330,23 @@ export function assessmentReadiness(input: ReadinessInput): Readiness {
   if (factor !== DEFAULT_OVERLAP_FACTOR) {
     warnings.push(
       `Overlap factor is ${factor}, not the standard ${DEFAULT_OVERLAP_FACTOR} — say why in the opportunity findings before this prints.`
+    );
+  }
+  // Two things the gate will not refuse over, but which a reviewer should see
+  // in the same place as everything else rather than in a second checklist.
+  if (!assessment.owner_belief?.trim()) {
+    warnings.push(
+      "Their own bottleneck belief was never captured verbatim — the mirror page has nothing to set the evidence against."
+    );
+  }
+  const planCount = Array.isArray(assessment.plan_items)
+    ? assessment.plan_items.filter(
+        (p) => typeof p === "string" && p.trim().length > 0
+      ).length
+    : 0;
+  if (planCount < 3) {
+    warnings.push(
+      `The 90-day plan has ${planCount} ${planCount === 1 ? "priority" : "priorities"} — three is the working minimum.`
     );
   }
 
