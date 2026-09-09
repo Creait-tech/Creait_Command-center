@@ -235,7 +235,7 @@ export const INTAKE_QUESTIONS: IntakeQuestion[] = [
     prompt: "Primary objective for the next 1–3 years",
     help: "One primary, up to two secondary.",
     type: "table",
-    rows: ["Primary", "Secondary", "Secondary"],
+    rows: ["Primary", "Secondary 1", "Secondary 2"],
     columns: [
       { key: "objective", label: "Objective", type: "single", options: OBJECTIVES, width: "wide" },
     ],
@@ -1625,7 +1625,7 @@ export function intakePrefill(intake: unknown): IntakePrefill {
   const objectiveRows = tableRows(answers.q3);
   const primary = tableCell(answers.q3, "Primary", "objective");
   const secondaries = objectiveRows
-    .filter((r) => r[TABLE_ROW_KEY] === "Secondary")
+    .filter((r) => (r[TABLE_ROW_KEY] ?? "").startsWith("Secondary"))
     .map((r) => r.objective?.trim())
     .filter((v): v is string => !!v && v.toLowerCase() !== UNKNOWN);
   const owner_objective = primary
