@@ -950,7 +950,19 @@ export function compute<K extends CalcKind>(
     // The merged inputs travel with the result: whatever the arithmetic ran
     // on is what gets stored, so a record never omits the gross margin or the
     // revenue the numbers actually depend on.
-    return { ok: true, inputs: merged, ...runner(merged) };
+    const figures = runner(merged);
+    // The three scenarios are the advisor's own inputs, so nothing stops a
+    // "low" case that earns more than the "expected" one (a bigger price
+    // move paired with a bigger volume loss, say). A range printed out of
+    // order is wrong on the page whichever way it is labelled, so refuse it
+    // and say which pair to look at rather than silently sorting the numbers.
+    if (!(figures.low <= figures.expected && figures.expected <= figures.high)) {
+      return {
+        ok: false,
+        error: `The scenarios come out of order (low ${Math.round(figures.low).toLocaleString("en-US")}, expected ${Math.round(figures.expected).toLocaleString("en-US")}, high ${Math.round(figures.high).toLocaleString("en-US")}). Check that each low / expected / high input moves in the same direction.`,
+      };
+    }
+    return { ok: true, inputs: merged, ...figures };
   } catch (err) {
     if (err instanceof InputError) return { ok: false, error: err.message };
     return {

@@ -555,11 +555,11 @@ export const CROSS_CHECKS: CrossCheck[] = [
       const implied =
         leadsPerYear * ((close as number) / 100) * (value as number);
       // A funnel only explains revenue that arrives through an inquiry.
-      // Recurring contracts and retainers renew without one, so a contract-
-      // heavy business compared against its whole top line flags every time.
-      // When the intake's revenue-model split is on file, compare against the
-      // lead-driven share and say so; without it, compare against the total
-      // and say that instead.
+      // Contracts, retainers and repeat customers mostly do not, so a
+      // repeat-heavy business compared against its whole top line flags every
+      // time. When the intake's revenue-model split is on file, the floor the
+      // funnel must explain is the new-business share (one-time projects,
+      // products, other); without it, the total, and the detail says which.
       const share = intakeFigures(assessment)?.new_business_share ?? null;
       const total = revenue as number;
       const leadDriven = share === null ? total : total * share;
@@ -574,7 +574,7 @@ export const CROSS_CHECKS: CrossCheck[] = [
         `${Math.round(overTotal * 100)}% of the ${money(total)} top line` +
         (share === null
           ? " (no revenue-model split on file)."
-          : `, ${ofLeadDriven === null ? "n/a" : `${Math.round(ofLeadDriven * 100)}%`} of the ${money(leadDriven)} that is not contracted (${Math.round(share * 100)}% per the intake).`);
+          : `, ${ofLeadDriven === null ? "n/a" : `${Math.round(ofLeadDriven * 100)}%`} of the ${money(leadDriven)} of new business (${Math.round(share * 100)}% per the intake).`);
       const tooHigh = overTotal > 1.6;
       const tooLow = ofLeadDriven !== null && ofLeadDriven < 0.6;
       return tooHigh || tooLow ? flag(detail) : pass(detail);

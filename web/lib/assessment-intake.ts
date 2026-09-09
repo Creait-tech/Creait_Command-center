@@ -1702,23 +1702,31 @@ export function intakePrefill(intake: unknown): IntakePrefill {
   };
 }
 
-const CONTRACTED_ROWS = ["Recurring contracts", "Retainers"];
+/**
+ * Revenue that must have come through a fresh inquiry this year. Recurring
+ * contracts and retainers renew without one; a repeat customer who comes back
+ * without a contract usually does not count as a "lead" either (the simulated
+ * med spa, accountant and trucking firm all flagged on repeat business when
+ * they did). Only one-time projects, products and "other" are certain to be
+ * lead-driven, so that is the floor the funnel has to explain.
+ */
+const NEW_BUSINESS_ROWS = ["One-time projects", "Products", "Other"];
 
 /** See IntakePrefill.new_business_share. */
 export function newBusinessShare(q12: IntakeAnswer | undefined): number | null {
   const rows = tableRows(q12);
   let total = 0;
-  let contracted = 0;
+  let fresh = 0;
   let answered = false;
   for (const row of rows) {
     const pct = parsePercent(row.pct);
     if (pct === null) continue;
     answered = true;
     total += pct;
-    if (CONTRACTED_ROWS.includes(row[TABLE_ROW_KEY] ?? "")) contracted += pct;
+    if (NEW_BUSINESS_ROWS.includes(row[TABLE_ROW_KEY] ?? "")) fresh += pct;
   }
   if (!answered || total <= 0) return null;
-  return Math.max(0, Math.min(1, 1 - contracted / total));
+  return Math.max(0, Math.min(1, fresh / total));
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
