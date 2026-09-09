@@ -77,7 +77,7 @@ for (const shell of shells) {
 
   // ── 3. Session capture + cross-checks
   const notes = parseSessionNotes({ blocks: p.session?.blockNotes ?? {}, ...(p.session?.engine ?? {}) } as any);
-  const cc = runCrossChecks(notes, { annual_revenue: prof.revenue ?? pre.annual_revenue, gross_margin: prof.grossMarginPct ?? pre.gross_margin, operating_profit: prof.operatingProfit ?? pre.operating_profit, intake: intakeJson });
+  const cc = runCrossChecks(notes, { annual_revenue: prof.revenue ?? pre.annual_revenue, gross_margin: prof.grossMarginPct ?? pre.gross_margin, operating_profit: prof.operatingProfit ?? pre.operating_profit, intake: intakeJson, pnl_on_file: !!p.dataRoom?.pnl_on_file });
   r.cross_checks = cc.map((c) => ({ id: c.id, status: c.status, detail: c.detail }));
   for (const c of cc) {
     const want = p.expected?.cross_checks?.[c.id];

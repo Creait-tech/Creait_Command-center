@@ -401,6 +401,13 @@ export interface CrossCheckAssessment {
   gross_margin: number | null;
   operating_profit: number | null;
   intake?: Json | null;
+  /**
+   * Whether the baseline figures were read off a P&L or copied from the
+   * owner's intake. The margin check words its line differently for each —
+   * "on file" promises a document, and the simulation run caught the check
+   * saying it about a self-reported number.
+   */
+  pnl_on_file?: boolean | null;
 }
 
 export interface CrossCheckResult {
@@ -500,6 +507,14 @@ export const CROSS_CHECKS: CrossCheck[] = [
           ? (assessment.operating_profit / revenue) * 100
           : null;
 
+      // Without a P&L the baseline margin is the owner's own intake answer, so
+      // the line has to say so — the check is then "today vs the intake", not
+      // "today vs the books".
+      const source = assessment.pnl_on_file ? "on file" : "on the intake";
+      const sourceSays = assessment.pnl_on_file
+        ? "the file says"
+        : "the intake said";
+
       if (stated === null) return insufficient("No gross margin captured yet.");
       if (filed === null && operating === null) {
         return insufficient(
@@ -508,7 +523,7 @@ export const CROSS_CHECKS: CrossCheck[] = [
       }
       if (filed !== null && Math.abs(stated - filed) > 8) {
         return flag(
-          `They say ${round1(stated)}%, the file says ${round1(filed)}% — ${round1(Math.abs(stated - filed))} points apart.`
+          `They say ${round1(stated)}%, ${sourceSays} ${round1(filed)}% — ${round1(Math.abs(stated - filed))} points apart.`
         );
       }
       // A gross margin under the operating margin is arithmetically impossible,
@@ -520,7 +535,7 @@ export const CROSS_CHECKS: CrossCheck[] = [
       }
       return pass(
         filed !== null
-          ? `${round1(stated)}% stated against ${round1(filed)}% on file.`
+          ? `${round1(stated)}% stated against ${round1(filed)}% ${source}.`
           : `${round1(stated)}% stated, above the ${round1(operating ?? 0)}% operating margin as it should be.`
       );
     },
