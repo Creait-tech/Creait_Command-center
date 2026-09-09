@@ -29,6 +29,7 @@ import {
 
 import { BANDS } from "@/lib/assessment-instrument";
 import { cn } from "@/lib/utils";
+import { money, moneyExact } from "./format";
 
 export interface PresentPillar {
   key: string;
@@ -77,17 +78,6 @@ const RAIL = "#1a2235";
 /** Five band steps of one hue, dark to bright, so the ladder reads in one glance. */
 const BAND_FILL = ["#1e3a8a", "#1d4ed8", "#2563eb", "#3b82f6", "#60a5fa"];
 
-export function money(n: number | null | undefined): string {
-  if (n === null || n === undefined || !Number.isFinite(n)) return "—";
-  const abs = Math.abs(n);
-  if (abs >= 1_000_000) return `$${(Math.round((n / 1_000_000) * 10) / 10).toLocaleString("en-US")}M`;
-  if (abs >= 1_000) return `$${Math.round(n / 1_000).toLocaleString("en-US")}K`;
-  return `$${Math.round(n).toLocaleString("en-US")}`;
-}
-
-export function moneyExact(n: number): string {
-  return `$${Math.round(n).toLocaleString("en-US")}`;
-}
 
 // ── Exhibits ────────────────────────────────────────────────────────────────
 

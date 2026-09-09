@@ -11,13 +11,12 @@
 import { Download } from "lucide-react";
 
 import {
-  money,
-  moneyExact,
   PillarBarsDark,
   PlanTimeline,
   RangeBars,
   ScoreLadder,
 } from "@/components/assessments/present/present-deck";
+import { money, moneyExact } from "@/components/assessments/present/format";
 import type { ClientResults as ClientResultsData } from "@/lib/client-results-server";
 import type { AssessmentOutcomeReview } from "@/lib/supabase/types";
 
