@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any -- harness globals injected by server.js */
 /**
  * Local harness entry: the real IntakeForm inside the real Sheet markup from
  * app/intake/[token]/page.tsx. Nothing about the DOM the driver targets is

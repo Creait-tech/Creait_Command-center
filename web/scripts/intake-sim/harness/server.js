@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-unused-vars -- CommonJS tooling, run with plain node */
 #!/usr/bin/env node
+/* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-unused-vars -- CommonJS tooling, run with plain node */
 /**
  * Local stand-in for the /intake/<token> route, for proving the driver when
  * cc.getcreait.com is unreachable.
