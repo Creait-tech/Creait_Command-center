@@ -11,7 +11,7 @@ import { auth } from "@clerk/nextjs/server";
  * CREAIT's org id is the default fallback for unauthenticated server
  * contexts (webhooks, cron) that operate on the primary workspace.
  */
-export const CREAIT_ORG_ID = "org_3Ef1YcutwEZFZHEMLwhF57jbEEh";
+export const CREAIT_ORG_ID = "org_3J6RO66XyUmqeMbZ8RwIyFTCf7J";
 
 export async function getActiveOrgId(fallback: string = CREAIT_ORG_ID): Promise<string> {
   try {

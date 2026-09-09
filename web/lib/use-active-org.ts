@@ -7,7 +7,7 @@ import { useOrganization } from "@clerk/nextjs";
  * suffixes and aren't renamable on this instance). Matches the server
  * helper getActiveOrgId() and the JWT `org_id` claim ({{org.id}}).
  */
-export const CREAIT_ORG_ID = "org_3Ef1YcutwEZFZHEMLwhF57jbEEh";
+export const CREAIT_ORG_ID = "org_3J6RO66XyUmqeMbZ8RwIyFTCf7J";
 
 export function useActiveOrgId(fallback: string = CREAIT_ORG_ID): string {
   const { organization } = useOrganization();
