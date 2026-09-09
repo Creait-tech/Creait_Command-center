@@ -218,11 +218,36 @@ export interface TranscriptDraft {
   baseline: Partial<Record<TranscriptBaselineKey, TranscriptDraftItem>>;
 }
 
+/**
+ * One proposed score, held apart from the score row until a person accepts
+ * it. `quote` is the line in the notes or intake it rests on; `gap` is what
+ * to ask when the notes do not support a score at all. Evidence never goes
+ * above Reported unless the notes say the thing was shown, and never to
+ * Documented — a document is a fact the facilitator confirms, not the model.
+ */
+export interface ScoreProposal {
+  score: number | null;
+  evidence: "reported" | "demonstrated" | null;
+  quote: string | null;
+  reason: string;
+  gap: string | null;
+  /** Stamped when the facilitator accepted or overrode it — the calibration record. */
+  applied_score?: number | null;
+  applied_at?: string;
+}
+
+export interface ScoreProposals {
+  proposed_at: string;
+  model: string;
+  items: Partial<Record<string, ScoreProposal>>;
+}
+
 export type SessionNotes = {
   blocks?: Partial<Record<BlockId, string>>;
   elapsed?: Partial<Record<BlockId, number>>;
   crossChecks?: Partial<Record<CrossCheckId, CrossCheckRecord>>;
   transcriptDraft?: TranscriptDraft;
+  scoreProposals?: ScoreProposals;
 } & Partial<Record<EngineMetricKey, string>>;
 
 const METRIC_KEYS: EngineMetricKey[] = ENGINE_METRICS.map((m) => m.key);
@@ -289,7 +314,48 @@ export function parseSessionNotes(value: Json | null | undefined): SessionNotes 
   const draft = parseTranscriptDraft(raw.transcriptDraft);
   if (draft) out.transcriptDraft = draft;
 
+  const proposals = parseScoreProposals(raw.scoreProposals);
+  if (proposals) out.scoreProposals = proposals;
+
   return out;
+}
+
+function wholeScoreOrNull(v: unknown): number | null {
+  return typeof v === "number" && Number.isInteger(v) && v >= 0 && v <= 4 ? v : null;
+}
+
+/** Defensive read of the stored proposals — a malformed set is simply absent. */
+export function parseScoreProposals(value: unknown): ScoreProposals | null {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return null;
+  const raw = value as Record<string, unknown>;
+  if (!raw.items || typeof raw.items !== "object" || Array.isArray(raw.items)) return null;
+  const items: ScoreProposals["items"] = {};
+  for (const [key, v] of Object.entries(raw.items as Record<string, unknown>)) {
+    if (!v || typeof v !== "object" || Array.isArray(v)) continue;
+    const row = v as Record<string, unknown>;
+    const evidence =
+      row.evidence === "reported" || row.evidence === "demonstrated"
+        ? row.evidence
+        : null;
+    items[key] = {
+      score: wholeScoreOrNull(row.score),
+      evidence,
+      quote: typeof row.quote === "string" && row.quote.trim() ? row.quote : null,
+      reason: typeof row.reason === "string" ? row.reason : "",
+      gap: typeof row.gap === "string" && row.gap.trim() ? row.gap : null,
+      ...(row.applied_at !== undefined
+        ? {
+            applied_score: wholeScoreOrNull(row.applied_score),
+            applied_at: typeof row.applied_at === "string" ? row.applied_at : undefined,
+          }
+        : {}),
+    };
+  }
+  return {
+    proposed_at: typeof raw.proposed_at === "string" ? raw.proposed_at : "",
+    model: typeof raw.model === "string" ? raw.model : "",
+    items,
+  };
 }
 
 function stringList(v: unknown): string[] {

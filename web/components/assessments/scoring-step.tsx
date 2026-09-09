@@ -19,7 +19,14 @@
  */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ArrowRight, LayoutList, NotebookPen, Rows3 } from "lucide-react";
+import { ArrowRight, LayoutList, NotebookPen, Rows3, Sparkles } from "lucide-react";
+import { toast } from "sonner";
+import {
+  discardScoreProposals,
+  proposeScores,
+  recordProposalOutcome,
+} from "@/lib/assessment-score-proposals";
+import type { CcAssessment } from "@/lib/supabase/types";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -36,6 +43,7 @@ import {
   BLOCK_BY_ID,
   BLOCK_FOR_PILLAR,
   blockNote,
+  type ScoreProposal,
   type SessionNotes,
 } from "@/lib/assessment-session";
 import { FACILITATION } from "@/lib/assessment-facilitation";
@@ -301,25 +309,168 @@ function ListView({
   );
 }
 
+/**
+ * The model's proposal for the focused indicator, beside the card.
+ *
+ * Shown as a proposal, never applied by itself: the score, the evidence level,
+ * the quote it rests on and one sentence of reasoning, with one Accept button
+ * that writes the score row through the same onScoreChange the keys use. When
+ * the notes support nothing, the panel shows the question to ask instead.
+ * Once the facilitator has scored the indicator, the panel turns into the
+ * comparison — "proposed 2, you scored 3" — which is the calibration record.
+ */
+function ProposalPanel({
+  indicator,
+  row,
+  proposal,
+  onAccept,
+}: {
+  indicator: IndicatorDef;
+  row: CcAssessmentScore | undefined;
+  proposal: ScoreProposal | undefined;
+  onAccept: () => void;
+}) {
+  if (!proposal) return null;
+  const applied = row && (row.not_applicable || row.score !== null);
+  const appliedScore = row?.not_applicable ? "N/A" : row?.score ?? null;
+  const agrees = applied && !row?.not_applicable && row?.score === proposal.score;
+
+  return (
+    <aside
+      className={cn(
+        "mb-4 rounded-xl px-4 py-3 ring-1 ring-inset",
+        proposal.score === null
+          ? "bg-[color:var(--color-brand-warning)]/8 ring-[color:var(--color-brand-warning)]/30"
+          : "bg-[color:var(--color-brand-violet)]/10 ring-[color:var(--color-brand-violet)]/30"
+      )}
+    >
+      <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
+        <div className="min-w-0 flex-1">
+          <p className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+            <Sparkles className="size-3 text-[color:var(--color-brand-violet)]" />
+            Proposed from the notes
+            {applied && (
+              <span className="ml-1 font-normal normal-case tracking-normal">
+                · you scored {appliedScore}
+                {agrees ? " — agrees" : proposal.score === null ? "" : " — differs"}
+              </span>
+            )}
+          </p>
+          {proposal.score !== null ? (
+            <p className="mt-1.5 text-[15px] font-semibold">
+              {proposal.score} {SCALE_LABELS[proposal.score]}
+              <span className="ml-2 text-[12px] font-medium text-muted-foreground">
+                {proposal.evidence === "demonstrated" ? "Demonstrated" : "Reported"}
+              </span>
+            </p>
+          ) : (
+            <p className="mt-1.5 text-[13.5px] font-medium text-[color:var(--color-brand-warning)]">
+              Nothing in the notes supports a score
+            </p>
+          )}
+          {proposal.quote && (
+            <p className="mt-1 border-l-2 border-[color:var(--color-brand-violet)]/50 pl-2 text-[12.5px] italic leading-snug text-muted-foreground">
+              “{proposal.quote}”
+            </p>
+          )}
+          {proposal.reason && (
+            <p className="mt-1 text-[12px] leading-snug text-muted-foreground">
+              {proposal.reason}
+            </p>
+          )}
+          {proposal.gap && (
+            <p className="mt-1.5 text-[12.5px] leading-snug text-[color:var(--color-brand-aqua)]">
+              Ask: {proposal.gap}
+            </p>
+          )}
+        </div>
+        {proposal.score !== null && !agrees && (
+          <Button size="sm" onClick={onAccept}>
+            Accept {proposal.score} · {proposal.evidence === "demonstrated" ? "Demonstrated" : "Reported"}
+          </Button>
+        )}
+      </div>
+      <p className="sr-only">
+        A proposal for {indicator.label}; the score is not applied until accepted.
+      </p>
+    </aside>
+  );
+}
+
 // ---------------------------------------------------------------------------
 export function ScoringStep({
+  assessmentId,
   scores,
   computed,
   sessionNotes,
   focusKey,
   onFocusChange,
   onScoreChange,
+  onAssessment,
   onContinue,
 }: {
+  assessmentId: string;
   scores: ScoreMap;
   computed: ComputedScores;
   sessionNotes: SessionNotes;
   focusKey: string;
   onFocusChange: (key: string) => void;
   onScoreChange: (indicator: IndicatorDef, patch: IndicatorPatch) => void;
+  /** Replaces the engagement row after a server action returns it (proposals live in session_notes). */
+  onAssessment?: (a: CcAssessment) => void;
   onContinue: () => void;
 }) {
   const [view, setView] = useState<"guided" | "list">("guided");
+  const [proposing, setProposing] = useState(false);
+  const proposals = sessionNotes.scoreProposals ?? null;
+  const proposalStats = useMemo(() => {
+    if (!proposals) return null;
+    const items = Object.values(proposals.items);
+    const scored = items.filter((p) => p && p.score !== null).length;
+    const applied = items.filter((p) => p && p.applied_at).length;
+    const agreed = items.filter(
+      (p) => p && p.applied_at && p.applied_score !== undefined && p.applied_score === p.score
+    ).length;
+    return { total: items.length, scored, gaps: items.length - scored, applied, agreed };
+  }, [proposals]);
+
+  async function runPropose() {
+    setProposing(true);
+    const res = await proposeScores(assessmentId);
+    setProposing(false);
+    if (!res.ok) {
+      toast.error(res.error);
+      return;
+    }
+    if (res.data) onAssessment?.(res.data.assessment);
+    toast.success("Proposals ready — nothing is scored until you accept it.");
+  }
+
+  async function runDiscard() {
+    const res = await discardScoreProposals(assessmentId);
+    if (!res.ok) {
+      toast.error(res.error);
+      return;
+    }
+    if (res.data) onAssessment?.(res.data.assessment);
+  }
+
+  function acceptProposal(ind: IndicatorDef) {
+    const p = proposals?.items[ind.key];
+    if (!p || p.score === null) return;
+    const row = scores[ind.key];
+    onScoreChange(ind, {
+      score: p.score,
+      not_applicable: false,
+      evidence_confidence: p.evidence ?? "reported",
+      // The rubric wants the note to name the quote; keep a note the
+      // facilitator already wrote, otherwise the quote becomes the note.
+      notes: row?.notes?.trim() ? row.notes : p.quote ? `“${p.quote}”` : null,
+    });
+    void recordProposalOutcome(assessmentId, ind.key, p.score).then((res) => {
+      if (res.ok && res.data) onAssessment?.(res.data.assessment);
+    });
+  }
   const [showKeys, setShowKeys] = useState(false);
   const noteRef = useRef<HTMLInputElement>(null);
   const paneRef = useRef<HTMLDivElement>(null);
@@ -498,6 +649,36 @@ export function ScoringStep({
           })}
         </div>
 
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="flex items-center gap-1.5">
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => void runPropose()}
+              disabled={proposing}
+              title="Reads the session notes and the intake against every anchor and proposes a score with the quote it rests on. Nothing is scored until you accept it."
+            >
+              <Sparkles className="size-3.5" />
+              {proposing
+                ? "Reading the notes…"
+                : proposals
+                  ? "Propose again"
+                  : "Propose scores from the notes"}
+            </Button>
+            {proposalStats && (
+              <span className="text-[11px] tabular-nums text-muted-foreground">
+                {proposalStats.scored} proposed · {proposalStats.gaps} to ask
+                {proposalStats.applied > 0
+                  ? ` · ${proposalStats.agreed}/${proposalStats.applied} agreed`
+                  : ""}
+              </span>
+            )}
+            {proposals && (
+              <Button size="xs" variant="ghost" onClick={() => void runDiscard()}>
+                Clear
+              </Button>
+            )}
+          </div>
         <div className="flex rounded-md bg-[color:var(--color-brand-slate)]/60 p-0.5">
           {(
             [
@@ -521,6 +702,7 @@ export function ScoringStep({
               {label}
             </button>
           ))}
+        </div>
         </div>
       </div>
 
@@ -612,6 +794,13 @@ export function ScoringStep({
             />
 
             <div className={cn(pillarDone && "mt-4 xl:mt-4")}>
+              <ProposalPanel
+                key={`proposal-${indicator.key}`}
+                indicator={indicator}
+                row={scores[indicator.key]}
+                proposal={proposals?.items[indicator.key]}
+                onAccept={() => acceptProposal(indicator)}
+              />
               <IndicatorCard
                 key={indicator.key}
                 indicator={indicator}

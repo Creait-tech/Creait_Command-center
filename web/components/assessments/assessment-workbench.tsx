@@ -954,6 +954,8 @@ export function AssessmentWorkbench({
         {/* ── Scoring ──────────────────────────────────────────────────── */}
         {step === "scoring" && (
           <ScoringStep
+            assessmentId={assessment.id}
+            onAssessment={setAssessment}
             scores={scores}
             computed={computed}
             sessionNotes={sessionNotes}
