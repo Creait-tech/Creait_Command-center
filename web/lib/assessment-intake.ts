@@ -949,6 +949,7 @@ export const INTAKE_QUESTIONS: IntakeQuestion[] = [
       "Customer and financial data can be connected",
       "Backups exist",
       "We know where sensitive data lives",
+      "None of these are consistently true",
     ],
     allowUnknown: true,
     feedsIndicators: ["L3", "L8"],
@@ -1034,6 +1035,7 @@ export const INTAKE_QUESTIONS: IntakeQuestion[] = [
       "Failures are detectable",
       "The process is documented before it is automated",
       "The team is trained",
+      "None of these are consistently true",
     ],
     allowUnknown: true,
     feedsIndicators: ["L7"],
@@ -1601,6 +1603,13 @@ export interface IntakePrefill {
   /** Hours per week burned on the q44 repetitive-task inventory. */
   repetitive_hours_weekly: number | null;
   loaded_rates: IntakeLoadedRate[];
+  /**
+   * q12 — the share of revenue that has to be won fresh each year (one-time
+   * projects, products, other) as a fraction 0–1; null when the revenue model
+   * was not answered. Recurring contracts, repeat-without-contract and
+   * retainers are excluded because a lead funnel never explains them.
+   */
+  new_business_share: number | null;
 }
 
 const WEEKLY_OCCURRENCES: Record<string, number> = {
@@ -1688,7 +1697,27 @@ export function intakePrefill(intake: unknown): IntakePrefill {
       ? Math.round((repetitiveMinutes / 60) * 10) / 10
       : null,
     loaded_rates,
+    new_business_share: newBusinessShare(answers.q12),
   };
+}
+
+const NEW_BUSINESS_ROWS = ["One-time projects", "Products", "Other"];
+
+/** See IntakePrefill.new_business_share. */
+export function newBusinessShare(q12: IntakeAnswer | undefined): number | null {
+  const rows = tableRows(q12);
+  let total = 0;
+  let fresh = 0;
+  let answered = false;
+  for (const row of rows) {
+    const pct = parsePercent(row.pct);
+    if (pct === null) continue;
+    answered = true;
+    total += pct;
+    if (NEW_BUSINESS_ROWS.includes(row[TABLE_ROW_KEY] ?? "")) fresh += pct;
+  }
+  if (!answered || total <= 0) return null;
+  return Math.max(0, Math.min(1, fresh / total));
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

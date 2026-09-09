@@ -554,8 +554,25 @@ export const CROSS_CHECKS: CrossCheck[] = [
       const leadsPerYear = (perMonth as number) * 12;
       const implied =
         leadsPerYear * ((close as number) / 100) * (value as number);
-      const ratio = implied / (revenue as number);
-      const detail = `${Math.round(leadsPerYear)} leads/yr × ${round1(close as number)}% × ${money(value as number)} = ${money(implied)} against ${money(revenue as number)} — ${Math.round(ratio * 100)}%.`;
+      // A funnel only explains the revenue that has to be won fresh each year.
+      // Recurring contracts, repeat customers and retainers arrive without a
+      // lead, so a subscription or repeat-visit business compared against its
+      // whole top line flags every time. When the intake's revenue-model split
+      // is on file, compare against the new-business share of revenue and say
+      // so; without it, compare against the total and say that instead.
+      const share = intakeFigures(assessment)?.new_business_share ?? null;
+      const basis = share === null ? (revenue as number) : (revenue as number) * share;
+      if (basis <= 0) {
+        return insufficient(
+          "The revenue-model answer says nothing is won fresh each year — no funnel to check."
+        );
+      }
+      const ratio = implied / basis;
+      const against =
+        share === null
+          ? `${money(revenue as number)} (no revenue-model split on file, so the whole top line)`
+          : `${money(basis)} of new-business revenue (${Math.round(share * 100)}% of ${money(revenue as number)} per the intake)`;
+      const detail = `${Math.round(leadsPerYear)} leads/yr × ${round1(close as number)}% × ${money(value as number)} = ${money(implied)} against ${against} — ${Math.round(ratio * 100)}%.`;
       return ratio < 0.6 || ratio > 1.4 ? flag(detail) : pass(detail);
     },
   }),
