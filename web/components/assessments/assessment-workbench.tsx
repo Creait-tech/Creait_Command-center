@@ -148,6 +148,10 @@ function jsonToDocuments(value: unknown): AssessmentDocument[] {
     const name = typeof row.name === "string" ? row.name.trim() : "";
     const kind = typeof row.kind === "string" ? row.kind : "other";
     if (!name) return [];
+    // The storage fields ride along untouched: this list is written back
+    // whole on every edit, and dropping them here would orphan the files.
+    const storagePath =
+      typeof row.storage_path === "string" && row.storage_path ? row.storage_path : null;
     return [
       {
         name,
@@ -156,6 +160,15 @@ function jsonToDocuments(value: unknown): AssessmentDocument[] {
           : "other",
         received_on:
           typeof row.received_on === "string" ? row.received_on : null,
+        ...(storagePath
+          ? {
+              storage_path: storagePath,
+              content_type:
+                typeof row.content_type === "string" ? row.content_type : null,
+              size_bytes:
+                typeof row.size_bytes === "number" ? row.size_bytes : null,
+            }
+          : {}),
       },
     ];
   });
