@@ -1,0 +1,1166 @@
+{
+ "n": 1,
+ "company": "Reid Comfort Heating & Air",
+ "owner": "Tasha Reid",
+ "industry": "Residential HVAC",
+ "profile": {
+  "revenue": 1800000,
+  "grossMarginPct": 42,
+  "operatingProfit": 150000,
+  "headcount": 14,
+  "founded": 2015,
+  "story": "Tasha bought out her father's two-truck service company in 2015 and grew it to five trucks doing residential repair, replacement and maintenance plans across the north metro. The work is good and the phone rings; what hurts is that she is still the dispatcher of last resort, the estimator on every replacement over $8K, and the person who decides whether a $400 discount is allowed. Her office manager Renee reshuffles the board by hand every morning because the field app and the schedule never agree. Tasha has not taken more than four days off since 2021 and is starting to resent a business she otherwise likes."
+ },
+ "edge_cases": [
+  "Typical mid case — the calibration baseline everything else is compared to",
+  "P&L on file, so no ranges are widened for the missing-P&L reason",
+  "Two calculator opportunities plus one hand-entered range — expects the hand-entered warning and nothing else",
+  "All four cross-checks should pass"
+ ],
+ "intake": {
+  "q1": [
+   {
+    "row": "Your name",
+    "value": "Tasha Reid"
+   },
+   {
+    "row": "Email",
+    "value": "tasha@reidcomfortair.com"
+   },
+   {
+    "row": "Phone",
+    "value": "(770) 555-0142"
+   },
+   {
+    "row": "Company name",
+    "value": "Reid Comfort Heating & Air"
+   },
+   {
+    "row": "Website",
+    "value": "reidcomfortair.com"
+   },
+   {
+    "row": "Location",
+    "value": "Kennesaw, GA"
+   },
+   {
+    "row": "Industry",
+    "value": "Residential HVAC service & replacement"
+   }
+  ],
+  "q2": "We service, repair and replace residential heating and cooling systems for homeowners in the north metro — about 70% of the work is inside 25 minutes of the shop. Five trucks, two of them replacement crews. Customers find us on Google, through the plumbers and realtors we've worked with for years, and through our maintenance plan members. Everything is delivered by our own W-2 techs; we sub out sheet-metal fabrication and electrical panel upgrades.",
+  "q3": [
+   {
+    "row": "Primary",
+    "objective": "More profit & cash flow"
+   },
+   {
+    "row": "Secondary 1",
+    "objective": "Reduce owner dependence"
+   },
+   {
+    "row": "Secondary 2",
+    "objective": "Better operations & delivery capacity"
+   }
+  ],
+  "q4": [
+   {
+    "row": "1",
+    "outcome": "Operating profit up without adding a sixth truck",
+    "target": "$150K → $260K"
+   },
+   {
+    "row": "2",
+    "outcome": "Maintenance plan members",
+    "target": "410 → 700"
+   },
+   {
+    "row": "3",
+    "outcome": "Weeks I can be gone without the schedule falling apart",
+    "target": "2 consecutive weeks"
+   }
+  ],
+  "q5": "Five or six trucks, $2.6M, 20% net, and a real service manager running the board so I am not the dispatcher. I want to be doing pricing, hiring and the plumber/realtor relationships — two days a week in the office, not six. The maintenance plan should be big enough that January is not terrifying.",
+  "q6": "Split across most of these",
+  "q7": [
+   {
+    "row": "Hours/week now",
+    "value": "62"
+   },
+   {
+    "row": "Hours/week you want in 12 months",
+    "value": "45"
+   },
+   {
+    "row": "Hours/week you want in 3 years",
+    "value": "30"
+   },
+   {
+    "row": "Longest uninterrupted time away in the past 12 months",
+    "value": "4 days, and I answered the phone every one of them"
+   },
+   {
+    "row": "What pulls you back in",
+    "value": "Dispatch when two calls collide, and any replacement quote over about $8,000 — nobody else prices those"
+   }
+  ],
+  "q8": "Honestly I think we just need more trucks and more techs. We turn away work in July and again in January and I feel like I'm leaving money on the table every peak. It's been true for at least three years and it gets worse every summer.",
+  "q9": [
+   {
+    "row": "Year founded",
+    "value": "1998, I bought it from my dad in 2015"
+   },
+   {
+    "row": "Owners & percentages",
+    "value": "Tasha Reid 100%"
+   },
+   {
+    "row": "Any owner misalignment affecting decisions?",
+    "value": "No, sole owner. My dad still has opinions but no vote."
+   }
+  ],
+  "q10": [
+   {
+    "row": "Full-time employees",
+    "count": "12"
+   },
+   {
+    "row": "Part-time",
+    "count": "1"
+   },
+   {
+    "row": "Regular contractors",
+    "count": "1"
+   },
+   {
+    "row": "Managers / team leads",
+    "count": "2"
+   },
+   {
+    "row": "People with direct reports",
+    "count": "2"
+   }
+  ],
+  "q11": "Local",
+  "q12": [
+   {
+    "row": "One-time projects",
+    "pct": "58"
+   },
+   {
+    "row": "Recurring contracts",
+    "pct": "14"
+   },
+   {
+    "row": "Repeat without contract",
+    "pct": "24"
+   },
+   {
+    "row": "Products",
+    "pct": "4"
+   },
+   {
+    "row": "Retainers",
+    "pct": "0"
+   },
+   {
+    "row": "Other",
+    "pct": "0"
+   }
+  ],
+  "q13": [
+   {
+    "name": "System replacement (residential)",
+    "pct": "52",
+    "margin": "38",
+    "trend": "Growing",
+    "importance": "Where the profit is; also where the owner bottleneck is"
+   },
+   {
+    "name": "Service & repair calls",
+    "pct": "30",
+    "margin": "51",
+    "trend": "Flat",
+    "importance": "Feeds replacement leads; highest margin per hour"
+   },
+   {
+    "name": "Maintenance plans",
+    "pct": "14",
+    "margin": "44",
+    "trend": "Growing",
+    "importance": "The only predictable revenue we have"
+   },
+   {
+    "name": "Indoor air quality add-ons",
+    "pct": "4",
+    "margin": "56",
+    "trend": "Flat",
+    "importance": "Sold only when a tech remembers to mention it"
+   }
+  ],
+  "q14": [
+   {
+    "row": "Active customer count",
+    "value": "About 2,900 households in the system; 410 on plans"
+   },
+   {
+    "row": "B2B / B2C / mixed",
+    "value": "B2C with a handful of property managers"
+   },
+   {
+    "row": "% of revenue from your largest customer",
+    "value": "9"
+   },
+   {
+    "row": "% of revenue from your top five",
+    "value": "17"
+   },
+   {
+    "row": "% of revenue tied directly to YOUR personal relationships",
+    "value": "About 35% — the realtors and the two plumbing companies are mine"
+   }
+  ],
+  "q15": [
+   {
+    "row": "Last completed year",
+    "amount": "1800000"
+   },
+   {
+    "row": "Prior year",
+    "amount": "1620000"
+   },
+   {
+    "row": "Year to date",
+    "amount": "1340000"
+   },
+   {
+    "row": "Full-year forecast",
+    "amount": "1950000"
+   }
+  ],
+  "q16": "Up 10% or less",
+  "q17": [
+   {
+    "row": "Approximate gross margin %",
+    "value": "42"
+   },
+   {
+    "row": "Main direct costs",
+    "value": "Tech labor and burden, equipment from the supply house, sheet metal sub, truck fuel"
+   },
+   {
+    "row": "Tracked by job / service / customer?",
+    "value": "No. We know the whole-company number from QuickBooks and that's it."
+   }
+  ],
+  "q18": [
+   {
+    "row": "Operating profit estimate",
+    "amount": "150000"
+   },
+   {
+    "row": "Owner salary",
+    "amount": "95000"
+   },
+   {
+    "row": "Owner distributions",
+    "amount": "40000"
+   },
+   {
+    "row": "Unusual one-off expenses",
+    "amount": "31000 — new box truck down payment and the shop roof"
+   }
+  ],
+  "q19": [
+   "Profitable but tight",
+   "Seasonality",
+   "Materials / inventory"
+  ],
+  "q20": "Monthly, delayed",
+  "q21": [
+   {
+    "row": "Revenue",
+    "target": "$2.1M next year"
+   },
+   {
+    "row": "Gross margin",
+    "target": "No target — I've never set one"
+   },
+   {
+    "row": "Operating profit",
+    "target": "$260K"
+   },
+   {
+    "row": "Cash reserve",
+    "target": "Two months of payroll; we have about three weeks"
+   },
+   {
+    "row": "Owner compensation",
+    "target": "$140K salary, stop taking distributions to cover cash"
+   }
+  ],
+  "q22": "QuickBooks P&L 2024 and 2025 plus 24-month detail, balance sheet, AR aging, the 2025 price book, and a revenue-by-customer export from the field app. No job costing exists.",
+  "q23": [
+   {
+    "source": "Google Local Services + organic",
+    "per_month": "46",
+    "cost": "2100",
+    "quality": "3",
+    "tracked": "Yes"
+   },
+   {
+    "source": "Plumber & realtor referrals",
+    "per_month": "31",
+    "cost": "0",
+    "quality": "5",
+    "tracked": "No"
+   },
+   {
+    "source": "Maintenance plan members calling in",
+    "per_month": "28",
+    "cost": "0",
+    "quality": "4",
+    "tracked": "Yes"
+   },
+   {
+    "source": "Repeat customers (no plan)",
+    "per_month": "12",
+    "cost": "0",
+    "quality": "4",
+    "tracked": "No"
+   },
+   {
+    "source": "Yard signs & truck wraps",
+    "per_month": "3",
+    "cost": "400",
+    "quality": "2",
+    "tracked": "No"
+   }
+  ],
+  "q24": [
+   {
+    "row": "What happens, step by step",
+    "value": "Renee answers or it goes to voicemail; she writes it on the board, then puts it in the field app; if it's a replacement she texts me the address and I call the homeowner back when I can"
+   },
+   {
+    "row": "Typical response time",
+    "value": "Service calls within the hour during business hours. Replacement callbacks are same day, sometimes next."
+   },
+   {
+    "row": "Who is responsible",
+    "value": "Renee 8–5, my cell after hours, answering service on weekends"
+   },
+   {
+    "row": "Is every inquiry captured in one system?",
+    "value": "The field app has the ones that get booked. The ones that don't book mostly aren't anywhere."
+   },
+   {
+    "row": "Automated follow-up?",
+    "value": "Only the appointment reminder text"
+   },
+   {
+    "row": "% of leads that get 2+ follow-ups",
+    "value": "Maybe 35% of replacement quotes; service calls basically none"
+   }
+  ],
+  "q25": [
+   {
+    "row": "Lead→sale or proposal→close %",
+    "value": "About 42% overall; replacement quotes are more like 38%"
+   },
+   {
+    "row": "Tracked by source / person / service?",
+    "value": "No"
+   },
+   {
+    "row": "Defined sales process?",
+    "value": "Not written down. Every tech does the good/better/best sheet differently."
+   },
+   {
+    "row": "Most common reason you lose",
+    "value": "Somebody got them a price faster, or they went with the cheapest number"
+   }
+  ],
+  "q26": [
+   {
+    "row": "Typical first sale",
+    "value": "$3,000 blended — a service call is $340, a replacement is $9,400"
+   },
+   {
+    "row": "Typical annual customer value",
+    "value": "About $780 for a plan member, more if a system fails"
+   },
+   {
+    "row": "Most valuable segment",
+    "value": "Plan members who need a replacement — they never shop us"
+   },
+   {
+    "row": "Tracked?",
+    "value": "Not formally, I know it from looking at invoices"
+   }
+  ],
+  "q27": [
+   {
+    "row": "% who buy again",
+    "value": "Around 55% within three years"
+   },
+   {
+    "row": "Renewal rate if applicable",
+    "value": "Maintenance plans renew at about 71%"
+   },
+   {
+    "row": "Are inactive customers identified?",
+    "value": "No — there are two-plus years of households in the app nobody has called"
+   },
+   {
+    "row": "Reactivation campaigns ever run?",
+    "value": "Never"
+   },
+   {
+    "row": "Why customers leave",
+    "value": "Usually they don't leave, they just forget us until something breaks and then they Google it"
+   }
+  ],
+  "q28": [
+   "Set against competitors",
+   "Set on the owner's gut",
+   "Varies by scope or value",
+   "Pricing is a current worry"
+  ],
+  "q29": [
+   {
+    "row": "Complementary services routinely offered?",
+    "value": "IAQ and duct sealing, but only if the tech thinks of it"
+   },
+   {
+    "row": "Bundles or packages?",
+    "value": "Good/better/best on replacements, nothing on service"
+   },
+   {
+    "row": "Premium option?",
+    "value": "Yes on equipment tiers, no on service"
+   },
+   {
+    "row": "Entry-level option?",
+    "value": "The $19/mo maintenance plan"
+   },
+   {
+    "row": "Customer needs you can't currently serve",
+    "value": "Whole-home generators and mini-split-only jobs in older homes"
+   }
+  ],
+  "q30": [
+   {
+    "row": "Who owns marketing",
+    "value": "Me, when I have time. A cousin manages the Google account."
+   },
+   {
+    "row": "Who owns sales",
+    "value": "Me for replacements, the techs for repairs"
+   },
+   {
+    "row": "Monthly marketing budget",
+    "value": "$2,100 plus whatever the truck wraps cost"
+   },
+   {
+    "row": "Do sales & marketing review results together?",
+    "value": "No"
+   },
+   {
+    "row": "Are leads, conversion, CAC and customer value ever reviewed together?",
+    "value": "No. I look at revenue and the bank balance."
+   }
+  ],
+  "q31": "We'd have to hire",
+  "q32": [
+   {
+    "row": "1",
+    "area": "More leads in the shoulder months"
+   },
+   {
+    "row": "2",
+    "area": "Getting techs to sell IAQ add-ons"
+   },
+   {
+    "row": "3",
+    "area": "Raising the diagnostic fee"
+   }
+  ],
+  "q33": [
+   {
+    "workflow": "Inbound call handling & booking"
+   },
+   {
+    "workflow": "Dispatch & daily schedule build"
+   },
+   {
+    "workflow": "Replacement quoting"
+   },
+   {
+    "workflow": "Replacement install & commissioning"
+   },
+   {
+    "workflow": "Maintenance plan visits & renewals"
+   },
+   {
+    "workflow": "Invoicing & collections"
+   },
+   {
+    "workflow": "Permit filing & inspection"
+   },
+   {
+    "workflow": "Warranty registration & claims"
+   },
+   {
+    "workflow": "Tech hiring & ride-alongs"
+   }
+  ],
+  "q34": [
+   {
+    "row": "One clear accountable role",
+    "frequency": "Sometimes"
+   },
+   {
+    "row": "Defined handoffs",
+    "frequency": "Sometimes"
+   },
+   {
+    "row": "Consistent exception escalation",
+    "frequency": "Rarely"
+   }
+  ],
+  "q35": [
+   {
+    "row": "Documented",
+    "pct": "25"
+   },
+   {
+    "row": "Current",
+    "pct": "10"
+   },
+   {
+    "row": "Accessible",
+    "pct": "25"
+   },
+   {
+    "row": "Used in training",
+    "pct": "10"
+   },
+   {
+    "row": "Actually followed",
+    "pct": "20"
+   }
+  ],
+  "q36": [
+   "Scheduling delays",
+   "Incomplete information",
+   "Late billing",
+   "The owner has to step in",
+   "Rework"
+  ],
+  "q37": "Owner time",
+  "q38": "Mostly clear, with gaps",
+  "q39": [
+   {
+    "row": "How many KPIs reviewed weekly",
+    "value": "Two — revenue booked and how many calls we ran"
+   },
+   {
+    "row": "Does each have one owner?",
+    "value": "No"
+   },
+   {
+    "row": "Are targets visible?",
+    "value": "No"
+   },
+   {
+    "row": "Does a miss trigger action?",
+    "value": "Only if I notice"
+   }
+  ],
+  "q40": "Weekly but loose",
+  "q41": [
+   {
+    "row": "CRM",
+    "tool": "None — the field app holds booked jobs only"
+   },
+   {
+    "row": "Marketing",
+    "tool": "Google LSA dashboard"
+   },
+   {
+    "row": "Sales / proposals",
+    "tool": "Paper good/better/best sheet plus a Word template"
+   },
+   {
+    "row": "Scheduling / project management",
+    "tool": "ServiceTitan-style field app plus a magnetic whiteboard"
+   },
+   {
+    "row": "Delivery",
+    "tool": "Field app on tech tablets"
+   },
+   {
+    "row": "Accounting",
+    "tool": "QuickBooks Online"
+   },
+   {
+    "row": "Reporting",
+    "tool": "None — Renee builds a spreadsheet"
+   },
+   {
+    "row": "Communication",
+    "tool": "Text messages and a group chat"
+   },
+   {
+    "row": "Files / knowledge",
+    "tool": "Google Drive, mostly unsorted"
+   },
+   {
+    "row": "HR / payroll",
+    "tool": "Gusto"
+   }
+  ],
+  "q42": "The same data is entered in several places",
+  "q43": [
+   "Data is generally accurate",
+   "Backups exist"
+  ],
+  "q44": [
+   {
+    "task": "Dispatch reshuffling and route fixes",
+    "who": "Renee",
+    "frequency": "Daily",
+    "occurrences": "5",
+    "minutes": "72",
+    "errors": "Yes",
+    "systems": "Whiteboard, field app, texts"
+   },
+   {
+    "task": "Invoice prep and chasing",
+    "who": "Renee",
+    "frequency": "Several times a week",
+    "occurrences": "3",
+    "minutes": "100",
+    "errors": "Yes",
+    "systems": "Field app, QuickBooks"
+   },
+   {
+    "task": "Permit filing and inspection scheduling",
+    "who": "Marco",
+    "frequency": "Weekly",
+    "occurrences": "3",
+    "minutes": "60",
+    "errors": "No",
+    "systems": "County portal, email"
+   },
+   {
+    "task": "Maintenance plan renewal calls",
+    "who": "Kara",
+    "frequency": "Weekly",
+    "occurrences": "4",
+    "minutes": "60",
+    "errors": "No",
+    "systems": "Field app, phone"
+   },
+   {
+    "task": "Weekly numbers pull for Tasha",
+    "who": "Renee",
+    "frequency": "Weekly",
+    "occurrences": "1",
+    "minutes": "120",
+    "errors": "Yes",
+    "systems": "QuickBooks, field app, Excel"
+   }
+  ],
+  "q45": "Appointment reminder texts and the on-my-way text from the field app. Both work. The review request after a job fires maybe half the time and nobody knows why. Nothing else is automated — renewals, follow-ups and invoicing are all done by hand.",
+  "q46": [
+   "Drafting",
+   "Marketing content"
+  ],
+  "q47": [
+   "None of these are consistently true"
+  ],
+  "q48": [
+   "Shared passwords",
+   "Unclear account ownership",
+   "No tested recovery"
+  ],
+  "q49": [
+   {
+    "row": "Implementation budget range",
+    "value": "$8–15K if the payback is obvious"
+   },
+   {
+    "row": "Owner hours/week available",
+    "value": "4"
+   },
+   {
+    "row": "Team hours/week available",
+    "value": "6, mostly Renee"
+   },
+   {
+    "row": "Appetite for changing systems",
+    "value": "High for the office, medium for the techs"
+   }
+  ],
+  "q58": "A few curious people, no training",
+  "q59": "Renee would take on anything that stops her retyping invoices, and Kara is quick with new apps. The senior install lead will resist anything that puts more taps on a tablet; he has said so.",
+  "q56": [
+   {
+    "role": "Office manager / dispatcher",
+    "rate": "34"
+   },
+   {
+    "role": "Service technician",
+    "rate": "58"
+   },
+   {
+    "role": "Install crew lead",
+    "rate": "62"
+   },
+   {
+    "role": "Owner",
+    "rate": "85"
+   }
+  ],
+  "q50": [
+   "Pricing exceptions",
+   "Major sales",
+   "Customer escalations",
+   "Hiring / firing",
+   "Purchasing",
+   "Scheduling",
+   "Banking / payments",
+   "Vendor relationships",
+   "Strategy"
+  ],
+  "q51": [
+   {
+    "row": "What keeps running",
+    "value": "Booked service calls. The techs would run the board for about a week."
+   },
+   {
+    "row": "What slows down",
+    "value": "Replacement quoting stops within two days. Purchasing from the supply house stalls."
+   },
+   {
+    "row": "What stops",
+    "value": "Anything needing a price exception, payroll approval, or a decision on a warranty fight"
+   },
+   {
+    "row": "Who decides",
+    "value": "Renee for anything under $500, and then it waits for me"
+   },
+   {
+    "row": "What nobody else can access",
+    "value": "The bank, the supply house credit account, and the Google Business listing"
+   }
+  ],
+  "q52": [
+   {
+    "risk": "Tasha (quoting, pricing, banking, referral relationships)",
+    "impact": "Replacement revenue stops inside a week"
+   },
+   {
+    "risk": "Renee, office manager of nine years",
+    "impact": "Nobody else knows how the board, invoicing or the permit portal works"
+   },
+   {
+    "risk": "The two plumbing companies that refer",
+    "impact": "About 18% of replacement leads disappear"
+   },
+   {
+    "risk": "Supply house credit line",
+    "impact": "Equipment would have to be paid COD in peak season"
+   }
+  ],
+  "q53": [
+   "Licenses & insurance are current",
+   "Vendor agreements are written",
+   "No known legal, tax or insurance issue"
+  ],
+  "q54": [
+   "Sales without the owner",
+   "SOPs & knowledge transfer",
+   "Recurring revenue"
+  ],
+  "q55": "Ready if priorities stay tight",
+  "q57": "Tired but managing"
+ },
+ "session": {
+  "engine": {
+   "leads_per_month": "120",
+   "conversion_rate": "42%",
+   "avg_deal_value": "$3,000",
+   "response_time": "Service within the hour; replacement callbacks same day, sometimes next",
+   "gross_margin_pct": "42",
+   "headcount": "14",
+   "repetitive_hours_week": "Dispatch reshuffling — Renee — 6\nInvoice prep & chasing — Renee — 5\nPermit paperwork — Marco — 3\nMaintenance-plan renewals — Kara — 4\nWeekly numbers pull — Renee — 2",
+   "largest_customer_pct": "9"
+  },
+  "blockNotes": {
+   "b1": "Objective is profit, not size — she said it twice: 'I don't want a sixth truck, I want to keep more of what five trucks make.' Q8 belief is capacity. Owner hours 62. Longest break 4 days with the phone on.",
+   "b2": "Funnel built live from the LSA dashboard and the field app: 120 inquiries a month across five sources, 42% convert blended, $3,000 blended ticket. Multiplies to $1.72M against $1.8M on the P&L — reconciles. The leak is visible in the middle: replacement quotes go out 2–3 days after the visit and only about a third get a second touch. Loss reason she named without prompting: 'somebody got them a number faster.'",
+   "b3": "Price book opened in the room — dated March 2024, built by marking up the supply house price. No cost-plus math behind the diagnostic fee, which has been $89 since 2022 while a tech hour costs $58 loaded.",
+   "b4": "Walked the tool chain: field app → paper quote sheet → QuickBooks, with Renee retyping at every join. 20 h/wk of repetitive work inventoried against a 14-person, ~560-hour payroll — 3.6%, not a payroll-scale problem, but 11 of the 20 hours sit on one person who is also the only dispatcher.",
+   "b5": "Four-week test fails at day nine on quoting. Largest customer 9% on the revenue-by-customer export — no concentration issue. Bank, supply house credit and the Google listing are all owner-locked. Shared QuickBooks login confirmed."
+  },
+  "demonstrated": [
+   "Renee rebuilt the next morning's board live — 41 minutes, four phone calls, two techs re-routed",
+   "Systems tour: field app → paper quote sheet → QuickBooks, manual re-entry shown at each hand-off",
+   "A replacement quote assembled from the paper price book (26 minutes, equipment price looked up by phone)",
+   "The appointment-reminder and on-my-way automations shown firing from the field app",
+   "The Drive folder opened — two documented procedures, both dated 2022"
+  ],
+  "documents_seen": [
+   "QuickBooks P&L 24 months — revenue $1.80M, gross margin 42%, operating profit $150K",
+   "AR aging — $61K out, $18K over 60 days",
+   "2024 price book",
+   "Revenue-by-customer export — largest 9%, top five 17%",
+   "Maintenance plan roster — 410 members, 71% renewal"
+  ]
+ },
+ "dataRoom": {
+  "pnl_on_file": true,
+  "documents": [
+   {
+    "name": "QuickBooks P&L 24 months",
+    "kind": "pnl",
+    "received_on": "2026-09-01"
+   },
+   {
+    "name": "AR aging as of 31 Aug 2026",
+    "kind": "ar_aging",
+    "received_on": "2026-09-01"
+   },
+   {
+    "name": "2024 price book",
+    "kind": "rate_card",
+    "received_on": "2026-09-03"
+   },
+   {
+    "name": "Revenue by customer, trailing 12 months",
+    "kind": "revenue_by_customer",
+    "received_on": "2026-09-03"
+   },
+   {
+    "name": "Maintenance plan roster & renewal history",
+    "kind": "other",
+    "received_on": "2026-09-04"
+   }
+  ]
+ },
+ "scores": {
+  "P1": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Five sources named with monthly volume (q23: LSA 46, referrals 31, plan members 28, repeat 12, signs 3); cost known only for the $2,100 Google spend, quality scored from memory.",
+   "why_not_higher": "Nothing is logged in one place — the field app only holds jobs that booked, so unbooked inquiries are nowhere."
+  },
+  "P2": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Service calls answered within the hour during business hours (q24, confirmed on the board rebuild); replacement callbacks 'same day, sometimes next.' Capture is partial — booked jobs only.",
+   "why_not_higher": "Anchor 3 needs every inquiry captured in one system; the ones that don't book are not recorded anywhere."
+  },
+  "P3": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q24: about 35% of replacement quotes get a second touch, service calls essentially none. No record of who was followed up.",
+   "why_not_higher": "No defined sequence and no way to see a missed follow-up."
+  },
+  "P4": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q25: no written process, every tech runs the good/better/best sheet differently; 42% close is an estimate not tracked by source, person or service.",
+   "why_not_higher": "Anchor 2 needs a rate that is actually tracked; this one is recalled."
+  },
+  "P5": {
+   "score": 1,
+   "na": false,
+   "evidence": "documented",
+   "note": "Price book on file dated March 2024, built by marking up supply-house cost; diagnostic fee $89 unchanged since 2022 against a $58 loaded tech hour. Discounts are Tasha's call in the moment.",
+   "why_not_higher": "One change in two years with anecdotal reasoning and no written discount rule is the anchor-1 line exactly."
+  },
+  "P6": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Good/better/best equipment tiers exist on replacement and a $19/mo entry plan; IAQ and duct sealing are offered 'if the tech thinks of it' (q29).",
+   "why_not_higher": "Anchor 3 needs a scripted upsell on the core offer; nothing about the add-on is scripted or expected."
+  },
+  "P7": {
+   "score": 2,
+   "na": false,
+   "evidence": "documented",
+   "note": "Plan roster shows 410 members renewing at 71% and repeat around 55%; the roster also shows roughly 1,100 households with nothing logged in 24+ months. No reactivation has ever run (q27).",
+   "why_not_higher": "Anchor 3 needs the inactive list pulled and worked; it has never been pulled."
+  },
+  "P8": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q30: marketing is 'me, when I have time', sales is Tasha for replacements; leads, conversion, CAC and value have never been looked at together.",
+   "why_not_higher": "No named owner for either function and nothing reviewed on a cadence."
+  },
+  "P9": {
+   "score": 2,
+   "na": false,
+   "evidence": "documented",
+   "note": "P&L confirms 42% gross margin company-wide; q17 and the data room confirm no job costing exists, so the 38% replacement / 51% service split in q13 is her estimate.",
+   "why_not_higher": "Anchor 3 needs margin known by service line from records, not memory."
+  },
+  "P10": {
+   "score": 2,
+   "na": false,
+   "evidence": "documented",
+   "note": "QuickBooks monthlies close 'around the 25th' (q20 monthly-delayed); reviewed when cash feels tight. One revenue target, no margin target by her own answer in q21.",
+   "why_not_higher": "Anchor 3 needs a close inside 30 days plus a regular owner review; this is late and event-driven."
+  },
+  "S1": {
+   "score": 1,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Q50 lists nine areas that still require her, including scheduling, purchasing, banking and every pricing exception. Two escalations reached her during the session.",
+   "why_not_higher": "Only routine work is delegated; Renee's authority stops at $500."
+  },
+  "S2": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Four-week test (q51): booked calls run about a week, quoting stops inside two days, purchasing stalls. Longest actual absence four days with the phone on.",
+   "why_not_higher": "No named deputy and the business is bleeding by week two."
+  },
+  "S3": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Techs quote repairs from the sheet, but no one prices a replacement over $8K (q7) and 35% of revenue rides on Tasha's realtor and plumber relationships (q14).",
+   "why_not_higher": "Anchor 2 needs the team selling with owner rescue on big deals; here the owner is the only seller on the biggest line."
+  },
+  "S4": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Two team leads with titles (q10). Q38 'mostly clear, with gaps'; neither lead owns a number, and q36 confirms the owner steps in as a recurring failure mode.",
+   "why_not_higher": "Anchor 2 needs at least some managers owning outcomes, even patchily."
+  },
+  "S5": {
+   "score": 1,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Q35: 25% documented, 10% current. The Drive folder opened in session held two procedures, both 2022. New techs learn by riding along.",
+   "why_not_higher": "Not current and not trained from."
+  },
+  "S6": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Weekly Monday huddle happens but is loose (q40); two KPIs reviewed — revenue booked and calls run — with no owners and no visible targets (q39).",
+   "why_not_higher": "Anchor 3 needs an agenda with 3–7 owned KPIs; there are two and nobody owns them."
+  },
+  "S7": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Quality is consistent enough that complaints are not on her q36 list, but q31 says a 20% jump means hiring, and peak already turns work away.",
+   "why_not_higher": "No defined QC steps and no written capacity plan; growth currently runs on the owner's evenings."
+  },
+  "S8": {
+   "score": 4,
+   "na": false,
+   "evidence": "documented",
+   "note": "Revenue-by-customer export: largest account 9%, top five 17% — a broad residential base. Well under the 25% overlay.",
+   "why_not_higher": "Top of the scale."
+  },
+  "S9": {
+   "score": 2,
+   "na": false,
+   "evidence": "documented",
+   "note": "Plan roster gives 14% contracted revenue renewing at 71%, plus 24% repeat without contract (q12). No rolling forecast exists.",
+   "why_not_higher": "Anchor 3 needs ≥40% recurring or fixed costs covered plus a forecast; contracted revenue covers neither."
+  },
+  "S10": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Licenses, insurance and vendor agreements current (q53); key-person risk named and unaddressed in q52 — Renee is the only one who knows the board, the permit portal and invoicing.",
+   "why_not_higher": "No cross-training has started and there is no continuity plan of any kind."
+  },
+  "L1": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Field app, QuickBooks Online, Gusto and the LSA dashboard are real systems; CRM, proposals and reporting are paper, Word and Renee's spreadsheet (q41).",
+   "why_not_higher": "Three core areas have no system, which is more than the one gap anchor 3 allows."
+  },
+  "L2": {
+   "score": 1,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Systems tour showed the field app → paper quote → QuickBooks chain with Renee retyping at each join; q42 'the same data is entered in several places'.",
+   "why_not_higher": "The hand-off is a person on a schedule, not an integration — anchor 2 needs at least some integrations."
+  },
+  "L3": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q43: only 'data is generally accurate' and 'backups exist' are true. The weekly numbers are hand-built by Renee from two systems and Excel (q44, 2 h/wk).",
+   "why_not_higher": "No agreed KPI definitions and every report needs manual cleanup."
+  },
+  "L4": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "20 h/wk inventoried in q44 and confirmed in b4, 11 of it on Renee alone. The load is acknowledged; nothing has been removed.",
+   "why_not_higher": "Anchor 2 needs at least a few fixes made; none have been."
+  },
+  "L5": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Reminder and on-my-way texts shown firing reliably; the post-job review request fires intermittently and nobody knows why (q45).",
+   "why_not_higher": "Two automations in one function with mixed reliability and no owner — anchor 3 needs several functions and monitoring."
+  },
+  "L6": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q46: drafting and marketing content only — Tasha uses ChatGPT for Facebook posts and estimate wording. Nobody else uses it.",
+   "why_not_higher": "One person experimenting; no workflow uses it."
+  },
+  "L7": {
+   "score": 0,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q47 returned empty — none of the eight discipline statements is true. No rules on customer data, no review step, nothing measured.",
+   "why_not_higher": "The 0 anchor verbatim."
+  },
+  "L8": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q48: shared QuickBooks login (confirmed in b5), unclear account ownership, no tested recovery. Drive backups exist but have never been restored from.",
+   "why_not_higher": "Anchor 2 needs partial hygiene; the shared finance login and the owner-personal Google listing are the same gap the 1 anchor describes."
+  },
+  "L9": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q58: 'a few curious people, no training.' Q59 names Renee and Kara as willing and the senior install lead as resistant.",
+   "why_not_higher": "No training has happened, so there are no pockets of capability to point at."
+  },
+  "L10": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q49: $8–15K budget with an obvious payback, 4 owner hours and 6 team hours a week; q55 'ready if priorities stay tight.'",
+   "why_not_higher": "Anchor 3 needs budget and time actually named and set aside; both are conditional and the hours are the owner's spare ones."
+  }
+ },
+ "assessment": {
+  "owner_objective": "More profit & cash flow — then Reduce owner dependence, Better operations & delivery capacity",
+  "owner_belief": "Honestly I think we just need more trucks and more techs. We turn away work in July and again in January and I feel like I'm leaving money on the table every peak. It's been true for at least three years and it gets worse every summer.",
+  "primary_constraint": "Replacement revenue is owner-bound: every quote over about $8,000 waits on Tasha's calendar, so quote speed and follow-through are capped by whatever her week allows — not by truck count.",
+  "constraint_symptoms": "Replacement quotes go out 2–3 days after the visit; only about a third get a second touch; the loss reason she names unprompted is 'somebody got them a number faster'; the four-week test fails at day nine on quoting; dispatch pulls her back in on top of it.",
+  "constraint_cost": "~$50K expected operating profit lost to slow replacement quotes and missing follow-up · ~$19K of office payroll on the 11 weekly hours Renee spends re-keying and chasing · ~312 owner hours a year on quoting and dispatch rescue.",
+  "constraint_fix": "Templated replacement pricing the two senior techs can quote from on the spot, a 24-hour quote standard with a three-touch follow-up sequence, and a written discount rule so Tasha is not the only exception path.",
+  "momentum_initiative": "Reprice the diagnostic fee and the flat-rate repair book against the $58 loaded tech hour — a decision, not a project, measurable in 30 days and entirely in Tasha's control.",
+  "overlay_flags": [
+   "key_person",
+   "data_risk"
+  ],
+  "plan_items": [
+   "Same-day quote standard with templated replacement pricing — Tasha Reid — 2026-09-22",
+   "Three-touch follow-up sequence on every replacement quote — Renee Alcott — 2026-10-06",
+   "Price book rebuild on cost-plus, diagnostic fee included — Tasha Reid — 2026-09-29",
+   "Maintenance-plan reactivation campaign on the 24-month dormant list — Kara Nunez — 2026-10-20"
+  ],
+  "overlap_factor": 0.7
+ },
+ "opportunities": [
+  {
+   "title": "Answer and follow up the replacement leads that currently die",
+   "finding": "120 inquiries a month across five sources (built live in b2 from the LSA dashboard and the field app). Replacement callbacks run same-day-to-next-day and only about 35% of quotes get a second touch, so roughly a fifth of the annual lead flow is never worked to a decision. Recovering part of it closes at the rate they already close, on crews that q31 says are not yet at the wall.",
+   "calculator": {
+    "kind": "response_time",
+    "inputs": {
+     "leadsPerYear": 1440,
+     "shareLostPct": 22,
+     "recoveryRatePctLow": 18,
+     "recoveryRatePctExpected": 30,
+     "recoveryRatePctHigh": 45,
+     "closePct": 42,
+     "averageFirstYearValue": 3000,
+     "grossMarginPct": 42
+    }
+   },
+   "fix_cost": 6200,
+   "months_to_benefit": 2,
+   "confidence": "medium",
+   "include_in_report": true,
+   "basis_reported_only": false,
+   "blueprint": "Single inbound number and inbox into the field app, a 24-hour quote standard, and a three-touch sequence (day 1 call, day 3 text with the quote link, day 7 call) that shows an unworked quote on the board.",
+   "replaces": "Renee's memory and Tasha's evening callbacks"
+  },
+  {
+   "title": "Rebuild the service price book on cost-plus",
+   "finding": "The price book on file is dated March 2024 and was built by marking up supply-house cost; the $89 diagnostic fee has been unchanged since 2022 against a $58 loaded technician hour (q56). The service and repair line is 30% of revenue at a 51% margin — a modest, defensible move on that line only, not on replacement.",
+   "calculator": {
+    "kind": "price_change",
+    "inputs": {
+     "revenueAffected": 620000,
+     "priceChangePctLow": 3,
+     "priceChangePctExpected": 5,
+     "priceChangePctHigh": 7,
+     "volumeLossPctLow": 1,
+     "volumeLossPctExpected": 2,
+     "volumeLossPctHigh": 4,
+     "grossMarginPct": 42
+    }
+   },
+   "fix_cost": 2400,
+   "months_to_benefit": 1,
+   "confidence": "high",
+   "include_in_report": true,
+   "basis_reported_only": false,
+   "blueprint": "Cost-plus rebuild of the flat-rate book from the loaded rates in q56, a written discount rule at two tiers, and a one-page script so the techs can say the number out loud without calling Tasha.",
+   "replaces": "Competitor-matched pricing and owner-discretion discounts"
+  },
+  {
+   "title": "Work the dormant household list back onto maintenance plans",
+   "finding": "The plan roster shows roughly 1,100 households with nothing logged in 24 months or more, against 410 current members renewing at 71%. No reactivation has ever run (q27). The range is entered by hand because there is no campaign history to calculate a rate from — the low end assumes a 2% take, the high end 6%, both against the $780 annual plan-member value she quoted in q26.",
+   "hand_entered": {
+    "annual_low": 18000,
+    "annual_expected": 34000,
+    "annual_high": 52000
+   },
+   "fix_cost": 2000,
+   "months_to_benefit": 2,
+   "confidence": "low",
+   "include_in_report": true,
+   "basis_reported_only": false,
+   "blueprint": "Pull the 24-month dormant list out of the field app, segment by last service type, and run a three-message reactivation to plan enrollment with Kara owning the call-backs.",
+   "replaces": "Waiting for the system to break and the homeowner to Google someone else"
+  }
+ ],
+ "expected": {
+  "gate_should_pass": true,
+  "expected_blockers": [],
+  "expected_warnings": [
+   "hand-entered range"
+  ],
+  "band_guess": "Stabilizing",
+  "cross_checks": {
+   "margin_vs_pnl": "pass",
+   "funnel_vs_revenue": "pass",
+   "concentration": "pass",
+   "hours_vs_headcount": "pass"
+  }
+ }
+}

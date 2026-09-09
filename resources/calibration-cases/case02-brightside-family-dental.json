@@ -1,0 +1,1214 @@
+{
+ "n": 2,
+ "company": "Brightside Family Dental",
+ "owner": "Dr. Elena Vargas",
+ "industry": "Dental practice (general & family)",
+ "profile": {
+  "revenue": 2600000,
+  "grossMarginPct": 62,
+  "operatingProfit": 468000,
+  "headcount": 18,
+  "founded": 2011,
+  "story": "Elena opened Brightside in 2011 and now runs eight operatories with an associate dentist, three hygienists and a well-drilled front office. It is the best-run business in this cohort: monthly financials close in nine days, the recall report is real, and the office manager runs the morning huddle without her. What is not solved is Elena herself — she still produces about seven of every ten doctor dollars, she is the only one doing molar endo and implant placement, and the second location she has been circling for two years cannot start until that changes. She wants a management transition inside five years and knows the practice is not transferable in its current shape."
+ },
+ "edge_cases": [
+  "Strong-systems case — composite in the 55–62 band, Building",
+  "Heavily Documented evidence (P&L, revenue by patient type, fee schedule, recall report, AR aging)",
+  "S6 carries potential_score 1 against a current score of 2 — expects the potential-below-current warning",
+  "Only persona with conditional Module E (q3 names a succession objective)"
+ ],
+ "intake": {
+  "q1": [
+   {
+    "row": "Your name",
+    "value": "Dr. Elena Vargas"
+   },
+   {
+    "row": "Email",
+    "value": "evargas@brightsidefamilydental.com"
+   },
+   {
+    "row": "Phone",
+    "value": "(404) 555-0188"
+   },
+   {
+    "row": "Company name",
+    "value": "Brightside Family Dental"
+   },
+   {
+    "row": "Website",
+    "value": "brightsidefamilydental.com"
+   },
+   {
+    "row": "Location",
+    "value": "Decatur, GA"
+   },
+   {
+    "row": "Industry",
+    "value": "General and family dentistry"
+   }
+  ],
+  "q2": "General and family dentistry in one eight-operatory office — hygiene and preventive care, restorative, crowns, clear aligners, and the surgical work I do myself (implant placement, molar endo). We serve families within about six miles; roughly 62% of production is insurance-based PPO, the rest is fee-for-service or our in-house membership plan. Everything is delivered in-house except lab work and the oral surgeon we refer complex extractions to.",
+  "q3": [
+   {
+    "row": "Primary",
+    "objective": "Reduce owner dependence"
+   },
+   {
+    "row": "Secondary 1",
+    "objective": "Succession/leadership transition"
+   },
+   {
+    "row": "Secondary 2",
+    "objective": "Prepare to scale"
+   }
+  ],
+  "q4": [
+   {
+    "row": "1",
+    "outcome": "My share of doctor production",
+    "target": "71% → 55%"
+   },
+   {
+    "row": "2",
+    "outcome": "Hygiene reappointment rate",
+    "target": "76% → 88%"
+   },
+   {
+    "row": "3",
+    "outcome": "Clinical days I am scheduled",
+    "target": "4.5 → 3.5 per week"
+   }
+  ],
+  "q5": "Two offices, $4.5M combined, an associate at each who can carry their own schedule including the surgical work, and me as the clinical director two days a week and the owner the rest. I would like the practice to be worth buying by someone who is already inside it.",
+  "q6": "Doing the technical work",
+  "q7": [
+   {
+    "row": "Hours/week now",
+    "value": "52"
+   },
+   {
+    "row": "Hours/week you want in 12 months",
+    "value": "44"
+   },
+   {
+    "row": "Hours/week you want in 3 years",
+    "value": "30"
+   },
+   {
+    "row": "Longest uninterrupted time away in the past 12 months",
+    "value": "9 days — a real holiday, but I moved 14 surgical cases to do it"
+   },
+   {
+    "row": "What pulls you back in",
+    "value": "Any implant or molar endo case, and treatment planning on anything over about $3,500"
+   }
+  ],
+  "q8": "The bottleneck is me clinically. I am the only one who does the surgical work and I treatment-plan every big case, so the schedule is built around my hands. It has been that way since the associate started two years ago and I have not fixed it because it is easier to just do the case.",
+  "q9": [
+   {
+    "row": "Year founded",
+    "value": "2011"
+   },
+   {
+    "row": "Owners & percentages",
+    "value": "Elena Vargas 100%; associate is a W-2 with a production percentage"
+   },
+   {
+    "row": "Any owner misalignment affecting decisions?",
+    "value": "No, but my associate has asked twice about a buy-in path and I have not answered her"
+   }
+  ],
+  "q10": [
+   {
+    "row": "Full-time employees",
+    "count": "14"
+   },
+   {
+    "row": "Part-time",
+    "count": "3"
+   },
+   {
+    "row": "Regular contractors",
+    "count": "1"
+   },
+   {
+    "row": "Managers / team leads",
+    "count": "2"
+   },
+   {
+    "row": "People with direct reports",
+    "count": "2"
+   }
+  ],
+  "q11": "Local",
+  "q12": [
+   {
+    "row": "One-time projects",
+    "pct": "34"
+   },
+   {
+    "row": "Recurring contracts",
+    "pct": "9"
+   },
+   {
+    "row": "Repeat without contract",
+    "pct": "55"
+   },
+   {
+    "row": "Products",
+    "pct": "2"
+   },
+   {
+    "row": "Retainers",
+    "pct": "0"
+   },
+   {
+    "row": "Other",
+    "pct": "0"
+   }
+  ],
+  "q13": [
+   {
+    "name": "Hygiene & preventive",
+    "pct": "31",
+    "margin": "58",
+    "trend": "Growing",
+    "importance": "The engine — every restorative case starts in a hygiene chair"
+   },
+   {
+    "name": "Restorative (fillings, crowns)",
+    "pct": "34",
+    "margin": "61",
+    "trend": "Flat",
+    "importance": "Core production, associate can carry all of it"
+   },
+   {
+    "name": "Implants & surgical",
+    "pct": "18",
+    "margin": "68",
+    "trend": "Growing",
+    "importance": "Highest margin and 100% dependent on me"
+   },
+   {
+    "name": "Clear aligners",
+    "pct": "11",
+    "margin": "66",
+    "trend": "Growing",
+    "importance": "Best case-acceptance economics; under-presented"
+   },
+   {
+    "name": "Membership plan & whitening",
+    "pct": "6",
+    "margin": "72",
+    "trend": "Growing",
+    "importance": "The only revenue that renews on a date"
+   }
+  ],
+  "q14": [
+   {
+    "row": "Active customer count",
+    "value": "3,410 active patients (seen in 18 months)"
+   },
+   {
+    "row": "B2B / B2C / mixed",
+    "value": "B2C"
+   },
+   {
+    "row": "% of revenue from your largest customer",
+    "value": "4"
+   },
+   {
+    "row": "% of revenue from your top five",
+    "value": "11"
+   },
+   {
+    "row": "% of revenue tied directly to YOUR personal relationships",
+    "value": "Maybe 45% — the long-standing families ask for me by name"
+   }
+  ],
+  "q15": [
+   {
+    "row": "Last completed year",
+    "amount": "2600000"
+   },
+   {
+    "row": "Prior year",
+    "amount": "2380000"
+   },
+   {
+    "row": "Year to date",
+    "amount": "1940000"
+   },
+   {
+    "row": "Full-year forecast",
+    "amount": "2760000"
+   }
+  ],
+  "q16": "Up 10% or less",
+  "q17": [
+   {
+    "row": "Approximate gross margin %",
+    "value": "62"
+   },
+   {
+    "row": "Main direct costs",
+    "value": "Clinical supplies, lab bills, hygiene and assistant wages, associate production percentage"
+   },
+   {
+    "row": "Tracked by job / service / customer?",
+    "value": "By procedure category in the practice management report, yes — we look at it quarterly"
+   }
+  ],
+  "q18": [
+   {
+    "row": "Operating profit estimate",
+    "amount": "468000"
+   },
+   {
+    "row": "Owner salary",
+    "amount": "240000"
+   },
+   {
+    "row": "Owner distributions",
+    "amount": "185000"
+   },
+   {
+    "row": "Unusual one-off expenses",
+    "amount": "62000 — new CBCT scanner"
+   }
+  ],
+  "q19": [
+   "Comfortable",
+   "Big expense coming"
+  ],
+  "q20": "Monthly, within 15 days",
+  "q21": [
+   {
+    "row": "Revenue",
+    "target": "$2.9M"
+   },
+   {
+    "row": "Gross margin",
+    "target": "Hold 62%"
+   },
+   {
+    "row": "Operating profit",
+    "target": "18% of collections"
+   },
+   {
+    "row": "Cash reserve",
+    "target": "Three months of overhead — we hold about two and a half"
+   },
+   {
+    "row": "Owner compensation",
+    "target": "Salary flat, distributions to the second-location fund"
+   }
+  ],
+  "q22": "P&L and balance sheet 2024–2026 from the dental CPA, production and collections by provider, revenue by patient type and payer, current fee schedule with the 2026 UCR update, AR aging, the recall/reappointment report, and the membership plan roster.",
+  "q23": [
+   {
+    "source": "Existing patient recall & reappointment",
+    "per_month": "74",
+    "cost": "0",
+    "quality": "5",
+    "tracked": "Yes"
+   },
+   {
+    "source": "Patient referrals",
+    "per_month": "26",
+    "cost": "0",
+    "quality": "5",
+    "tracked": "Yes"
+   },
+   {
+    "source": "Google & maps",
+    "per_month": "23",
+    "cost": "1900",
+    "quality": "3",
+    "tracked": "Yes"
+   },
+   {
+    "source": "Insurance directory listings",
+    "per_month": "16",
+    "cost": "0",
+    "quality": "2",
+    "tracked": "Yes"
+   },
+   {
+    "source": "Aligner manufacturer locator",
+    "per_month": "6",
+    "cost": "450",
+    "quality": "4",
+    "tracked": "Yes"
+   }
+  ],
+  "q24": [
+   {
+    "row": "What happens, step by step",
+    "value": "Calls and web forms land in the practice management system's inbox; the two front-desk coordinators work it live and book from the same screen; unbooked inquiries get a task with a due date"
+   },
+   {
+    "row": "Typical response time",
+    "value": "Live during business hours; web forms inside two hours; after-hours calls returned by 9:15 the next morning"
+   },
+   {
+    "row": "Who is responsible",
+    "value": "Dana Whitfield, front office coordinator, with Marisol as backup"
+   },
+   {
+    "row": "Is every inquiry captured in one system?",
+    "value": "Yes — calls, forms and texts all land in the PMS"
+   },
+   {
+    "row": "Automated follow-up?",
+    "value": "Yes for appointment reminders and recall; no for an inquiry that didn't book"
+   },
+   {
+    "row": "% of leads that get 2+ follow-ups",
+    "value": "Around 60% — the unbooked-inquiry task gets worked when the desk is quiet"
+   }
+  ],
+  "q25": [
+   {
+    "row": "Lead→sale or proposal→close %",
+    "value": "Case acceptance runs 58% by dollars presented; new-patient booking is about 81%"
+   },
+   {
+    "row": "Tracked by source / person / service?",
+    "value": "By provider and by procedure category, monthly"
+   },
+   {
+    "row": "Defined sales process?",
+    "value": "There is a treatment presentation flow but only I use it consistently; the associate improvises"
+   },
+   {
+    "row": "Most common reason you lose",
+    "value": "Cost, and specifically the patient not being offered financing at the chair"
+   }
+  ],
+  "q26": [
+   {
+    "row": "Typical first sale",
+    "value": "$385 for a new-patient exam and cleaning; $2,450 average accepted case"
+   },
+   {
+    "row": "Typical annual customer value",
+    "value": "$760 for a hygiene-only patient, $3,100 for a restorative patient"
+   },
+   {
+    "row": "Most valuable segment",
+    "value": "Aligner and implant cases from existing hygiene patients"
+   },
+   {
+    "row": "Tracked?",
+    "value": "Yes, in the production report by category"
+   }
+  ],
+  "q27": [
+   {
+    "row": "% who buy again",
+    "value": "Hygiene reappointment 76%"
+   },
+   {
+    "row": "Renewal rate if applicable",
+    "value": "Membership plan renews at 84%"
+   },
+   {
+    "row": "Are inactive customers identified?",
+    "value": "Yes — the recall report lists 640 patients past due more than 14 months"
+   },
+   {
+    "row": "Reactivation campaigns ever run?",
+    "value": "One postcard run in 2024. Nothing since."
+   },
+   {
+    "row": "Why customers leave",
+    "value": "Insurance changes, moving, and a chunk who just fell off the recall list and were never called"
+   }
+  ],
+  "q28": [
+   "Reviewed annually",
+   "Based on real job economics",
+   "Varies by scope or value",
+   "The team can defend the price"
+  ],
+  "q29": [
+   {
+    "row": "Complementary services routinely offered?",
+    "value": "Whitening and night guards, yes; aligners only when the patient asks"
+   },
+   {
+    "row": "Bundles or packages?",
+    "value": "The membership plan is a bundle; nothing else is packaged"
+   },
+   {
+    "row": "Premium option?",
+    "value": "Yes on crown materials and implant systems"
+   },
+   {
+    "row": "Entry-level option?",
+    "value": "The $29/mo membership plan for uninsured patients"
+   },
+   {
+    "row": "Customer needs you can't currently serve",
+    "value": "Complex extractions, orthodontics beyond mild aligner cases, sedation dentistry"
+   }
+  ],
+  "q30": [
+   {
+    "row": "Who owns marketing",
+    "value": "Dana, with an outside agency on retainer for the website and Google"
+   },
+   {
+    "row": "Who owns sales",
+    "value": "Case acceptance sits with each provider; Dana owns the schedule fill"
+   },
+   {
+    "row": "Monthly marketing budget",
+    "value": "$2,350"
+   },
+   {
+    "row": "Do sales & marketing review results together?",
+    "value": "Yes, in the monthly numbers meeting"
+   },
+   {
+    "row": "Are leads, conversion, CAC and customer value ever reviewed together?",
+    "value": "New patients, acceptance and production yes; acquisition cost no"
+   }
+  ],
+  "q31": "Minor adjustments",
+  "q32": [
+   {
+    "row": "1",
+    "area": "Aligner case presentation in hygiene"
+   },
+   {
+    "row": "2",
+    "area": "Reactivating the past-due recall list"
+   },
+   {
+    "row": "3",
+    "area": "Fee schedule update on the fee-for-service side"
+   }
+  ],
+  "q33": [
+   {
+    "workflow": "New patient inquiry to booked appointment"
+   },
+   {
+    "workflow": "Insurance verification & benefits breakdown"
+   },
+   {
+    "workflow": "Hygiene recall & reappointment"
+   },
+   {
+    "workflow": "Treatment planning & case presentation"
+   },
+   {
+    "workflow": "Financing & payment arrangement"
+   },
+   {
+    "workflow": "Clinical delivery & handoff between providers"
+   },
+   {
+    "workflow": "Claims submission, adjudication & appeals"
+   },
+   {
+    "workflow": "Collections & patient balances"
+   },
+   {
+    "workflow": "Supply ordering & inventory"
+   },
+   {
+    "workflow": "Hiring & clinical onboarding"
+   }
+  ],
+  "q34": [
+   {
+    "row": "One clear accountable role",
+    "frequency": "Usually"
+   },
+   {
+    "row": "Defined handoffs",
+    "frequency": "Usually"
+   },
+   {
+    "row": "Consistent exception escalation",
+    "frequency": "Sometimes"
+   }
+  ],
+  "q35": [
+   {
+    "row": "Documented",
+    "pct": "70"
+   },
+   {
+    "row": "Current",
+    "pct": "55"
+   },
+   {
+    "row": "Accessible",
+    "pct": "75"
+   },
+   {
+    "row": "Used in training",
+    "pct": "60"
+   },
+   {
+    "row": "Actually followed",
+    "pct": "55"
+   }
+  ],
+  "q36": [
+   "Incomplete information",
+   "Slow collections",
+   "The owner has to step in"
+  ],
+  "q37": "Owner time",
+  "q38": "Mostly clear, with gaps",
+  "q39": [
+   {
+    "row": "How many KPIs reviewed weekly",
+    "value": "Four — production, collections, new patients, hygiene reappointment"
+   },
+   {
+    "row": "Does each have one owner?",
+    "value": "Two of the four do"
+   },
+   {
+    "row": "Are targets visible?",
+    "value": "Yes, on the break room board"
+   },
+   {
+    "row": "Does a miss trigger action?",
+    "value": "It gets raised in the huddle; whether anything changes depends on me pushing"
+   }
+  ],
+  "q40": "Weekly but loose",
+  "q41": [
+   {
+    "row": "CRM",
+    "tool": "Practice management system (patient records + inquiry inbox)"
+   },
+   {
+    "row": "Marketing",
+    "tool": "Agency-managed Google Ads and site; patient email through the PMS"
+   },
+   {
+    "row": "Sales / proposals",
+    "tool": "Treatment plan module in the PMS"
+   },
+   {
+    "row": "Scheduling / project management",
+    "tool": "PMS scheduler; Asana for non-clinical projects"
+   },
+   {
+    "row": "Delivery",
+    "tool": "PMS clinical notes, digital imaging, CBCT"
+   },
+   {
+    "row": "Accounting",
+    "tool": "QuickBooks Online with a dental CPA"
+   },
+   {
+    "row": "Reporting",
+    "tool": "PMS dashboards plus a monthly CPA package"
+   },
+   {
+    "row": "Communication",
+    "tool": "Patient texting through the PMS; Slack internally"
+   },
+   {
+    "row": "Files / knowledge",
+    "tool": "Google Workspace with a written SOP library"
+   },
+   {
+    "row": "HR / payroll",
+    "tool": "Gusto"
+   }
+  ],
+  "q42": "Some integrations",
+  "q43": [
+   "KPI definitions are agreed",
+   "Data is generally accurate",
+   "Customer and financial data can be connected",
+   "Backups exist",
+   "We know where sensitive data lives"
+  ],
+  "q44": [
+   {
+    "task": "Insurance verification & benefits breakdown",
+    "who": "Marisol",
+    "frequency": "Daily",
+    "occurrences": "5",
+    "minutes": "132",
+    "errors": "Yes",
+    "systems": "PMS, six payer portals"
+   },
+   {
+    "task": "Claims submission, rejection fixes & appeals",
+    "who": "Marisol",
+    "frequency": "Daily",
+    "occurrences": "5",
+    "minutes": "96",
+    "errors": "Yes",
+    "systems": "PMS, clearinghouse"
+   },
+   {
+    "task": "Recall and past-due patient calls",
+    "who": "Dana",
+    "frequency": "Several times a week",
+    "occurrences": "3",
+    "minutes": "120",
+    "errors": "No",
+    "systems": "PMS recall report, phone"
+   },
+   {
+    "task": "Treatment plan prep before consults",
+    "who": "Dr. Vargas",
+    "frequency": "Several times a week",
+    "occurrences": "4",
+    "minutes": "60",
+    "errors": "No",
+    "systems": "PMS, imaging"
+   },
+   {
+    "task": "End-of-day reconciliation & deposit",
+    "who": "Dana",
+    "frequency": "Daily",
+    "occurrences": "5",
+    "minutes": "36",
+    "errors": "No",
+    "systems": "PMS, QuickBooks, bank"
+   }
+  ],
+  "q45": "Appointment reminders, recall notices, review requests and post-op instructions all run automatically out of the PMS and they are reliable. Claims go out automatically; the rejections come back to a human. Nothing about insurance verification is automated, which is why it eats 11 hours a week.",
+  "q46": [
+   "Drafting",
+   "Marketing content",
+   "Customer communication",
+   "Knowledge retrieval"
+  ],
+  "q47": [
+   "Sensitive-data rules are defined",
+   "Human-review rules are clear"
+  ],
+  "q48": [
+   "One-vendor or one-person dependence"
+  ],
+  "q49": [
+   {
+    "row": "Implementation budget range",
+    "value": "$25–40K, and more if it buys me clinical days back"
+   },
+   {
+    "row": "Owner hours/week available",
+    "value": "3"
+   },
+   {
+    "row": "Team hours/week available",
+    "value": "10 across Dana and Marisol"
+   },
+   {
+    "row": "Appetite for changing systems",
+    "value": "High, as long as it does not touch the PMS mid-year"
+   }
+  ],
+  "q58": "Trained on the core tools, adoption uneven",
+  "q59": "Dana would take on anything and has already built two SOPs unprompted. Marisol is capable but underwater. The associate dentist will resist anything that changes how she presents treatment, and two of the hygienists are indifferent to new software.",
+  "q56": [
+   {
+    "role": "Front office coordinator",
+    "rate": "38"
+   },
+   {
+    "role": "Insurance & billing coordinator",
+    "rate": "36"
+   },
+   {
+    "role": "Dental assistant",
+    "rate": "34"
+   },
+   {
+    "role": "Hygienist",
+    "rate": "72"
+   },
+   {
+    "role": "Associate dentist",
+    "rate": "165"
+   },
+   {
+    "role": "Owner dentist",
+    "rate": "310"
+   }
+  ],
+  "q50": [
+   "Pricing exceptions",
+   "Hiring / firing",
+   "Quality sign-off",
+   "Technical decisions",
+   "Strategy",
+   "Banking / payments"
+  ],
+  "q51": [
+   {
+    "row": "What keeps running",
+    "value": "Hygiene, the front desk, billing, and the associate's restorative schedule — three weeks without me is genuinely fine"
+   },
+   {
+    "row": "What slows down",
+    "value": "Treatment planning on large cases; hiring; anything needing a fee exception"
+   },
+   {
+    "row": "What stops",
+    "value": "All implant and molar endo cases. That is 18% of production."
+   },
+   {
+    "row": "Who decides",
+    "value": "Dana for the office, the associate clinically, me for money and people"
+   },
+   {
+    "row": "What nobody else can access",
+    "value": "The bank accounts and the CBCT vendor contract"
+   }
+  ],
+  "q52": [
+   {
+    "risk": "Dr. Vargas — all surgical production, most large-case treatment planning",
+    "impact": "18% of production stops the day she does; the rest degrades within a month"
+   },
+   {
+    "risk": "Marisol — sole insurance and billing coordinator",
+    "impact": "Claims and verification stop; collections would slide inside two weeks"
+   },
+   {
+    "risk": "Delta Dental PPO participation (31% of revenue by payer)",
+    "impact": "A network change or fee cut hits nearly a third of collections at once"
+   },
+   {
+    "risk": "Associate dentist",
+    "impact": "Half the restorative schedule; she has asked about a buy-in twice and been given no answer"
+   }
+  ],
+  "q53": [
+   "Customer agreements are written & accessible",
+   "Vendor agreements are written",
+   "Licenses & insurance are current",
+   "Employment agreements are current",
+   "The company owns its IP and digital accounts",
+   "No known legal, tax or insurance issue"
+  ],
+  "q54": [
+   "Leadership depth",
+   "Sales without the owner",
+   "Succession"
+  ],
+  "q55": "Ready, with leadership capacity",
+  "q57": "Steady",
+  "e1": "Management",
+  "e2": "4–5 years",
+  "e3": "Clinical director two days a week for a transition period, then out of the chair entirely. I would like to keep a minority stake if the numbers work.",
+  "e4": "The associate — or someone like her — has to be able to carry surgical cases and treatment-plan large work without me, and the practice has to hold its production when I drop to three clinical days. Financially, I need my distributions to survive the step-down and the second location not to be a condition of anyone's offer.",
+  "e5": [
+   "CPA",
+   "Attorney",
+   "Financial planner"
+  ],
+  "e6": "Whether my associate actually wants it. I have avoided the conversation twice and I think that is the real reason nothing has moved."
+ },
+ "session": {
+  "engine": {
+   "leads_per_month": "145",
+   "conversion_rate": "61%",
+   "avg_deal_value": "$2,450",
+   "response_time": "Live during business hours; forms inside two hours",
+   "gross_margin_pct": "62",
+   "headcount": "18",
+   "repetitive_hours_week": "Insurance verification — Marisol — 11\nClaims fixes & appeals — Marisol — 8\nRecall & past-due calls — Dana — 6\nTreatment plan prep — Dr. Vargas — 4\nEnd-of-day reconciliation — Dana — 3",
+   "largest_customer_pct": "4"
+  },
+  "blockNotes": {
+   "b1": "The only owner in this cohort whose Q8 belief is already correct — she named the clinical bottleneck herself, unprompted, and named why it persists ('it is easier to just do the case'). Objective is succession-shaped, so Module E fired.",
+   "b2": "Funnel built from the PMS: 145 inquiries and treatment consults a month, 61% blended acceptance, $2,450 average accepted case — $2.60M implied against $2.60M collected. Cleanest reconciliation of the ten. Case acceptance is 58% by dollars presented; the losses cluster where financing was never offered at the chair.",
+   "b3": "Fee schedule on file with a 2026 UCR update, reviewed annually against costs, and the front desk can defend a fee out loud — demonstrated when a patient called mid-session. Discount rules exist but are not written.",
+   "b4": "Tool chain is genuinely joined: PMS ↔ clearinghouse ↔ QuickBooks, one export point remaining. 32 h/wk of repetitive work on a 720-hour payroll (4.4%) — but 19 of those hours sit on Marisol alone, in insurance work that is the most automatable thing in the building.",
+   "b5": "Four-week test passes to three weeks and then fails only on surgical production. Largest patient 4% — no concentration issue on the patient axis, but the payer report shows Delta at 31% of collections and that is the real single-point exposure. Contracts, licences and employment agreements all current and on file."
+  },
+  "demonstrated": [
+   "Morning huddle run by Dana with Elena in the room saying nothing — four KPIs off the break room board",
+   "Treatment plan built and presented live in the PMS, including the financing screen that is skipped in practice",
+   "Front desk answered a live fee question and defended the number without escalating",
+   "Systems tour: PMS → clearinghouse → QuickBooks, with the single manual export at month end shown",
+   "The SOP library opened — 14 written procedures, 9 revised inside the last year",
+   "The automated recall and reminder sequences shown running out of the PMS",
+   "Marisol walked a benefits verification end to end across three payer portals (17 minutes for one patient)"
+  ],
+  "documents_seen": [
+   "P&L and balance sheet 2024–2026 — collections $2.60M, gross margin 62%, operating profit $468K",
+   "Production and collections by provider — Dr. Vargas 71% of doctor production",
+   "Revenue by patient type and payer — Delta PPO 31%, largest single patient 4%",
+   "2026 fee schedule with UCR update and last review date",
+   "Recall / reappointment report — 76% reappointment, 640 patients past due 14+ months",
+   "AR aging — $88K out, 9% over 90 days",
+   "Membership plan roster — 212 members, 84% renewal"
+  ]
+ },
+ "dataRoom": {
+  "pnl_on_file": true,
+  "documents": [
+   {
+    "name": "P&L and balance sheet 2024–2026 (dental CPA package)",
+    "kind": "pnl",
+    "received_on": "2026-08-28"
+   },
+   {
+    "name": "Revenue by patient type and payer, trailing 12 months",
+    "kind": "revenue_by_customer",
+    "received_on": "2026-08-28"
+   },
+   {
+    "name": "2026 fee schedule with UCR update",
+    "kind": "rate_card",
+    "received_on": "2026-08-29"
+   },
+   {
+    "name": "AR aging as of 31 Aug 2026",
+    "kind": "ar_aging",
+    "received_on": "2026-08-29"
+   },
+   {
+    "name": "Production & collections by provider",
+    "kind": "other",
+    "received_on": "2026-09-02"
+   },
+   {
+    "name": "Recall / reappointment report and past-due list",
+    "kind": "other",
+    "received_on": "2026-09-02"
+   },
+   {
+    "name": "Membership plan roster and renewal history",
+    "kind": "other",
+    "received_on": "2026-09-02"
+   }
+  ]
+ },
+ "scores": {
+  "P1": {
+   "score": 3,
+   "na": false,
+   "evidence": "documented",
+   "note": "Five sources with monthly volume in the PMS report (recall 74, referrals 26, Google 23, directories 16, aligner locator 6); cost tracked on the two paid sources, quality scored on all five.",
+   "why_not_higher": "Cost and quality are not reviewed together monthly — q30 confirms acquisition cost is the one number never brought into the meeting."
+  },
+  "P2": {
+   "score": 3,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Every call, form and text lands in the PMS inbox (q24, confirmed watching the desk work it live); answered live in hours, forms inside two, after-hours by 9:15. Reminders and recall are automated.",
+   "why_not_higher": "Anchor 4 needs sub-hour response on everything and an automated first touch on the unbooked inquiry; that one is still a human task list."
+  },
+  "P3": {
+   "score": 2,
+   "na": false,
+   "evidence": "documented",
+   "note": "Recall sequences run automatically and are visible in the report, but the unbooked-inquiry task is worked 'when the desk is quiet' — about 60% get a second touch (q24).",
+   "why_not_higher": "Anchor 3 needs the sequence used on most leads with misses visible; the inquiry side has neither."
+  },
+  "P4": {
+   "score": 2,
+   "na": false,
+   "evidence": "documented",
+   "note": "Acceptance tracked at 58% by dollars presented, by provider and category, monthly. But q25: the presentation flow is used consistently by one of the two doctors and the associate improvises.",
+   "why_not_higher": "Anchor 3 needs stages defined and used; a process one provider follows is not a process the business runs."
+  },
+  "P5": {
+   "score": 3,
+   "na": false,
+   "evidence": "documented",
+   "note": "Fee schedule on file with a 2026 UCR update, reviewed annually against costs (q28), and the front desk defended a fee live in session without escalating.",
+   "why_not_higher": "Discount and courtesy-adjustment rules are practice, not writing — anchor 4 needs them defined."
+  },
+  "P6": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Membership plan is a real entry offer and crown/implant tiers are a real premium; but q29 says aligners are offered 'only when the patient asks' and whitening is ad hoc.",
+   "why_not_higher": "Anchor 3 needs a scripted upsell on the core offer; the highest-margin add-on is entirely patient-initiated."
+  },
+  "P7": {
+   "score": 2,
+   "na": false,
+   "evidence": "documented",
+   "note": "Reappointment 76% and membership renewal 84% both measured in the recall report, which also names 640 patients past due 14+ months. One postcard run in 2024 and nothing since (q27).",
+   "why_not_higher": "Anchor 3 needs the inactive list worked at least twice a year; it has been worked once in two years."
+  },
+  "P8": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Dana owns marketing and schedule fill, providers own acceptance, and the monthly numbers meeting reviews new patients, acceptance and production together (q30).",
+   "why_not_higher": "Anchor 3 needs value and cost in the same review; acquisition cost is explicitly excluded by her own answer."
+  },
+  "P9": {
+   "score": 2,
+   "na": false,
+   "evidence": "documented",
+   "note": "P&L confirms 62% gross margin; the production report gives margin by procedure category and it is reviewed quarterly (q17), but pricing decisions are made off the UCR table, not off that report.",
+   "why_not_higher": "Anchor 3 needs the by-service margin actually used in pricing decisions; here it is reported and then set aside."
+  },
+  "P10": {
+   "score": 2,
+   "na": false,
+   "evidence": "documented",
+   "note": "Monthly close inside nine days with a CPA package, owner reviews it, and q21 carries revenue, margin, profit, cash and comp targets.",
+   "why_not_higher": "Held at 2 rather than 4 only for the cash-reserve target being missed and no in-month view between closes — the reviewer should treat this one as the closest call in the set."
+  },
+  "S1": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Dana runs the huddle and the office without her (watched in session); q50 leaves pricing exceptions, hiring, quality sign-off, banking and strategy with Elena.",
+   "why_not_higher": "Money and hiring decisions have no written delegation and no second signer — anchor 3 needs decision rights written down."
+  },
+  "S2": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Four-week test (q51): three weeks genuinely fine — hygiene, front desk, billing and the associate's schedule all run. Then surgical production stops dead, which is 18% of the business.",
+   "why_not_higher": "Anchor 3 needs a named deputy with only a few owner-locked items; here an entire revenue line is owner-locked."
+  },
+  "S3": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "The associate and the front desk close standard restorative and hygiene without her; large cases and every surgical case route to Elena, and 45% of revenue rides on families who ask for her by name (q14).",
+   "why_not_higher": "Anchor 3 needs the team closing standard deals with the owner on only the largest 10–20%; the owner-only share here is roughly double that."
+  },
+  "S4": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Two real managers (office and clinical lead) with defined areas; q39 says two of four KPIs have owners and q38 is 'mostly clear, with gaps'.",
+   "why_not_higher": "Anchor 3 needs managers owning outcomes with misses raised; here a miss gets raised but action still waits on Elena's push (q39)."
+  },
+  "S5": {
+   "score": 3,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "SOP library opened in session: 14 written procedures, 9 revised inside the last year, used in onboarding. Q35 puts documentation at 70% and current at 55%.",
+   "why_not_higher": "Adherence is never audited and q35 says only 55% is actually followed — anchor 4 needs the documented way to be the way it is done."
+  },
+  "S6": {
+   "score": 2,
+   "na": false,
+   "potential_score": 1,
+   "evidence": "demonstrated",
+   "note": "Weekly huddle happens with visible targets on the board and four KPIs, two of them owned (q39, watched live), but q40 is 'weekly but loose' and follow-through depends on Elena pushing.",
+   "why_not_higher": "Anchor 3 needs 3–7 KPIs with named owners and an agenda; two of four have owners and the agenda is verbal. Note: the potential score recorded here is deliberately below the current score to exercise the warning."
+  },
+  "S7": {
+   "score": 3,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q31 'minor adjustments' for a 20% jump with two operatories under-used; clinical standards and QC steps are defined in the SOP library and complaints are absent from q36.",
+   "why_not_higher": "No written capacity plan — the second-location question has been open two years with no modelled capacity behind it."
+  },
+  "S8": {
+   "score": 4,
+   "na": false,
+   "evidence": "documented",
+   "note": "Revenue by patient type: largest single patient 4%, top five 11% — a broad base on the customer axis. Context for the reader: the payer report shows Delta PPO at 31% of collections, which is the real single-point exposure and is carried in the overlay, not in this score.",
+   "why_not_higher": "Top of the scale on the indicator's own axis."
+  },
+  "S9": {
+   "score": 2,
+   "na": false,
+   "evidence": "documented",
+   "note": "Membership plan roster gives 9% contracted revenue renewing at 84%, plus 55% repeat-without-contract hygiene (q12). No rolling forecast — the schedule is the forecast.",
+   "why_not_higher": "Anchor 3 needs ≥40% recurring or contracted plus a rolling forecast; hygiene repeat is predictable but not contracted, and there is no forecast."
+  },
+  "S10": {
+   "score": 2,
+   "na": false,
+   "evidence": "documented",
+   "note": "Q53 returns almost everything true — written patient and vendor agreements, current licences, insurance and employment agreements, company-owned accounts, all seen in the data room.",
+   "why_not_higher": "No continuity plan exists and no cross-training has started on the surgical work or on Marisol's billing role — both named as unaddressed in q52."
+  },
+  "L1": {
+   "score": 3,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "PMS covers records, scheduling, treatment planning, patient comms and reporting; QuickBooks, Gusto, Asana and Slack cover the rest (q41, walked in session).",
+   "why_not_higher": "One significant gap remains — there is no system for the insurance verification workflow that eats 11 hours a week; it lives in six payer portals."
+  },
+  "L2": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "PMS ↔ clearinghouse is connected and claims flow automatically; q42 'some integrations'. The month-end PMS → QuickBooks step is still a manual export, shown in session.",
+   "why_not_higher": "Anchor 3 needs the main systems connected with only one or two double-entry points; verification data is retyped from three portals daily, which is a third."
+  },
+  "L3": {
+   "score": 3,
+   "na": false,
+   "evidence": "documented",
+   "note": "Q43: KPI definitions agreed, data accurate, customer and financial data connectable, backups exist, sensitive data mapped. The CPA package and PMS dashboards agree on collections.",
+   "why_not_higher": "Q43 does not claim reports are free of manual cleanup, and the monthly package still needs the export step — anchor 4 needs reports on demand."
+  },
+  "L4": {
+   "score": 2,
+   "na": false,
+   "evidence": "documented",
+   "note": "32 h/wk inventoried in q44. Recall, reminders and claims submission have genuinely been automated away; 19 hours of insurance verification and appeals remain on one person.",
+   "why_not_higher": "Anchor 3 needs the major repetitive tasks reduced to a few hours a week per role; the largest single task is untouched."
+  },
+  "L5": {
+   "score": 3,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Reminders, recall, review requests, post-op instructions and claims submission all run automatically out of the PMS and were shown firing; Dana owns them (q45).",
+   "why_not_higher": "Anchor 4 needs reliable automation across functions — nothing in billing verification, ordering or reporting is automated at all."
+  },
+  "L6": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q46: drafting, marketing content, patient communication and knowledge retrieval — but on inspection all of it is Dana and Elena using a chat tool personally, not a workflow.",
+   "why_not_higher": "Anchor 2 needs ad-hoc use across individuals; this is two people with no shared practice, and no workflow depends on it."
+  },
+  "L7": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q47 returns only two of eight: sensitive-data rules defined (HIPAA-driven) and human-review rules clear. Nothing is measured, no one is accountable per implementation.",
+   "why_not_higher": "Anchor 2 needs some practices applied inconsistently across several dimensions; here it is one compliance-driven rule and nothing else."
+  },
+  "L8": {
+   "score": 3,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Individual logins throughout, HIPAA off-boarding checklist in the SOP library, backups in place and the data map known (q43); q48 raises only one-person dependence.",
+   "why_not_higher": "Backup recovery has never been tested — she confirmed it in the room — which is the line anchor 4 draws."
+  },
+  "L9": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q58: 'trained on the core tools, adoption uneven'; q59 names Dana as self-starting, the associate and two hygienists as resistant or indifferent.",
+   "why_not_higher": "Anchor 3 needs the team trained on the core tools with adoption uneven across roles; the clinical half has had no tool training at all, so this is pockets rather than coverage."
+  },
+  "L10": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q49: $25–40K budget and 13 combined hours a week; q55 'ready, with leadership capacity'.",
+   "why_not_higher": "Anchor 3 needs budget and time named and set aside; the owner's three hours are unprotected and the PMS is off-limits mid-year, so the calendar is not actually cleared."
+  }
+ },
+ "assessment": {
+  "owner_objective": "Reduce owner dependence — then Succession/leadership transition, Prepare to scale",
+  "owner_belief": "The bottleneck is me clinically. I am the only one who does the surgical work and I treatment-plan every big case, so the schedule is built around my hands. It has been that way since the associate started two years ago and I have not fixed it because it is easier to just do the case.",
+  "primary_constraint": "Clinical production is concentrated in one pair of hands: 71% of doctor production and 100% of surgical work is Elena's, so both the succession she wants and the second location she is circling are gated on transferring clinical capability she has never scheduled time to transfer.",
+  "constraint_symptoms": "Four-week test passes for three weeks and then loses 18% of production outright; a nine-day holiday required moving 14 surgical cases; the associate has asked about a buy-in twice and been given no answer; the treatment-presentation flow is used by one provider of two.",
+  "constraint_cost": "~$142K of surgical production that cannot be scheduled in any week Elena is out or full · ~$36K of billing payroll on 19 weekly hours of insurance verification and appeals · ~208 owner hours a year on treatment-plan prep that a coordinator could stage.",
+  "constraint_fix": "A written clinical development path for the associate on molar endo and single-unit implant placement with a case-count target and mentored sessions, plus a treatment-coordinator role that stages large-case plans and presents financing before Elena sits down.",
+  "momentum_initiative": "Put financing on the screen in every large-case presentation and script it — the loss reason she named in q25 is cost with financing never offered, it costs nothing to fix, and acceptance moves inside a month.",
+  "overlay_flags": [
+   "key_person"
+  ],
+  "plan_items": [
+   "Associate clinical development path — molar endo and single-unit implants — Dr. Elena Vargas — 2026-09-28",
+   "Treatment coordinator role and scripted financing presentation — Dana Whitfield — 2026-10-05",
+   "Insurance verification automation across the six payer portals — Marisol Reyes — 2026-10-26",
+   "Past-due recall reactivation on the 640-patient list — Dana Whitfield — 2026-11-09"
+  ],
+  "overlap_factor": 0.7
+ },
+ "opportunities": [
+  {
+   "title": "Present financing at the chair and close the acceptance gap",
+   "finding": "Case acceptance is 58% by dollars presented (Doc, production report) against roughly $1.45M of treatment presented a year. Q25 names the loss reason precisely: cost, with financing not offered at the chair. The presentation flow already exists in the PMS — it is used consistently by one provider of two, and the financing screen was skipped in the live demonstration.",
+   "calculator": {
+    "kind": "close_rate_lift",
+    "inputs": {
+     "quotedVolume": 1450000,
+     "currentClosePct": 58,
+     "liftPointsLow": 3,
+     "liftPointsExpected": 5,
+     "liftPointsHigh": 8,
+     "grossMarginPct": 62,
+     "incrementalCostPct": 10
+    }
+   },
+   "fix_cost": 4800,
+   "months_to_benefit": 1,
+   "confidence": "high",
+   "include_in_report": true,
+   "basis_reported_only": false,
+   "blueprint": "Scripted presentation with the financing screen mandatory before the plan is printed, a treatment coordinator staging the plan and the estimate, and acceptance tracked by provider in the existing monthly report.",
+   "replaces": "Two providers improvising two different conversations"
+  },
+  {
+   "title": "Fee schedule move on the fee-for-service and membership side",
+   "finding": "The fee schedule is on file, reviewed annually and defensible at the desk — this is not a broken-pricing finding. It is an unused headroom finding: 38% of collections is fee-for-service or membership rather than PPO-contracted, and that portion has moved only with the UCR table. Gross margin 62% is confirmed on the P&L, so the uplift carries almost entirely to contribution.",
+   "calculator": {
+    "kind": "price_change",
+    "inputs": {
+     "revenueAffected": 988000,
+     "priceChangePctLow": 3,
+     "priceChangePctExpected": 5,
+     "priceChangePctHigh": 8,
+     "volumeLossPctLow": 1,
+     "volumeLossPctExpected": 2,
+     "volumeLossPctHigh": 3,
+     "grossMarginPct": 62
+    }
+   },
+   "fix_cost": 1500,
+   "months_to_benefit": 2,
+   "confidence": "high",
+   "include_in_report": true,
+   "basis_reported_only": false,
+   "blueprint": "Reprice the non-contracted schedule and the $29/mo membership tier off the procedure-category margin report, with written courtesy-adjustment rules so the desk keeps its ability to defend the number.",
+   "replaces": "Annual UCR drift as the only pricing decision"
+  },
+  {
+   "title": "Work the 640 past-due patients back onto the recall schedule",
+   "finding": "The recall report (Doc) names 640 patients past due more than 14 months against 3,410 active. Reappointment is 76% and the membership plan renews at 84%, so the machinery to hold a returning patient already works — the gap is that the list has been worked once, by postcard, in 2024. A returning hygiene patient is worth $760 a year on her own q26 number.",
+   "calculator": {
+    "kind": "reactivation",
+    "inputs": {
+     "dormantCustomers": 640,
+     "reactivationRatePctLow": 8,
+     "reactivationRatePctExpected": 14,
+     "reactivationRatePctHigh": 20,
+     "averageAnnualValue": 480,
+     "grossMarginPct": 62
+    }
+   },
+   "fix_cost": 2600,
+   "months_to_benefit": 2,
+   "confidence": "medium",
+   "include_in_report": true,
+   "basis_reported_only": false,
+   "blueprint": "Segment the past-due list by last procedure and payer, run a three-touch text-and-call sequence out of the PMS, and hold two hygiene columns a week for returning patients so the schedule can absorb them.",
+   "replaces": "One postcard mailing every two years"
+  }
+ ],
+ "expected": {
+  "gate_should_pass": true,
+  "expected_blockers": [],
+  "expected_warnings": [
+   "potential score below current on S6"
+  ],
+  "band_guess": "Building",
+  "cross_checks": {
+   "margin_vs_pnl": "pass",
+   "funnel_vs_revenue": "pass",
+   "concentration": "pass",
+   "hours_vs_headcount": "pass"
+  }
+ }
+}

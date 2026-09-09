@@ -235,7 +235,7 @@ export const INTAKE_QUESTIONS: IntakeQuestion[] = [
     prompt: "Primary objective for the next 1–3 years",
     help: "One primary, up to two secondary.",
     type: "table",
-    rows: ["Primary", "Secondary", "Secondary"],
+    rows: ["Primary", "Secondary 1", "Secondary 2"],
     columns: [
       { key: "objective", label: "Objective", type: "single", options: OBJECTIVES, width: "wide" },
     ],
@@ -949,6 +949,7 @@ export const INTAKE_QUESTIONS: IntakeQuestion[] = [
       "Customer and financial data can be connected",
       "Backups exist",
       "We know where sensitive data lives",
+      "None of these are consistently true",
     ],
     allowUnknown: true,
     feedsIndicators: ["L3", "L8"],
@@ -1034,6 +1035,7 @@ export const INTAKE_QUESTIONS: IntakeQuestion[] = [
       "Failures are detectable",
       "The process is documented before it is automated",
       "The team is trained",
+      "None of these are consistently true",
     ],
     allowUnknown: true,
     feedsIndicators: ["L7"],
@@ -1601,6 +1603,14 @@ export interface IntakePrefill {
   /** Hours per week burned on the q44 repetitive-task inventory. */
   repetitive_hours_weekly: number | null;
   loaded_rates: IntakeLoadedRate[];
+  /**
+   * q12 — the share of revenue a lead funnel can explain, as a fraction 0–1:
+   * everything except recurring contracts and retainers, which renew without
+   * an inquiry. Repeat customers without a contract still arrive as a fresh
+   * inquiry each time, so they stay in. null when the revenue model was not
+   * answered.
+   */
+  new_business_share: number | null;
 }
 
 const WEEKLY_OCCURRENCES: Record<string, number> = {
@@ -1625,7 +1635,7 @@ export function intakePrefill(intake: unknown): IntakePrefill {
   const objectiveRows = tableRows(answers.q3);
   const primary = tableCell(answers.q3, "Primary", "objective");
   const secondaries = objectiveRows
-    .filter((r) => r[TABLE_ROW_KEY] === "Secondary")
+    .filter((r) => (r[TABLE_ROW_KEY] ?? "").startsWith("Secondary"))
     .map((r) => r.objective?.trim())
     .filter((v): v is string => !!v && v.toLowerCase() !== UNKNOWN);
   const owner_objective = primary
@@ -1688,7 +1698,35 @@ export function intakePrefill(intake: unknown): IntakePrefill {
       ? Math.round((repetitiveMinutes / 60) * 10) / 10
       : null,
     loaded_rates,
+    new_business_share: newBusinessShare(answers.q12),
   };
+}
+
+/**
+ * Revenue that must have come through a fresh inquiry this year. Recurring
+ * contracts and retainers renew without one; a repeat customer who comes back
+ * without a contract usually does not count as a "lead" either (the simulated
+ * med spa, accountant and trucking firm all flagged on repeat business when
+ * they did). Only one-time projects, products and "other" are certain to be
+ * lead-driven, so that is the floor the funnel has to explain.
+ */
+const NEW_BUSINESS_ROWS = ["One-time projects", "Products", "Other"];
+
+/** See IntakePrefill.new_business_share. */
+export function newBusinessShare(q12: IntakeAnswer | undefined): number | null {
+  const rows = tableRows(q12);
+  let total = 0;
+  let fresh = 0;
+  let answered = false;
+  for (const row of rows) {
+    const pct = parsePercent(row.pct);
+    if (pct === null) continue;
+    answered = true;
+    total += pct;
+    if (NEW_BUSINESS_ROWS.includes(row[TABLE_ROW_KEY] ?? "")) fresh += pct;
+  }
+  if (!answered || total <= 0) return null;
+  return Math.max(0, Math.min(1, fresh / total));
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

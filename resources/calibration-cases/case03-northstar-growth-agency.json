@@ -1,0 +1,1134 @@
+{
+ "n": 3,
+ "company": "Northstar Growth Agency",
+ "owner": "Marcus Bell",
+ "industry": "Marketing agency (B2B demand generation)",
+ "profile": {
+  "revenue": 1100000,
+  "grossMarginPct": 55,
+  "operatingProfit": 121000,
+  "headcount": 7,
+  "founded": 2018,
+  "story": "Marcus left a national agency in 2018 with two clients and built Northstar into a seven-person demand-generation shop running paid media, lifecycle email and revenue reporting for B2B software and services firms. The work is genuinely good and the tooling is modern — the team runs HubSpot, Asana and Looker Studio properly. What is fragile is the shape of the book: one client, a private-equity-backed logistics platform, is 38% of revenue and is up for renewal in March. Marcus is also the only person who has ever spoken to that client's CMO. He has no accountant on retainer, has never produced a P&L for anyone, and runs the business off the bank balance and a spreadsheet."
+ },
+ "edge_cases": [
+  "No P&L and an empty data room — every opportunity range widens ±25% and the report carries the unaudited-figures disclosure",
+  "Every opportunity flagged basis_reported_only",
+  "No Documented evidence is available anywhere, so the 10-indicator evidence gate has to be cleared on Demonstrated alone",
+  "Largest client 38% — customer_concentration overlay active and the concentration cross-check flags"
+ ],
+ "intake": {
+  "q1": [
+   {
+    "row": "Your name",
+    "value": "Marcus Bell"
+   },
+   {
+    "row": "Email",
+    "value": "marcus@northstargrowth.co"
+   },
+   {
+    "row": "Phone",
+    "value": "(312) 555-0119"
+   },
+   {
+    "row": "Company name",
+    "value": "Northstar Growth Agency"
+   },
+   {
+    "row": "Website",
+    "value": "northstargrowth.co"
+   },
+   {
+    "row": "Location",
+    "value": "Chicago, IL (fully remote team)"
+   },
+   {
+    "row": "Industry",
+    "value": "B2B demand generation agency"
+   }
+  ],
+  "q2": "We run demand generation for B2B software and services companies between about $5M and $60M — paid media, lifecycle email, landing pages, and the reporting layer that tells them what actually produced pipeline. Most engagements are a monthly retainer between $6K and $22K with a three-month minimum; a few are project builds. Seven of us, all remote, plus two contract designers.",
+  "q3": [
+   {
+    "row": "Primary",
+    "objective": "Resilience/risk reduction"
+   },
+   {
+    "row": "Secondary 1",
+    "objective": "Reliable revenue growth"
+   },
+   {
+    "row": "Secondary 2",
+    "objective": "More profit & cash flow"
+   }
+  ],
+  "q4": [
+   {
+    "row": "1",
+    "outcome": "Largest client share of revenue",
+    "target": "38% → under 20%"
+   },
+   {
+    "row": "2",
+    "outcome": "Retainer book",
+    "target": "$68K/mo → $95K/mo"
+   },
+   {
+    "row": "3",
+    "outcome": "Accounts where a second person owns the relationship",
+    "target": "2 of 9 → all 9"
+   }
+  ],
+  "q5": "Twelve to fifteen accounts, none over 15% of revenue, two account directors who own their own client relationships, and me doing new business and the thinking rather than being the escalation path for everything. Same size team or slightly bigger, roughly double the revenue.",
+  "q6": "Selling & managing customer relationships",
+  "q7": [
+   {
+    "row": "Hours/week now",
+    "value": "58"
+   },
+   {
+    "row": "Hours/week you want in 12 months",
+    "value": "45"
+   },
+   {
+    "row": "Hours/week you want in 3 years",
+    "value": "40"
+   },
+   {
+    "row": "Longest uninterrupted time away in the past 12 months",
+    "value": "6 days, and I did two client calls from it"
+   },
+   {
+    "row": "What pulls you back in",
+    "value": "Anything the logistics client asks for, and every new-business conversation"
+   }
+  ],
+  "q8": "The whole thing rests on one account. If the logistics client leaves in March we lose 38% of revenue in one email and I have no idea whether we'd survive it. I've known that for two years and I keep not fixing it because that client is also the one that takes the most of my time.",
+  "q9": [
+   {
+    "row": "Year founded",
+    "value": "2018"
+   },
+   {
+    "row": "Owners & percentages",
+    "value": "Marcus Bell 100%"
+   },
+   {
+    "row": "Any owner misalignment affecting decisions?",
+    "value": "No"
+   }
+  ],
+  "q10": [
+   {
+    "row": "Full-time employees",
+    "count": "5"
+   },
+   {
+    "row": "Part-time",
+    "count": "0"
+   },
+   {
+    "row": "Regular contractors",
+    "count": "2"
+   },
+   {
+    "row": "Managers / team leads",
+    "count": "1"
+   },
+   {
+    "row": "People with direct reports",
+    "count": "1"
+   }
+  ],
+  "q11": "National",
+  "q12": [
+   {
+    "row": "One-time projects",
+    "pct": "16"
+   },
+   {
+    "row": "Recurring contracts",
+    "pct": "74"
+   },
+   {
+    "row": "Repeat without contract",
+    "pct": "6"
+   },
+   {
+    "row": "Products",
+    "pct": "0"
+   },
+   {
+    "row": "Retainers",
+    "pct": "0"
+   },
+   {
+    "row": "Other",
+    "pct": "4"
+   }
+  ],
+  "q13": [
+   {
+    "name": "Paid media management retainer",
+    "pct": "46",
+    "margin": "58",
+    "trend": "Flat",
+    "importance": "The core offer; also the most price-pressured"
+   },
+   {
+    "name": "Lifecycle email & marketing automation",
+    "pct": "24",
+    "margin": "62",
+    "trend": "Growing",
+    "importance": "Stickiest work, hardest for a client to take in-house"
+   },
+   {
+    "name": "Reporting & attribution builds",
+    "pct": "16",
+    "margin": "49",
+    "trend": "Growing",
+    "importance": "How we win the account; loses money at current pricing"
+   },
+   {
+    "name": "Landing page & creative projects",
+    "pct": "14",
+    "margin": "44",
+    "trend": "Declining",
+    "importance": "Filler work we keep saying we will stop taking"
+   }
+  ],
+  "q14": [
+   {
+    "row": "Active customer count",
+    "value": "9 retainer clients, 3 project-only"
+   },
+   {
+    "row": "B2B / B2C / mixed",
+    "value": "B2B only"
+   },
+   {
+    "row": "% of revenue from your largest customer",
+    "value": "38"
+   },
+   {
+    "row": "% of revenue from your top five",
+    "value": "79"
+   },
+   {
+    "row": "% of revenue tied directly to YOUR personal relationships",
+    "value": "About 80% — I brought in all but one account"
+   }
+  ],
+  "q15": [
+   {
+    "row": "Last completed year",
+    "amount": "1100000"
+   },
+   {
+    "row": "Prior year",
+    "amount": "940000"
+   },
+   {
+    "row": "Year to date",
+    "amount": "820000"
+   },
+   {
+    "row": "Full-year forecast",
+    "amount": "1180000"
+   }
+  ],
+  "q16": "Up 11–25%",
+  "q17": [
+   {
+    "row": "Approximate gross margin %",
+    "value": "55"
+   },
+   {
+    "row": "Main direct costs",
+    "value": "Delivery salaries, contract designers, and the ad platform tools we resell at cost"
+   },
+   {
+    "row": "Tracked by job / service / customer?",
+    "value": "No. I know roughly which accounts feel unprofitable, I can't prove it."
+   }
+  ],
+  "q18": [
+   {
+    "row": "Operating profit estimate",
+    "amount": "121000"
+   },
+   {
+    "row": "Owner salary",
+    "amount": "150000"
+   },
+   {
+    "row": "Owner distributions",
+    "amount": "45000"
+   },
+   {
+    "row": "Unusual one-off expenses",
+    "amount": "18000 — rebrand and new site"
+   }
+  ],
+  "q19": [
+   "Profitable but tight",
+   "Customer payment timing",
+   "Cash not reviewed regularly"
+  ],
+  "q20": "Inconsistent",
+  "q21": [
+   {
+    "row": "Revenue",
+    "target": "$1.4M"
+   },
+   {
+    "row": "Gross margin",
+    "target": "No target"
+   },
+   {
+    "row": "Operating profit",
+    "target": "No target — I look at what's in the account"
+   },
+   {
+    "row": "Cash reserve",
+    "target": "No target; we hold about five weeks"
+   },
+   {
+    "row": "Owner compensation",
+    "target": "$150K salary and leave the rest in"
+   }
+  ],
+  "q22": "Nothing to send right now. My CPA does the tax return in April from the bank feed; there is no monthly P&L, no balance sheet and no revenue-by-client report outside my own spreadsheet. I can export the HubSpot deal history if that helps.",
+  "q23": [
+   {
+    "source": "Referrals from past clients & partners",
+    "per_month": "9",
+    "cost": "0",
+    "quality": "5",
+    "tracked": "Yes"
+   },
+   {
+    "source": "Marcus's LinkedIn content & outbound",
+    "per_month": "7",
+    "cost": "0",
+    "quality": "4",
+    "tracked": "Yes"
+   },
+   {
+    "source": "Inbound from the site & case studies",
+    "per_month": "4",
+    "cost": "900",
+    "quality": "3",
+    "tracked": "Yes"
+   },
+   {
+    "source": "Agency directories & marketplaces",
+    "per_month": "2",
+    "cost": "600",
+    "quality": "2",
+    "tracked": "Yes"
+   }
+  ],
+  "q24": [
+   {
+    "row": "What happens, step by step",
+    "value": "Form or LinkedIn message creates a HubSpot deal automatically, a sequence sends a scheduling link within minutes, and Marcus takes the first call"
+   },
+   {
+    "row": "Typical response time",
+    "value": "Automated inside five minutes; a human on the phone usually within a day"
+   },
+   {
+    "row": "Who is responsible",
+    "value": "Marcus, entirely"
+   },
+   {
+    "row": "Is every inquiry captured in one system?",
+    "value": "Yes — HubSpot, every source"
+   },
+   {
+    "row": "Automated follow-up?",
+    "value": "Yes, a four-email sequence, then it stops"
+   },
+   {
+    "row": "% of leads that get 2+ follow-ups",
+    "value": "Close to 100% while the sequence runs; after that it depends on whether I remember"
+   }
+  ],
+  "q25": [
+   {
+    "row": "Lead→sale or proposal→close %",
+    "value": "About 25% of proposals close"
+   },
+   {
+    "row": "Tracked by source / person / service?",
+    "value": "By source in HubSpot; not by service"
+   },
+   {
+    "row": "Defined sales process?",
+    "value": "Stages exist in HubSpot and I move deals through them; there is no written playbook and nobody else runs it"
+   },
+   {
+    "row": "Most common reason you lose",
+    "value": "Price, or they hire someone in-house instead"
+   }
+  ],
+  "q26": [
+   {
+    "row": "Typical first sale",
+    "value": "$17,000 — a three-month retainer minimum"
+   },
+   {
+    "row": "Typical annual customer value",
+    "value": "$118,000 across the retainer book"
+   },
+   {
+    "row": "Most valuable segment",
+    "value": "Series-B software companies with an in-house marketer to work with"
+   },
+   {
+    "row": "Tracked?",
+    "value": "Yes, in HubSpot"
+   }
+  ],
+  "q27": [
+   {
+    "row": "% who buy again",
+    "value": "Retainers renew; average tenure is about 26 months"
+   },
+   {
+    "row": "Renewal rate if applicable",
+    "value": "Roughly 80% annually"
+   },
+   {
+    "row": "Are inactive customers identified?",
+    "value": "I know who they are; there is no list"
+   },
+   {
+    "row": "Reactivation campaigns ever run?",
+    "value": "No"
+   },
+   {
+    "row": "Why customers leave",
+    "value": "New CMO, budget cut, or they build the team in-house"
+   }
+  ],
+  "q28": [
+   "Set against competitors",
+   "Set on the owner's gut",
+   "Unchanged for 2+ years",
+   "Pricing is a current worry"
+  ],
+  "q29": [
+   {
+    "row": "Complementary services routinely offered?",
+    "value": "Yes — we pitch lifecycle email into every paid media account after 90 days"
+   },
+   {
+    "row": "Bundles or packages?",
+    "value": "Three named retainer tiers on the site"
+   },
+   {
+    "row": "Premium option?",
+    "value": "Yes, the growth partner tier"
+   },
+   {
+    "row": "Entry-level option?",
+    "value": "The attribution build, which is how most accounts start"
+   },
+   {
+    "row": "Customer needs you can't currently serve",
+    "value": "Sales enablement, ABM orchestration, anything requiring a developer"
+   }
+  ],
+  "q30": [
+   {
+    "row": "Who owns marketing",
+    "value": "Marcus, in whatever hours are left"
+   },
+   {
+    "row": "Who owns sales",
+    "value": "Marcus"
+   },
+   {
+    "row": "Monthly marketing budget",
+    "value": "$1,500 including tools"
+   },
+   {
+    "row": "Do sales & marketing review results together?",
+    "value": "It is the same person, so technically yes"
+   },
+   {
+    "row": "Are leads, conversion, CAC and customer value ever reviewed together?",
+    "value": "Leads, conversion and value yes, in the Monday pipeline review. CAC never."
+   }
+  ],
+  "q31": "We'd have to hire",
+  "q32": [
+   {
+    "row": "1",
+    "area": "Raising retainer prices, which have not moved since 2023"
+   },
+   {
+    "row": "2",
+    "area": "Closing more of the proposals we already write"
+   },
+   {
+    "row": "3",
+    "area": "Stopping the reporting builds from losing money"
+   }
+  ],
+  "q33": [
+   {
+    "workflow": "Lead capture and discovery call"
+   },
+   {
+    "workflow": "Proposal and scoping"
+   },
+   {
+    "workflow": "Client onboarding and access collection"
+   },
+   {
+    "workflow": "Campaign build and launch"
+   },
+   {
+    "workflow": "Monthly client reporting"
+   },
+   {
+    "workflow": "Quarterly business review"
+   },
+   {
+    "workflow": "Retainer renewal and repricing"
+   },
+   {
+    "workflow": "Invoicing and collections"
+   },
+   {
+    "workflow": "Contractor briefing and review"
+   }
+  ],
+  "q34": [
+   {
+    "row": "One clear accountable role",
+    "frequency": "Usually"
+   },
+   {
+    "row": "Defined handoffs",
+    "frequency": "Sometimes"
+   },
+   {
+    "row": "Consistent exception escalation",
+    "frequency": "Rarely"
+   }
+  ],
+  "q35": [
+   {
+    "row": "Documented",
+    "pct": "50"
+   },
+   {
+    "row": "Current",
+    "pct": "35"
+   },
+   {
+    "row": "Accessible",
+    "pct": "60"
+   },
+   {
+    "row": "Used in training",
+    "pct": "40"
+   },
+   {
+    "row": "Actually followed",
+    "pct": "40"
+   }
+  ],
+  "q36": [
+   "Incomplete information",
+   "Unclear priorities",
+   "The owner has to step in",
+   "Late billing",
+   "Slow collections"
+  ],
+  "q37": "Owner time",
+  "q38": "Mostly clear, with gaps",
+  "q39": [
+   {
+    "row": "How many KPIs reviewed weekly",
+    "value": "Five — pipeline, proposals out, retainer book, client hours, and campaign pacing"
+   },
+   {
+    "row": "Does each have one owner?",
+    "value": "Three do; the other two are mine by default"
+   },
+   {
+    "row": "Are targets visible?",
+    "value": "Yes, in the Looker Studio board everyone can open"
+   },
+   {
+    "row": "Does a miss trigger action?",
+    "value": "Usually it triggers a conversation. Whether it triggers a change is another matter."
+   }
+  ],
+  "q40": "Weekly, structured and action-oriented",
+  "q41": [
+   {
+    "row": "CRM",
+    "tool": "HubSpot"
+   },
+   {
+    "row": "Marketing",
+    "tool": "HubSpot marketing hub plus the ad platforms"
+   },
+   {
+    "row": "Sales / proposals",
+    "tool": "HubSpot quotes and a proposal template"
+   },
+   {
+    "row": "Scheduling / project management",
+    "tool": "Asana with per-client boards"
+   },
+   {
+    "row": "Delivery",
+    "tool": "Ad platforms, the email tool, Figma via contractors"
+   },
+   {
+    "row": "Accounting",
+    "tool": "QuickBooks Online — bookkeeping is behind"
+   },
+   {
+    "row": "Reporting",
+    "tool": "Looker Studio, one dashboard per client"
+   },
+   {
+    "row": "Communication",
+    "tool": "Slack, with shared channels for four clients"
+   },
+   {
+    "row": "Files / knowledge",
+    "tool": "Google Workspace and a Notion playbook"
+   },
+   {
+    "row": "HR / payroll",
+    "tool": "Gusto"
+   }
+  ],
+  "q42": "Some integrations",
+  "q43": [
+   "KPI definitions are agreed",
+   "Data is generally accurate",
+   "Backups exist"
+  ],
+  "q44": [
+   {
+    "task": "Monthly client reporting assembly and commentary",
+    "who": "Priya (analyst)",
+    "frequency": "Several times a week",
+    "occurrences": "3",
+    "minutes": "180",
+    "errors": "Yes",
+    "systems": "Looker Studio, ad platforms, Slides"
+   },
+   {
+    "task": "Client status updates and Slack triage",
+    "who": "Whole team",
+    "frequency": "Daily",
+    "occurrences": "5",
+    "minutes": "60",
+    "errors": "No",
+    "systems": "Slack, Asana"
+   },
+   {
+    "task": "Proposal and scoping document assembly",
+    "who": "Marcus",
+    "frequency": "Weekly",
+    "occurrences": "3",
+    "minutes": "120",
+    "errors": "No",
+    "systems": "HubSpot, Docs"
+   },
+   {
+    "task": "Invoicing and payment chasing",
+    "who": "Marcus",
+    "frequency": "Weekly",
+    "occurrences": "3",
+    "minutes": "60",
+    "errors": "Yes",
+    "systems": "QuickBooks, email"
+   }
+  ],
+  "q45": "Lead capture into HubSpot, the four-email nurture, meeting scheduling, campaign pacing alerts and the Looker dashboards all run themselves and are reliable. Reporting commentary, proposals and invoicing are entirely manual.",
+  "q46": [
+   "Drafting",
+   "Research",
+   "Marketing content",
+   "Sales support",
+   "Reporting"
+  ],
+  "q47": [
+   "Someone accountable per implementation",
+   "The team is trained"
+  ],
+  "q48": [
+   "Unclear access",
+   "Ex-employees may retain access",
+   "Sensitive data in unapproved tools",
+   "One-vendor or one-person dependence"
+  ],
+  "q49": [
+   {
+    "row": "Implementation budget range",
+    "value": "$10–20K, but it has to come out of cash flow"
+   },
+   {
+    "row": "Owner hours/week available",
+    "value": "5"
+   },
+   {
+    "row": "Team hours/week available",
+    "value": "8"
+   },
+   {
+    "row": "Appetite for changing systems",
+    "value": "Very high — this team likes new tools, sometimes too much"
+   }
+  ],
+  "q58": "Trained, adopting, and improving it themselves",
+  "q59": "Priya would take anything on and has already built two internal AI workflows on her own. The account manager is enthusiastic. Nobody here resists tools; what they resist is documenting what they did afterwards.",
+  "q56": [
+   {
+    "role": "Analyst",
+    "rate": "46"
+   },
+   {
+    "role": "Account manager",
+    "rate": "52"
+   },
+   {
+    "role": "Media buyer",
+    "rate": "58"
+   },
+   {
+    "role": "Owner",
+    "rate": "95"
+   }
+  ],
+  "q50": [
+   "Pricing exceptions",
+   "Major sales",
+   "Customer escalations",
+   "Hiring / firing",
+   "Banking / payments",
+   "Vendor relationships",
+   "Strategy"
+  ],
+  "q51": [
+   {
+    "row": "What keeps running",
+    "value": "Campaign management and reporting — the team is good and Asana holds the work"
+   },
+   {
+    "row": "What slows down",
+    "value": "Anything needing a scope decision or a price. Invoicing stops entirely."
+   },
+   {
+    "row": "What stops",
+    "value": "New business, and the logistics client's weekly call — they will not take it from anyone else"
+   },
+   {
+    "row": "Who decides",
+    "value": "The account manager on delivery; nobody on money"
+   },
+   {
+    "row": "What nobody else can access",
+    "value": "The bank, QuickBooks, the ad account billing profiles, and the domain registrar"
+   }
+  ],
+  "q52": [
+   {
+    "risk": "The logistics platform client — 38% of revenue, renewal in March",
+    "impact": "Losing it takes 38% of revenue in one email and roughly all of the profit"
+   },
+   {
+    "risk": "Marcus — the only relationship holder on 8 of 9 accounts",
+    "impact": "New business stops and the largest client would be a coin flip"
+   },
+   {
+    "risk": "Priya — sole analyst, owns every reporting build",
+    "impact": "Client reporting stops within a month; two accounts would notice immediately"
+   },
+   {
+    "risk": "Ad platform billing profiles under Marcus's personal login",
+    "impact": "Client spend could not be managed or reconciled by anyone else"
+   }
+  ],
+  "q53": [
+   "Customer agreements are written & accessible",
+   "Employment agreements are current",
+   "No known legal, tax or insurance issue"
+  ],
+  "q54": [
+   "Customer diversification",
+   "Sales without the owner",
+   "Financial reporting"
+  ],
+  "q55": "Ready if priorities stay tight",
+  "q57": "Tired but managing"
+ },
+ "session": {
+  "engine": {
+   "leads_per_month": "22",
+   "conversion_rate": "25%",
+   "avg_deal_value": "$17,000",
+   "response_time": "Automated inside five minutes; a human within a day",
+   "gross_margin_pct": "55",
+   "headcount": "7",
+   "repetitive_hours_week": "Client reporting assembly — Priya — 9\nStatus updates & Slack triage — team — 5\nProposal assembly — Marcus — 6\nInvoicing & chasing — Marcus — 3",
+   "largest_customer_pct": "38"
+  },
+  "blockNotes": {
+   "b1": "Q8 belief is unusually accurate and unusually unacted-on: he named the 38% concentration himself and then named why it persists — the same client absorbs most of his week. Objective is resilience, not growth.",
+   "b2": "Funnel built live in HubSpot: 22 qualified leads a month across four tracked sources, 25% of proposals close, $17,000 first-year retainer value. Multiplies to $1.12M against $1.10M he reports — reconciles, but note the whole reconciliation rests on numbers he told us. There is no P&L to hold any of it against.",
+   "b3": "Retainer pricing has not moved since 2023 and is set by looking at what two competitor agencies publish. The attribution build is sold at a price he admitted in the room 'probably loses money' — and the 49% margin in q13 is a guess, since nothing is costed by account.",
+   "b4": "Tool chain is the strongest of the ten: HubSpot ↔ Slack ↔ Asana ↔ Looker all connected, campaign pacing alerts firing. 23 h/wk repetitive on a 280-hour payroll (8%). The load is concentrated in reporting assembly, which is also the most automatable.",
+   "b5": "Concentration confirmed at 38% from his own spreadsheet — no revenue-by-customer report exists to verify it. Renewal is March. Marcus is the only relationship holder on eight of nine accounts. Ad platform billing sits under his personal login."
+  },
+  "demonstrated": [
+   "HubSpot walked end to end — every source creating deals, the four-email sequence firing, stage history on the last twelve proposals",
+   "Monday pipeline review observed: five KPIs off the Looker board, three with named owners, actions assigned",
+   "Priya assembled a client report live — 3 hours 10 minutes of platform pulls, screenshots and hand-written commentary",
+   "The Notion playbook opened: onboarding and campaign-build procedures present, quarterly review and renewal procedures missing",
+   "Retainer tier page and two live proposals opened side by side — same three tiers, same prices as the 2023 versions",
+   "Systems tour showing HubSpot ↔ Asana ↔ Slack ↔ Looker connections and the one manual step into QuickBooks",
+   "Campaign pacing alert fired during the session and the media buyer acted on it without being asked",
+   "The lifecycle-email cross-sell pitch shown as a saved sequence that runs at day 90 on every paid media account",
+   "Priya demonstrated two AI workflows she had built herself for ad copy variants and report commentary drafts",
+   "The QuickBooks file opened — last reconciled in May, four months behind"
+  ],
+  "documents_seen": []
+ },
+ "dataRoom": {
+  "pnl_on_file": false,
+  "documents": []
+ },
+ "scores": {
+  "P1": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Four sources with monthly volume and cost in HubSpot (q23: referrals 9, LinkedIn 7, inbound 4, directories 2), all marked tracked.",
+   "why_not_higher": "Quality is scored from memory and the tracking has never been reconciled to revenue — q30 confirms acquisition cost is never brought into the review, so cost per source exists but is not used."
+  },
+  "P2": {
+   "score": 3,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Every source creates a HubSpot deal automatically and a scheduling link goes out inside five minutes — watched firing in session. Human contact usually within a day.",
+   "why_not_higher": "Anchor 4 needs a human response under an hour; the first human touch waits on Marcus's calendar."
+  },
+  "P3": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "A four-email sequence runs on every lead and then stops; after that, follow-up 'depends on whether I remember' (q24).",
+   "why_not_higher": "Anchor 3 needs missed follow-ups visible in the system; once the sequence ends nothing shows a lead going cold."
+  },
+  "P4": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "HubSpot stages exist and the last twelve proposals were walked through them live; close rate 25% tracked by source (q25).",
+   "why_not_higher": "Anchor 3 needs stages used by the business, not one person — there is no written playbook and nobody but Marcus runs a deal."
+  },
+  "P5": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q28: competitor-set and gut, unchanged since 2023, pricing named as a current worry. The attribution build is priced below cost by his own admission in b3.",
+   "why_not_higher": "Two-plus years unchanged with anecdotal reasoning is the anchor-1 line; it is not 0 only because named tiers exist and discounts are rare."
+  },
+  "P6": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Three named retainer tiers with a premium option, an entry-level attribution build, and a day-90 lifecycle cross-sell sequence shown running on every paid media account (q29).",
+   "why_not_higher": "Anchor 3 needs the upsell routine across the team; the cross-sell fires automatically but only Marcus ever has the conversation it creates."
+  },
+  "P7": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Retainer renewal roughly 80% and average tenure 26 months, both known from memory and the HubSpot deal history (q27).",
+   "why_not_higher": "No inactive list exists and no reactivation has ever run — anchor 3 needs the list pulled and worked."
+  },
+  "P8": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Monday pipeline review observed: five KPIs on a shared Looker board, three with named owners, targets visible (q39).",
+   "why_not_higher": "Marketing and sales are both Marcus by his own answer, and CAC is never in the review — anchor 3 needs named owners and value and cost reviewed together."
+  },
+  "P9": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "55% gross margin is his estimate with nothing behind it — no P&L, no account-level costing, and q17 says he can feel which accounts are unprofitable but cannot prove it.",
+   "why_not_higher": "Anchor 2 needs the overall number actually known; this one is remembered, and the CPA reconstructs it once a year at tax time."
+  },
+  "P10": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q20 'inconsistent'; the QuickBooks file was opened in session and last reconciled in May. The CPA produces a tax return in April from the bank feed. No monthly P&L exists.",
+   "why_not_higher": "Anchor 2 needs monthly-ish financials however late; here there is no monthly close at all, and he looks at the bank balance instead."
+  },
+  "S1": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q50 keeps pricing, major sales, escalations, hiring, banking, vendors and strategy with Marcus; the account manager decides delivery only.",
+   "why_not_higher": "Only routine delivery is delegated; every decision above it returns to him — anchor 2 needs several areas genuinely handed over."
+  },
+  "S2": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Four-week test (q51): campaigns and reporting keep running because Asana holds the work; scope decisions, pricing and invoicing stop, and the largest client's weekly call cannot be covered.",
+   "why_not_higher": "Anchor 3 needs a named deputy and only a few owner-locked items; money, new business and the biggest account are all locked."
+  },
+  "S3": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Marcus brought in eight of nine accounts and 80% of revenue rides on his personal relationships (q14). The account manager can scope, but has never closed or renewed.",
+   "why_not_higher": "Anchor 2 needs the team selling with owner rescue on big deals; here nobody else has ever sold anything."
+  },
+  "S4": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "One account manager with a title and direct reports (q10); q34 says exception escalation is 'rarely' consistent and q36 lists the owner stepping in as a recurring failure.",
+   "why_not_higher": "Anchor 2 needs some real managers owning outcomes; this lead escalates rather than decides."
+  },
+  "S5": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Notion playbook opened live: onboarding and campaign build documented and current; quarterly review and renewal have no procedure at all. Q35 puts documented at 50% and followed at 40%.",
+   "why_not_higher": "Anchor 3 needs core workflows documented and current — the two workflows that carry renewal risk are the two that are missing."
+  },
+  "S6": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Weekly structured meeting (q40) observed with five KPIs and visible targets on the Looker board.",
+   "why_not_higher": "Anchor 3 needs owners on the KPIs and follow-through; two of five default to Marcus and q39 says a miss triggers a conversation rather than a change."
+  },
+  "S7": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Delivery quality is consistent enough that complaints are absent from q36, but q31 says a 20% jump means hiring, and the analyst is already the single point on every report.",
+   "why_not_higher": "No capacity plan and no defined QC step — growth currently runs on Priya's evenings."
+  },
+  "S8": {
+   "score": 0,
+   "na": false,
+   "evidence": "reported",
+   "note": "Largest client 38% of revenue with a March renewal; top five 79% (q14, from his own spreadsheet — no revenue-by-customer report exists to verify it).",
+   "why_not_higher": "Above 30% is the 0 anchor. Reported rather than Documented, which the rubric names as the single most common way concentration risk is understated."
+  },
+  "S9": {
+   "score": 3,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "74% of revenue is contracted retainers with three-month minimums renewing at ~80% (q12), all visible in the HubSpot deal records walked in session — well past the 40% line, and the retainer book is reviewed weekly.",
+   "why_not_higher": "Anchor 4 needs a forecastable base; with 38% of it renewing in one March decision, the forecast is one conversation away from being wrong."
+  },
+  "S10": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Client agreements and employment agreements are written (q53), but q52 names the concentration and the sole-relationship-holder risk as known and unaddressed for two years. No continuity plan.",
+   "why_not_higher": "Anchor 2 needs the contract coverage to be broad; vendor agreements, transferability and IP ownership are all unchecked, and ad billing sits on a personal login."
+  },
+  "L1": {
+   "score": 3,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "HubSpot, Asana, Looker Studio, Slack, Gusto and QuickBooks cover every core area and were all walked in session (q41).",
+   "why_not_higher": "One significant gap: the accounting layer is four months unreconciled, so the system exists but does not function as one."
+  },
+  "L2": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "HubSpot ↔ Slack ↔ Asana ↔ Looker connections shown working; q42 'some integrations'.",
+   "why_not_higher": "Anchor 3 needs one or two double-entry points remaining; reporting data is re-pulled by hand from every ad platform each month, which is the largest single manual join in the business."
+  },
+  "L3": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q43 claims agreed KPI definitions and accurate data, but the financial half of the picture does not exist — the QuickBooks file is four months behind, so client-side numbers and money numbers cannot be put in the same sentence.",
+   "why_not_higher": "Anchor 2 needs the numbers to be mostly right after cleanup; there is one trusted report (the Looker campaign board) and nothing trustworthy on money."
+  },
+  "L4": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "23 h/wk inventoried (q44). Lead capture, nurture, scheduling and pacing alerts have genuinely been automated away; 9 hours of report assembly and 6 of proposal assembly remain.",
+   "why_not_higher": "Anchor 3 needs the major repetitive tasks reduced; the largest one is untouched and is growing with the client count."
+  },
+  "L5": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Lead capture, the four-email nurture, meeting scheduling, campaign pacing alerts and the Looker dashboards all run reliably and were shown firing (q45).",
+   "why_not_higher": "Anchor 3 needs automations across several functions owned and monitored; delivery and marketing are covered, finance and reporting are entirely manual, and nobody is named as owner of any of it."
+  },
+  "L6": {
+   "score": 3,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Q46 covers drafting, research, marketing content, sales support and reporting; Priya demonstrated two workflows she built herself for ad copy variants and report commentary.",
+   "why_not_higher": "Anchor 4 needs measured results; the workflows are real and defined but no one has ever measured what they changed, by his own answer."
+  },
+  "L7": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q47 returns two of eight — someone accountable per implementation, and the team is trained. No data rules, no human-review rule, nothing measured.",
+   "why_not_higher": "Anchor 2 needs several practices applied inconsistently; here two are true and client data is already going into unapproved tools (q48)."
+  },
+  "L8": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q48: unclear access, ex-employees may retain access, sensitive data in unapproved tools, and ad platform billing under Marcus's personal login (b5).",
+   "why_not_higher": "Anchor 2 needs partial hygiene with known gaps; ex-employee access has never been reviewed at all, which leaves this at individual-logins-and-assumptions."
+  },
+  "L9": {
+   "score": 3,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Q58 'trained, adopting, and improving it themselves' — corroborated by Priya's two self-built workflows and the media buyer acting on a pacing alert unprompted.",
+   "why_not_higher": "Anchor 4 needs the improvement to stick; q59 says the team adopts readily and documents nothing, so what they build does not survive them."
+  },
+  "L10": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q49: $10–20K but it must come out of cash flow, 5 owner hours and 8 team hours; q55 'ready if priorities stay tight'.",
+   "why_not_higher": "Anchor 3 needs budget and time named and set aside; the budget is conditional on a cash position nobody is measuring monthly."
+  }
+ },
+ "assessment": {
+  "owner_objective": "Resilience/risk reduction — then Reliable revenue growth, More profit & cash flow",
+  "owner_belief": "The whole thing rests on one account. If the logistics client leaves in March we lose 38% of revenue in one email and I have no idea whether we'd survive it. I've known that for two years and I keep not fixing it because that client is also the one that takes the most of my time.",
+  "primary_constraint": "New business capacity is one calendar: Marcus is the only person who has ever sold, renewed or held a client relationship, so the concentration he correctly fears cannot be diluted at the rate it would take to matter before March.",
+  "constraint_symptoms": "Eight of nine accounts were brought in by him and 80% of revenue rides on his relationships; the largest client will not take its weekly call from anyone else; new business stops entirely in the four-week test; proposal assembly is six of his own hours a week; retainer pricing has not moved since 2023 because repricing means nine conversations only he can have.",
+  "constraint_cost": "~$418K of revenue exposed to one March renewal conversation only he can have · ~$22K of delivery payroll on nine weekly hours of report assembly · ~312 owner hours a year on proposals and invoicing.",
+  "constraint_fix": "A second relationship holder inside the top three accounts within 90 days — account manager on every call, named in the renewal, and running two of the quarterly reviews — plus a written renewal and repricing procedure so the conversation stops being a personal performance.",
+  "momentum_initiative": "Reprice the attribution build, which he already believes sells below cost, and put a floor under the three retainer tiers — one decision, no new hire, measurable on the next two proposals.",
+  "overlay_flags": [
+   "customer_concentration",
+   "key_person",
+   "unreliable_financials"
+  ],
+  "plan_items": [
+   "Second relationship holder on the top three accounts — Marcus Bell — 2026-09-21",
+   "Retainer repricing and attribution-build floor — Marcus Bell — 2026-10-01",
+   "Monthly close and a real P&L, bookkeeping caught up to date — Marcus Bell — 2026-10-15",
+   "Client reporting assembly automated out of the platform pulls — Priya Raghavan — 2026-11-02"
+  ],
+  "overlap_factor": 0.7
+ },
+ "opportunities": [
+  {
+   "title": "Close more of the proposals already being written",
+   "finding": "25% of proposals close on roughly $1.05M of proposal volume a year (HubSpot deal history, walked in session). Stages exist but no playbook does, nobody but Marcus runs a deal, and the loss reason he names is price or an in-house hire — both of which are answerable in the proposal itself. Every figure behind this rests on his own numbers: there is no P&L and no account-level costing.",
+   "calculator": {
+    "kind": "close_rate_lift",
+    "inputs": {
+     "quotedVolume": 1050000,
+     "currentClosePct": 25,
+     "liftPointsLow": 4,
+     "liftPointsExpected": 7,
+     "liftPointsHigh": 10,
+     "grossMarginPct": 55,
+     "incrementalCostPct": 15
+    }
+   },
+   "fix_cost": 5200,
+   "months_to_benefit": 2,
+   "confidence": "medium",
+   "include_in_report": true,
+   "basis_reported_only": true,
+   "blueprint": "A written proposal playbook with a costed scope model, a standard in-house-versus-agency comparison page, and the account manager on every second call so a second person can carry the deal.",
+   "replaces": "A proposal rebuilt from scratch by the owner every time"
+  },
+  {
+   "title": "Reprice the retainer tiers and put a floor under the attribution build",
+   "finding": "Retainer prices have not moved since 2023 and are set against two competitors' published rates (q28). The attribution build — 16% of revenue and the entry point for most accounts — is priced below cost by his own account in b3, and the 49% margin he wrote in q13 is a guess because nothing is costed by client. Basis is reported only: no P&L, no job costing.",
+   "calculator": {
+    "kind": "price_change",
+    "inputs": {
+     "revenueAffected": 680000,
+     "priceChangePctLow": 5,
+     "priceChangePctExpected": 8,
+     "priceChangePctHigh": 12,
+     "volumeLossPctLow": 3,
+     "volumeLossPctExpected": 6,
+     "volumeLossPctHigh": 10,
+     "grossMarginPct": 55
+    }
+   },
+   "fix_cost": 1800,
+   "months_to_benefit": 3,
+   "confidence": "low",
+   "include_in_report": true,
+   "basis_reported_only": true,
+   "blueprint": "Cost the delivery hours per account from the loaded rates in q56, set tier floors from that, and stage the increases at each renewal date rather than all at once — with the March account handled last, not first.",
+   "replaces": "Prices set by reading two competitors' websites in 2023"
+  },
+  {
+   "title": "Automate the monthly client reporting assembly",
+   "finding": "Priya spends nine hours a week — demonstrated live at three hours ten minutes for one client — pulling platform data, screenshotting and hand-writing commentary into slides. The Looker dashboards already hold the data; the manual work is the assembly and the narrative. Those hours go straight back onto billable delivery, which is why they are being counted as dollars rather than capacity.",
+   "calculator": {
+    "kind": "automation_hours",
+    "inputs": {
+     "hoursPerWeek": 9,
+     "loadedHourlyRate": 46,
+     "automationSharePctLow": 45,
+     "automationSharePctExpected": 65,
+     "automationSharePctHigh": 80,
+     "weeksPerYear": 52,
+     "redeployed": true
+    }
+   },
+   "fix_cost": 7500,
+   "months_to_benefit": 3,
+   "confidence": "medium",
+   "include_in_report": true,
+   "basis_reported_only": true,
+   "blueprint": "Scheduled Looker exports into a templated report, AI-drafted commentary from the campaign data with the analyst reviewing and signing rather than writing, and the client-facing deck generated rather than assembled.",
+   "replaces": "Three hours of screenshots per client per month"
+  }
+ ],
+ "expected": {
+  "gate_should_pass": true,
+  "expected_blockers": [],
+  "expected_warnings": [
+   "no P&L on file"
+  ],
+  "band_guess": "Building",
+  "cross_checks": {
+   "margin_vs_pnl": "pass",
+   "funnel_vs_revenue": "pass",
+   "concentration": "flag",
+   "hours_vs_headcount": "pass"
+  }
+ }
+}

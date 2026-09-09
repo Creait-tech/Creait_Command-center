@@ -1,0 +1,1192 @@
+{
+ "n": 4,
+ "company": "Loomcraft Home Goods",
+ "owner": "Priya Menon",
+ "industry": "E-commerce (DTC home textiles)",
+ "profile": {
+  "revenue": 3400000,
+  "grossMarginPct": 44,
+  "operatingProfit": 122000,
+  "headcount": 11,
+  "founded": 2017,
+  "story": "Loomcraft sells hand-loomed rugs, throws and table linens direct to consumers, made by two weaving cooperatives in Rajasthan and warehoused with a 3PL in Memphis. Revenue looks healthy at $3.4M and the brand has real repeat customers, but the money is all sitting in containers: Priya writes a purchase order six months before she can sell the goods, and a line of credit plus a supplier term extension is carrying the gap. The operations side is entirely manual — Shopify, the 3PL portal and QuickBooks do not talk, so two people spend most of their week retyping orders, chasing exceptions and reconciling inventory that never quite matches. A big spring buy is due in November and she does not know where the cash comes from."
+ },
+ "edge_cases": [
+  "cash_distress overlay active — inventory-heavy DTC with a credit line and a supplier buy due",
+  "L2 at 0 and L4 at 1 — a person is literally the integration between Shopify, the 3PL and QuickBooks",
+  "Carries an automation_hours calculator with redeployed: false — expects a $0 dollar range printed as capacity, not cash",
+  "Gate must still pass on the strength of the second, dollar-denominated opportunity",
+  "Only two of the three included opportunities carry dollars, so the strongest one clears 50% of the projected recovery and the concentration warning is expected"
+ ],
+ "intake": {
+  "q1": [
+   {
+    "row": "Your name",
+    "value": "Priya Menon"
+   },
+   {
+    "row": "Email",
+    "value": "priya@loomcrafthome.com"
+   },
+   {
+    "row": "Phone",
+    "value": "(512) 555-0173"
+   },
+   {
+    "row": "Company name",
+    "value": "Loomcraft Home Goods"
+   },
+   {
+    "row": "Website",
+    "value": "loomcrafthome.com"
+   },
+   {
+    "row": "Location",
+    "value": "Austin, TX (3PL in Memphis, TN)"
+   },
+   {
+    "row": "Industry",
+    "value": "Direct-to-consumer home textiles"
+   }
+  ],
+  "q2": "We design and sell hand-loomed rugs, throws, cushion covers and table linens directly to consumers through our own site, with a small wholesale line into about 40 independent home stores. Everything is made by two weaving cooperatives we have worked with since 2017 and shipped from a third-party warehouse in Memphis. Eleven of us: three in marketing, two in customer experience, two in operations, a designer, a wholesale rep, a part-time bookkeeper and me.",
+  "q3": [
+   {
+    "row": "Primary",
+    "objective": "More profit & cash flow"
+   },
+   {
+    "row": "Secondary 1",
+    "objective": "Better operations & delivery capacity"
+   },
+   {
+    "row": "Secondary 2",
+    "objective": "Use AI/automation effectively"
+   }
+  ],
+  "q4": [
+   {
+    "row": "1",
+    "outcome": "Cash conversion cycle",
+    "target": "148 days → 100 days"
+   },
+   {
+    "row": "2",
+    "outcome": "Order exceptions needing a human",
+    "target": "About 18% of orders → under 5%"
+   },
+   {
+    "row": "3",
+    "outcome": "Operating profit",
+    "target": "$122K → $300K"
+   }
+  ],
+  "q5": "Same revenue would be fine if it converted to cash. I want the spring buy funded from operations rather than the credit line, order flow that runs itself, and a wholesale channel big enough to smooth the seasonality. My role should be product and brand, not order exceptions.",
+  "q6": "Split across most of these",
+  "q7": [
+   {
+    "row": "Hours/week now",
+    "value": "64"
+   },
+   {
+    "row": "Hours/week you want in 12 months",
+    "value": "50"
+   },
+   {
+    "row": "Hours/week you want in 3 years",
+    "value": "40"
+   },
+   {
+    "row": "Longest uninterrupted time away in the past 12 months",
+    "value": "3 days at a trade show, which is not time away"
+   },
+   {
+    "row": "What pulls you back in",
+    "value": "Inventory that does not reconcile, and any decision about paying the cooperatives early"
+   }
+  ],
+  "q8": "Cash. We are profitable on paper and I still cannot sleep in October. Everything I make goes back into containers six months before I can sell it, and this year the spring buy and the credit line renewal land in the same month. It has been getting worse every year since we added the wholesale line.",
+  "q9": [
+   {
+    "row": "Year founded",
+    "value": "2017"
+   },
+   {
+    "row": "Owners & percentages",
+    "value": "Priya Menon 88%, an early angel investor 12%"
+   },
+   {
+    "row": "Any owner misalignment affecting decisions?",
+    "value": "The investor wants faster growth; I want the inventory to stop eating us. That tension is real but polite."
+   }
+  ],
+  "q10": [
+   {
+    "row": "Full-time employees",
+    "count": "8"
+   },
+   {
+    "row": "Part-time",
+    "count": "2"
+   },
+   {
+    "row": "Regular contractors",
+    "count": "1"
+   },
+   {
+    "row": "Managers / team leads",
+    "count": "2"
+   },
+   {
+    "row": "People with direct reports",
+    "count": "2"
+   }
+  ],
+  "q11": "Online",
+  "q12": [
+   {
+    "row": "One-time projects",
+    "pct": "0"
+   },
+   {
+    "row": "Recurring contracts",
+    "pct": "0"
+   },
+   {
+    "row": "Repeat without contract",
+    "pct": "31"
+   },
+   {
+    "row": "Products",
+    "pct": "69"
+   },
+   {
+    "row": "Retainers",
+    "pct": "0"
+   },
+   {
+    "row": "Other",
+    "pct": "0"
+   }
+  ],
+  "q13": [
+   {
+    "name": "Hand-loomed rugs",
+    "pct": "48",
+    "margin": "41",
+    "trend": "Growing",
+    "importance": "Highest ticket, longest lead time, where the cash is trapped"
+   },
+   {
+    "name": "Throws & blankets",
+    "pct": "22",
+    "margin": "47",
+    "trend": "Growing",
+    "importance": "Best gifting seasonality; fastest turns"
+   },
+   {
+    "name": "Cushion covers",
+    "pct": "14",
+    "margin": "52",
+    "trend": "Flat",
+    "importance": "Attachment product — rarely bought alone"
+   },
+   {
+    "name": "Table linens",
+    "pct": "9",
+    "margin": "49",
+    "trend": "Flat",
+    "importance": "Q4 driver, dead the rest of the year"
+   },
+   {
+    "name": "Wholesale to independents",
+    "pct": "7",
+    "margin": "28",
+    "trend": "Growing",
+    "importance": "Smooths seasonality but pays in 60 days and we fund the inventory"
+   }
+  ],
+  "q14": [
+   {
+    "row": "Active customer count",
+    "value": "About 21,400 who bought in the last 24 months; 40 wholesale accounts"
+   },
+   {
+    "row": "B2B / B2C / mixed",
+    "value": "Mixed — 93% B2C, 7% wholesale"
+   },
+   {
+    "row": "% of revenue from your largest customer",
+    "value": "12"
+   },
+   {
+    "row": "% of revenue from your top five",
+    "value": "21"
+   },
+   {
+    "row": "% of revenue tied directly to YOUR personal relationships",
+    "value": "The wholesale accounts, so maybe 7%. The cooperatives are entirely my relationship though."
+   }
+  ],
+  "q15": [
+   {
+    "row": "Last completed year",
+    "amount": "3400000"
+   },
+   {
+    "row": "Prior year",
+    "amount": "3050000"
+   },
+   {
+    "row": "Year to date",
+    "amount": "2410000"
+   },
+   {
+    "row": "Full-year forecast",
+    "amount": "3600000"
+   }
+  ],
+  "q16": "Up 10% or less",
+  "q17": [
+   {
+    "row": "Approximate gross margin %",
+    "value": "44"
+   },
+   {
+    "row": "Main direct costs",
+    "value": "Cooperative production cost, ocean freight and duty, 3PL pick-pack-ship, payment processing"
+   },
+   {
+    "row": "Tracked by job / service / customer?",
+    "value": "By SKU in a spreadsheet the bookkeeper updates quarterly. Freight is allocated by guess."
+   }
+  ],
+  "q18": [
+   {
+    "row": "Operating profit estimate",
+    "amount": "122000"
+   },
+   {
+    "row": "Owner salary",
+    "amount": "110000"
+   },
+   {
+    "row": "Owner distributions",
+    "amount": "0"
+   },
+   {
+    "row": "Unusual one-off expenses",
+    "amount": "84000 — an air freight run in March to cover a stockout"
+   }
+  ],
+  "q19": [
+   "Profitable but tight",
+   "Materials / inventory",
+   "Customer payment timing",
+   "Debt payments",
+   "Seasonality",
+   "Big expense coming"
+  ],
+  "q20": "Monthly, delayed",
+  "q21": [
+   {
+    "row": "Revenue",
+    "target": "$3.9M"
+   },
+   {
+    "row": "Gross margin",
+    "target": "46% — we have never hit it"
+   },
+   {
+    "row": "Operating profit",
+    "target": "$300K"
+   },
+   {
+    "row": "Cash reserve",
+    "target": "$250K; we are currently drawn $180K on the line"
+   },
+   {
+    "row": "Owner compensation",
+    "target": "Hold salary, take a distribution for the first time"
+   }
+  ],
+  "q22": "QuickBooks P&L and balance sheet 2024–2026, the inventory valuation report from the 3PL and our spreadsheet, wholesale AR aging, the retail and wholesale price lists, and Shopify's cohort and repeat-purchase export.",
+  "q23": [
+   {
+    "source": "Paid social (Meta, Pinterest)",
+    "per_month": "1650",
+    "cost": "26000",
+    "quality": "3",
+    "tracked": "Yes"
+   },
+   {
+    "source": "Organic search & Pinterest",
+    "per_month": "1180",
+    "cost": "0",
+    "quality": "4",
+    "tracked": "Yes"
+   },
+   {
+    "source": "Email & SMS to the existing list",
+    "per_month": "690",
+    "cost": "1400",
+    "quality": "5",
+    "tracked": "Yes"
+   },
+   {
+    "source": "Affiliate & press placements",
+    "per_month": "190",
+    "cost": "3100",
+    "quality": "3",
+    "tracked": "Yes"
+   },
+   {
+    "source": "Wholesale inbound & trade shows",
+    "per_month": "90",
+    "cost": "2200",
+    "quality": "4",
+    "tracked": "No"
+   }
+  ],
+  "q24": [
+   {
+    "row": "What happens, step by step",
+    "value": "Checkout creates a Shopify order; if the SKU is in stock at the 3PL it flows through, and if anything is off — backorder, split shipment, address problem, wholesale terms — it drops into an exceptions queue Marisol works by hand"
+   },
+   {
+    "row": "Typical response time",
+    "value": "Retail customer emails within a day; wholesale inquiries within two days; exceptions are worked twice a day"
+   },
+   {
+    "row": "Who is responsible",
+    "value": "Marisol on operations, Jae on customer experience"
+   },
+   {
+    "row": "Is every inquiry captured in one system?",
+    "value": "Orders yes, in Shopify. Customer emails are in a shared inbox that is not connected to anything."
+   },
+   {
+    "row": "Automated follow-up?",
+    "value": "Abandoned cart and post-purchase flows, yes. Nothing on the exception queue."
+   },
+   {
+    "row": "% of leads that get 2+ follow-ups",
+    "value": "Abandoned carts get three touches automatically. Wholesale inquiries get one, if Ruth is not travelling."
+   }
+  ],
+  "q25": [
+   {
+    "row": "Lead→sale or proposal→close %",
+    "value": "About 33% of checkouts started actually complete; site-wide conversion is 2.4%"
+   },
+   {
+    "row": "Tracked by source / person / service?",
+    "value": "By source and campaign in Shopify and GA4"
+   },
+   {
+    "row": "Defined sales process?",
+    "value": "For retail it is the site. For wholesale there is no process at all — Ruth improvises."
+   },
+   {
+    "row": "Most common reason you lose",
+    "value": "Shipping cost at checkout, and out-of-stock on the exact size they wanted"
+   }
+  ],
+  "q26": [
+   {
+    "row": "Typical first sale",
+    "value": "$230 average order value"
+   },
+   {
+    "row": "Typical annual customer value",
+    "value": "$310 retail; $8,900 for a wholesale account"
+   },
+   {
+    "row": "Most valuable segment",
+    "value": "Customers whose first order was a rug — they come back for throws and linens"
+   },
+   {
+    "row": "Tracked?",
+    "value": "Yes, cohort report in Shopify"
+   }
+  ],
+  "q27": [
+   {
+    "row": "% who buy again",
+    "value": "27% buy a second time within 18 months"
+   },
+   {
+    "row": "Renewal rate if applicable",
+    "value": "Not applicable — no subscriptions"
+   },
+   {
+    "row": "Are inactive customers identified?",
+    "value": "Yes, the cohort export shows about 5,800 who bought once and nothing in 24 months"
+   },
+   {
+    "row": "Reactivation campaigns ever run?",
+    "value": "One win-back email in 2025 that we never repeated because the discount hurt margin"
+   },
+   {
+    "row": "Why customers leave",
+    "value": "They bought the one rug they needed. There is no reason for them to come back unless we give them one."
+   }
+  ],
+  "q28": [
+   "Based on real job economics",
+   "Varies by scope or value",
+   "Set against competitors",
+   "Pricing is a current worry"
+  ],
+  "q29": [
+   {
+    "row": "Complementary services routinely offered?",
+    "value": "Rug pads and cleaning kits at checkout, yes"
+   },
+   {
+    "row": "Bundles or packages?",
+    "value": "A room bundle we built in 2024 and never merchandised properly"
+   },
+   {
+    "row": "Premium option?",
+    "value": "The limited-run collection, twice a year"
+   },
+   {
+    "row": "Entry-level option?",
+    "value": "Cushion covers and napkins"
+   },
+   {
+    "row": "Customer needs you can't currently serve",
+    "value": "Custom sizing, trade/designer accounts, and anything anyone needs in under two weeks"
+   }
+  ],
+  "q30": [
+   {
+    "row": "Who owns marketing",
+    "value": "Tomas, marketing lead"
+   },
+   {
+    "row": "Who owns sales",
+    "value": "The site owns retail; Ruth owns wholesale"
+   },
+   {
+    "row": "Monthly marketing budget",
+    "value": "$28,000 including paid media"
+   },
+   {
+    "row": "Do sales & marketing review results together?",
+    "value": "Retail yes, weekly. Wholesale is never in the same conversation."
+   },
+   {
+    "row": "Are leads, conversion, CAC and customer value ever reviewed together?",
+    "value": "CAC and conversion yes. Lifetime value gets quoted but nobody agrees on the definition."
+   }
+  ],
+  "q31": "We'd need equipment or capital",
+  "q32": [
+   {
+    "row": "1",
+    "area": "Shipping and freight cost recovery"
+   },
+   {
+    "row": "2",
+    "area": "Selling more to people who already bought once"
+   },
+   {
+    "row": "3",
+    "area": "Cutting the manual order work"
+   }
+  ],
+  "q33": [
+   {
+    "workflow": "Demand planning and purchase orders to the cooperatives"
+   },
+   {
+    "workflow": "Inbound freight, customs and 3PL receiving"
+   },
+   {
+    "workflow": "Inventory sync between Shopify and the 3PL"
+   },
+   {
+    "workflow": "Order flow and exception handling"
+   },
+   {
+    "workflow": "Returns and refunds"
+   },
+   {
+    "workflow": "Customer service email and SMS"
+   },
+   {
+    "workflow": "Wholesale quoting, invoicing and collections"
+   },
+   {
+    "workflow": "Paid media management and creative refresh"
+   },
+   {
+    "workflow": "Monthly close and inventory valuation"
+   }
+  ],
+  "q34": [
+   {
+    "row": "One clear accountable role",
+    "frequency": "Usually"
+   },
+   {
+    "row": "Defined handoffs",
+    "frequency": "Rarely"
+   },
+   {
+    "row": "Consistent exception escalation",
+    "frequency": "Rarely"
+   }
+  ],
+  "q35": [
+   {
+    "row": "Documented",
+    "pct": "30"
+   },
+   {
+    "row": "Current",
+    "pct": "15"
+   },
+   {
+    "row": "Accessible",
+    "pct": "35"
+   },
+   {
+    "row": "Used in training",
+    "pct": "20"
+   },
+   {
+    "row": "Actually followed",
+    "pct": "25"
+   }
+  ],
+  "q36": [
+   "Missed handoffs",
+   "Incomplete information",
+   "Rework",
+   "Slow collections",
+   "The owner has to step in",
+   "Unclear priorities"
+  ],
+  "q37": "Working capital",
+  "q38": "Informal",
+  "q39": [
+   {
+    "row": "How many KPIs reviewed weekly",
+    "value": "Three — revenue, ad spend and return on ad spend"
+   },
+   {
+    "row": "Does each have one owner?",
+    "value": "All three are Tomas's"
+   },
+   {
+    "row": "Are targets visible?",
+    "value": "Only in the marketing meeting"
+   },
+   {
+    "row": "Does a miss trigger action?",
+    "value": "On ad spend yes. On anything operational, no — nobody is watching an operational number."
+   }
+  ],
+  "q40": "Biweekly to monthly",
+  "q41": [
+   {
+    "row": "CRM",
+    "tool": "Klaviyo (email/SMS) — there is no customer record outside it and Shopify"
+   },
+   {
+    "row": "Marketing",
+    "tool": "Meta and Pinterest ads managers, Klaviyo, GA4"
+   },
+   {
+    "row": "Sales / proposals",
+    "tool": "None for wholesale — Ruth uses a Google Sheet and email"
+   },
+   {
+    "row": "Scheduling / project management",
+    "tool": "Trello, used by marketing only"
+   },
+   {
+    "row": "Delivery",
+    "tool": "Shopify plus the 3PL's portal"
+   },
+   {
+    "row": "Accounting",
+    "tool": "QuickBooks Online"
+   },
+   {
+    "row": "Reporting",
+    "tool": "Shopify analytics, GA4, and a master spreadsheet Priya maintains"
+   },
+   {
+    "row": "Communication",
+    "tool": "Slack and a shared support inbox"
+   },
+   {
+    "row": "Files / knowledge",
+    "tool": "Google Drive"
+   },
+   {
+    "row": "HR / payroll",
+    "tool": "Gusto"
+   }
+  ],
+  "q42": "One person is the integration",
+  "q43": [
+   "Data is generally accurate",
+   "Backups exist",
+   "We know where sensitive data lives"
+  ],
+  "q44": [
+   {
+    "task": "Order exception triage (backorders, splits, addresses)",
+    "who": "Marisol",
+    "frequency": "Daily",
+    "occurrences": "5",
+    "minutes": "144",
+    "errors": "Yes",
+    "systems": "Shopify, 3PL portal, email"
+   },
+   {
+    "task": "Returns and refund processing",
+    "who": "Jae",
+    "frequency": "Daily",
+    "occurrences": "5",
+    "minutes": "108",
+    "errors": "Yes",
+    "systems": "Shopify, 3PL portal, payment processor"
+   },
+   {
+    "task": "Inventory reconciliation Shopify vs 3PL",
+    "who": "Priya",
+    "frequency": "Several times a week",
+    "occurrences": "3",
+    "minutes": "140",
+    "errors": "Yes",
+    "systems": "Shopify, 3PL portal, spreadsheet"
+   },
+   {
+    "task": "Customer service email and SMS",
+    "who": "Jae",
+    "frequency": "Daily",
+    "occurrences": "5",
+    "minutes": "132",
+    "errors": "No",
+    "systems": "Shared inbox, Klaviyo, Shopify"
+   },
+   {
+    "task": "Wholesale invoicing and collections",
+    "who": "Marisol",
+    "frequency": "Weekly",
+    "occurrences": "5",
+    "minutes": "60",
+    "errors": "Yes",
+    "systems": "Sheet, QuickBooks, email"
+   }
+  ],
+  "q45": "Abandoned cart, welcome, post-purchase and review-request flows all run in Klaviyo and are reliable — that side is genuinely good. Ad reporting is automated. Nothing operational is automated: inventory sync, exceptions, returns and wholesale invoicing are all done by hand, every day.",
+  "q46": [
+   "Drafting",
+   "Marketing content",
+   "Customer communication"
+  ],
+  "q47": [
+   "Someone accountable per implementation"
+  ],
+  "q48": [
+   "Shared passwords",
+   "Unclear access",
+   "Inconsistent backups",
+   "One-vendor or one-person dependence"
+  ],
+  "q49": [
+   {
+    "row": "Implementation budget range",
+    "value": "$12–18K, and honestly that depends on how November goes"
+   },
+   {
+    "row": "Owner hours/week available",
+    "value": "3"
+   },
+   {
+    "row": "Team hours/week available",
+    "value": "6, and only after the spring buy ships"
+   },
+   {
+    "row": "Appetite for changing systems",
+    "value": "High in operations, cautious in marketing — nobody wants to touch Klaviyo"
+   }
+  ],
+  "q58": "Pockets of capability",
+  "q59": "Tomas and his marketing coordinator would take on anything — they already build their own automations in Klaviyo. Marisol wants the exception queue gone but has no time to help design the fix. The bookkeeper will resist anything that changes the month-end process.",
+  "q56": [
+   {
+    "role": "Operations coordinator",
+    "rate": "34"
+   },
+   {
+    "role": "Customer experience associate",
+    "rate": "31"
+   },
+   {
+    "role": "Marketing lead",
+    "rate": "52"
+   },
+   {
+    "role": "Wholesale rep",
+    "rate": "44"
+   },
+   {
+    "role": "Owner",
+    "rate": "78"
+   }
+  ],
+  "q50": [
+   "Pricing exceptions",
+   "Purchasing",
+   "Customer escalations",
+   "Hiring / firing",
+   "Banking / payments",
+   "Vendor relationships",
+   "Strategy",
+   "Technical decisions"
+  ],
+  "q51": [
+   {
+    "row": "What keeps running",
+    "value": "The site, the ads, and the orders that do not hit an exception"
+   },
+   {
+    "row": "What slows down",
+    "value": "Exception handling within two days; wholesale collections immediately"
+   },
+   {
+    "row": "What stops",
+    "value": "Purchase orders to the cooperatives, anything touching the credit line, and inventory reconciliation"
+   },
+   {
+    "row": "Who decides",
+    "value": "Tomas on marketing spend up to $5K. Nothing else has a named decision-maker."
+   },
+   {
+    "row": "What nobody else can access",
+    "value": "The bank, the credit line, the cooperative contracts, and the customs broker relationship"
+   }
+  ],
+  "q52": [
+   {
+    "risk": "The two weaving cooperatives — sole source for every SKU",
+    "impact": "A disruption at either one empties a category for two seasons; both relationships are Priya's personally"
+   },
+   {
+    "risk": "The revolving credit line, drawn $180K with a renewal in the same month as the spring buy",
+    "impact": "A reduced line means the spring buy shrinks and next year's revenue with it"
+   },
+   {
+    "risk": "Marisol — sole holder of the exception and inventory process",
+    "impact": "Order flow degrades within a week; nothing about her process is written down"
+   },
+   {
+    "risk": "The 3PL — single warehouse, no second location",
+    "impact": "A receiving delay or a bad count is invisible to us until customers complain"
+   }
+  ],
+  "q53": [
+   "Vendor agreements are written",
+   "Licenses & insurance are current",
+   "The company owns its IP and digital accounts",
+   "No known legal, tax or insurance issue"
+  ],
+  "q54": [
+   "Delivery consistency",
+   "Financial reporting",
+   "Tech & data ownership"
+  ],
+  "q55": "Cash, staffing or leadership must be resolved first",
+  "q57": "Running on empty"
+ },
+ "session": {
+  "engine": {
+   "leads_per_month": "3800",
+   "conversion_rate": "33%",
+   "avg_deal_value": "$230",
+   "response_time": "Retail email within a day; exceptions worked twice daily",
+   "gross_margin_pct": "44",
+   "headcount": "11",
+   "repetitive_hours_week": "Order exception triage — Marisol — 12\nReturns & refunds — Jae — 9\nInventory reconciliation — Priya — 7\nCustomer service email/SMS — Jae — 11\nWholesale invoicing & collections — Marisol — 5",
+   "largest_customer_pct": "12"
+  },
+  "blockNotes": {
+   "b1": "Q8 belief is cash and it is correct as a symptom — the disagreement will be about the root. Owner hours 64, longest break three days at a trade show, q57 'running on empty'. Flagged for the overlay conversation, not scored around.",
+   "b2": "Funnel captured at the checkout step rather than at site traffic, because that is where the loss she cares about happens: 3,800 checkouts started a month, 33% complete, $230 AOV — $3.46M implied against $3.40M on the P&L. Loss reasons she named without prompting are shipping cost at checkout and stockouts on the exact size, and both are operational, not creative.",
+   "b3": "P&L confirms 44% gross margin against a 46% target never hit. SKU margin exists in a quarterly spreadsheet with freight allocated by guess — the March air freight run ($84K, on the P&L as a one-off) is the cost of that guess. Retail price list last moved in 2024; freight and duty have not stood still since.",
+   "b4": "The joins are all people: Shopify → 3PL portal → QuickBooks with Marisol and Priya retyping between them. 44 h/wk of repetitive work on a 440-hour payroll (10%), and 17 of it is on one operations coordinator with nothing written down. Klaviyo flows, by contrast, are excellent and untouched by this.",
+   "b5": "Largest wholesale account 12% — no concentration issue. The real single points are the two cooperatives and the credit line: $180K drawn, renewal in November, spring buy due the same month. Cash-distress overlay confirmed active in the room and she agreed it should be printed."
+  },
+  "demonstrated": [
+   "Marisol worked the exception queue live — 22 orders, 41 minutes, four of them requiring a call to the 3PL",
+   "Systems tour: Shopify → 3PL portal → QuickBooks with the retype shown at each join and no integration anywhere",
+   "Inventory reconciliation run in session — 38 SKUs out of agreement between Shopify and the 3PL count",
+   "The Klaviyo flows opened and shown firing: welcome, abandoned cart, post-purchase, review request",
+   "The Google Drive procedures folder opened — four documents, none covering the exception or inventory process",
+   "The cash spreadsheet Priya maintains by hand walked line by line, including the November credit-line renewal"
+  ],
+  "documents_seen": [
+   "QuickBooks P&L and balance sheet 2024–2026 — revenue $3.40M, gross margin 44%, operating profit $122K, $180K drawn on the line",
+   "Inventory valuation from the 3PL and the internal spreadsheet — $840K on hand, 148-day cash conversion cycle",
+   "Wholesale AR aging — $96K out, $41K over 60 days",
+   "Retail and wholesale price lists, last revised 2024",
+   "Shopify cohort and repeat-purchase export — 27% second-purchase rate, 5,800 one-time buyers dormant 24+ months"
+  ]
+ },
+ "dataRoom": {
+  "pnl_on_file": true,
+  "documents": [
+   {
+    "name": "QuickBooks P&L and balance sheet 2024–2026",
+    "kind": "pnl",
+    "received_on": "2026-08-31"
+   },
+   {
+    "name": "Inventory valuation report (3PL + internal)",
+    "kind": "other",
+    "received_on": "2026-08-31"
+   },
+   {
+    "name": "Wholesale AR aging as of 31 Aug 2026",
+    "kind": "ar_aging",
+    "received_on": "2026-09-01"
+   },
+   {
+    "name": "Retail and wholesale price lists (2024)",
+    "kind": "rate_card",
+    "received_on": "2026-09-01"
+   },
+   {
+    "name": "Shopify cohort and repeat-purchase export",
+    "kind": "revenue_by_customer",
+    "received_on": "2026-09-04"
+   }
+  ]
+ },
+ "scores": {
+  "P1": {
+   "score": 3,
+   "na": false,
+   "evidence": "documented",
+   "note": "Five sources with monthly volume, cost and quality in the Shopify/GA4 exports (q23: paid social 1,650 at $26K, organic 1,180, email 690, affiliate 190, wholesale 90); reviewed weekly in the marketing meeting.",
+   "why_not_higher": "Wholesale is untracked by her own answer, and the tracking that exists is reviewed by channel spend, not by contribution — anchor 4 needs cost and quality reviewed together monthly across all sources."
+  },
+  "P2": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Orders land in Shopify automatically; anything unusual falls into an exception queue worked twice a day, watched live at 22 orders in 41 minutes. Customer email sits in a shared inbox connected to nothing (q24).",
+   "why_not_higher": "Anchor 3 needs every inquiry captured in one system; the support inbox is outside every system and wholesale inquiries wait up to two days."
+  },
+  "P3": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Abandoned-cart flow gives three automated touches on retail and was shown firing in Klaviyo; wholesale inquiries get one touch 'if Ruth is not travelling' (q24).",
+   "why_not_higher": "The sequence covers only the retail half — anchor 3 needs a defined sequence used on most leads, and the higher-value half of the funnel has none."
+  },
+  "P4": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Checkout completion 33% is tracked, but q25 says wholesale has no process at all and Ruth improvises; there are no stages and no loss-reason capture outside the site analytics.",
+   "why_not_higher": "Anchor 2 needs a loose process across the business; on the wholesale side there is nothing at all, and retail conversion is a site metric rather than a sales process."
+  },
+  "P5": {
+   "score": 1,
+   "na": false,
+   "evidence": "documented",
+   "note": "Price lists on file dated 2024. Q28 says pricing is based on job economics and competitor sets, but the economics are a quarterly SKU spreadsheet with freight allocated by guess (q17) — the $84K air freight run went straight to profit, not to price.",
+   "why_not_higher": "Anchor 2 needs real economics behind the price with occasional reviews; the input costs have moved and the prices have not since 2024."
+  },
+  "P6": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Rug pads and cleaning kits offered at checkout, a room bundle exists, a limited collection twice a year and an entry price point (q29).",
+   "why_not_higher": "Her own answer says the bundle was 'never merchandised properly' — anchor 3 needs the tiers and upsell actually presented on the core offer, and the highest-attachment product is only shown at the last step."
+  },
+  "P7": {
+   "score": 2,
+   "na": false,
+   "evidence": "documented",
+   "note": "Cohort export measures a 27% second-purchase rate and identifies 5,800 one-time buyers dormant 24+ months. One win-back email in 2025, never repeated (q27).",
+   "why_not_higher": "Anchor 3 needs the inactive list worked at least twice a year; it has been worked once in two years and then abandoned on margin grounds."
+  },
+  "P8": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Tomas owns marketing, Ruth owns wholesale, and CAC and conversion are reviewed weekly (q30).",
+   "why_not_higher": "Anchor 3 needs leads, conversion and value reviewed monthly by named owners — wholesale is never in the same conversation and 'nobody agrees on the definition' of lifetime value."
+  },
+  "P9": {
+   "score": 1,
+   "na": false,
+   "evidence": "documented",
+   "note": "P&L gives 44% company gross margin, but q17 confirms the by-SKU view is a quarterly spreadsheet with freight allocated by guess — so the margin on the 48% of revenue that is rugs is not actually known.",
+   "why_not_higher": "Anchor 2 needs the overall margin known and reliable; here the freight and duty that move it most are not allocated at all, which is how an $84K air freight run became a surprise."
+  },
+  "P10": {
+   "score": 1,
+   "na": false,
+   "evidence": "documented",
+   "note": "Q20 monthly-delayed; the monthly close waits on an inventory valuation that takes days to reconcile, and cash is managed off a spreadsheet Priya maintains by hand (walked in session).",
+   "why_not_higher": "Anchor 2 needs monthly-ish financials that are lightly used; here the number that matters most — cash — is not in the financials at all, it is in a personal spreadsheet."
+  },
+  "S1": {
+   "score": 1,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Q50 keeps purchasing, pricing, escalations, hiring, banking, vendors, technical decisions and strategy with Priya; only Tomas has authority, capped at $5K of ad spend (q51).",
+   "why_not_higher": "Anchor 2 needs several areas genuinely delegated; one capped spending authority in one function is not several."
+  },
+  "S2": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Four-week test (q51): the site and ads run, exceptions degrade within two days, and purchase orders, the credit line and inventory reconciliation stop entirely.",
+   "why_not_higher": "Anchor 2 needs the business to run short-term while decisions stack up; here the supply chain stops in week one, which is bleeding rather than slowing."
+  },
+  "S3": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "The site sells without her and Ruth owns the wholesale accounts end to end; only 7% of revenue rides on Priya's own relationships (q14).",
+   "why_not_higher": "Anchor 3 needs standard deals closed by the team with the owner on the largest few; the supplier side — which is where the real relationship risk sits — is entirely hers."
+  },
+  "S4": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Two leads on paper (q10) but q38 says roles are informal and q34 rates defined handoffs and exception escalation as 'rarely' consistent.",
+   "why_not_higher": "Anchor 2 needs some real managers with patchy accountability; here only marketing has an owner who owns a number, and nobody watches an operational one (q39)."
+  },
+  "S5": {
+   "score": 1,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Drive folder opened in session: four procedure documents, none covering exceptions or inventory — the two processes the business runs on. Q35 puts documented at 30% and current at 15%.",
+   "why_not_higher": "Not current, not trained from, and the critical workflows are the undocumented ones."
+  },
+  "S6": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q40 biweekly-to-monthly; the only regular meeting is marketing's, with three KPIs all owned by the same person and targets visible only in that room (q39).",
+   "why_not_higher": "Anchor 2 needs meetings to happen with a few KPIs and loose follow-through; operations — where the constraint is — has no meeting and no number."
+  },
+  "S7": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "About 18% of orders hit an exception (q4) and q36 lists missed handoffs, rework and incomplete information as recurring. Q31 says a 20% jump needs capital, not effort.",
+   "why_not_higher": "Anchor 2 needs delivery to be mostly consistent with growth needing heroics; here the heroics are already running at current volume."
+  },
+  "S8": {
+   "score": 3,
+   "na": false,
+   "evidence": "documented",
+   "note": "Cohort and channel export: largest wholesale account 12% of revenue, top five 21%, with 93% of revenue spread across 21,400 retail buyers.",
+   "why_not_higher": "Anchor 4 needs the largest under 10%; at 12% this is a broad base with one account that would still be missed."
+  },
+  "S9": {
+   "score": 1,
+   "na": false,
+   "evidence": "documented",
+   "note": "No contracted or recurring revenue at all (q12: 69% products, 31% repeat without contract); the cohort export gives a 27% second-purchase rate, so repeat exists but nothing is committed.",
+   "why_not_higher": "Anchor 2 needs some repeat or contract revenue in a form you can forecast from; a 27% repeat rate with no subscription and violent seasonality is closer to hope than to a base."
+  },
+  "S10": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Vendor agreements written, licences current, company owns its IP and accounts (q53). Q52 names the cooperatives, the credit line, Marisol and the single 3PL as known, unaddressed exposures.",
+   "why_not_higher": "No cross-training on the exception or inventory process, no second supplier or warehouse, and no continuity plan — anchor 3 needs cross-training started."
+  },
+  "L1": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Shopify, Klaviyo, the 3PL portal, QuickBooks and Gusto are real systems and were walked in session (q41).",
+   "why_not_higher": "Two big gaps rather than one: wholesale runs on a Google Sheet and email, and reporting runs on a spreadsheet Priya maintains — anchor 3 allows one."
+  },
+  "L2": {
+   "score": 0,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Q42 'one person is the integration', confirmed on the tour: Shopify → 3PL portal → QuickBooks with Marisol and Priya retyping at every join, and 38 SKUs out of agreement in the live reconciliation.",
+   "why_not_higher": "The 0 anchor verbatim — the same data is typed into several places and a person is the glue."
+  },
+  "L3": {
+   "score": 1,
+   "na": false,
+   "evidence": "documented",
+   "note": "Q43 claims accurate data, but the live reconciliation put Shopify and the 3PL 38 SKUs apart, and the number the business is actually run on — cash — lives in a hand-built spreadsheet outside every system.",
+   "why_not_higher": "Anchor 2 needs the numbers mostly right after cleanup; inventory does not survive cleanup, and there is one report anyone fully trusts."
+  },
+  "L4": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "44 h/wk inventoried in q44 and confirmed in b4, 17 of it on Marisol alone. Nothing operational has been reduced — the load is acknowledged in q4's own target and untouched.",
+   "why_not_higher": "Anchor 2 needs a few fixes made; every fix made so far is in marketing, and none of it touched the operational load."
+  },
+  "L5": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Klaviyo welcome, abandoned cart, post-purchase and review flows shown firing and genuinely reliable; ad reporting automated (q45).",
+   "why_not_higher": "Anchor 3 needs automations in several functions; every automation in this business is in one function, and nobody is named as its owner."
+  },
+  "L6": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q46: drafting, marketing content and customer communication — the marketing team uses it daily for copy and Jae drafts support replies with it.",
+   "why_not_higher": "Anchor 3 needs AI inside one or two defined workflows; here it is individual use across two teams with no workflow depending on it."
+  },
+  "L7": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q47 returns one of eight — someone accountable per implementation. No data rules, no review rule, nothing measured, nothing documented before it was automated.",
+   "why_not_higher": "Anchor 2 needs several practices however inconsistent; one is not several, particularly with customer data already flowing through the shared inbox."
+  },
+  "L8": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q48: shared passwords and unclear access on the 3PL and ad accounts, inconsistent backups, single-vendor dependence; q43 does confirm the team knows where sensitive data lives and backups exist.",
+   "why_not_higher": "Anchor 3 needs access controlled and off-boarding done; shared logins on the warehouse portal are exactly the known gap that keeps this at partial hygiene."
+  },
+  "L9": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q58 'pockets of capability'; q59 names marketing as self-sufficient in Klaviyo, operations as willing but with no time, and the bookkeeper as resistant.",
+   "why_not_higher": "Anchor 3 needs the team trained on the core tools; the operations half — where the work is — has had no training on anything."
+  },
+  "L10": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q49: $12–18K 'depends on how November goes', 3 owner hours, and team hours available only after the spring buy ships; q55 says cash must be resolved first.",
+   "why_not_higher": "Anchor 2 needs limited but real capacity; here both the budget and the hours are explicitly conditional on a cash event that has not happened."
+  }
+ },
+ "assessment": {
+  "owner_objective": "More profit & cash flow — then Better operations & delivery capacity, Use AI/automation effectively",
+  "owner_belief": "Cash. We are profitable on paper and I still cannot sleep in October. Everything I make goes back into containers six months before I can sell it, and this year the spring buy and the credit line renewal land in the same month. It has been getting worse every year since we added the wholesale line.",
+  "primary_constraint": "Cash is trapped in inventory the business cannot see accurately: Shopify, the 3PL and QuickBooks are joined by two people retyping, so demand planning, purchasing and pricing are all decided off numbers that do not agree — and the buffer for that error is bought with the credit line.",
+  "constraint_symptoms": "38 SKUs out of agreement in a single live reconciliation; an $84K emergency air freight run to cover a stockout; about 18% of orders hitting a manual exception queue; a 148-day cash conversion cycle; freight allocated by guess so the rug line's real margin is unknown; the owner reconciling inventory herself seven hours a week.",
+  "constraint_cost": "~$84K of one-off air freight and expedite cost in the last twelve months, on the P&L · ~$66K of operations and customer-experience payroll on 44 weekly hours of manual order work · ~364 owner hours a year on inventory reconciliation.",
+  "constraint_fix": "A real inventory sync between Shopify and the 3PL with exception rules that resolve the common cases automatically, freight and duty landed into SKU cost so margin and price are decided on the true number, and a rolling 13-week cash view that includes the purchase-order calendar.",
+  "momentum_initiative": "Land freight and duty into SKU cost and reprice the rug line against it — a decision inside her control, visible on the November buy, and the input to everything else on the list.",
+  "overlay_flags": [
+   "cash_distress",
+   "key_person",
+   "owner_burnout"
+  ],
+  "plan_items": [
+   "Landed-cost model with freight and duty allocated to SKU — Priya Menon — 2026-09-21",
+   "Rolling 13-week cash view including the purchase-order calendar — Priya Menon — 2026-09-28",
+   "Shopify ↔ 3PL inventory sync and automated exception rules — Marisol Duarte — 2026-11-02",
+   "One-time-buyer reactivation on the 5,800-customer dormant cohort — Tomas Errico — 2026-10-19"
+  ],
+  "overlap_factor": 0.7
+ },
+ "opportunities": [
+  {
+   "title": "Sync inventory and automate the order exception queue",
+   "finding": "Order exception triage and inventory reconciliation take 19 hours a week between Marisol and Priya (q44, confirmed live at 22 orders in 41 minutes and 38 SKUs out of agreement). The fix removes most of that work — but this is deliberately priced at zero dollars: the hours come back to an operations coordinator who is already behind and to the owner, not to payroll that gets removed or to revenue work. The report should print recovered capacity, not cash. If those hours are later redeployed onto wholesale account management, this gets re-priced then.",
+   "calculator": {
+    "kind": "automation_hours",
+    "inputs": {
+     "hoursPerWeek": 19,
+     "loadedHourlyRate": 34,
+     "automationSharePctLow": 40,
+     "automationSharePctExpected": 60,
+     "automationSharePctHigh": 75,
+     "weeksPerYear": 52,
+     "redeployed": false
+    }
+   },
+   "fix_cost": 11500,
+   "months_to_benefit": 3,
+   "confidence": "medium",
+   "include_in_report": true,
+   "basis_reported_only": false,
+   "blueprint": "Real-time inventory sync between Shopify and the 3PL, automated rules for the four exception types that make up most of the queue (backorder, split shipment, address failure, wholesale terms), and a daily variance report instead of a manual count.",
+   "replaces": "Two people retyping between three systems twice a day"
+  },
+  {
+   "title": "Reprice on landed cost, starting with the rug line",
+   "finding": "Gross margin is 44% on the P&L against a 46% target that has never been hit, and q17 confirms freight and duty are allocated by guess — so the rug line, 48% of revenue, is priced without knowing what it costs. The $84K air freight run sits on the P&L as a one-off; it is really a pricing input. A modest move on rugs and throws with landed cost underneath it.",
+   "calculator": {
+    "kind": "price_change",
+    "inputs": {
+     "revenueAffected": 1900000,
+     "priceChangePctLow": 2,
+     "priceChangePctExpected": 3,
+     "priceChangePctHigh": 5,
+     "volumeLossPctLow": 1,
+     "volumeLossPctExpected": 3,
+     "volumeLossPctHigh": 5,
+     "grossMarginPct": 44
+    }
+   },
+   "fix_cost": 3400,
+   "months_to_benefit": 2,
+   "confidence": "medium",
+   "include_in_report": true,
+   "basis_reported_only": false,
+   "blueprint": "Landed-cost model per SKU including ocean freight, duty and 3PL handling; reprice rugs and throws against it; move the shipping threshold so the checkout loss reason she named stops being subsidised out of margin.",
+   "replaces": "A 2024 price list and freight allocated by guess"
+  },
+  {
+   "title": "Bring back the 5,800 customers who bought once and never returned",
+   "finding": "The Shopify cohort export identifies 5,800 buyers with one order and nothing in 24 months, against a 27% second-purchase rate on the customers who do come back. One win-back email ran in 2025 and was dropped because the discount hurt margin — which is a reason to change the offer, not to stop. Q27 names the real problem: 'there is no reason for them to come back unless we give them one.'",
+   "calculator": {
+    "kind": "reactivation",
+    "inputs": {
+     "dormantCustomers": 5800,
+     "reactivationRatePctLow": 4,
+     "reactivationRatePctExpected": 7,
+     "reactivationRatePctHigh": 11,
+     "averageAnnualValue": 190,
+     "grossMarginPct": 44
+    }
+   },
+   "fix_cost": 2800,
+   "months_to_benefit": 2,
+   "confidence": "medium",
+   "include_in_report": true,
+   "basis_reported_only": false,
+   "blueprint": "Segment the dormant cohort by first-purchase category, run a three-touch Klaviyo sequence built on the new collection and the room bundle rather than on discount, and merchandise cushion covers and linens as the second purchase for rug buyers.",
+   "replaces": "A single discounted win-back email in 2025"
+  }
+ ],
+ "expected": {
+  "gate_should_pass": true,
+  "expected_blockers": [],
+  "expected_warnings": [
+   "one opportunity above 50% of the raw expected total — the dormant-cohort reactivation carries about 52% of the projected recovery, because the third finding is deliberately priced at $0 as capacity"
+  ],
+  "band_guess": "Stabilizing",
+  "cross_checks": {
+   "margin_vs_pnl": "pass",
+   "funnel_vs_revenue": "pass",
+   "concentration": "pass",
+   "hours_vs_headcount": "pass"
+  }
+ }
+}

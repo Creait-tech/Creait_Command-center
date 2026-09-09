@@ -1,0 +1,890 @@
+{
+ "n": 5,
+ "company": "Okafor & Lee Law",
+ "owner": "Jonathan Okafor",
+ "industry": "Law firm (family & estate)",
+ "profile": {
+  "revenue": 2200000,
+  "grossMarginPct": 58,
+  "operatingProfit": 385000,
+  "headcount": 12,
+  "founded": 2009,
+  "story": "Jonathan Okafor and Denise Lee have practised together since 2009, doing family law, probate and estate planning for households across two counties. The firm is respected, the CPA-prepared financials are clean, and the fee schedule is current. What the intake exposed is how little of the business anyone actually measures: Jonathan answered fifteen questions with 'I genuinely don't know', including where the calls come from, what proportion convert, what a matter is worth and how much of the week goes on document assembly. He is not being evasive — nobody has ever put a number on any of it. The firm runs on two partners' judgement and a practice management system nobody has configured past the calendar."
+ },
+ "edge_cases": [
+  "Fifteen intake questions answered 'unknown' — tests that unknowns are preserved and never scored as zero",
+  "Every score still resolvable from the session and the data room even where the intake is blank",
+  "Several indicators are Reported-only and widen their opportunity ranges accordingly",
+  "Financials are strong and documented, so the unknowns are about measurement, not about the money"
+ ],
+ "intake": {
+  "q1": [
+   {
+    "row": "Your name",
+    "value": "Jonathan Okafor"
+   },
+   {
+    "row": "Email",
+    "value": "jokafor@okaforlee.law"
+   },
+   {
+    "row": "Phone",
+    "value": "(704) 555-0166"
+   },
+   {
+    "row": "Company name",
+    "value": "Okafor & Lee Law"
+   },
+   {
+    "row": "Website",
+    "value": "okaforlee.law"
+   },
+   {
+    "row": "Location",
+    "value": "Charlotte, NC"
+   },
+   {
+    "row": "Industry",
+    "value": "Family law, probate and estate planning"
+   }
+  ],
+  "q2": "We are a twelve-person firm doing family law — divorce, custody, support — plus probate administration and estate planning. Two equity partners, three associates, a paralegal team of four, two legal assistants and an office administrator. Family law is hourly with a replenishing retainer; estate planning is flat fee; probate is a mix. Everything is delivered in the office or by video, entirely by our own people.",
+  "q3": [
+   {
+    "row": "Primary",
+    "objective": "Better operations & delivery capacity"
+   },
+   {
+    "row": "Secondary 1",
+    "objective": "More profit & cash flow"
+   },
+   {
+    "row": "Secondary 2",
+    "objective": "Use AI/automation effectively"
+   }
+  ],
+  "q4": "unknown",
+  "q5": "The same firm with the same two partners, but where an associate can carry a family law matter start to finish without either of us reading every filing. I would like to know what our numbers are, which is not a thing I have ever been able to say.",
+  "q6": "Split across most of these",
+  "q7": [
+   {
+    "row": "Hours/week now",
+    "value": "55"
+   },
+   {
+    "row": "Hours/week you want in 12 months",
+    "value": "48"
+   },
+   {
+    "row": "Hours/week you want in 3 years",
+    "value": "40"
+   },
+   {
+    "row": "Longest uninterrupted time away in the past 12 months",
+    "value": "11 days — Denise covered, and it worked better than I expected"
+   },
+   {
+    "row": "What pulls you back in",
+    "value": "New client consultations, and any fee dispute"
+   }
+  ],
+  "q8": "We are busy but I could not tell you whether we are busy on the right things. My honest belief is that we lose people between the first phone call and the engagement letter, and that document work is eating associate time we bill nothing for. I have believed that for about two years and have no data either way.",
+  "q9": [
+   {
+    "row": "Year founded",
+    "value": "2009"
+   },
+   {
+    "row": "Owners & percentages",
+    "value": "Jonathan Okafor 50%, Denise Lee 50%"
+   },
+   {
+    "row": "Any owner misalignment affecting decisions?",
+    "value": "Denise wants to add a second office; I want to fix this one first. It has stalled both."
+   }
+  ],
+  "q10": [
+   {
+    "row": "Full-time employees",
+    "count": "10"
+   },
+   {
+    "row": "Part-time",
+    "count": "1"
+   },
+   {
+    "row": "Regular contractors",
+    "count": "1"
+   },
+   {
+    "row": "Managers / team leads",
+    "count": "2"
+   },
+   {
+    "row": "People with direct reports",
+    "count": "3"
+   }
+  ],
+  "q11": "Regional",
+  "q12": "unknown",
+  "q13": [
+   {
+    "name": "Family law (hourly)",
+    "pct": "54",
+    "margin": "unknown",
+    "trend": "Flat",
+    "importance": "Core of the firm and the most partner-dependent"
+   },
+   {
+    "name": "Estate planning (flat fee)",
+    "pct": "26",
+    "margin": "unknown",
+    "trend": "Growing",
+    "importance": "Most systematisable work we do; priced in 2025"
+   },
+   {
+    "name": "Probate administration",
+    "pct": "17",
+    "margin": "unknown",
+    "trend": "Growing",
+    "importance": "Long tail, good realization, feeds estate planning"
+   },
+   {
+    "name": "Mediation & document review",
+    "pct": "3",
+    "margin": "unknown",
+    "trend": "Flat",
+    "importance": "Occasional work we do not market"
+   }
+  ],
+  "q14": [
+   {
+    "row": "Active customer count",
+    "value": "About 240 open matters"
+   },
+   {
+    "row": "B2B / B2C / mixed",
+    "value": "B2C almost entirely; a few small-business estate clients"
+   },
+   {
+    "row": "% of revenue from your largest customer",
+    "value": "7"
+   },
+   {
+    "row": "% of revenue from your top five",
+    "value": "16"
+   },
+   {
+    "row": "% of revenue tied directly to YOUR personal relationships",
+    "value": "Between Denise and me, most of it — maybe 65%. Referrals come to a name, not a firm."
+   }
+  ],
+  "q15": [
+   {
+    "row": "Last completed year",
+    "amount": "2200000"
+   },
+   {
+    "row": "Prior year",
+    "amount": "2050000"
+   },
+   {
+    "row": "Year to date",
+    "amount": "1610000"
+   },
+   {
+    "row": "Full-year forecast",
+    "amount": "2300000"
+   }
+  ],
+  "q16": "unknown",
+  "q17": [
+   {
+    "row": "Approximate gross margin %",
+    "value": "58"
+   },
+   {
+    "row": "Main direct costs",
+    "value": "Associate and paralegal salaries, filing fees, court reporters, expert costs passed through"
+   },
+   {
+    "row": "Tracked by job / service / customer?",
+    "value": "The practice management system could do it by matter. Nobody has ever run it."
+   }
+  ],
+  "q18": [
+   {
+    "row": "Operating profit estimate",
+    "amount": "385000"
+   },
+   {
+    "row": "Owner salary",
+    "amount": "410000 — combined across both partners"
+   },
+   {
+    "row": "Owner distributions",
+    "amount": "160000 — combined"
+   },
+   {
+    "row": "Unusual one-off expenses",
+    "amount": "unknown"
+   }
+  ],
+  "q19": [
+   "Comfortable",
+   "Customer payment timing"
+  ],
+  "q20": "Monthly, within 15 days",
+  "q21": "unknown",
+  "q22": "CPA-prepared P&L and balance sheet for 2024 and 2025 plus interim 2026, the current fee schedule, AR and unbilled WIP aging, and a revenue-by-client export from the practice management system. Our CPA can send whatever else you need.",
+  "q23": "unknown",
+  "q24": [
+   {
+    "row": "What happens, step by step",
+    "value": "The call goes to the front desk, who takes a message and puts it on the consult list; Denise or I call back and decide whether to book a consultation; the assistant sends the engagement letter after we say yes"
+   },
+   {
+    "row": "Typical response time",
+    "value": "Callbacks happen the same day if we are not in court, and the next day if we are"
+   },
+   {
+    "row": "Who is responsible",
+    "value": "The front desk takes it, the partners decide"
+   },
+   {
+    "row": "Is every inquiry captured in one system?",
+    "value": "The consult list is a shared spreadsheet. Matters that open go into the practice management system."
+   },
+   {
+    "row": "Automated follow-up?",
+    "value": "No"
+   },
+   {
+    "row": "% of leads that get 2+ follow-ups",
+    "value": "unknown"
+   }
+  ],
+  "q25": "unknown",
+  "q26": "unknown",
+  "q27": "unknown",
+  "q28": [
+   "Reviewed annually",
+   "Based on real job economics",
+   "Varies by scope or value",
+   "The team can defend the price"
+  ],
+  "q29": [
+   {
+    "row": "Complementary services routinely offered?",
+    "value": "Estate planning is a natural follow-on from probate and we mention it, but there is nothing systematic"
+   },
+   {
+    "row": "Bundles or packages?",
+    "value": "Three flat-fee estate planning packages"
+   },
+   {
+    "row": "Premium option?",
+    "value": "The trust package, yes"
+   },
+   {
+    "row": "Entry-level option?",
+    "value": "The simple will package at $850"
+   },
+   {
+    "row": "Customer needs you can't currently serve",
+    "value": "Business succession, tax controversy, anything litigated outside our two counties"
+   }
+  ],
+  "q30": [
+   {
+    "row": "Who owns marketing",
+    "value": "Nobody. The website was last touched in 2023."
+   },
+   {
+    "row": "Who owns sales",
+    "value": "The two partners, in the consultation"
+   },
+   {
+    "row": "Monthly marketing budget",
+    "value": "About $600 for directory listings"
+   },
+   {
+    "row": "Do sales & marketing review results together?",
+    "value": "There is nothing to review"
+   },
+   {
+    "row": "Are leads, conversion, CAC and customer value ever reviewed together?",
+    "value": "No"
+   }
+  ],
+  "q31": "Quality would slip",
+  "q32": [
+   {
+    "row": "1",
+    "area": "Converting more of the people who call us"
+   },
+   {
+    "row": "2",
+    "area": "Document assembly time in estate planning"
+   },
+   {
+    "row": "3",
+    "area": "Flat-fee pricing on the estate packages"
+   }
+  ],
+  "q33": [
+   {
+    "workflow": "New client inquiry and consultation booking"
+   },
+   {
+    "workflow": "Conflict check and intake"
+   },
+   {
+    "workflow": "Engagement letter and retainer collection"
+   },
+   {
+    "workflow": "Matter management and deadline calendaring"
+   },
+   {
+    "workflow": "Document drafting and assembly"
+   },
+   {
+    "workflow": "Court filing and service"
+   },
+   {
+    "workflow": "Time capture and billing"
+   },
+   {
+    "workflow": "Trust accounting and reconciliation"
+   },
+   {
+    "workflow": "Matter closing and file retention"
+   }
+  ],
+  "q34": [
+   {
+    "row": "One clear accountable role",
+    "frequency": "Usually"
+   },
+   {
+    "row": "Defined handoffs",
+    "frequency": "Sometimes"
+   },
+   {
+    "row": "Consistent exception escalation",
+    "frequency": "Sometimes"
+   }
+  ],
+  "q35": "unknown",
+  "q36": [
+   "Incomplete information",
+   "Late billing",
+   "The owner has to step in",
+   "Rework"
+  ],
+  "q37": "Owner time",
+  "q38": "Mostly clear, with gaps",
+  "q39": "unknown",
+  "q40": "Biweekly to monthly",
+  "q41": [
+   {
+    "row": "CRM",
+    "tool": "None — the consult list is a shared spreadsheet"
+   },
+   {
+    "row": "Marketing",
+    "tool": "None"
+   },
+   {
+    "row": "Sales / proposals",
+    "tool": "Engagement letter templates in Word"
+   },
+   {
+    "row": "Scheduling / project management",
+    "tool": "Practice management system calendar and deadlines"
+   },
+   {
+    "row": "Delivery",
+    "tool": "Practice management system, Word, a document assembly add-in nobody finished configuring"
+   },
+   {
+    "row": "Accounting",
+    "tool": "QuickBooks with an outside CPA; trust accounting inside the practice management system"
+   },
+   {
+    "row": "Reporting",
+    "tool": "Whatever the CPA sends monthly"
+   },
+   {
+    "row": "Communication",
+    "tool": "Outlook and the phone"
+   },
+   {
+    "row": "Files / knowledge",
+    "tool": "Practice management document store plus a network drive of old templates"
+   },
+   {
+    "row": "HR / payroll",
+    "tool": "ADP"
+   }
+  ],
+  "q42": "Mostly separate, plus spreadsheets",
+  "q43": "unknown",
+  "q44": "unknown",
+  "q45": "Court deadline calculations and calendar reminders are automated inside the practice management system and they are reliable — that is genuinely important and it works. Client intake, engagement letters, document assembly and billing are all manual.",
+  "q46": [
+   "Drafting",
+   "Research"
+  ],
+  "q47": "unknown",
+  "q48": [
+   "Unclear access",
+   "No tested recovery",
+   "One-vendor or one-person dependence"
+  ],
+  "q49": "unknown",
+  "q58": "A few curious people, no training",
+  "q59": "The office administrator would take on anything — she has asked twice for a better intake process. One associate uses AI for research already and is careful about it. The senior paralegal will resist any change to document templates she wrote.",
+  "q56": "unknown",
+  "q50": [
+   "Major sales",
+   "Pricing exceptions",
+   "Customer escalations",
+   "Hiring / firing",
+   "Banking / payments",
+   "Quality sign-off",
+   "Strategy"
+  ],
+  "q51": [
+   {
+    "row": "What keeps running",
+    "value": "Open matters, deadlines and court appearances — the associates and the calendar carry it"
+   },
+   {
+    "row": "What slows down",
+    "value": "New client consultations, and billing decisions on write-offs"
+   },
+   {
+    "row": "What stops",
+    "value": "Nothing stops outright. Denise can cover me and I can cover her, which is the one thing we did build."
+   },
+   {
+    "row": "Who decides",
+    "value": "Whichever partner is available; the administrator for anything operational"
+   },
+   {
+    "row": "What nobody else can access",
+    "value": "The trust account and the malpractice policy"
+   }
+  ],
+  "q52": [
+   {
+    "risk": "The two partners as the source of essentially all new matters",
+    "impact": "Referrals come to a name — if either of us stops, the pipeline halves"
+   },
+   {
+    "risk": "Senior paralegal who owns every document template",
+    "impact": "Estate planning drafting would slow badly; nothing about her templates is documented"
+   },
+   {
+    "risk": "The practice management vendor",
+    "impact": "Deadlines, documents and trust accounting all live in one system with no tested export"
+   }
+  ],
+  "q53": [
+   "Customer agreements are written & accessible",
+   "Vendor agreements are written",
+   "Licenses & insurance are current",
+   "Employment agreements are current",
+   "The company owns its IP and digital accounts",
+   "No known legal, tax or insurance issue"
+  ],
+  "q54": [
+   "Financial reporting",
+   "SOPs & knowledge transfer",
+   "Leadership depth"
+  ],
+  "q55": "Ready if priorities stay tight",
+  "q57": "Steady"
+ },
+ "session": {
+  "engine": {
+   "leads_per_month": "26",
+   "conversion_rate": "55%",
+   "avg_deal_value": "$12,800",
+   "response_time": "Same day unless in court, then next day",
+   "gross_margin_pct": "58",
+   "headcount": "12",
+   "repetitive_hours_week": "Client intake calls & consult scheduling — front desk — 14\nConflict checks — paralegals — 6\nInvoicing & trust reconciliation — administrator — 9\nDocument drafting & assembly — paralegals — 11",
+   "largest_customer_pct": "7"
+  },
+  "blockNotes": {
+   "b1": "Fifteen intake questions came back 'unknown' and none of them were evasive — the firm has genuinely never counted leads, conversion, matter value, repeat work, documentation coverage or KPIs. The unknowns are themselves the finding and are preserved as unknown, not zeroed. Everything below was built in the room from the practice management system and the CPA package.",
+   "b2": "Funnel reconstructed live from the consult spreadsheet and the matter records: 26 inquiries a month, 55% become engaged matters, $12,800 average matter value. Multiplies to $2.20M against $2.20M on the CPA P&L. Roughly 18% of the consult list has no outcome recorded at all — those are the ones his Q8 belief is about, and the spreadsheet proves he is right that they exist without proving how many convert.",
+   "b3": "Fee schedule on file, revised January 2026, built from realization data the CPA prepares. The team can quote a flat-fee estate package without asking a partner — demonstrated when the front desk fielded a call mid-session. This is the strongest pricing discipline in the cohort.",
+   "b4": "Practice management system holds matters, deadlines and documents; the consult list is a spreadsheet outside it and billing is a manual export to QuickBooks. 40 h/wk repetitive against a 480-hour payroll (8.3%). The document assembly add-in was bought, part-configured, and abandoned — 11 hours a week are being spent on work the firm has already paid for a tool to do.",
+   "b5": "Four-week test is the best in the cohort: two partners genuinely cover each other and an 11-day absence already proved it. Largest client 7% on the revenue-by-client export. Contracts, licences, insurance and employment agreements all current and seen."
+  },
+  "demonstrated": [
+   "Front desk took a live new-client call and quoted a flat-fee estate package without escalating",
+   "The consult spreadsheet opened and counted: 71 rows in the last quarter, 13 with no outcome recorded",
+   "A paralegal assembled a standard will package live — 48 minutes, cut and pasted from three prior matters",
+   "The document assembly add-in opened, showing four of about thirty templates configured and none in use",
+   "Systems tour: practice management system → manual export → QuickBooks, with the consult spreadsheet outside everything",
+   "Deadline calculation and calendar reminders shown firing correctly on a live matter"
+  ],
+  "documents_seen": [
+   "CPA-prepared P&L and balance sheet 2024–2025 plus 2026 interim — revenue $2.20M, gross margin 58%, operating profit $385K",
+   "Fee schedule revised January 2026 with realization data behind it",
+   "AR and unbilled WIP aging — $214K AR, $186K unbilled",
+   "Revenue by client export — largest 7%, top five 16%",
+   "Matter history report — 240 open matters, source of referral recorded on 61% of them"
+  ]
+ },
+ "dataRoom": {
+  "pnl_on_file": true,
+  "documents": [
+   {
+    "name": "CPA-prepared P&L and balance sheet 2024–2025 + 2026 interim",
+    "kind": "pnl",
+    "received_on": "2026-08-27"
+   },
+   {
+    "name": "Fee schedule revised January 2026",
+    "kind": "rate_card",
+    "received_on": "2026-08-27"
+   },
+   {
+    "name": "AR and unbilled WIP aging",
+    "kind": "ar_aging",
+    "received_on": "2026-08-30"
+   },
+   {
+    "name": "Revenue by client, trailing 12 months",
+    "kind": "revenue_by_customer",
+    "received_on": "2026-08-30"
+   },
+   {
+    "name": "Matter history report from the practice management system",
+    "kind": "other",
+    "received_on": "2026-09-03"
+   }
+  ]
+ },
+ "scores": {
+  "P1": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q23 came back unknown — no lead source is counted anywhere. The matter report records a referral source on 61% of open matters, so sources can be named from memory (other attorneys, past clients, two directory listings) but no volume is kept.",
+   "why_not_higher": "Anchor 2 needs volume roughly tracked; there are no counts of any kind, and the 39% of matters with no source recorded means even the record that exists is incomplete."
+  },
+  "P2": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Calls reach the front desk, get logged on the consult spreadsheet and are called back the same day unless a partner is in court (q24, confirmed on a live call). Capture is inconsistent — the spreadsheet lives outside the practice management system.",
+   "why_not_higher": "Anchor 3 needs every inquiry captured in one system; 13 of 71 consult rows last quarter have no outcome recorded at all."
+  },
+  "P3": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q24 records no automated follow-up and the percentage getting two touches came back unknown. In session the partners confirmed a second call happens 'if one of us remembers before the week is out'.",
+   "why_not_higher": "No sequence and no record of who was followed up — the 13 outcome-less consult rows are the evidence."
+  },
+  "P4": {
+   "score": 1,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Q25 came back unknown in full. The 55% conversion used in b2 was reconstructed in the room from the consult spreadsheet against opened matters — it was not a number the firm held.",
+   "why_not_higher": "Anchor 2 needs a rate roughly known by the business; this one existed for the first time at 11:40am on the day of the intensive."
+  },
+  "P5": {
+   "score": 2,
+   "na": false,
+   "evidence": "documented",
+   "note": "Fee schedule on file revised January 2026 from realization data, three named flat-fee packages, and the front desk quoted one live without escalation (q28: reviewed annually, based on real economics, team can defend).",
+   "why_not_higher": "Anchor 3 needs written discount rules and a review against costs; write-offs are decided matter by matter by whichever partner is asked, and nothing is written."
+  },
+  "P6": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Three flat-fee estate packages with a premium trust tier and an $850 entry point (q29) — but the natural probate-to-estate-planning follow-on is 'mentioned, nothing systematic' by his own answer.",
+   "why_not_higher": "Anchor 2 needs add-ons offered ad hoc across the team; the ladder exists only inside one practice area and the cross-sell happens only when a partner thinks of it."
+  },
+  "P7": {
+   "score": 2,
+   "na": false,
+   "evidence": "documented",
+   "note": "Q27 came back unknown. The matter history report shows repeat and referring-client work at roughly a third of new matters, so the rate is knowable and now roughly known; no dormant-client list exists and no reactivation has ever run.",
+   "why_not_higher": "Anchor 3 needs the inactive list pulled and worked; a firm with 240 open matters and no closed-matter follow-up has never pulled one."
+  },
+  "P8": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q30: nobody owns marketing, the website was last touched in 2023, and the partners own sales inside the consultation. Nothing is reviewed together because nothing is counted.",
+   "why_not_higher": "Anchor 2 needs named owners and numbers reviewed sometimes; there is no owner and no number."
+  },
+  "P9": {
+   "score": 2,
+   "na": false,
+   "evidence": "documented",
+   "note": "CPA P&L confirms 58% gross margin; q17 says the practice management system could report margin by matter and nobody has ever run it, and q13's per-service margins came back unknown.",
+   "why_not_higher": "Anchor 3 needs margin known by service line; the capability exists and has never been used, which is exactly the 'known overall, not by job' line."
+  },
+  "P10": {
+   "score": 3,
+   "na": false,
+   "evidence": "documented",
+   "note": "Q20 monthly within 15 days, CPA-prepared and reviewed by both partners; AR and WIP aging on file and current.",
+   "why_not_higher": "Q21 targets came back unknown — no revenue, margin, profit, cash or comp target exists anywhere, which is the line anchor 4 draws."
+  },
+  "S1": {
+   "score": 1,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Q50 keeps new matters, pricing exceptions, escalations, hiring, banking, quality sign-off and strategy with the partners; the administrator decides operational matters only.",
+   "why_not_higher": "Anchor 2 needs several areas genuinely delegated; every consultation and every fee decision still routes to a partner."
+  },
+  "S2": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q51: nothing stops outright because the partners cover each other, proved by an 11-day absence this year. New consultations and billing decisions slow.",
+   "why_not_higher": "Anchor 3 needs a named deputy with only a few owner-locked items — here the deputy is the other 50% owner, which is partner redundancy rather than depth below the partners."
+  },
+  "S3": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q14: about 65% of revenue rides on the two partners' personal referral relationships, and every consultation is taken by a partner (q24).",
+   "why_not_higher": "Anchor 2 needs the team selling with owner rescue; no associate has ever run a consultation or opened a matter."
+  },
+  "S4": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Two team leads and three people with direct reports (q10); the office administrator and the senior paralegal both run real areas, and q34 rates accountable ownership as 'usually' true.",
+   "why_not_higher": "Anchor 3 needs managers owning metrics; q39 came back unknown because there are no metrics to own."
+  },
+  "S5": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Q35 came back unknown. In session: matter procedures and deadline rules are genuinely documented inside the practice management system and followed, while intake, engagement and document assembly are not documented at all — the will package was assembled by copying three prior matters.",
+   "why_not_higher": "Anchor 3 needs core workflows documented and current; the front half of the client journey has nothing written."
+  },
+  "S6": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q40 biweekly-to-monthly, and q39 (scoreboard) came back unknown — there are no KPIs, so nothing is reviewed against a number.",
+   "why_not_higher": "Anchor 2 needs meetings to happen with at least a few KPIs; the meeting happens and there are none."
+  },
+  "S7": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q31 'quality would slip' on a 20% jump; q36 lists rework and incomplete information as recurring failures. Court deadlines have never been missed — the calendar system is the one hard control.",
+   "why_not_higher": "Anchor 3 needs QC steps defined and +20% straining rather than breaking; by his own answer quality is the thing that gives."
+  },
+  "S8": {
+   "score": 4,
+   "na": false,
+   "evidence": "documented",
+   "note": "Revenue-by-client export: largest client 7%, top five 16% across roughly 240 open matters — a genuinely broad base.",
+   "why_not_higher": "Top of the scale."
+  },
+  "S9": {
+   "score": 2,
+   "na": false,
+   "evidence": "documented",
+   "note": "Q12 came back unknown; the matter report shows flat-fee estate work and probate administration carrying multi-month engagement terms, roughly a third of revenue, with hourly family law the rest. No forecast of any kind.",
+   "why_not_higher": "Anchor 3 needs ≥40% recurring or contracted plus a rolling forecast; neither condition is met and nobody is forecasting anything."
+  },
+  "S10": {
+   "score": 2,
+   "na": false,
+   "evidence": "documented",
+   "note": "Q53 returns every item true and the engagement letters, vendor agreements, licences, insurance and employment agreements were all in the data room.",
+   "why_not_higher": "No cross-training on the senior paralegal's templates, no tested export from the practice management vendor, and no continuity plan — all three named in q52 as known and unaddressed."
+  },
+  "L1": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Practice management system, QuickBooks and ADP are real systems and the calendar/deadline module is excellent (q41, walked in session).",
+   "why_not_higher": "Two significant gaps: no CRM at all — the consult list is a spreadsheet — and no reporting layer beyond what the CPA sends."
+  },
+  "L2": {
+   "score": 1,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Q42 'mostly separate, plus spreadsheets'; the tour showed the practice management system exporting to QuickBooks by hand each month and the consult spreadsheet connected to nothing.",
+   "why_not_higher": "Anchor 2 needs some integrations; there are none — the only join is a scheduled manual export."
+  },
+  "L3": {
+   "score": 2,
+   "na": false,
+   "evidence": "documented",
+   "note": "Q43 came back unknown, but the CPA package and the practice management reports agree on revenue and the AR/WIP aging is current and trusted. Reports exist and are right; they simply have to be asked for.",
+   "why_not_higher": "Anchor 3 needs agreed KPI definitions; the firm has no KPIs, so there is nothing to define, and every report beyond the CPA's needs building by hand."
+  },
+  "L4": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q44 came back unknown; the 40 h/wk inventory in b4 was built in the room. Nothing has been reduced — the document assembly add-in was bought and abandoned four templates in.",
+   "why_not_higher": "Anchor 2 needs a few fixes actually made; the one fix attempted was never finished and is not in use."
+  },
+  "L5": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Deadline calculation and calendar reminders run automatically and reliably inside the practice management system (q45) — vendor-configured, and nobody in the firm owns or maintains them.",
+   "why_not_higher": "Anchor 2 needs a few automations across the business; there is one function automated and everything else — intake, engagement, drafting, billing — is manual."
+  },
+  "L6": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q46: drafting and research. One associate uses an AI research tool carefully and on her own initiative (q59); nobody else uses anything.",
+   "why_not_higher": "One person experimenting alone is the anchor-1 line exactly."
+  },
+  "L7": {
+   "score": 0,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q47 came back unknown, and in session neither partner could name a rule, a review step or a measurement — in a firm holding privileged client data, that absence is the finding.",
+   "why_not_higher": "Anchor 1 needs at least a verbal rule; the associate using an AI research tool has set her own, and the firm has set none."
+  },
+  "L8": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q48: unclear access and no tested recovery, plus single-vendor dependence on the practice management system. Individual logins are in place and trust accounting is properly segregated — partial hygiene with known gaps.",
+   "why_not_higher": "Anchor 3 needs access controlled with off-boarding done and a backup tested once; the vendor export has never been tested and access has never been reviewed."
+  },
+  "L9": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q58 'a few curious people, no training'; q59 names the administrator and one associate as willing and the senior paralegal as resistant to any template change.",
+   "why_not_higher": "No training has happened at all, so there are no pockets of capability — only individuals."
+  },
+  "L10": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q49 came back unknown, but q55 is 'ready if priorities stay tight' and in session the partners agreed a $20–30K range and named the administrator's time as available.",
+   "why_not_higher": "Anchor 3 needs budget and time named and set aside; the budget was named for the first time in the room and the partner disagreement about a second office is an open competing claim on both."
+  }
+ },
+ "assessment": {
+  "owner_objective": "Better operations & delivery capacity — then More profit & cash flow, Use AI/automation effectively",
+  "owner_belief": "We are busy but I could not tell you whether we are busy on the right things. My honest belief is that we lose people between the first phone call and the engagement letter, and that document work is eating associate time we bill nothing for. I have believed that for about two years and have no data either way.",
+  "primary_constraint": "The firm is unmeasured at the front end: intake, follow-up and matter value live on a spreadsheet outside every system, so both partners' judgement is the only instrument the business has — and it cannot see the inquiries that quietly do not convert.",
+  "constraint_symptoms": "Fifteen intake questions answered 'unknown'; 13 of 71 consult rows last quarter with no outcome recorded; no automated follow-up anywhere; a paralegal cutting a will package together from three prior matters in 48 minutes while a configured assembly tool sits unused; no KPI, no target and no owner for marketing.",
+  "constraint_cost": "~$46K of expected operating profit in consultations that are never followed up to a decision · ~$27K of paralegal payroll on 11 weekly hours of document assembly the firm already owns a tool for · ~156 partner hours a year on consultations no associate has been trained to take.",
+  "constraint_fix": "Move intake into the practice management system so every inquiry has an owner, a next action and a recorded outcome; finish the document assembly configuration for the estate packages; and put three numbers — inquiries, conversion, average matter value — on a monthly page both partners see.",
+  "momentum_initiative": "Finish configuring the document assembly templates for the three estate packages — already paid for, entirely inside the firm's control, and visible in paralegal hours within four weeks.",
+  "overlay_flags": [
+   "key_person"
+  ],
+  "plan_items": [
+   "Intake moved into the practice management system with recorded outcomes — Adaeze Nwosu (administrator) — 2026-09-23",
+   "Document assembly configured for the three estate packages — Jonathan Okafor — 2026-10-07",
+   "Two-touch follow-up standard on every consultation — Denise Lee — 2026-10-14",
+   "Monthly one-page scoreboard: inquiries, conversion, average matter value, WIP — Adaeze Nwosu — 2026-11-04"
+  ],
+  "overlap_factor": 0.7
+ },
+ "opportunities": [
+  {
+   "title": "Follow up the consultations that currently go unrecorded",
+   "finding": "The consult spreadsheet showed 71 inquiries last quarter with 13 carrying no outcome at all — about 18% of the flow. There is no automated follow-up (q24) and the percentage getting a second touch came back unknown. Recovering part of that flow closes at the 55% rate reconstructed in b2, on a $12,800 average matter. Basis is reported only: the conversion rate and the lost share were both built in the room from a spreadsheet, not from a system.",
+   "calculator": {
+    "kind": "response_time",
+    "inputs": {
+     "leadsPerYear": 312,
+     "shareLostPct": 18,
+     "recoveryRatePctLow": 12,
+     "recoveryRatePctExpected": 20,
+     "recoveryRatePctHigh": 32,
+     "closePct": 55,
+     "averageFirstYearValue": 12800,
+     "grossMarginPct": 58
+    }
+   },
+   "fix_cost": 4500,
+   "months_to_benefit": 2,
+   "confidence": "medium",
+   "include_in_report": true,
+   "basis_reported_only": true,
+   "blueprint": "Intake moved into the practice management system with a required outcome field, a two-touch follow-up standard owned by the administrator, and a weekly review of consultations with no recorded result.",
+   "replaces": "A shared spreadsheet with thirteen blank rows"
+  },
+  {
+   "title": "Finish the document assembly the firm already paid for",
+   "finding": "Paralegals spend 11 hours a week drafting and assembling documents, demonstrated at 48 minutes for a standard will package assembled by copying three prior matters. The assembly add-in is bought and installed with four of about thirty templates configured and none in use. These hours are counted as dollars because the paralegal team is the constraint on estate planning throughput — the hours go straight back onto billable matter work, which the WIP aging shows there is demand for.",
+   "calculator": {
+    "kind": "automation_hours",
+    "inputs": {
+     "hoursPerWeek": 11,
+     "loadedHourlyRate": 48,
+     "automationSharePctLow": 40,
+     "automationSharePctExpected": 55,
+     "automationSharePctHigh": 70,
+     "weeksPerYear": 52,
+     "redeployed": true
+    }
+   },
+   "fix_cost": 6800,
+   "months_to_benefit": 2,
+   "confidence": "medium",
+   "include_in_report": true,
+   "basis_reported_only": true,
+   "blueprint": "Configure the assembly templates for the three flat-fee estate packages and the four most common family law filings, with the senior paralegal owning the template library so the change happens with her rather than to her.",
+   "replaces": "Cutting and pasting from three prior matters"
+  },
+  {
+   "title": "Reprice the flat-fee estate packages against realization",
+   "finding": "The fee schedule is current, defensible and reviewed annually — this is a strong-pricing firm. The gap is that estate planning is 26% of revenue on flat fees set against 2025 realization, while the drafting hours behind them have not been measured since. Once the assembly work is timed properly, the packages can be repriced on what they actually cost. Reported only: no by-matter margin has ever been run.",
+   "calculator": {
+    "kind": "price_change",
+    "inputs": {
+     "revenueAffected": 640000,
+     "priceChangePctLow": 5,
+     "priceChangePctExpected": 8,
+     "priceChangePctHigh": 12,
+     "volumeLossPctLow": 2,
+     "volumeLossPctExpected": 4,
+     "volumeLossPctHigh": 7,
+     "grossMarginPct": 58
+    }
+   },
+   "fix_cost": 1800,
+   "months_to_benefit": 3,
+   "confidence": "medium",
+   "include_in_report": true,
+   "basis_reported_only": true,
+   "blueprint": "Run the by-matter margin report the practice management system already supports, reprice the three packages against it, and write the write-off rule that currently lives in whichever partner is asked.",
+   "replaces": "Flat fees set once against realization data nobody has revisited"
+  }
+ ],
+ "expected": {
+  "gate_should_pass": true,
+  "expected_blockers": [],
+  "expected_warnings": [],
+  "band_guess": "Building",
+  "cross_checks": {
+   "margin_vs_pnl": "pass",
+   "funnel_vs_revenue": "pass",
+   "concentration": "pass",
+   "hours_vs_headcount": "pass"
+  }
+ }
+}

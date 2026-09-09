@@ -1,0 +1,1172 @@
+{
+ "n": 8,
+ "company": "Whitaker Custom Builders",
+ "owner": "Dale Whitaker",
+ "industry": "Residential construction (custom homes & major renovations)",
+ "profile": {
+  "revenue": 4500000,
+  "grossMarginPct": 21,
+  "operatingProfit": 225000,
+  "headcount": 22,
+  "founded": 2006,
+  "story": "Dale builds four to six custom homes a year plus a handful of large renovations, working with architects across two affluent suburbs. Twenty-two people: four carpentry crews, two project managers, a selections coordinator and an office. He has a reputation that fills the schedule and a business that makes 5% because change orders go unbilled, allowances get blown on the client's side and nobody has costed a job against its budget since the estimate was written. Dale still walks every site, prices every build himself and signs every subcontractor. The intake numbers he gave for leads and average value describe his design agreements, not his builds — which is exactly the confusion the diagnostic exists to surface."
+ },
+ "edge_cases": [
+  "Designed to FAIL the funnel cross-check: 40 leads/mo × 30% × $9,000 implies about $1.3M against $4.5M of revenue — roughly 29%",
+  "The mismatch is a definition problem, not a data problem: the numbers describe design agreements, and the builds those turn into are never counted as 'leads'. The facilitator note carries the explanation.",
+  "Gate should still pass — the mismatch is explained, not hidden",
+  "Largest customer 21% is below the 25% overlay but scores S8 at 1"
+ ],
+ "intake": {
+  "q1": [
+   {
+    "row": "Your name",
+    "value": "Dale Whitaker"
+   },
+   {
+    "row": "Email",
+    "value": "dale@whitakercustom.com"
+   },
+   {
+    "row": "Phone",
+    "value": "(615) 555-0137"
+   },
+   {
+    "row": "Company name",
+    "value": "Whitaker Custom Builders"
+   },
+   {
+    "row": "Website",
+    "value": "whitakercustom.com"
+   },
+   {
+    "row": "Location",
+    "value": "Franklin, TN"
+   },
+   {
+    "row": "Industry",
+    "value": "Custom home building and major renovation"
+   }
+  ],
+  "q2": "We build custom homes from $420,000 to about $1.1 million and take on four or five large renovations a year. Most work comes through three architecture firms and past clients. We self-perform framing and carpentry with four crews and sub out everything else. Twenty-two people including two project managers, a selections coordinator and three in the office. The typical build runs nine to fourteen months.",
+  "q3": [
+   {
+    "row": "Primary",
+    "objective": "More profit & cash flow"
+   },
+   {
+    "row": "Secondary 1",
+    "objective": "Better operations & delivery capacity"
+   },
+   {
+    "row": "Secondary 2",
+    "objective": "Reduce owner dependence"
+   }
+  ],
+  "q4": [
+   {
+    "row": "1",
+    "outcome": "Gross margin on completed builds",
+    "target": "21% → 26%"
+   },
+   {
+    "row": "2",
+    "outcome": "Change orders billed rather than absorbed",
+    "target": "Maybe half → all of them"
+   },
+   {
+    "row": "3",
+    "outcome": "Builds I do not have to price personally",
+    "target": "0 → half"
+   }
+  ],
+  "q5": "Six or seven homes a year at a real margin, two project managers who can price and run a job without me, and a selections process that does not end with us eating the difference. I would like to be choosing which jobs we take instead of being the estimator.",
+  "q6": "Split across most of these",
+  "q7": [
+   {
+    "row": "Hours/week now",
+    "value": "66"
+   },
+   {
+    "row": "Hours/week you want in 12 months",
+    "value": "50"
+   },
+   {
+    "row": "Hours/week you want in 3 years",
+    "value": "40"
+   },
+   {
+    "row": "Longest uninterrupted time away in the past 12 months",
+    "value": "5 days, and there were 40 texts waiting"
+   },
+   {
+    "row": "What pulls you back in",
+    "value": "Any pricing question, any change order, and any subcontractor who did not show up"
+   }
+  ],
+  "q8": "We are busy and we do not make money. Four homes running at once and I still cannot tell you until the end which one paid. My gut says it is the change orders and the allowances — we do the work and then somebody decides it was included. It has been like this since about 2022 when material prices moved every month.",
+  "q9": [
+   {
+    "row": "Year founded",
+    "value": "2006"
+   },
+   {
+    "row": "Owners & percentages",
+    "value": "Dale Whitaker 100%"
+   },
+   {
+    "row": "Any owner misalignment affecting decisions?",
+    "value": "No"
+   }
+  ],
+  "q10": [
+   {
+    "row": "Full-time employees",
+    "count": "18"
+   },
+   {
+    "row": "Part-time",
+    "count": "1"
+   },
+   {
+    "row": "Regular contractors",
+    "count": "3"
+   },
+   {
+    "row": "Managers / team leads",
+    "count": "3"
+   },
+   {
+    "row": "People with direct reports",
+    "count": "3"
+   }
+  ],
+  "q11": "Local",
+  "q12": [
+   {
+    "row": "One-time projects",
+    "pct": "88"
+   },
+   {
+    "row": "Recurring contracts",
+    "pct": "0"
+   },
+   {
+    "row": "Repeat without contract",
+    "pct": "9"
+   },
+   {
+    "row": "Products",
+    "pct": "0"
+   },
+   {
+    "row": "Retainers",
+    "pct": "3"
+   },
+   {
+    "row": "Other",
+    "pct": "0"
+   }
+  ],
+  "q13": [
+   {
+    "name": "Custom home builds",
+    "pct": "71",
+    "margin": "19",
+    "trend": "Flat",
+    "importance": "The business; also where every margin problem lives"
+   },
+   {
+    "name": "Major renovations & additions",
+    "pct": "22",
+    "margin": "26",
+    "trend": "Growing",
+    "importance": "Better margin, shorter cycle, we keep saying we will do more"
+   },
+   {
+    "name": "Design agreements & pre-construction",
+    "pct": "4",
+    "margin": "48",
+    "trend": "Growing",
+    "importance": "How every build starts; priced at about $9,000"
+   },
+   {
+    "name": "Warranty & punch-out work",
+    "pct": "3",
+    "margin": "5",
+    "trend": "Flat",
+    "importance": "Almost entirely unbilled; a cost we call a service"
+   }
+  ],
+  "q14": [
+   {
+    "row": "Active customer count",
+    "value": "Nine active jobs, about 140 past clients"
+   },
+   {
+    "row": "B2B / B2C / mixed",
+    "value": "B2C homeowners, introduced by three architecture firms"
+   },
+   {
+    "row": "% of revenue from your largest customer",
+    "value": "21"
+   },
+   {
+    "row": "% of revenue from your top five",
+    "value": "68"
+   },
+   {
+    "row": "% of revenue tied directly to YOUR personal relationships",
+    "value": "Nearly all of it — the architects call me, not the company"
+   }
+  ],
+  "q15": [
+   {
+    "row": "Last completed year",
+    "amount": "4500000"
+   },
+   {
+    "row": "Prior year",
+    "amount": "4900000"
+   },
+   {
+    "row": "Year to date",
+    "amount": "3200000"
+   },
+   {
+    "row": "Full-year forecast",
+    "amount": "4400000"
+   }
+  ],
+  "q16": "Declined 10% or less",
+  "q17": [
+   {
+    "row": "Approximate gross margin %",
+    "value": "21"
+   },
+   {
+    "row": "Main direct costs",
+    "value": "Subcontractors, materials, our own crew labour and burden, permits"
+   },
+   {
+    "row": "Tracked by job / service / customer?",
+    "value": "The accounting system has job cost turned on but nobody reconciles it against the estimate. We find out at closeout."
+   }
+  ],
+  "q18": [
+   {
+    "row": "Operating profit estimate",
+    "amount": "225000"
+   },
+   {
+    "row": "Owner salary",
+    "amount": "180000"
+   },
+   {
+    "row": "Owner distributions",
+    "amount": "35000"
+   },
+   {
+    "row": "Unusual one-off expenses",
+    "amount": "47000 — a retaining wall failure we absorbed"
+   }
+  ],
+  "q19": [
+   "Profitable but tight",
+   "Customer payment timing",
+   "Materials / inventory",
+   "Seasonality"
+  ],
+  "q20": "Monthly, delayed",
+  "q21": [
+   {
+    "row": "Revenue",
+    "target": "$5M"
+   },
+   {
+    "row": "Gross margin",
+    "target": "26%"
+   },
+   {
+    "row": "Operating profit",
+    "target": "No target"
+   },
+   {
+    "row": "Cash reserve",
+    "target": "No target; draws cover payroll and that is the plan"
+   },
+   {
+    "row": "Owner compensation",
+    "target": "Same salary, take a real distribution for once"
+   }
+  ],
+  "q22": "QuickBooks P&L 2024–2026, the WIP and draw schedule, AR aging, the allowance schedule and unit price sheet we give clients, and a revenue-by-client export. No reconciled job-cost report — the data is in there, nobody has ever pulled it against the estimates.",
+  "q23": [
+   {
+    "source": "Architect referrals (three firms)",
+    "per_month": "18",
+    "cost": "0",
+    "quality": "5",
+    "tracked": "No"
+   },
+   {
+    "source": "Past client & word of mouth",
+    "per_month": "12",
+    "cost": "0",
+    "quality": "5",
+    "tracked": "No"
+   },
+   {
+    "source": "Website & Houzz",
+    "per_month": "7",
+    "cost": "1400",
+    "quality": "2",
+    "tracked": "Yes"
+   },
+   {
+    "source": "Realtor introductions",
+    "per_month": "3",
+    "cost": "0",
+    "quality": "3",
+    "tracked": "No"
+   }
+  ],
+  "q24": [
+   {
+    "row": "What happens, step by step",
+    "value": "The architect or the homeowner calls me directly; I meet them at the site; if it feels right I write a design agreement and we start pre-construction"
+   },
+   {
+    "row": "Typical response time",
+    "value": "I call back the same day. Site visit inside a week if I can get there."
+   },
+   {
+    "row": "Who is responsible",
+    "value": "Me. The office takes messages."
+   },
+   {
+    "row": "Is every inquiry captured in one system?",
+    "value": "No. Some are in my phone, some are on the office message pad, the ones that go somewhere end up in the project system."
+   },
+   {
+    "row": "Automated follow-up?",
+    "value": "No"
+   },
+   {
+    "row": "% of leads that get 2+ follow-ups",
+    "value": "The serious ones, so maybe half"
+   }
+  ],
+  "q25": [
+   {
+    "row": "Lead→sale or proposal→close %",
+    "value": "About 30% of the people I meet sign a design agreement. Of those, roughly a third go to a build contract."
+   },
+   {
+    "row": "Tracked by source / person / service?",
+    "value": "No"
+   },
+   {
+    "row": "Defined sales process?",
+    "value": "There is a sequence I follow — site visit, design agreement, pre-construction, build contract — but nothing is written and only I run it"
+   },
+   {
+    "row": "Most common reason you lose",
+    "value": "The budget conversation. They wanted a number six weeks ago and got it late, or the number was bigger than the architect implied."
+   }
+  ],
+  "q26": [
+   {
+    "row": "Typical first sale",
+    "value": "$9,000 — that is the design agreement, which is what people actually sign first"
+   },
+   {
+    "row": "Typical annual customer value",
+    "value": "A build is $420K to $1.1M, averaging about $680K, spread over nine to fourteen months"
+   },
+   {
+    "row": "Most valuable segment",
+    "value": "Renovations over $300K — better margin, shorter cycle, less selections churn"
+   },
+   {
+    "row": "Tracked?",
+    "value": "Not really. I know it from the contracts."
+   }
+  ],
+  "q27": [
+   {
+    "row": "% who buy again",
+    "value": "Homeowners rarely build twice. The architects repeat — three firms send us most of our work."
+   },
+   {
+    "row": "Renewal rate if applicable",
+    "value": "n/a"
+   },
+   {
+    "row": "Are inactive customers identified?",
+    "value": "No. 140 past clients and we contact none of them."
+   },
+   {
+    "row": "Reactivation campaigns ever run?",
+    "value": "Never"
+   },
+   {
+    "row": "Why customers leave",
+    "value": "They finish the house. The ones we should worry about are the architects, and one of them has gone quiet this year."
+   }
+  ],
+  "q28": [
+   "Based on real job economics",
+   "Varies by scope or value",
+   "Set on the owner's gut",
+   "Pricing is a current worry"
+  ],
+  "q29": [
+   {
+    "row": "Complementary services routinely offered?",
+    "value": "Landscape and outdoor living, occasionally. Warranty work we just do."
+   },
+   {
+    "row": "Bundles or packages?",
+    "value": "No"
+   },
+   {
+    "row": "Premium option?",
+    "value": "The selections have tiers but the allowance is one number in the contract"
+   },
+   {
+    "row": "Entry-level option?",
+    "value": "The design agreement"
+   },
+   {
+    "row": "Customer needs you can't currently serve",
+    "value": "Anything under $250K, and clients who want a fixed price before drawings exist"
+   }
+  ],
+  "q30": [
+   {
+    "row": "Who owns marketing",
+    "value": "Nobody. The website is from 2021."
+   },
+   {
+    "row": "Who owns sales",
+    "value": "Me"
+   },
+   {
+    "row": "Monthly marketing budget",
+    "value": "$1,400, mostly Houzz"
+   },
+   {
+    "row": "Do sales & marketing review results together?",
+    "value": "No"
+   },
+   {
+    "row": "Are leads, conversion, CAC and customer value ever reviewed together?",
+    "value": "No"
+   }
+  ],
+  "q31": "We'd have to hire",
+  "q32": [
+   {
+    "row": "1",
+    "area": "Billing the change orders we actually do"
+   },
+   {
+    "row": "2",
+    "area": "Allowances — getting the selections decided before we start"
+   },
+   {
+    "row": "3",
+    "area": "Getting a second person able to price a build"
+   }
+  ],
+  "q33": [
+   {
+    "workflow": "Lead intake and site visit"
+   },
+   {
+    "workflow": "Estimating and build pricing"
+   },
+   {
+    "workflow": "Design agreement and pre-construction"
+   },
+   {
+    "workflow": "Selections and allowance management"
+   },
+   {
+    "workflow": "Subcontractor scheduling and buyout"
+   },
+   {
+    "workflow": "Change order pricing and approval"
+   },
+   {
+    "workflow": "Draw requests and progress billing"
+   },
+   {
+    "workflow": "Quality walk-throughs and punch lists"
+   },
+   {
+    "workflow": "Closeout, warranty and job cost review"
+   }
+  ],
+  "q34": [
+   {
+    "row": "One clear accountable role",
+    "frequency": "Usually"
+   },
+   {
+    "row": "Defined handoffs",
+    "frequency": "Sometimes"
+   },
+   {
+    "row": "Consistent exception escalation",
+    "frequency": "Rarely"
+   }
+  ],
+  "q35": [
+   {
+    "row": "Documented",
+    "pct": "40"
+   },
+   {
+    "row": "Current",
+    "pct": "25"
+   },
+   {
+    "row": "Accessible",
+    "pct": "45"
+   },
+   {
+    "row": "Used in training",
+    "pct": "25"
+   },
+   {
+    "row": "Actually followed",
+    "pct": "35"
+   }
+  ],
+  "q36": [
+   "Missed handoffs",
+   "Scheduling delays",
+   "Incomplete information",
+   "Rework",
+   "Late billing",
+   "The owner has to step in",
+   "Accountability problems"
+  ],
+  "q37": "Owner time",
+  "q38": "Mostly clear, with gaps",
+  "q39": [
+   {
+    "row": "How many KPIs reviewed weekly",
+    "value": "Two — jobs on schedule and what is due to bill"
+   },
+   {
+    "row": "Does each have one owner?",
+    "value": "The project managers, loosely"
+   },
+   {
+    "row": "Are targets visible?",
+    "value": "The schedule is on the wall. No financial target is visible anywhere."
+   },
+   {
+    "row": "Does a miss trigger action?",
+    "value": "A schedule miss does. A cost miss nobody sees until closeout."
+   }
+  ],
+  "q40": "Weekly but loose",
+  "q41": [
+   {
+    "row": "CRM",
+    "tool": "None — my phone and a message pad"
+   },
+   {
+    "row": "Marketing",
+    "tool": "Houzz profile and a 2021 website"
+   },
+   {
+    "row": "Sales / proposals",
+    "tool": "Excel estimate workbook and a Word contract template"
+   },
+   {
+    "row": "Scheduling / project management",
+    "tool": "A construction project system, used for schedule and photos only"
+   },
+   {
+    "row": "Delivery",
+    "tool": "The same project system, plus texts to subs"
+   },
+   {
+    "row": "Accounting",
+    "tool": "QuickBooks with job cost enabled and unreconciled"
+   },
+   {
+    "row": "Reporting",
+    "tool": "None. The bookkeeper prints a P&L."
+   },
+   {
+    "row": "Communication",
+    "tool": "Text messages, individually, all day"
+   },
+   {
+    "row": "Files / knowledge",
+    "tool": "Dropbox, organised by job, mostly photos"
+   },
+   {
+    "row": "HR / payroll",
+    "tool": "A payroll service"
+   }
+  ],
+  "q42": "The same data is entered in several places",
+  "q43": [
+   "Data is generally accurate",
+   "Backups exist"
+  ],
+  "q44": [
+   {
+    "task": "Change order write-ups and chasing approval",
+    "who": "Dale and the PMs",
+    "frequency": "Several times a week",
+    "occurrences": "5",
+    "minutes": "120",
+    "errors": "Yes",
+    "systems": "Excel, email, texts"
+   },
+   {
+    "task": "Selections tracking and allowance reconciliation",
+    "who": "Selections coordinator",
+    "frequency": "Daily",
+    "occurrences": "5",
+    "minutes": "96",
+    "errors": "Yes",
+    "systems": "Spreadsheet, supplier emails"
+   },
+   {
+    "task": "Draw requests and progress billing",
+    "who": "Office manager",
+    "frequency": "Weekly",
+    "occurrences": "3",
+    "minutes": "140",
+    "errors": "Yes",
+    "systems": "Excel, QuickBooks, lender portals"
+   },
+   {
+    "task": "Subcontractor scheduling and confirmation calls",
+    "who": "Project managers",
+    "frequency": "Daily",
+    "occurrences": "5",
+    "minutes": "108",
+    "errors": "Yes",
+    "systems": "Project system, phone, texts"
+   },
+   {
+    "task": "Weekly job cost look-up for Dale",
+    "who": "Bookkeeper",
+    "frequency": "Weekly",
+    "occurrences": "1",
+    "minutes": "300",
+    "errors": "Yes",
+    "systems": "QuickBooks, Excel"
+   }
+  ],
+  "q45": "The project system sends schedule updates and photo notifications to clients, and that works. Nothing else — estimates, change orders, selections, draws and scheduling are all manual, and most of the coordination happens by text message.",
+  "q46": [
+   "None"
+  ],
+  "q47": [],
+  "q48": [
+   "Shared passwords",
+   "Unclear access",
+   "Inconsistent backups",
+   "No tested recovery",
+   "Unclear account ownership"
+  ],
+  "q49": [
+   {
+    "row": "Implementation budget range",
+    "value": "$15–25K if it shows up in margin"
+   },
+   {
+    "row": "Owner hours/week available",
+    "value": "3"
+   },
+   {
+    "row": "Team hours/week available",
+    "value": "6"
+   },
+   {
+    "row": "Appetite for changing systems",
+    "value": "Medium. The office wants it, the crews will complain, the PMs are in between."
+   }
+  ],
+  "q58": "A few curious people, no training",
+  "q59": "The selections coordinator would take on a real system tomorrow — she has been asking for two years. The office manager would too. One project manager is genuinely interested; the other and all four crew leads want to be left alone with their phones.",
+  "q56": [
+   {
+    "role": "Office manager",
+    "rate": "36"
+   },
+   {
+    "role": "Selections coordinator",
+    "rate": "38"
+   },
+   {
+    "role": "Project manager",
+    "rate": "58"
+   },
+   {
+    "role": "Carpenter / crew lead",
+    "rate": "52"
+   },
+   {
+    "role": "Owner",
+    "rate": "92"
+   }
+  ],
+  "q50": [
+   "Pricing exceptions",
+   "Major sales",
+   "Customer escalations",
+   "Hiring / firing",
+   "Purchasing",
+   "Scheduling",
+   "Quality sign-off",
+   "Banking / payments",
+   "Vendor relationships",
+   "Technical decisions",
+   "Strategy"
+  ],
+  "q51": [
+   {
+    "row": "What keeps running",
+    "value": "The crews build what is already drawn and bought. Two weeks, maybe three."
+   },
+   {
+    "row": "What slows down",
+    "value": "Subcontractor scheduling within days; draws immediately; selections stall"
+   },
+   {
+    "row": "What stops",
+    "value": "All estimating, every change order, and every new job"
+   },
+   {
+    "row": "Who decides",
+    "value": "The project managers on site sequencing. Nothing else."
+   },
+   {
+    "row": "What nobody else can access",
+    "value": "The bank, the lender portals, the supplier accounts, and the estimate workbook"
+   }
+  ],
+  "q52": [
+   {
+    "risk": "Dale — sole estimator, sole relationship with all three architecture firms",
+    "impact": "New work stops immediately and no build can be priced"
+   },
+   {
+    "risk": "The largest job at 21% of revenue and the architect who sends most of it",
+    "impact": "One quiet architect this year has already taken visible volume out of next year"
+   },
+   {
+    "risk": "The framing crew lead of 11 years",
+    "impact": "Self-performed work is our margin; he holds the standard and the training"
+   },
+   {
+    "risk": "The estimate workbook, which exists on one laptop",
+    "impact": "Every price we have ever built is in it and nobody else opens it"
+   }
+  ],
+  "q53": [
+   "Customer agreements are written & accessible",
+   "Licenses & insurance are current",
+   "No known legal, tax or insurance issue"
+  ],
+  "q54": [
+   "Sales without the owner",
+   "Financial reporting",
+   "Delivery consistency"
+  ],
+  "q55": "The owner would have to drive everything",
+  "q57": "Tired but managing"
+ },
+ "session": {
+  "engine": {
+   "leads_per_month": "40",
+   "conversion_rate": "30%",
+   "avg_deal_value": "$9,000",
+   "response_time": "Same-day callback, site visit within a week",
+   "gross_margin_pct": "21",
+   "headcount": "22",
+   "repetitive_hours_week": "Change order write-ups & chasing — Dale and PMs — 10\nSelections & allowance reconciliation — coordinator — 8\nDraw requests & progress billing — office manager — 7\nSubcontractor scheduling calls — PMs — 9\nWeekly job cost look-up — bookkeeper — 5",
+   "largest_customer_pct": "21"
+  },
+  "blockNotes": {
+   "b1": "Q8 belief is change orders and allowances, and it is half right — the evidence says the leak is real but that it is a pricing-discipline and job-cost-visibility problem rather than a client-behaviour problem. Q55 is 'the owner would have to drive everything', which he volunteered before being asked.",
+   "b2": "READ THIS BEFORE THE CROSS-CHECK PANEL. The engine numbers captured here — 40 leads a month, 30% conversion, $9,000 average — are the numbers Dale gave and they are internally true, but they describe the DESIGN AGREEMENT, not the build. Multiplying them gives about $1.30M against $4.50M of revenue, roughly 29%, and the funnel check will flag. It should. The explanation is a definition gap, not a data error: about a third of design agreements convert onward into build contracts averaging $680,000, and Dale does not count a build as a 'lead' because by then he considers it already sold. The reconciliation that actually holds is 40 × 12 × 30% = 144 design agreements, of which roughly a third become builds — call it 6 to 7 a year at $680K, which is $4.1–4.8M. The flag stays on the record with this note attached; the fix is to capture the build funnel separately, which the business currently cannot do because nothing is in a system.",
+   "b3": "Allowance schedule and unit price sheet on file. Both are real documents built from real costs — in 2023. Material and sub pricing has moved twice since and neither has been revised. Change orders are written after the work is done about half the time, by his own estimate.",
+   "b4": "39 h/wk repetitive on a 22-person, 880-hour payroll (4.4%) — comfortably inside the check, and that is the point: this is not a payroll-scale problem, it is a margin-visibility problem. The bookkeeper spends five hours a week manually looking up job cost that the accounting system already holds because nobody has ever set up the report.",
+   "b5": "Four-week test: crews build for two to three weeks and then everything commercial has stopped. Largest job 21% and top five 68% on the revenue-by-client export — under the 25% overlay but thin, especially with one referring architect gone quiet. The estimate workbook lives on one laptop."
+  },
+  "demonstrated": [
+   "Dale priced a kitchen addition live from the Excel estimate workbook — 52 minutes, three sub prices from memory, two looked up by phone",
+   "The change order file opened for one active job: eleven change orders, five written after the work was done, two never billed",
+   "Systems tour: estimate workbook → Word contract → project system → QuickBooks, retyped at each step",
+   "The selections spreadsheet walked with the coordinator, showing two jobs already over allowance with no client sign-off recorded",
+   "The project system's client photo and schedule notifications shown firing correctly",
+   "The Dropbox job folders opened — photos and permits current, procedures effectively absent"
+  ],
+  "documents_seen": [
+   "QuickBooks P&L 2024–2026 — revenue $4.50M, gross margin 21%, operating profit $225K",
+   "WIP and draw schedule across nine active jobs",
+   "AR aging — $186K out, $74K over 45 days on two lender draws",
+   "Allowance schedule and unit price sheet dated 2023",
+   "Revenue by client export — largest 21%, top five 68%"
+  ]
+ },
+ "dataRoom": {
+  "pnl_on_file": true,
+  "documents": [
+   {
+    "name": "QuickBooks P&L 2024–2026",
+    "kind": "pnl",
+    "received_on": "2026-08-29"
+   },
+   {
+    "name": "WIP and draw schedule",
+    "kind": "other",
+    "received_on": "2026-08-29"
+   },
+   {
+    "name": "AR aging as of 31 Aug 2026",
+    "kind": "ar_aging",
+    "received_on": "2026-09-01"
+   },
+   {
+    "name": "Allowance schedule and unit price sheet (2023)",
+    "kind": "rate_card",
+    "received_on": "2026-09-01"
+   },
+   {
+    "name": "Revenue by client, trailing 12 months",
+    "kind": "revenue_by_customer",
+    "received_on": "2026-09-03"
+   }
+  ]
+ },
+ "scores": {
+  "P1": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q23 names four sources with rough monthly counts from memory (architects 18, past clients 12, web 7, realtors 3) and three of the four are untracked; q24 confirms inquiries live in his phone and on a message pad.",
+   "why_not_higher": "Anchor 2 needs volume roughly tracked somewhere; nothing is counted in any system, which is also why the build funnel could not be reconstructed in b2."
+  },
+  "P2": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Same-day callback and a site visit inside a week (q24) — genuinely fast for this trade, and confirmed by two calls he returned during the session. Capture is inconsistent: phone, message pad, project system.",
+   "why_not_higher": "Anchor 3 needs every inquiry captured in one system; by his own answer only the ones that go somewhere end up recorded at all."
+  },
+  "P3": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "No automated follow-up (q24); 'the serious ones, so maybe half' get a second touch, decided by whether Dale remembers.",
+   "why_not_higher": "No sequence and no record of who was followed up — and with a six-week budget conversation as the named loss reason, the gap is expensive."
+  },
+  "P4": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "There is a real sequence — site visit, design agreement, pre-construction, build contract — and rough rates for each step (30% to a design agreement, about a third of those to a build). Nothing is written and only he runs it (q25).",
+   "why_not_higher": "Anchor 3 needs stages defined and used by the business with the rate tracked; here the rate is a recollection and the two-stage funnel is not recorded anywhere, which is what produced the cross-check flag."
+  },
+  "P5": {
+   "score": 2,
+   "na": false,
+   "evidence": "documented",
+   "note": "Allowance schedule and unit price sheet on file, both built from real cost data and both dated 2023. Q28 confirms real job economics and scope-based pricing alongside owner-gut pricing.",
+   "why_not_higher": "Anchor 3 needs prices reviewed against costs annually with written discount rules; material and sub costs have moved twice since the last revision and no discount or allowance-overrun rule is written."
+  },
+  "P6": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Selections carry tiers and the design agreement acts as an entry offer; landscape and outdoor living are offered occasionally (q29).",
+   "why_not_higher": "Anchor 3 needs named tiers with a scripted upsell; the allowance is a single number in the contract, warranty work is given away, and there are no bundles at all."
+  },
+  "P7": {
+   "score": 2,
+   "na": false,
+   "evidence": "documented",
+   "note": "The revenue-by-client export shows the repeat structure clearly — homeowners rarely rebuild, three architecture firms send most of the work, and one of them has gone quiet this year (q27). 140 past clients, none contacted.",
+   "why_not_higher": "Anchor 3 needs the inactive list worked; the referral relationships that actually repeat have no cadence at all, which is how a quiet architect went unnoticed for two quarters."
+  },
+  "P8": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q30: nobody owns marketing, the website is from 2021, sales is Dale, and nothing is reviewed together.",
+   "why_not_higher": "No named owner and no number — anchor 2 needs owners named and numbers reviewed at least sometimes."
+  },
+  "P9": {
+   "score": 2,
+   "na": false,
+   "evidence": "documented",
+   "note": "P&L confirms 21% gross margin against a 26% target. Q17 is the finding: job cost is enabled in the accounting system and has never been reconciled against an estimate, so margin is known for the company and for no individual job until closeout.",
+   "why_not_higher": "Anchor 3 needs margin by job type known and used in pricing; in a business where every job is a different price, that absence is the whole problem."
+  },
+  "P10": {
+   "score": 2,
+   "na": false,
+   "evidence": "documented",
+   "note": "Q20 monthly-delayed; a bookkeeper prints a P&L and the WIP and draw schedule are current and on file. Q21 sets a revenue and margin target and none for profit or cash.",
+   "why_not_higher": "Anchor 3 needs a close inside 30 days reviewed by the owner; here the review that matters — cost against estimate — happens at closeout, which can be fourteen months after the decision."
+  },
+  "S1": {
+   "score": 1,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Q50 returns all eleven areas — every one still requires him — and q51 gives the project managers site sequencing and nothing else. Two pricing calls interrupted the session.",
+   "why_not_higher": "Only routine site work is delegated; anchor 2 needs several areas genuinely handed over and there are none."
+  },
+  "S2": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Four-week test (q51): crews build for two to three weeks on what is already drawn and bought; estimating, change orders, draws and new work stop immediately. Longest absence five days with 40 texts waiting.",
+   "why_not_higher": "No named deputy, and the commercial side of the business is stopped from day one."
+  },
+  "S3": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q14: nearly all revenue traces to Dale's relationships and 'the architects call me, not the company'; nobody else can price a build (q4's own target is to change that).",
+   "why_not_higher": "Anchor 2 needs someone else able to quote; the estimate workbook sits on one laptop and no one else has opened it."
+  },
+  "S4": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Three managers with direct reports (q10); the project managers genuinely run site sequencing and q34 rates accountable ownership 'usually' true.",
+   "why_not_higher": "Anchor 3 needs managers owning outcomes and metrics; q36 lists accountability problems and owner intervention as recurring, and no PM owns a cost number."
+  },
+  "S5": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Q35: 40% documented, 25% current. The Dropbox job folders opened in session hold current photos and permits and essentially no procedures; the schedule template in the project system is the one real standard.",
+   "why_not_higher": "Anchor 3 needs core workflows documented and current — change orders, selections and estimating, the three that carry the margin, have nothing written."
+  },
+  "S6": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Weekly meeting happens but loose (q40) with two KPIs — jobs on schedule and what is due to bill — loosely owned by the project managers (q39).",
+   "why_not_higher": "Anchor 3 needs 3–7 owned KPIs with an agenda; there are two, both operational, and by his own answer a cost miss is invisible until closeout."
+  },
+  "S7": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Build quality is not on the q36 failure list and the crews deliver, but rework, missed handoffs and scheduling delays all are, and q31 says a 20% jump means hiring.",
+   "why_not_higher": "Anchor 3 needs QC steps defined and a +20% that strains rather than breaks; punch-out and warranty work is absorbed rather than controlled, and there is no capacity plan."
+  },
+  "S8": {
+   "score": 1,
+   "na": false,
+   "evidence": "documented",
+   "note": "Revenue-by-client export: largest job 21% of revenue, top five 68%. Below the 25% overlay threshold so it is a watch item rather than a warning, but with one referring architect quiet this year the top-five number is the one to read.",
+   "why_not_higher": "v2 anchor 1 is 20–30% and 21% sits in it."
+  },
+  "S9": {
+   "score": 1,
+   "na": false,
+   "evidence": "documented",
+   "note": "Q12: 88% one-time projects, no contracted or recurring revenue; the WIP schedule shows nine jobs that all end. Backlog is the only forward visibility and it is not a forecast.",
+   "why_not_higher": "Anchor 2 needs some repeat or contract revenue; the 9% repeat is architect referral flow, not committed revenue, and revenue declined year on year."
+  },
+  "S10": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Customer agreements are written and accessible and licences and insurance are current (q53); q52 names four known, unaddressed exposures including the sole estimator and the workbook on one laptop.",
+   "why_not_higher": "No vendor agreements, no employment agreements, no continuity plan and no cross-training — anchor 3 needs cross-training started on key roles."
+  },
+  "L1": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "The construction project system, QuickBooks with job cost enabled, Dropbox and a payroll service are real systems (q41).",
+   "why_not_higher": "Three core areas have none: no CRM at all, estimating is an Excel workbook, and reporting is a printed P&L — more than the single gap anchor 3 allows."
+  },
+  "L2": {
+   "score": 1,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Q42 'the same data is entered in several places', confirmed on the tour: estimate workbook → Word contract → project system → QuickBooks, retyped at every step.",
+   "why_not_higher": "There is one scheduled manual chain and no integration anywhere; anchor 2 needs at least some integrations."
+  },
+  "L3": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "The bookkeeper spends five hours a week hand-building the job cost look-up from data the accounting system already holds (q44), and by q17 nothing is reconciled against an estimate. The printed P&L is the only report anyone trusts.",
+   "why_not_higher": "Anchor 2 needs the numbers mostly right after cleanup; here the number that runs the business — cost against budget per job — does not exist until closeout."
+  },
+  "L4": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "39 h/wk inventoried (q44) across change orders, selections, draws, scheduling calls and the job cost look-up. The load is acknowledged in his own q32 answers and nothing has been fixed.",
+   "why_not_higher": "Anchor 2 needs a few fixes made; the only automation in the business came bundled with the project system."
+  },
+  "L5": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Client schedule and photo notifications from the project system run reliably and were shown firing — vendor-configured, nobody owns them (q45).",
+   "why_not_higher": "One automation in one function; anchor 2 needs a few across the business, and estimates, change orders, selections and draws are all manual."
+  },
+  "L6": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q46 returned 'None'. In session Dale said he had used a chat tool twice to draft a client letter, which is the only AI use anywhere in the business.",
+   "why_not_higher": "Scored 1 rather than 0 only because that individual experimentation exists; nothing else does."
+  },
+  "L7": {
+   "score": 0,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q47 returned empty — none of the eight discipline statements is true. There is no rule, no review, no owner and no measurement, which follows from there being almost nothing to govern.",
+   "why_not_higher": "The 0 anchor verbatim."
+  },
+  "L8": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q48: shared passwords, unclear access, inconsistent backups, no tested recovery and unclear account ownership. The estimate workbook — every price the company has ever built — sits on one laptop (q52).",
+   "why_not_higher": "Anchor 2 needs partial hygiene with known gaps; five of the eight risk statements are true and the single most valuable file has no backup anyone has tested."
+  },
+  "L9": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q58 'a few curious people, no training'; q59 names the selections coordinator (asking for two years), the office manager and one PM as willing, against one PM and four crew leads who are not.",
+   "why_not_higher": "No training has happened, so there is appetite in individuals and no capability anywhere."
+  },
+  "L10": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q49: $15–25K if it shows up in margin, 3 owner hours and 6 team hours; appetite medium with the office keen and the crews resistant.",
+   "why_not_higher": "Q55 is 'the owner would have to drive everything' — the budget is real and the execution capacity is not, which is exactly the limited-but-real line."
+  }
+ },
+ "assessment": {
+  "owner_objective": "More profit & cash flow — then Better operations & delivery capacity, Reduce owner dependence",
+  "owner_belief": "We are busy and we do not make money. Four homes running at once and I still cannot tell you until the end which one paid. My gut says it is the change orders and the allowances — we do the work and then somebody decides it was included. It has been like this since about 2022 when material prices moved every month.",
+  "primary_constraint": "Nobody can see a job's cost against its budget while the job is still running: job cost is enabled and never reconciled, change orders are written after the work half the time, and allowances are tracked in a spreadsheet — so the only person who can defend a price is the owner, and he finds out whether he was right at closeout.",
+  "constraint_symptoms": "Eleven change orders on one active job with five written after the work and two never billed; two jobs already over allowance with no client sign-off recorded; a bookkeeper spending five hours a week hand-building a report the accounting system could produce; 21% margin against a 26% target; a $47K retaining wall absorbed; the estimate workbook on one laptop.",
+  "constraint_cost": "~$225K of gross margin between the 21% achieved and the 26% targeted on $4.5M of revenue · ~$47K of change-order and allowance work performed and never billed in the last twelve months, from the change order file · ~520 owner hours a year on estimating and change-order pricing nobody else can do.",
+  "constraint_fix": "A change order that cannot start without written approval, allowances reconciled weekly against signed selections, and job cost reported against estimate every month while the job can still be steered — with a second estimator trained on the workbook as the same job's exit condition.",
+  "momentum_initiative": "Turn on the job-cost-against-estimate report the accounting system already supports and read it at the Monday meeting — no purchase, no new tool, and it makes the margin visible while there is still a job to fix.",
+  "overlay_flags": [
+   "key_person",
+   "data_risk"
+  ],
+  "plan_items": [
+   "Job cost against estimate reported monthly on every active job — Dale Whitaker — 2026-09-21",
+   "No-approval-no-work change order rule with a written price sheet — Priya Shah (office manager) — 2026-09-28",
+   "Selections and allowance reconciliation moved into a real system — Bethany Cole (selections coordinator) — 2026-10-26",
+   "Second estimator trained on the workbook, starting with renovations — Dale Whitaker — 2026-12-07"
+  ],
+  "overlap_factor": 0.7
+ },
+ "opportunities": [
+  {
+   "title": "Win more of the builds already being priced",
+   "finding": "About 144 design agreements a year convert onward to six or seven builds at an average of $680,000 — roughly $6.2M of build proposals issued annually (reconstructed in b2 from the contract file, because nothing tracks this). The named loss reason is the budget conversation arriving late or larger than the architect implied. A faster, better-supported number at the pre-construction stage is the cheapest lever in the business.",
+   "calculator": {
+    "kind": "close_rate_lift",
+    "inputs": {
+     "quotedVolume": 6200000,
+     "currentClosePct": 34,
+     "liftPointsLow": 2,
+     "liftPointsExpected": 4,
+     "liftPointsHigh": 6,
+     "grossMarginPct": 21,
+     "incrementalCostPct": 4
+    }
+   },
+   "fix_cost": 6800,
+   "months_to_benefit": 4,
+   "confidence": "medium",
+   "include_in_report": true,
+   "basis_reported_only": true,
+   "blueprint": "A costed budget range delivered inside two weeks of the site visit off a maintained unit price sheet, the two-stage funnel actually recorded so design agreements and build conversions can be counted, and a second person trained to price renovations.",
+   "replaces": "A six-week wait for a number only the owner can produce"
+  },
+  {
+   "title": "Bill the change orders and hold the allowances",
+   "finding": "The change order file for one active job showed eleven change orders, five written after the work was done and two never billed at all (demonstrated). The selections spreadsheet showed two jobs already over allowance with no client sign-off recorded. The allowance schedule and unit price sheet on file are dated 2023 while sub and material costs have moved twice since. This prices a modest uplift on the allowance and change-order portion of revenue only, not on base contracts.",
+   "calculator": {
+    "kind": "price_change",
+    "inputs": {
+     "revenueAffected": 1350000,
+     "priceChangePctLow": 2,
+     "priceChangePctExpected": 3,
+     "priceChangePctHigh": 5,
+     "volumeLossPctLow": 1,
+     "volumeLossPctExpected": 2,
+     "volumeLossPctHigh": 4,
+     "grossMarginPct": 21
+    }
+   },
+   "fix_cost": 4200,
+   "months_to_benefit": 2,
+   "confidence": "medium",
+   "include_in_report": true,
+   "basis_reported_only": false,
+   "blueprint": "Rebuild the allowance schedule and unit price sheet on current sub and material pricing, a written no-approval-no-work rule on change orders, and a weekly allowance reconciliation the selections coordinator owns.",
+   "replaces": "A 2023 price sheet and change orders written after the fact"
+  },
+  {
+   "title": "Stop hand-building the change order and job cost paperwork",
+   "finding": "Change order write-ups and the weekly job cost look-up take 15 hours a week between the owner, the project managers and the bookkeeper (q44) — and the job cost half of it reproduces a report the accounting system can already generate. These hours are dollarised because the owner's share of them is estimating time, and estimating capacity is the direct constraint on how many builds the company can take.",
+   "calculator": {
+    "kind": "automation_hours",
+    "inputs": {
+     "hoursPerWeek": 10,
+     "loadedHourlyRate": 44,
+     "automationSharePctLow": 40,
+     "automationSharePctExpected": 55,
+     "automationSharePctHigh": 70,
+     "weeksPerYear": 52,
+     "redeployed": true
+    }
+   },
+   "fix_cost": 5400,
+   "months_to_benefit": 3,
+   "confidence": "medium",
+   "include_in_report": true,
+   "basis_reported_only": false,
+   "blueprint": "Change orders raised, priced and approved inside the project system against the unit price sheet, and the job-cost-against-estimate report scheduled monthly out of the accounting system instead of rebuilt by hand.",
+   "replaces": "Excel, email, texts, and five bookkeeper hours a week"
+  }
+ ],
+ "expected": {
+  "gate_should_pass": true,
+  "expected_blockers": [],
+  "expected_warnings": [],
+  "band_guess": "Stabilizing",
+  "cross_checks": {
+   "margin_vs_pnl": "pass",
+   "funnel_vs_revenue": "flag",
+   "concentration": "pass",
+   "hours_vs_headcount": "pass"
+  }
+ }
+}

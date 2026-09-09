@@ -101,8 +101,8 @@ export const ENGINE_METRICS = [
   },
   {
     key: "avg_deal_value",
-    label: "Average job / deal value",
-    hint: "Dollars, typical not best.",
+    label: "Average first-year value of a new customer",
+    hint: "Dollars, typical not best — a year of the customer, not the first visit or first job alone.",
     block: "b2",
   },
   {
@@ -401,6 +401,13 @@ export interface CrossCheckAssessment {
   gross_margin: number | null;
   operating_profit: number | null;
   intake?: Json | null;
+  /**
+   * Whether the baseline figures were read off a P&L or copied from the
+   * owner's intake. The margin check words its line differently for each —
+   * "on file" promises a document, and the simulation run caught the check
+   * saying it about a self-reported number.
+   */
+  pnl_on_file?: boolean | null;
 }
 
 export interface CrossCheckResult {
@@ -500,6 +507,14 @@ export const CROSS_CHECKS: CrossCheck[] = [
           ? (assessment.operating_profit / revenue) * 100
           : null;
 
+      // Without a P&L the baseline margin is the owner's own intake answer, so
+      // the line has to say so — the check is then "today vs the intake", not
+      // "today vs the books".
+      const source = assessment.pnl_on_file ? "on file" : "on the intake";
+      const sourceSays = assessment.pnl_on_file
+        ? "the file says"
+        : "the intake said";
+
       if (stated === null) return insufficient("No gross margin captured yet.");
       if (filed === null && operating === null) {
         return insufficient(
@@ -508,7 +523,7 @@ export const CROSS_CHECKS: CrossCheck[] = [
       }
       if (filed !== null && Math.abs(stated - filed) > 8) {
         return flag(
-          `They say ${round1(stated)}%, the file says ${round1(filed)}% — ${round1(Math.abs(stated - filed))} points apart.`
+          `They say ${round1(stated)}%, ${sourceSays} ${round1(filed)}% — ${round1(Math.abs(stated - filed))} points apart.`
         );
       }
       // A gross margin under the operating margin is arithmetically impossible,
@@ -520,7 +535,7 @@ export const CROSS_CHECKS: CrossCheck[] = [
       }
       return pass(
         filed !== null
-          ? `${round1(stated)}% stated against ${round1(filed)}% on file.`
+          ? `${round1(stated)}% stated against ${round1(filed)}% ${source}.`
           : `${round1(stated)}% stated, above the ${round1(operating ?? 0)}% operating margin as it should be.`
       );
     },
@@ -554,9 +569,30 @@ export const CROSS_CHECKS: CrossCheck[] = [
       const leadsPerYear = (perMonth as number) * 12;
       const implied =
         leadsPerYear * ((close as number) / 100) * (value as number);
-      const ratio = implied / (revenue as number);
-      const detail = `${Math.round(leadsPerYear)} leads/yr × ${round1(close as number)}% × ${money(value as number)} = ${money(implied)} against ${money(revenue as number)} — ${Math.round(ratio * 100)}%.`;
-      return ratio < 0.6 || ratio > 1.4 ? flag(detail) : pass(detail);
+      // A funnel only explains revenue that arrives through an inquiry.
+      // Contracts, retainers and repeat customers mostly do not, so a
+      // repeat-heavy business compared against its whole top line flags every
+      // time. When the intake's revenue-model split is on file, the floor the
+      // funnel must explain is the new-business share (one-time projects,
+      // products, other); without it, the total, and the detail says which.
+      const share = intakeFigures(assessment)?.new_business_share ?? null;
+      const total = revenue as number;
+      const leadDriven = share === null ? total : total * share;
+      // Two ways the numbers cannot hang together: the funnel implies more
+      // revenue than the whole company books, or it explains well under the
+      // lead-driven part of it. Anything between is a pass — the detail still
+      // prints both bases so the facilitator can read the gap out loud.
+      const overTotal = implied / total;
+      const ofLeadDriven = leadDriven > 0 ? implied / leadDriven : null;
+      const detail =
+        `${Math.round(leadsPerYear)} leads/yr × ${round1(close as number)}% × ${money(value as number)} = ${money(implied)} — ` +
+        `${Math.round(overTotal * 100)}% of the ${money(total)} top line` +
+        (share === null
+          ? " (no revenue-model split on file)."
+          : `, ${ofLeadDriven === null ? "n/a" : `${Math.round(ofLeadDriven * 100)}%`} of the ${money(leadDriven)} of new business (${Math.round(share * 100)}% per the intake).`);
+      const tooHigh = overTotal > 1.6;
+      const tooLow = ofLeadDriven !== null && ofLeadDriven < 0.6;
+      return tooHigh || tooLow ? flag(detail) : pass(detail);
     },
   }),
   defineCrossCheck({
