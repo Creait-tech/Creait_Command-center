@@ -1,0 +1,1206 @@
+{
+ "n": 17,
+ "company": "Kowalski Precision Machining",
+ "owner": "Walt Kowalski",
+ "industry": "Job-shop manufacturing",
+ "profile": {
+  "revenue": 4020000,
+  "grossMarginPct": 34,
+  "operatingProfit": 255000,
+  "headcount": 26,
+  "founded": 1994,
+  "story": "Walt Kowalski is 63 and has run a precision machining job shop in Grand Rapids since 1994 — fourteen CNC machines, 26 people, AS9100 certified, $4.02M of revenue at a 34% gross margin. He quotes every job himself off a shop rate sheet dated 2021, the average quote takes eleven days to go out, and the shop wins 26% of what it quotes. There is a Haas VF-4 that has been idle for fourteen months because, in Walt's telling, there is nobody to run it. Asked about AI and automation he was flat: 'We don't do AI. There is no AI in a machine shop and there isn't going to be.'"
+ },
+ "edge_cases": [
+  "DESIGNED TO FAIL THE GATE: four N/As in the Leverage pillar (L6, L7, L9, L10) with 'we don't do it' reasons, which Rubrics v2 §5 does not permit",
+  "the harness should mark Leverage insufficient data, exclude it from the composite, renormalise Profit and Systems to 0.40/0.35 of 0.75, and BLOCK release",
+  "everything else in the file is complete and clean — 14 Demonstrated/Documented indicators, notes on every score, constraint and cost present, three ordered opportunities — so the Leverage N/As are the only blocker",
+  "one included opportunity is an automation build in a pillar that has been excluded — the reviewer should notice the contradiction"
+ ],
+ "intake": {
+  "q1": [
+   {
+    "row": "Your name",
+    "value": "Walt Kowalski"
+   },
+   {
+    "row": "Email",
+    "value": "walt@kowalskiprecision.com"
+   },
+   {
+    "row": "Phone",
+    "value": "(616) 555-0128"
+   },
+   {
+    "row": "Company name",
+    "value": "Kowalski Precision Machining, Inc."
+   },
+   {
+    "row": "Website",
+    "value": "kowalskiprecision.com"
+   },
+   {
+    "row": "Location",
+    "value": "Grand Rapids, Michigan"
+   },
+   {
+    "row": "Industry",
+    "value": "Precision CNC machining — job shop, AS9100"
+   }
+  ],
+  "q2": "We machine precision parts to customer print. Fourteen CNC machines — mills, lathes, two five-axis — plus grinding and a small assembly cell. Aerospace, medical device, and industrial hydraulics. About sixty percent of the work is repeat production released against blanket purchase orders; the rest is prototype, short run, and fixturing. We are AS9100 certified and have been since 2009. Twenty-six people: nineteen on the floor across two shifts, a programmer, a quality manager, a foreman, two in the office and me.",
+  "q3": [
+   {
+    "row": "Primary",
+    "objective": "More profit & cash flow"
+   },
+   {
+    "row": "Secondary 1",
+    "objective": "Better operations & delivery capacity"
+   },
+   {
+    "row": "Secondary 2",
+    "objective": "Prepare to scale"
+   }
+  ],
+  "q4": [
+   {
+    "row": "1",
+    "outcome": "Gross margin",
+    "target": "From 34% to 39%"
+   },
+   {
+    "row": "2",
+    "outcome": "Quote turnaround",
+    "target": "From 11 days to 3"
+   },
+   {
+    "row": "3",
+    "outcome": "The idle VF-4 running a second shift",
+    "target": "By March"
+   }
+  ],
+  "q5": "Five million, the same building, every machine running two shifts. I would like to hand somebody the quoting and go back to walking the floor, which is the part of this I still enjoy. I know what the next question is and I am not ready to answer it — I have not decided anything about what happens to this place, and I would rather fix the shop first.",
+  "q6": "Split across most of these",
+  "q7": [
+   {
+    "row": "Hours/week now",
+    "value": "61"
+   },
+   {
+    "row": "Hours/week you want in 12 months",
+    "value": "50"
+   },
+   {
+    "row": "Hours/week you want in 3 years",
+    "value": "40"
+   },
+   {
+    "row": "Longest uninterrupted time away in the past 12 months",
+    "value": "12 days for a knee replacement, and I quoted three jobs from the bed"
+   },
+   {
+    "row": "What pulls you back in",
+    "value": "Quoting. Nobody else can read a print and tell you what it costs"
+   }
+  ],
+  "q8": "I cannot find machinists. That is it, that is the whole story. There is a VF-4 in the corner that has not cut a chip in fourteen months because there is nobody to stand in front of it. Every problem this shop has traces back to that.",
+  "q9": [
+   {
+    "row": "Year founded",
+    "value": "1994"
+   },
+   {
+    "row": "Owners & percentages",
+    "value": "Walt Kowalski 100%"
+   },
+   {
+    "row": "Any owner misalignment affecting decisions?",
+    "value": "No — sole owner"
+   }
+  ],
+  "q10": [
+   {
+    "row": "Full-time employees",
+    "count": "25"
+   },
+   {
+    "row": "Part-time",
+    "count": "1"
+   },
+   {
+    "row": "Regular contractors",
+    "count": "0"
+   },
+   {
+    "row": "Managers / team leads",
+    "count": "2"
+   },
+   {
+    "row": "People with direct reports",
+    "count": "3"
+   }
+  ],
+  "q11": "Regional",
+  "q12": [
+   {
+    "row": "One-time projects",
+    "pct": "42"
+   },
+   {
+    "row": "Recurring contracts",
+    "pct": "0"
+   },
+   {
+    "row": "Repeat without contract",
+    "pct": "58"
+   },
+   {
+    "row": "Products",
+    "pct": "0"
+   },
+   {
+    "row": "Retainers",
+    "pct": "0"
+   },
+   {
+    "row": "Other",
+    "pct": "0"
+   }
+  ],
+  "q13": [
+   {
+    "name": "Production CNC milling & turning (blanket PO releases)",
+    "pct": "58",
+    "margin": "33",
+    "trend": "Flat",
+    "importance": "The base. Priced in 2021 and repriced never"
+   },
+   {
+    "name": "Prototype & short run",
+    "pct": "18",
+    "margin": "41",
+    "trend": "Growing",
+    "importance": "Best margin, least price-sensitive, smallest share"
+   },
+   {
+    "name": "Fixturing & tooling",
+    "pct": "12",
+    "margin": "38",
+    "trend": "Flat",
+    "importance": "Wins us the production work that follows it"
+   },
+   {
+    "name": "Grinding & finishing",
+    "pct": "8",
+    "margin": "29",
+    "trend": "Declining",
+    "importance": "Old equipment, thin margin, we keep it for the aerospace certs"
+   },
+   {
+    "name": "Assembly & kitting",
+    "pct": "4",
+    "margin": "22",
+    "trend": "Flat",
+    "importance": "We do it because Delvane asks"
+   }
+  ],
+  "q14": [
+   {
+    "row": "Active customer count",
+    "value": "38 customers ordered in the last 12 months"
+   },
+   {
+    "row": "B2B / B2C / mixed",
+    "value": "B2B"
+   },
+   {
+    "row": "% of revenue from your largest customer",
+    "value": "22% (Delvane Aerospace)"
+   },
+   {
+    "row": "% of revenue from your top five",
+    "value": "61%"
+   },
+   {
+    "row": "% of revenue tied directly to YOUR personal relationships",
+    "value": "About 70%. Their buyers call me"
+   }
+  ],
+  "q15": [
+   {
+    "row": "Last completed year",
+    "amount": "4020000"
+   },
+   {
+    "row": "Prior year",
+    "amount": "3910000"
+   },
+   {
+    "row": "Year to date",
+    "amount": "3140000"
+   },
+   {
+    "row": "Full-year forecast",
+    "amount": "4150000"
+   }
+  ],
+  "q16": "Up 10% or less",
+  "q17": [
+   {
+    "row": "Approximate gross margin %",
+    "value": "34%"
+   },
+   {
+    "row": "Main direct costs",
+    "value": "Machinist wages and burden, bar stock and castings, perishable tooling, outside heat treat and plating, machine maintenance"
+   },
+   {
+    "row": "Tracked by job / service / customer?",
+    "value": "JobBOSS could do it. We put hours in from paper time cards and nobody has ever run the report"
+   }
+  ],
+  "q18": [
+   {
+    "row": "Operating profit estimate",
+    "amount": "255000"
+   },
+   {
+    "row": "Owner salary",
+    "amount": "175000"
+   },
+   {
+    "row": "Owner distributions",
+    "amount": "45000"
+   },
+   {
+    "row": "Unusual one-off expenses",
+    "amount": "110000"
+   }
+  ],
+  "q19": [
+   "Profitable but tight",
+   "Customer payment timing",
+   "Materials / inventory",
+   "Debt payments"
+  ],
+  "q20": "Monthly, delayed",
+  "q21": [
+   {
+    "row": "Revenue",
+    "target": "$4.5M"
+   },
+   {
+    "row": "Gross margin",
+    "target": "39%"
+   },
+   {
+    "row": "Operating profit",
+    "target": "No target"
+   },
+   {
+    "row": "Cash reserve",
+    "target": "No target"
+   },
+   {
+    "row": "Owner compensation",
+    "target": "No target"
+   }
+  ],
+  "q22": "QuickBooks P&L last 24 months, revenue by customer, AR aging, the shop rate sheet, the RFQ logbook (Dana types it up quarterly), the blanket PO roster, AS9100 procedures and the last audit report. No job costing — the module is there and we have never run it.",
+  "q23": [
+   {
+    "source": "Existing customer RFQ (blanket & new part numbers)",
+    "per_month": "21",
+    "cost": "0",
+    "quality": "5",
+    "tracked": "Yes"
+   },
+   {
+    "source": "Buyer referral to another buyer",
+    "per_month": "6",
+    "cost": "0",
+    "quality": "4",
+    "tracked": "Yes"
+   },
+   {
+    "source": "Website & directory inquiry",
+    "per_month": "5",
+    "cost": "300",
+    "quality": "2",
+    "tracked": "Yes"
+   },
+   {
+    "source": "Trade show (two a year, amortised)",
+    "per_month": "2",
+    "cost": "1100",
+    "quality": "3",
+    "tracked": "No"
+   }
+  ],
+  "q24": [
+   {
+    "row": "What happens, step by step",
+    "value": "An RFQ comes in by email with a print. Dana logs it in the book, prints the drawing, and it goes in the stack on my desk. I read the print, work out the cycle times, price it off the rate sheet and Dana types the quote"
+   },
+   {
+    "row": "Typical response time",
+    "value": "We acknowledge same day. The quote itself averages eleven days"
+   },
+   {
+    "row": "Who is responsible",
+    "value": "Me for the price, Dana for getting it out"
+   },
+   {
+    "row": "Is every inquiry captured in one system?",
+    "value": "In a paper logbook. Dana types it into a spreadsheet quarterly"
+   },
+   {
+    "row": "Automated follow-up?",
+    "value": "No"
+   },
+   {
+    "row": "% of leads that get 2+ follow-ups",
+    "value": "Dana calls once about a week after. So maybe half get a second contact"
+   }
+  ],
+  "q25": [
+   {
+    "row": "Lead→sale or proposal→close %",
+    "value": "26% of quoted dollars. Dana works it out from the logbook once a quarter"
+   },
+   {
+    "row": "Tracked by source / person / service?",
+    "value": "By customer. Not by source or part family"
+   },
+   {
+    "row": "Defined sales process?",
+    "value": "No. There is a stack on my desk and I work through it"
+   },
+   {
+    "row": "Most common reason you lose",
+    "value": "Price, and being late with the quote. Two of the aerospace buyers give it to whoever answers in three days"
+   }
+  ],
+  "q26": [
+   {
+    "row": "Typical first sale",
+    "value": "$15,700 per quoted package; $4,100 per released job"
+   },
+   {
+    "row": "Typical annual customer value",
+    "value": "$58,000"
+   },
+   {
+    "row": "Most valuable segment",
+    "value": "Medical device prototype work. Best margin and they pay in 30 days"
+   },
+   {
+    "row": "Tracked?",
+    "value": "Revenue by customer, yes. Margin by customer, no"
+   }
+  ],
+  "q27": [
+   {
+    "row": "% who buy again",
+    "value": "Around 80% of customers who order once order again"
+   },
+   {
+    "row": "Renewal rate if applicable",
+    "value": "Blanket POs mostly get renewed, but they are forecasts not commitments"
+   },
+   {
+    "row": "Are inactive customers identified?",
+    "value": "No. I could tell you some names off the top of my head"
+   },
+   {
+    "row": "Reactivation campaigns ever run?",
+    "value": "No"
+   },
+   {
+    "row": "Why customers leave",
+    "value": "They moved the part offshore, or their engineer left and the new one had his own shop"
+   }
+  ],
+  "q28": [
+   "Based on real job economics",
+   "Unchanged for 2+ years",
+   "Set on the owner's gut",
+   "Pricing is a current worry"
+  ],
+  "q29": [
+   {
+    "row": "Complementary services routinely offered?",
+    "value": "No. We quote what is on the print"
+   },
+   {
+    "row": "Bundles or packages?",
+    "value": "No"
+   },
+   {
+    "row": "Premium option?",
+    "value": "No — though expedite work gets a surcharge when I remember to add it"
+   },
+   {
+    "row": "Entry-level option?",
+    "value": "No"
+   },
+   {
+    "row": "Customer needs you can't currently serve",
+    "value": "Anything over 40 inches, and Swiss turning. We turn both away every month"
+   }
+  ],
+  "q30": [
+   {
+    "row": "Who owns marketing",
+    "value": "Nobody"
+   },
+   {
+    "row": "Who owns sales",
+    "value": "Me"
+   },
+   {
+    "row": "Monthly marketing budget",
+    "value": "About $300 for the directory listing"
+   },
+   {
+    "row": "Do sales & marketing review results together?",
+    "value": "No"
+   },
+   {
+    "row": "Are leads, conversion, CAC and customer value ever reviewed together?",
+    "value": "No. Dana's quarterly quote summary is the only thing that comes close"
+   }
+  ],
+  "q31": "We'd need equipment or capital",
+  "q32": [
+   {
+    "row": "1",
+    "area": "Getting the VF-4 running"
+   },
+   {
+    "row": "2",
+    "area": "Quoting faster"
+   },
+   {
+    "row": "3",
+    "area": "The rate sheet — I know it is old"
+   }
+  ],
+  "q33": [
+   {
+    "workflow": "RFQ intake and logging"
+   },
+   {
+    "workflow": "Print review, cycle-time estimating and quoting"
+   },
+   {
+    "workflow": "Order entry and job release"
+   },
+   {
+    "workflow": "Programming and setup sheets"
+   },
+   {
+    "workflow": "Material purchasing and receiving"
+   },
+   {
+    "workflow": "Production scheduling"
+   },
+   {
+    "workflow": "First-article and in-process inspection"
+   },
+   {
+    "workflow": "Certificate of conformance and cert packet"
+   },
+   {
+    "workflow": "Shipping and invoicing"
+   },
+   {
+    "workflow": "AS9100 corrective action"
+   }
+  ],
+  "q34": [
+   {
+    "row": "One clear accountable role",
+    "frequency": "Usually"
+   },
+   {
+    "row": "Defined handoffs",
+    "frequency": "Sometimes"
+   },
+   {
+    "row": "Consistent exception escalation",
+    "frequency": "Sometimes"
+   }
+  ],
+  "q35": [
+   {
+    "row": "Documented",
+    "pct": "40"
+   },
+   {
+    "row": "Current",
+    "pct": "30"
+   },
+   {
+    "row": "Accessible",
+    "pct": "45"
+   },
+   {
+    "row": "Used in training",
+    "pct": "25"
+   },
+   {
+    "row": "Actually followed",
+    "pct": "40"
+   }
+  ],
+  "q36": [
+   "Missed handoffs",
+   "Scheduling delays",
+   "Incomplete information",
+   "Rework",
+   "Late billing",
+   "The owner has to step in"
+  ],
+  "q37": "Skilled labor",
+  "q38": "Mostly clear, with gaps",
+  "q39": [
+   {
+    "row": "How many KPIs reviewed weekly",
+    "value": "One — on-time delivery, and only because Delvane makes us report it"
+   },
+   {
+    "row": "Does each have one owner?",
+    "value": "Ron owns the OTD number"
+   },
+   {
+    "row": "Are targets visible?",
+    "value": "The Delvane scorecard is pinned up in quality. Nothing else"
+   },
+   {
+    "row": "Does a miss trigger action?",
+    "value": "On the Delvane number, yes. On anything else there is no number to miss"
+   }
+  ],
+  "q40": "Weekly but loose",
+  "q41": [
+   {
+    "row": "CRM",
+    "tool": "none"
+   },
+   {
+    "row": "Marketing",
+    "tool": "none"
+   },
+   {
+    "row": "Sales / proposals",
+    "tool": "Excel quote sheets"
+   },
+   {
+    "row": "Scheduling / project management",
+    "tool": "JobBOSS ERP (scheduling module unused) plus a magnetic whiteboard"
+   },
+   {
+    "row": "Delivery",
+    "tool": "JobBOSS and paper travelers"
+   },
+   {
+    "row": "Accounting",
+    "tool": "QuickBooks Desktop"
+   },
+   {
+    "row": "Reporting",
+    "tool": "Excel"
+   },
+   {
+    "row": "Communication",
+    "tool": "Phone, email, the shop intercom"
+   },
+   {
+    "row": "Files / knowledge",
+    "tool": "A network server and four filing cabinets of prints"
+   },
+   {
+    "row": "HR / payroll",
+    "tool": "Paychex"
+   }
+  ],
+  "q42": "Mostly separate, plus spreadsheets",
+  "q43": [
+   "Data is generally accurate",
+   "Backups exist"
+  ],
+  "q44": [
+   {
+    "task": "Quote package assembly — print reading, cycle-time estimating, sheet build",
+    "who": "Walt Kowalski and Dana Prusak",
+    "frequency": "Several times a week",
+    "occurrences": "4",
+    "minutes": "145",
+    "errors": "Yes",
+    "systems": "Paper prints, Excel, JobBOSS"
+   },
+   {
+    "task": "Shop-floor time card entry into JobBOSS",
+    "who": "Sheryl Bass (shop office)",
+    "frequency": "Daily",
+    "occurrences": "5",
+    "minutes": "55",
+    "errors": "Yes",
+    "systems": "Paper time cards, JobBOSS"
+   },
+   {
+    "task": "Job traveler creation and routing sheets",
+    "who": "Sheryl Bass",
+    "frequency": "Daily",
+    "occurrences": "5",
+    "minutes": "40",
+    "errors": "Yes",
+    "systems": "JobBOSS, paper"
+   },
+   {
+    "task": "Certificate of conformance and material cert packets",
+    "who": "Ron Vasquez (quality)",
+    "frequency": "Daily",
+    "occurrences": "5",
+    "minutes": "35",
+    "errors": "Yes",
+    "systems": "Paper certs, scanner, Excel"
+   },
+   {
+    "task": "Monthly on-time-delivery scorecard for Delvane",
+    "who": "Ron Vasquez",
+    "frequency": "Monthly",
+    "occurrences": "1",
+    "minutes": "180",
+    "errors": "Yes",
+    "systems": "JobBOSS, Excel"
+   }
+  ],
+  "q45": "Paychex runs payroll on its own. The machines have tool-life counters that flag a change. That is genuinely the whole list — everything else in this shop is somebody typing or somebody writing.",
+  "q46": [
+   "None"
+  ],
+  "q47": [
+   "None of these are consistently true"
+  ],
+  "q48": [
+   "Inconsistent backups",
+   "No tested recovery",
+   "Unclear account ownership",
+   "One-vendor or one-person dependence"
+  ],
+  "q49": [
+   {
+    "row": "Implementation budget range",
+    "value": "I do not know. Not much. I just bought a machine that is not running"
+   },
+   {
+    "row": "Owner hours/week available",
+    "value": "1, maybe"
+   },
+   {
+    "row": "Team hours/week available",
+    "value": "0. Everybody is already doing two jobs"
+   },
+   {
+    "row": "Appetite for changing systems",
+    "value": "Low. We changed the ERP in 2016 and it cost us a quarter"
+   }
+  ],
+  "q58": "No training, and there is resistance",
+  "q59": "Dana would try something if I told her to. Ron is careful and he would want to know how it affects the AS9100 audit, which is a fair question. Dennis has been running that floor for nineteen years and he is not going to change how he schedules because a screen tells him to. The machinists are the ones who matter and they are not interested — half of them do not use the JobBOSS terminal we already put on the floor.",
+  "q56": [
+   {
+    "role": "Owner / estimator",
+    "rate": "88"
+   },
+   {
+    "role": "CNC programmer",
+    "rate": "63"
+   },
+   {
+    "role": "Quality manager / inspector",
+    "rate": "52"
+   },
+   {
+    "role": "CNC machinist",
+    "rate": "47"
+   },
+   {
+    "role": "Shop office / administration",
+    "rate": "36"
+   }
+  ],
+  "q50": [
+   "Pricing exceptions",
+   "Major sales",
+   "Customer escalations",
+   "Hiring / firing",
+   "Purchasing",
+   "Scheduling",
+   "Quality sign-off",
+   "Banking / payments",
+   "Vendor relationships",
+   "Technical decisions",
+   "Strategy"
+  ],
+  "q51": [
+   {
+    "row": "What keeps running",
+    "value": "Everything already released. Dennis runs the floor and jobs on the board get made and shipped, three weeks' worth"
+   },
+   {
+    "row": "What slows down",
+    "value": "Material buying. Sheryl can reorder standard bar stock and nothing else"
+   },
+   {
+    "row": "What stops",
+    "value": "Quoting, day one. New orders, new customers, and every price decision"
+   },
+   {
+    "row": "Who decides",
+    "value": "Dennis on the floor, Ron on quality. Nobody on money or price"
+   },
+   {
+    "row": "What nobody else can access",
+    "value": "The bank, the line of credit, the customer pricing history — that is in my head and in a drawer"
+   }
+  ],
+  "q52": [
+   {
+    "risk": "Walt Kowalski — quoting, pricing and every customer relationship",
+    "impact": "No new work is priced from day one. 70% of revenue sits on buyers who call him personally"
+   },
+   {
+    "risk": "Delvane Aerospace — 22% of revenue",
+    "impact": "A fifth of the shop and the reason we hold the aerospace certifications"
+   },
+   {
+    "risk": "Dennis Okonkwo — foreman, 19 years",
+    "impact": "The schedule is a magnetic whiteboard he maintains from memory. Nobody else can rebuild it"
+   },
+   {
+    "risk": "AS9100 certification",
+    "impact": "Losing it ends aerospace work, which is 44% of revenue"
+   }
+  ],
+  "q53": [
+   "Vendor agreements are written",
+   "Licenses & insurance are current",
+   "Employment agreements are current",
+   "No known legal, tax or insurance issue"
+  ],
+  "q54": [
+   "SOPs & knowledge transfer",
+   "Sales without the owner",
+   "Leadership depth"
+  ],
+  "q55": "Uncertain",
+  "q57": "Tired but managing"
+ },
+ "session": {
+  "engine": {
+   "leads_per_month": "34 RFQs",
+   "conversion_rate": "26% of quoted dollars",
+   "avg_deal_value": "$15,700 per quoted package; $4,100 per released job",
+   "response_time": "acknowledged same day; the quote itself averages 11 days",
+   "gross_margin_pct": "34",
+   "headcount": "26",
+   "repetitive_hours_week": "Quote package assembly — Walt & Dana — 9.7\nTime card entry — Sheryl — 4.6\nJob travelers & routing — Sheryl — 3.3\nCert packets — Ron — 2.9\nDelvane OTD scorecard — Ron — 3.0",
+   "largest_customer_pct": "22"
+  },
+  "blockNotes": {
+   "b1": "Walt's stated bottleneck is machinists, and the idle VF-4 is real — we saw it, still on its shipping blocks in the corner. But his own q4 targets are margin and quote turnaround, and neither is a headcount problem. He is 63, answered q57 'Tired but managing', and explicitly declined to discuss succession: 'I would rather fix the shop first.' Module E is not in scope.",
+   "b2": "34 RFQs a month, logged in a paper book, quoted by one person in an average of eleven days, winning 26% of quoted dollars. Two aerospace buyers award to whoever answers in three. Funnel reconciles: $6.4M quoted a year × 26% = $1.66M of won job work, plus $2.32M of blanket-PO production = $3.98M against the P&L's $4.02M — inside 1%, pass.",
+   "b3": "Systems tour. JobBOSS is real and half-used: order entry and time collection yes, scheduling module never turned on, job costing never run. The schedule is a magnetic whiteboard Dennis maintains from memory. Certs are scanned into folders and indexed in an Excel sheet. Asked Walt to open the shop rate sheet: an Excel file, last modified March 2021.",
+   "b4": "23.5 h/wk of repetitive work across 26 people (~1,020 available hours) — 2.3%, pass. 9.7 of those hours are the quote package, split between the owner at a $88 loaded rate and the office at $36. That is the hour that sets the margin on every job in the building and it is the slowest thing in the shop.",
+   "b5": "Delvane 22% on the revenue-by-customer report — under the 25% overlay, watch item. Contracts are the customers' terms and conditions, not the shop's; there is no continuity plan; pricing history is 'in my head and in a drawer'. Then Block 5 turned: on AI and automation Walt gave four flat refusals and asked us to mark them not applicable. We recorded his reasons verbatim. They are reasons not to do it, not reasons the indicator cannot apply, and this file should not clear the gate with them standing."
+  },
+  "demonstrated": [
+   "The shop rate sheet opened in Excel — last modified March 2021",
+   "The RFQ paper logbook and the quarterly spreadsheet Dana types it into",
+   "JobBOSS scheduling module opened — licensed, never configured; job-costing report never run",
+   "The magnetic whiteboard schedule Dennis maintains from memory",
+   "Paper time cards being keyed into JobBOSS at the shop office desk",
+   "The cert packet process end to end — scan, file, index in Excel",
+   "The idle VF-4 in the corner, still on shipping blocks after fourteen months",
+   "A quote package built from scratch in front of us: 2 hours 25 minutes, priced from the 2021 sheet"
+  ],
+  "documents_seen": [
+   "QuickBooks P&L 24 months — revenue $4.02M, gross margin 34%, operating profit $255K; direct labor up 19% since 2021",
+   "Revenue by customer — Delvane Aerospace 22%, top five 61%, 38 active customers",
+   "Shop rate sheet, Excel, last modified March 2021",
+   "RFQ logbook summary — 408 RFQs, $6.4M quoted, 26% closed on dollars",
+   "Blanket PO roster — 11 open blankets covering 58% of revenue",
+   "AR aging — DSO 54 days",
+   "AS9100 procedures and the 2026 surveillance audit report — no major findings",
+   "NOT received: job costing. The module exists and has never been run"
+  ]
+ },
+ "dataRoom": {
+  "pnl_on_file": true,
+  "documents": [
+   {
+    "name": "QuickBooks P&L 24 months",
+    "kind": "pnl",
+    "received_on": "2026-08-21"
+   },
+   {
+    "name": "Revenue by customer, trailing 12 months",
+    "kind": "revenue_by_customer",
+    "received_on": "2026-08-21"
+   },
+   {
+    "name": "Shop rate sheet (last modified March 2021)",
+    "kind": "rate_card",
+    "received_on": "2026-08-25"
+   },
+   {
+    "name": "RFQ logbook summary — 408 RFQs, $6.4M quoted",
+    "kind": "other",
+    "received_on": "2026-08-28"
+   },
+   {
+    "name": "Blanket PO roster — 11 open blankets",
+    "kind": "other",
+    "received_on": "2026-08-28"
+   },
+   {
+    "name": "AR aging",
+    "kind": "ar_aging",
+    "received_on": "2026-09-01"
+   },
+   {
+    "name": "AS9100 procedures and 2026 surveillance audit report",
+    "kind": "other",
+    "received_on": "2026-09-01"
+   }
+  ]
+ },
+ "scores": {
+  "P1": {
+   "score": 2,
+   "na": false,
+   "evidence": "documented",
+   "note": "Four sources named with monthly volume, and the RFQ logbook summary (Doc) gives 408 RFQs and $6.4M quoted for the year — real counts, kept in a paper book and typed up quarterly. Cost known only for the $300 directory listing.",
+   "why_not_higher": "Anchor 3 needs the volume logged in one place; it is a handwritten book transcribed once a quarter, and nothing is broken out by source or part family (q25)."
+  },
+  "P2": {
+   "score": 1,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "An RFQ is acknowledged the same day, printed, and put in a physical stack on Walt's desk. The quote itself averages eleven days. No log beyond the paper book; watched the stack in session.",
+   "why_not_higher": "Anchor 2 needs the inquiry usually resolved within a day and some capture; the acknowledgement is same-day but the response the customer is actually waiting for takes eleven, and two buyers award at three."
+  },
+  "P3": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "q24: Dana calls once about a week after a quote goes out, 'so maybe half get a second contact'. No sequence, no record of which quotes were chased.",
+   "why_not_higher": "Anchor 2 needs follow-up that happens across most quotes even person-dependently; half of a $6.4M quote book gets one call and nobody can say which half."
+  },
+  "P4": {
+   "score": 2,
+   "na": false,
+   "evidence": "documented",
+   "note": "26% close on quoted dollars, computed by Dana from the logbook each quarter and confirmed in the RFQ summary (Doc). Loss reason known anecdotally — price and quote lateness. No stages: q25, 'there is a stack on my desk and I work through it'.",
+   "why_not_higher": "Anchor 3 needs stages defined and used and loss reasons captured; there is no process at all, and the close rate is a quarterly backward look rather than a tracked number."
+  },
+  "P5": {
+   "score": 1,
+   "na": false,
+   "evidence": "documented",
+   "note": "Shop rate sheet opened in session, last modified March 2021 (Doc). It is genuinely cost-based — machine-hour rates built off 2021 burden — which is why this is not a 0. One change since: a 2023 material surcharge, reason anecdotal. Expedite premiums applied 'when I remember'. The same P&L shows direct labor up 19% since that sheet was written.",
+   "why_not_higher": "Anchor 2 needs some current economics and occasional reviews; the economics are five years stale and there is no job cost (P9) to refresh them from."
+  },
+  "P6": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "q29: 'We quote what is on the print.' No bundles, no tiers, no entry offer. Expedite is the only variant and it is applied inconsistently. Fixturing and tooling — 12% of revenue at 38% margin — pulls production work behind it and is never offered proactively.",
+   "why_not_higher": "Anchor 2 needs add-ons offered ad hoc by the team; here nothing is offered unless the print asks for it."
+  },
+  "P7": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "q27: roughly 80% of customers who order once order again, and blanket POs mostly renew. Both figures are impressions. Inactive customers are not identified — 'I could tell you some names off the top of my head' — and no reactivation has ever been run.",
+   "why_not_higher": "Anchor 3 needs a repeat rate measured and an inactive list pulled and worked twice a year; the rate is a memory and the list does not exist."
+  },
+  "P8": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "q30: marketing owner 'Nobody', sales owner 'Me', $300/mo, and nothing reviewed together. Dana's quarterly quote summary is the only measurement in the growth engine and it goes to one reader.",
+   "why_not_higher": "Anchor 2 needs named owners and numbers reviewed at least sometimes; there is one de-facto owner and one quarterly report nobody discusses."
+  },
+  "P9": {
+   "score": 2,
+   "na": false,
+   "evidence": "documented",
+   "note": "Gross margin 34% confirmed on the 24-month P&L, and margin by line is estimated in q13 from Walt's judgement. JobBOSS collects the hours from paper time cards and the job-costing report has never been run — confirmed by opening it in session.",
+   "why_not_higher": "Anchor 3 needs margin by job type known and used; the shop has been capturing the data required for five years and has never once looked at it, which is why the 2021 rate sheet has never been challenged."
+  },
+  "P10": {
+   "score": 2,
+   "na": false,
+   "evidence": "documented",
+   "note": "q20 'Monthly, delayed' — 24 monthly P&Ls on file, produced by an outside bookkeeper four to six weeks out. Walt reads them. q21 carries a revenue and a margin target and 'No target' on profit, cash and owner pay.",
+   "why_not_higher": "Anchor 3 needs a close inside 30 days and a routine owner review; the numbers land too late to change a quarter."
+  },
+  "S1": {
+   "score": 1,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Dennis genuinely runs the floor and Ron owns quality sign-off. Everything else — q50 lists eleven of eleven categories — returns to Walt, including scheduling exceptions, purchasing, and every price. Watched three interruptions during Block 1, two of them material questions.",
+   "why_not_higher": "Anchor 2 needs several areas delegated with money, hiring and exceptions the remaining owner-only set; here purchasing, scheduling and technical decisions are also his."
+  },
+  "S2": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "q51 four-week test: released work keeps running about three weeks on Dennis's board; standard bar stock gets reordered; quoting stops on day one and every price and money decision stacks up. Longest actual absence twelve days, and he quoted three jobs from a hospital bed.",
+   "why_not_higher": "Anchor 3 needs a named deputy and a few owner-locked items; there is no deputy on price or purchasing, and the shop's forward order book stops the day he does."
+  },
+  "S3": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Dana can quote a repeat part number off the existing sheet. Every new print, every price and every customer conversation is Walt's, and q14 puts ~70% of revenue on buyers who call him personally.",
+   "why_not_higher": "Anchor 2 needs the team selling with owner rescue on big deals; nobody else has ever priced a new part or spoken to a buyer about money."
+  },
+  "S4": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Two real managers: Dennis on the floor for nineteen years and Ron on quality — and Ron genuinely owns an outcome, the Delvane OTD number, because the customer's scorecard forces one. q38: 'Mostly clear, with gaps.' Dennis owns no number.",
+   "why_not_higher": "Anchor 3 needs managers owning outcomes and metrics; one of two does, and the metric was imposed by a customer rather than chosen by the business."
+  },
+  "S5": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "The AS9100 quality system is documented, current and externally audited — the 2026 surveillance report shows no major findings, and the cert-packet process was walked end to end. Everything commercial is undocumented: quoting, purchasing, scheduling and job release exist only in three people's habits. q35: 40% documented, 30% current, 25% used in training.",
+   "why_not_higher": "Anchor 3 needs core workflows documented and current; the only current documentation is the part an auditor checks, and the workflow that sets margin has none."
+  },
+  "S6": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "A morning production meeting happens daily at the whiteboard — attended, and it is scheduling only. One KPI exists, on-time delivery, owned by Ron and visible on the Delvane scorecard pinned in quality. q39: 'On anything else there is no number to miss.'",
+   "why_not_higher": "Anchor 3 needs 3–7 owned KPIs with visible targets; there is one, and it belongs to a customer's scorecard rather than the shop's."
+  },
+  "S7": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Quality is genuinely consistent — AS9100 audited, 94% OTD on the Delvane scorecard, first-article and in-process inspection defined. But q31 says +20% needs 'equipment or capital', q36 lists scheduling delays and rework, and there is a machine that has sat idle for fourteen months.",
+   "why_not_higher": "Anchor 3 needs +20% to strain rather than break and QC steps defined across the work; the QC is defined only where the standard requires it, and there is no capacity plan — the response to more demand has been to buy a machine and leave it wrapped."
+  },
+  "S8": {
+   "score": 1,
+   "na": false,
+   "evidence": "documented",
+   "note": "Delvane Aerospace 22% of revenue on the revenue-by-customer report; top five 61% across 38 active customers. v2 anchor 1 is 20–30%.",
+   "why_not_higher": "Anchor 2 needs 15–20%. At 22% this sits under the 25% overlay — a watch item — but the top-five figure of 61% is the number that should worry the shop more, and Delvane also carries the certification case."
+  },
+  "S9": {
+   "score": 2,
+   "na": false,
+   "evidence": "documented",
+   "note": "Blanket PO roster (Doc): eleven open blankets covering 58% of revenue, with roughly 80% of customers reordering. q27 is explicit that blankets are forecasts rather than commitments, and q12 records 0% contracted revenue.",
+   "why_not_higher": "Anchor 3 needs recurring or contracted revenue covering fixed costs or ≥40% of revenue plus a rolling forecast; the volume is real but uncommitted and no forecast is maintained anywhere."
+  },
+  "S10": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "q53: vendor agreements, insurance and employment agreements current, no known legal issue. Against that: the customer 'contracts' are the customers' own terms and conditions, the shop has none of its own, pricing history is 'in my head and in a drawer' (q51), Dennis's schedule is a whiteboard he holds from memory, and there is no continuity plan for a 63-year-old sole owner.",
+   "why_not_higher": "Anchor 2 needs some contracts written and known key-person gaps; the gaps are known but nothing is written on the shop's side and no cross-training has begun."
+  },
+  "L1": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "JobBOSS ERP is a real system and does real work — order entry, time collection, travelers. QuickBooks Desktop and Paychex behind it. But q41 reads 'none' for CRM, marketing and reporting, quoting is Excel, scheduling is a magnetic whiteboard, and the JobBOSS scheduling module was opened in session and has never been configured.",
+   "why_not_higher": "Anchor 3 allows one significant gap; quoting, scheduling and reporting are three, and two of them are modules already paid for and never turned on."
+  },
+  "L2": {
+   "score": 1,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Paper time cards are keyed into JobBOSS daily (4.6 h/wk, watched at the shop office desk) and JobBOSS totals are typed into QuickBooks monthly. Certs are scanned and indexed by hand into a separate Excel sheet.",
+   "why_not_higher": "Anchor 2 needs some genuine integrations alongside the double entry; there are none — every join between systems is a person retyping on a schedule."
+  },
+  "L3": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "q43: data generally accurate and backups exist. The OTD number is trusted because a customer audits it. Everything else needs rebuilding by hand: the quote summary quarterly, the OTD scorecard monthly at 3.0 h/wk, and there is no agreed definition of job margin because no job has a cost.",
+   "why_not_higher": "Anchor 3 needs agreed KPI definitions and reports needing only light cleanup; one number is trusted, it was defined by a customer, and every other report is built from scratch."
+  },
+  "L4": {
+   "score": 1,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "23.5 h/wk inventoried across five tasks (q44), every one flagged for errors. The largest is the 9.7 h/wk quote package — we watched one built from scratch in 2 hours 25 minutes. Nothing has been reduced; the JobBOSS modules that would reduce two of these were bought and never configured.",
+   "why_not_higher": "Anchor 2 needs a few fixes actually made; the tools to make them are already licensed and untouched."
+  },
+  "L5": {
+   "score": 1,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "q45: Paychex runs payroll unattended and the machines have tool-life counters. Both were set up by vendors, neither is owned by anyone here, and that is the complete list.",
+   "why_not_higher": "Anchor 2 needs a few automations across the business with mixed reliability; there are two and neither is the shop's."
+  },
+  "L6": {
+   "score": null,
+   "na": true,
+   "evidence": "reported",
+   "note": "Owner's reason, recorded verbatim: 'We don't do AI. There is no AI in a machine shop and there isn't going to be.' q46 answered 'None'.",
+   "why_not_higher": "N/A — not scored."
+  },
+  "L7": {
+   "score": null,
+   "na": true,
+   "evidence": "reported",
+   "note": "Owner's reason, recorded verbatim: 'Nothing to govern. We have no AI and no automation, so the discipline question doesn't apply to us.' q47 left empty.",
+   "why_not_higher": "N/A — not scored."
+  },
+  "L9": {
+   "score": null,
+   "na": true,
+   "evidence": "reported",
+   "note": "Owner's reason, recorded verbatim: 'The team isn't going to use these tools, so readiness isn't a real question here.' q58 answered 'No training, and there is resistance'; q59 says half the machinists do not use the JobBOSS terminal already on the floor.",
+   "why_not_higher": "N/A — not scored."
+  },
+  "L8": {
+   "score": 1,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "q48: inconsistent backups, no tested recovery, unclear account ownership, one-person dependence. Individual Windows logins on the office machines and a nightly copy to a second server that nobody has ever restored from. The print archive is four filing cabinets and one network folder.",
+   "why_not_higher": "Anchor 2 needs partial hygiene with known gaps being managed; the backup is assumed and has never been tested, which is the anchor-1 wording exactly."
+  },
+  "L10": {
+   "score": null,
+   "na": true,
+   "evidence": "reported",
+   "note": "Owner's reason, recorded verbatim: 'We're not doing a technology project, so there's nothing to have capacity for.' q49 gives a budget of 'I do not know, not much', one owner hour a week and zero team hours; q55 answered 'Uncertain'.",
+   "why_not_higher": "N/A — not scored."
+  }
+ },
+ "assessment": {
+  "owner_objective": "More profit and cash flow — lift gross margin from 34% to 39% and get the idle VF-4 earning, without adding overhead the shop cannot carry.",
+  "owner_belief": "I cannot find machinists. That is it, that is the whole story. There is a VF-4 in the corner that has not cut a chip in fourteen months because there is nobody to stand in front of it. Every problem this shop has traces back to that.",
+  "primary_constraint": "Every price in the shop comes out of one person's head against a rate sheet written in March 2021, and the quote that carries it takes eleven days — so the shop wins a quarter of what it quotes, and wins it at rates that predate a 19% rise in the labor those jobs consume.",
+  "constraint_symptoms": "Block 2: eleven-day average quote turnaround against two aerospace buyers who award at three, and 26% close on $6.4M of quoted dollars. Block 3: the rate sheet was last modified March 2021 while the P&L shows direct labor up 19% since. Block 4: 9.7 h/wk of quote assembly split between a $88 owner hour and a $36 office hour, and one built in front of us took 2 hours 25 minutes. Block 5: q51 puts pricing history 'in my head and in a drawer'. Four blocks; the rule requires two.",
+  "constraint_cost": "~$47K of contribution a year absorbed by a shop rate unchanged since March 2021 against a 19% rise in direct labor (P&L and rate sheet, Doc) · ~$56K of contribution on quoted work lost to turnaround (RFQ summary, Doc: 26% close at an 11-day average in a 3-day market) · 504 owner-and-estimator hours a year assembling quote packages by hand.",
+  "constraint_fix": "Run the job-costing report JobBOSS has been collecting data for since 2016, rebuild the machine-hour rates from what the work actually costs now, and turn quoting into a repeatable package Dana can produce from a part-family template with Walt reviewing rather than originating. Three days is achievable without hiring anybody.",
+  "momentum_initiative": "Raise the rate on prototype and short-run work. It is the highest-margin line at 41%, the least price-sensitive, entirely in Walt's control, it needs no system, and it shows in the P&L inside 60 days.",
+  "overlay_flags": [
+   "key_person"
+  ],
+  "plan_items": [
+   "JobBOSS job-costing report run against twelve months of collected hours — Walt Kowalski — 2026-09-25",
+   "Prototype and short-run rate increase applied — Walt Kowalski — 2026-09-18",
+   "Machine-hour rates rebuilt from actual cost — Walt Kowalski — 2026-10-30",
+   "Part-family quote templates so Dana originates and Walt reviews — Dana Prusak — 2026-11-20",
+   "Backup restore test and print-archive index — Sheryl Bass — 2026-10-09",
+   "Rescore L6, L7, L9 and L10 before release — advisor — 2026-09-14"
+  ],
+  "overlap_factor": 0.7
+ },
+ "opportunities": [
+  {
+   "title": "Rebuild the shop rate from what the work costs now",
+   "finding": "The rate sheet was last modified March 2021 (Doc). The same 24-month P&L shows direct labor up 19% since it was written, and the job-costing report that would have caught this has never been run despite JobBOSS collecting the hours the whole time. Production CNC is $2.32M of the $4.02M at a stated 33% margin — the largest line and the lowest margin in the shop.",
+   "calculator": {
+    "kind": "price_change",
+    "inputs": {
+     "revenueAffected": 2320000,
+     "priceChangePctLow": 3,
+     "priceChangePctExpected": 4,
+     "priceChangePctHigh": 7,
+     "volumeLossPctLow": 3,
+     "volumeLossPctExpected": 6,
+     "volumeLossPctHigh": 10,
+     "grossMarginPct": 33
+    }
+   },
+   "fix_cost": 5800,
+   "months_to_benefit": 3,
+   "confidence": "medium",
+   "include_in_report": true,
+   "basis_reported_only": false,
+   "blueprint": "Run the job-costing report against twelve months of collected hours, rebuild machine-hour rates per work centre, and apply the new rates on the next blanket PO renewal in renewal order. Delvane at 22% goes last, after two smaller blankets have proved the conversation. The parts the model shows are being run below cost get quoted at cost or walked away from deliberately, which is where the modelled volume loss comes from.",
+   "replaces": "A five-year-old rate sheet, and the annual habit of renewing a blanket at last year's number."
+  },
+  {
+   "title": "Get the quote out in three days instead of eleven",
+   "finding": "$6.4M of RFQ dollars a year close at 26% (Doc). The recorded loss reason is price and lateness, and two aerospace buyers award to whoever answers in three days. Every quote is originated by one 63-year-old estimator working through a physical stack; one built in front of us took 2 hours 25 minutes and was priced from the 2021 sheet.",
+   "calculator": {
+    "kind": "close_rate_lift",
+    "inputs": {
+     "quotedVolume": 6400000,
+     "currentClosePct": 26,
+     "liftPointsLow": 2,
+     "liftPointsExpected": 3,
+     "liftPointsHigh": 5,
+     "grossMarginPct": 34,
+     "incrementalCostPct": 5
+    }
+   },
+   "fix_cost": 7400,
+   "months_to_benefit": 4,
+   "confidence": "medium",
+   "include_in_report": true,
+   "basis_reported_only": false,
+   "blueprint": "Build part-family quote templates from the rebuilt rates so Dana originates the quote and Walt reviews it rather than starting it. Set a three-day service level on the RFQ log with a visible ageing list. Incremental cost is carried at 5% for the overtime the added work absorbs before the VF-4 is staffed.",
+   "replaces": "A paper stack on one desk, and an eleven-day answer in a three-day market."
+  },
+  {
+   "title": "Take the quote package off two people's hands",
+   "finding": "9.7 h/wk — the largest line in the repetitive-work inventory and the only one that touches margin — is quote package assembly split between the owner at a $88 loaded rate and the office at $36. It is flagged for errors, it is the slowest step in the sales cycle, and JobBOSS already holds the cycle times and material costs that most of it re-derives by hand.",
+   "calculator": {
+    "kind": "automation_hours",
+    "inputs": {
+     "hoursPerWeek": 9.7,
+     "loadedHourlyRate": 46,
+     "automationSharePctLow": 40,
+     "automationSharePctExpected": 60,
+     "automationSharePctHigh": 75,
+     "weeksPerYear": 50,
+     "redeployed": true
+    }
+   },
+   "fix_cost": 6900,
+   "months_to_benefit": 4,
+   "confidence": "medium",
+   "include_in_report": true,
+   "basis_reported_only": false,
+   "blueprint": "Part-family templates pulling cycle times and material from JobBOSS history, a standing setup and burden table, and an approval step rather than an origination step for the owner. Loaded rate is blended at $46 across the $88 owner hour and the $36 office hour in the proportions the inventory records. Recovered owner hours go to the floor and to customer conversations, which is where q5 says he wants them.",
+   "replaces": "504 hours a year of print reading, cycle-time arithmetic and spreadsheet building done twice for every part family the shop has quoted before."
+  }
+ ],
+ "expected": {
+  "gate_should_pass": false,
+  "expected_blockers": [
+   "Leverage pillar is insufficient data: four N/As (L6, L7, L9, L10) against the Rubrics v2 §1 threshold of four or more. The pillar must be excluded from the composite and the remaining weights renormalised — Profit 0.40 and Systems 0.35 over 0.75.",
+   "The four Leverage N/As are invalid under Rubrics v2 §5: every reason recorded is an absence of the practice ('we don't do AI', 'nothing to govern', 'the team isn't going to use these tools', 'we're not doing a technology project'), not a reason the indicator cannot apply to a 26-person machine shop. The don't-know rule applies instead — score the lowest anchor the evidence supports (q46 'None' supports L6 = 0; q47 empty supports L7 = 0; q58 'No training, and there is resistance' supports L9 = 0; q49 and q55 support L10 = 0 or 1) and flag each as Reported.",
+   "Release is blocked until L6, L7, L9 and L10 are rescored or each N/A carries a model-based reason a reviewer will sign."
+  ],
+  "expected_warnings": [
+   "an automation-hours opportunity is included in the report while the Leverage pillar it belongs to has been excluded as insufficient data — the reviewer should reconcile the two before delivery",
+   "no reviewer named"
+  ],
+  "band_guess": "Stabilizing",
+  "cross_checks": {
+   "margin_vs_pnl": "pass",
+   "funnel_vs_revenue": "pass",
+   "concentration": "pass",
+   "hours_vs_headcount": "pass"
+  }
+ }
+}

@@ -1,0 +1,1186 @@
+{
+ "n": 18,
+ "company": "Carter Franchise Holdings",
+ "owner": "Jasmine Carter",
+ "industry": "Quick-service franchisee (3 units)",
+ "profile": {
+  "revenue": 9200000,
+  "grossMarginPct": 66,
+  "operatingProfit": 560000,
+  "headcount": 85,
+  "founded": 2018,
+  "story": "Jasmine Carter owns three Cluckwell Chicken Co. franchise units across the north-west Atlanta metro — Marietta, Kennesaw and Douglasville — doing $9.2M combined with 85 people, 52 of them full-time equivalent. The brand supplies the menu, the prices, the LTO calendar, the operations manual and the POS; what she owns is execution, labor and cash. Crew turnover ran 140% last year against a brand average of 112%, and her three general managers spend sixty person-hours a week counting inventory by hand — which is sixty hours they are not on the floor with the crew."
+ },
+ "edge_cases": [
+  "two legitimate N/As in the Profit pillar (P5, P6) — both franchisor-imposed, both with written reasons; under the three-N/A threshold so Profit still scores on eight indicators",
+  "funnel metrics are genuinely n/a — a QSR has no lead, no quote and no close, so the funnel-vs-revenue cross-check must return n/a rather than fail",
+  "hours-vs-headcount cross-check should FLAG: 97.3 h/wk of inventoried repetitive work against a salaried management pool of eight people (~340 hours), 60 of it in one task",
+  "a hand-entered opportunity range alongside two calculator-backed ones"
+ ],
+ "intake": {
+  "q1": [
+   {
+    "row": "Your name",
+    "value": "Jasmine Carter"
+   },
+   {
+    "row": "Email",
+    "value": "jasmine@carterfranchiseholdings.com"
+   },
+   {
+    "row": "Phone",
+    "value": "(770) 555-0192"
+   },
+   {
+    "row": "Company name",
+    "value": "Carter Franchise Holdings, LLC"
+   },
+   {
+    "row": "Website",
+    "value": "carterfranchiseholdings.com"
+   },
+   {
+    "row": "Location",
+    "value": "Marietta, Georgia (three units across north-west metro Atlanta)"
+   },
+   {
+    "row": "Industry",
+    "value": "Quick-service restaurant franchisee — Cluckwell Chicken Co."
+   }
+  ],
+  "q2": "We own and operate three Cluckwell Chicken Co. restaurants — Marietta, Kennesaw and Douglasville. Drive-thru led, breakfast through late dinner, seven days. The franchisor sets the menu, the prices, the promotional calendar, the supply chain and the POS; we run the buildings, the people and the cash. Eighty-five on the payroll across the three, about fifty-two full-time equivalent, with a general manager in each unit and one area manager over all three.",
+  "q3": [
+   {
+    "row": "Primary",
+    "objective": "Better operations & delivery capacity"
+   },
+   {
+    "row": "Secondary 1",
+    "objective": "More profit & cash flow"
+   },
+   {
+    "row": "Secondary 2",
+    "objective": "Reduce owner dependence"
+   }
+  ],
+  "q4": [
+   {
+    "row": "1",
+    "outcome": "Crew turnover",
+    "target": "From 140% to under 110%"
+   },
+   {
+    "row": "2",
+    "outcome": "Restaurant-level operating margin",
+    "target": "From 6.1% to 8%"
+   },
+   {
+    "row": "3",
+    "outcome": "GM hours on the floor during peak",
+    "target": "From 41% to 65% of their shift"
+   }
+  ],
+  "q5": "Five units, and the fourth one opening without me living in it for six months. I want general managers who run their own P&L and a back office that does not need three managers with clipboards. Three years from now I would like to be picking sites and negotiating leases, not counting chicken.",
+  "q6": "Managing people & operations",
+  "q7": [
+   {
+    "row": "Hours/week now",
+    "value": "64"
+   },
+   {
+    "row": "Hours/week you want in 12 months",
+    "value": "50"
+   },
+   {
+    "row": "Hours/week you want in 3 years",
+    "value": "40"
+   },
+   {
+    "row": "Longest uninterrupted time away in the past 12 months",
+    "value": "5 days, and Kennesaw called me every one of them"
+   },
+   {
+    "row": "What pulls you back in",
+    "value": "Anything to do with hiring, and the franchisor. Every conversation with the brand is mine"
+   }
+  ],
+  "q8": "Labor. I cannot staff three units. Turnover was a hundred and forty percent last year and every single problem I have — speed of service, food cost, the audit scores — traces back to a crew that turns over twice a year. Everybody in this industry says it and it is still true.",
+  "q9": [
+   {
+    "row": "Year founded",
+    "value": "2018 (first unit acquired; Kennesaw 2021, Douglasville 2023)"
+   },
+   {
+    "row": "Owners & percentages",
+    "value": "Jasmine Carter 100%"
+   },
+   {
+    "row": "Any owner misalignment affecting decisions?",
+    "value": "No — sole owner"
+   }
+  ],
+  "q10": [
+   {
+    "row": "Full-time employees",
+    "count": "38"
+   },
+   {
+    "row": "Part-time",
+    "count": "47"
+   },
+   {
+    "row": "Regular contractors",
+    "count": "0"
+   },
+   {
+    "row": "Managers / team leads",
+    "count": "13"
+   },
+   {
+    "row": "People with direct reports",
+    "count": "8"
+   }
+  ],
+  "q11": "Local",
+  "q12": [
+   {
+    "row": "One-time projects",
+    "pct": "6"
+   },
+   {
+    "row": "Recurring contracts",
+    "pct": "0"
+   },
+   {
+    "row": "Repeat without contract",
+    "pct": "0"
+   },
+   {
+    "row": "Products",
+    "pct": "94"
+   },
+   {
+    "row": "Retainers",
+    "pct": "0"
+   },
+   {
+    "row": "Other",
+    "pct": "0"
+   }
+  ],
+  "q13": [
+   {
+    "name": "Drive-thru & in-store — lunch and dinner",
+    "pct": "58",
+    "margin": "68",
+    "trend": "Flat",
+    "importance": "The business. Speed of service is the whole game"
+   },
+   {
+    "name": "Third-party delivery (DoorDash, Uber Eats)",
+    "pct": "17",
+    "margin": "42",
+    "trend": "Growing",
+    "importance": "Growing fast at half the margin, and the reconciliation is a nightmare"
+   },
+   {
+    "name": "Breakfast daypart",
+    "pct": "14",
+    "margin": "71",
+    "trend": "Growing",
+    "importance": "Best margin daypart and the least staffed"
+   },
+   {
+    "name": "Catering & large orders",
+    "pct": "6",
+    "margin": "63",
+    "trend": "Growing",
+    "importance": "Douglasville does most of it because Aaliyah chases it"
+   },
+   {
+    "name": "Beverage & dessert attach",
+    "pct": "5",
+    "margin": "82",
+    "trend": "Flat",
+    "importance": "Highest margin item on the board and attach is 31%"
+   }
+  ],
+  "q14": [
+   {
+    "row": "Active customer count",
+    "value": "807,000 transactions last year; 11,400 active loyalty members"
+   },
+   {
+    "row": "B2B / B2C / mixed",
+    "value": "B2C"
+   },
+   {
+    "row": "% of revenue from your largest customer",
+    "value": "Under 0.1% — a weekly catering account at Douglasville"
+   },
+   {
+    "row": "% of revenue from your top five",
+    "value": "Under 0.4%"
+   },
+   {
+    "row": "% of revenue tied directly to YOUR personal relationships",
+    "value": "0%. Nobody buys chicken because of me"
+   }
+  ],
+  "q15": [
+   {
+    "row": "Last completed year",
+    "amount": "9200000"
+   },
+   {
+    "row": "Prior year",
+    "amount": "8640000"
+   },
+   {
+    "row": "Year to date",
+    "amount": "7010000"
+   },
+   {
+    "row": "Full-year forecast",
+    "amount": "9600000"
+   }
+  ],
+  "q16": "Up 10% or less",
+  "q17": [
+   {
+    "row": "Approximate gross margin %",
+    "value": "66% — sales less food and paper. Crew labor sits below that line and runs 29% of sales"
+   },
+   {
+    "row": "Main direct costs",
+    "value": "Food and paper through the brand's supply chain, third-party delivery commissions, royalty at 5% and ad fund at 2%"
+   },
+   {
+    "row": "Tracked by job / service / customer?",
+    "value": "Yes — food cost by unit and by category, weekly, out of the franchisor's system"
+   }
+  ],
+  "q18": [
+   {
+    "row": "Operating profit estimate",
+    "amount": "560000"
+   },
+   {
+    "row": "Owner salary",
+    "amount": "210000"
+   },
+   {
+    "row": "Owner distributions",
+    "amount": "95000"
+   },
+   {
+    "row": "Unusual one-off expenses",
+    "amount": "140000"
+   }
+  ],
+  "q19": [
+   "Profitable but tight",
+   "Payroll timing",
+   "Debt payments",
+   "Big expense coming"
+  ],
+  "q20": "Monthly, within 15 days",
+  "q21": [
+   {
+    "row": "Revenue",
+    "target": "$10M"
+   },
+   {
+    "row": "Gross margin",
+    "target": "68% — the brand target"
+   },
+   {
+    "row": "Operating profit",
+    "target": "$650K"
+   },
+   {
+    "row": "Cash reserve",
+    "target": "No target"
+   },
+   {
+    "row": "Owner compensation",
+    "target": "No target"
+   }
+  ],
+  "q22": "Consolidated P&L and P&L by unit, last 24 months. Sales by unit and daypart. Food cost and inventory variance reports from the franchisor's system. The brand's turnover benchmark report. Third-party delivery statements. Franchise agreements and lease abstracts. Loyalty program activity export.",
+  "q23": [
+   {
+    "source": "Brand national advertising (franchisor-directed)",
+    "per_month": "unknown",
+    "cost": "184000",
+    "quality": "4",
+    "tracked": "No"
+   },
+   {
+    "source": "Local store marketing fund",
+    "per_month": "unknown",
+    "cost": "46000",
+    "quality": "3",
+    "tracked": "No"
+   },
+   {
+    "source": "Loyalty app offers",
+    "per_month": "unknown",
+    "cost": "0",
+    "quality": "5",
+    "tracked": "Yes"
+   },
+   {
+    "source": "Third-party delivery marketplace placement",
+    "per_month": "unknown",
+    "cost": "62000",
+    "quality": "2",
+    "tracked": "Yes"
+   }
+  ],
+  "q24": [
+   {
+    "row": "What happens, step by step",
+    "value": "A customer arrives at the drive-thru, the counter or a delivery app. The order goes into the brand POS, the timer starts, the kitchen display fires, it goes out the window. There is no inquiry stage in this business"
+   },
+   {
+    "row": "Typical response time",
+    "value": "n/a as an inquiry. Speed of service is 3 minutes 12 seconds average at the window against a brand standard of 2:50"
+   },
+   {
+    "row": "Who is responsible",
+    "value": "The shift lead on duty"
+   },
+   {
+    "row": "Is every inquiry captured in one system?",
+    "value": "Every transaction is, in the POS. Delivery orders land in the POS through the aggregator integration"
+   },
+   {
+    "row": "Automated follow-up?",
+    "value": "The brand's loyalty app pushes offers. We can trigger a local offer twice a month"
+   },
+   {
+    "row": "% of leads that get 2+ follow-ups",
+    "value": "n/a"
+   }
+  ],
+  "q25": [
+   {
+    "row": "Lead→sale or proposal→close %",
+    "value": "n/a — there is no quote and no close. The nearest equivalent is upsell attach: 2.7 items per transaction against a brand target of 3.1"
+   },
+   {
+    "row": "Tracked by source / person / service?",
+    "value": "Items per transaction by unit and by shift lead, weekly"
+   },
+   {
+    "row": "Defined sales process?",
+    "value": "The brand's upsell script exists. Whether it is said depends entirely on who is on the headset"
+   },
+   {
+    "row": "Most common reason you lose",
+    "value": "Line length at peak, and the app showing a 40-minute delivery quote"
+   }
+  ],
+  "q26": [
+   {
+    "row": "Typical first sale",
+    "value": "$11.40 average ticket"
+   },
+   {
+    "row": "Typical annual customer value",
+    "value": "$148 for an active loyalty member (about 13 visits)"
+   },
+   {
+    "row": "Most valuable segment",
+    "value": "Breakfast regulars. Highest margin, most predictable, least served"
+   },
+   {
+    "row": "Tracked?",
+    "value": "Yes, in the brand's loyalty reporting — for the 11,400 members. The rest is anonymous"
+   }
+  ],
+  "q27": [
+   {
+    "row": "% who buy again",
+    "value": "Loyalty members: 62% order again within 90 days"
+   },
+   {
+    "row": "Renewal rate if applicable",
+    "value": "n/a"
+   },
+   {
+    "row": "Are inactive customers identified?",
+    "value": "Yes — 4,900 loyalty members with no order in 90 days, and I can pull that list today"
+   },
+   {
+    "row": "Reactivation campaigns ever run?",
+    "value": "The brand runs national win-back. We have never run a local one, and we are allowed two offers a month"
+   },
+   {
+    "row": "Why customers leave",
+    "value": "One bad wait, or they moved. We do not really know"
+   }
+  ],
+  "q28": [
+   "Pricing is a current worry"
+  ],
+  "q29": [
+   {
+    "row": "Complementary services routinely offered?",
+    "value": "The brand's upsell script covers it. Attach is 2.7 items against a 3.1 target"
+   },
+   {
+    "row": "Bundles or packages?",
+    "value": "Combos and the LTO calendar, all specified by the franchisor"
+   },
+   {
+    "row": "Premium option?",
+    "value": "The brand's premium sandwich tier. Not ours to design"
+   },
+   {
+    "row": "Entry-level option?",
+    "value": "The value menu. Also not ours"
+   },
+   {
+    "row": "Customer needs you can't currently serve",
+    "value": "Late night past 10pm — the brand allows it and I cannot staff it"
+   }
+  ],
+  "q30": [
+   {
+    "row": "Who owns marketing",
+    "value": "The franchisor nationally. Locally, Dev, in the gaps"
+   },
+   {
+    "row": "Who owns sales",
+    "value": "The general managers own their unit's sales number"
+   },
+   {
+    "row": "Monthly marketing budget",
+    "value": "$19,200 — 2% ad fund plus local store marketing"
+   },
+   {
+    "row": "Do sales & marketing review results together?",
+    "value": "Sales and food cost yes, weekly. Marketing is whatever the brand sent"
+   },
+   {
+    "row": "Are leads, conversion, CAC and customer value ever reviewed together?",
+    "value": "No. We review sales, transactions, average ticket and food cost. Nobody looks at what a customer is worth over a year"
+   }
+  ],
+  "q31": "We'd have to hire",
+  "q32": [
+   {
+    "row": "1",
+    "area": "Crew turnover"
+   },
+   {
+    "row": "2",
+    "area": "The delivery channel — I am sure we are losing money in the fees"
+   },
+   {
+    "row": "3",
+    "area": "Breakfast. We under-staff the best margin we have"
+   }
+  ],
+  "q33": [
+   {
+    "workflow": "Opening and closing checklists"
+   },
+   {
+    "workflow": "Inventory count and ordering"
+   },
+   {
+    "workflow": "Crew scheduling"
+   },
+   {
+    "workflow": "Hiring and onboarding"
+   },
+   {
+    "workflow": "Shift handover"
+   },
+   {
+    "workflow": "Food safety and brand audit readiness"
+   },
+   {
+    "workflow": "Cash reconciliation and deposit"
+   },
+   {
+    "workflow": "Third-party delivery channel reconciliation"
+   },
+   {
+    "workflow": "Weekly food-cost variance review"
+   },
+   {
+    "workflow": "Maintenance and equipment call-outs"
+   }
+  ],
+  "q34": [
+   {
+    "row": "One clear accountable role",
+    "frequency": "Usually"
+   },
+   {
+    "row": "Defined handoffs",
+    "frequency": "Usually"
+   },
+   {
+    "row": "Consistent exception escalation",
+    "frequency": "Sometimes"
+   }
+  ],
+  "q35": [
+   {
+    "row": "Documented",
+    "pct": "85"
+   },
+   {
+    "row": "Current",
+    "pct": "80"
+   },
+   {
+    "row": "Accessible",
+    "pct": "90"
+   },
+   {
+    "row": "Used in training",
+    "pct": "75"
+   },
+   {
+    "row": "Actually followed",
+    "pct": "55"
+   }
+  ],
+  "q36": [
+   "Scheduling delays",
+   "Quality inconsistency",
+   "Unclear priorities",
+   "The owner has to step in",
+   "Accountability problems"
+  ],
+  "q37": "Skilled labor",
+  "q38": "Mostly clear, with gaps",
+  "q39": [
+   {
+    "row": "How many KPIs reviewed weekly",
+    "value": "Five — sales, transactions, food cost, labor percentage, speed of service"
+   },
+   {
+    "row": "Does each have one owner?",
+    "value": "Yes — each GM owns all five for their unit"
+   },
+   {
+    "row": "Are targets visible?",
+    "value": "Yes, in the back-of-house office of each unit"
+   },
+   {
+    "row": "Does a miss trigger action?",
+    "value": "Sometimes. Food cost yes because the brand chases it. Turnover has no target and nothing triggers"
+   }
+  ],
+  "q40": "Weekly but loose",
+  "q41": [
+   {
+    "row": "CRM",
+    "tool": "The brand's loyalty platform — we can see it, we cannot change it"
+   },
+   {
+    "row": "Marketing",
+    "tool": "Franchisor national; a local store marketing kit"
+   },
+   {
+    "row": "Sales / proposals",
+    "tool": "n/a"
+   },
+   {
+    "row": "Scheduling / project management",
+    "tool": "HotSchedules"
+   },
+   {
+    "row": "Delivery",
+    "tool": "Brand POS and kitchen display; DoorDash and Uber Eats merchant portals"
+   },
+   {
+    "row": "Accounting",
+    "tool": "QuickBooks Online"
+   },
+   {
+    "row": "Reporting",
+    "tool": "Franchisor portal per unit, plus an Excel consolidation I build"
+   },
+   {
+    "row": "Communication",
+    "tool": "GroupMe per unit, text, and a printed board"
+   },
+   {
+    "row": "Files / knowledge",
+    "tool": "The brand's operations manual portal, plus Google Drive"
+   },
+   {
+    "row": "HR / payroll",
+    "tool": "Gusto"
+   }
+  ],
+  "q42": "Mostly separate, plus spreadsheets",
+  "q43": [
+   "Data is generally accurate",
+   "Backups exist",
+   "We know where sensitive data lives"
+  ],
+  "q44": [
+   {
+    "task": "Manual inventory count (two counts a week, three units)",
+    "who": "General managers and shift leads",
+    "frequency": "Several times a week",
+    "occurrences": "6",
+    "minutes": "600",
+    "errors": "Yes",
+    "systems": "Paper count sheets, franchisor ordering portal, Excel"
+   },
+   {
+    "task": "Daily cash reconciliation and deposit prep",
+    "who": "General managers",
+    "frequency": "Daily",
+    "occurrences": "21",
+    "minutes": "40",
+    "errors": "Yes",
+    "systems": "POS, bank portal, paper"
+   },
+   {
+    "task": "Third-party delivery channel reconciliation — fees, refunds, missing orders",
+    "who": "Dev Anand (area manager)",
+    "frequency": "Weekly",
+    "occurrences": "1",
+    "minutes": "620",
+    "errors": "Yes",
+    "systems": "DoorDash and Uber Eats portals, POS, Excel"
+   },
+   {
+    "task": "Weekly crew schedule build across three units",
+    "who": "General managers",
+    "frequency": "Weekly",
+    "occurrences": "3",
+    "minutes": "190",
+    "errors": "Yes",
+    "systems": "HotSchedules, Excel"
+   },
+   {
+    "task": "Food-cost variance report build",
+    "who": "Jasmine Carter",
+    "frequency": "Weekly",
+    "occurrences": "1",
+    "minutes": "210",
+    "errors": "No",
+    "systems": "Franchisor portal, Excel, POS"
+   }
+  ],
+  "q45": "The brand's systems do a lot on their own — POS to kitchen display, the loyalty app, national campaign delivery, the food-safety task prompts on the manager tablet. Payroll runs out of Gusto. On our side of the line there is nothing automated at all: every count, every reconciliation, every schedule and every consolidated report is a person and a spreadsheet.",
+  "q46": [
+   "Drafting",
+   "Scheduling"
+  ],
+  "q47": [
+   "None of these are consistently true"
+  ],
+  "q48": [
+   "Shared passwords",
+   "Ex-employees may retain access",
+   "Unclear account ownership"
+  ],
+  "q49": [
+   {
+    "row": "Implementation budget range",
+    "value": "$25,000–$40,000. I have it if it shows up in the labor line"
+   },
+   {
+    "row": "Owner hours/week available",
+    "value": "3"
+   },
+   {
+    "row": "Team hours/week available",
+    "value": "5, and only Dev's"
+   },
+   {
+    "row": "Appetite for changing systems",
+    "value": "High for anything the franchise agreement lets me change, which is less than people think"
+   }
+  ],
+  "q58": "Pockets of capability",
+  "q59": "Dev will take on anything and he is the only person with time to. Aaliyah at Douglasville is the strongest GM I have and she would adopt a new count system tomorrow if it gave her her Tuesdays back. Rochelle is careful and slow to change but she is the one whose numbers are best, so I would rather she went last than first. Tomás will do whatever the brand tells him and nothing anyone else tells him. The crew will use anything on a phone.",
+  "q56": [
+   {
+    "role": "Multi-unit owner",
+    "rate": "95"
+   },
+   {
+    "role": "Area manager",
+    "rate": "58"
+   },
+   {
+    "role": "General manager",
+    "rate": "34"
+   },
+   {
+    "role": "Shift lead",
+    "rate": "24"
+   },
+   {
+    "role": "Crew member",
+    "rate": "19"
+   }
+  ],
+  "q50": [
+   "Hiring / firing",
+   "Purchasing",
+   "Banking / payments",
+   "Vendor relationships",
+   "Strategy"
+  ],
+  "q51": [
+   {
+    "row": "What keeps running",
+    "value": "All three restaurants. They open, they serve, they close. Dev covers operations"
+   },
+   {
+    "row": "What slows down",
+    "value": "Hiring above shift-lead level, anything capital, and the weekly consolidated numbers because I build them"
+   },
+   {
+    "row": "What stops",
+    "value": "The franchisor relationship. Every conversation with the brand is mine, including the Douglasville lease renewal"
+   },
+   {
+    "row": "Who decides",
+    "value": "Dev on operations. GMs inside their own unit. Nobody on money or on the brand"
+   },
+   {
+    "row": "What nobody else can access",
+    "value": "The bank, the franchise agreements, the lease documents, and the franchisor's owner portal"
+   }
+  ],
+  "q52": [
+   {
+    "risk": "Jasmine Carter — franchisor relationship, banking, leases",
+    "impact": "Operations continue; the brand relationship, the lease renewal and every capital decision stop"
+   },
+   {
+    "risk": "Dev Anand — area manager",
+    "impact": "The only person covering three units operationally, and the only one who understands the delivery-channel reconciliation"
+   },
+   {
+    "risk": "Douglasville lease — 14 months to expiry, no renewal option",
+    "impact": "A third of the business is on a lease with no option and a landlord who has already mentioned redevelopment"
+   },
+   {
+    "risk": "Franchise agreements and brand standing",
+    "impact": "Two audit scores below 85 in a rolling year triggers a cure period. We are at one"
+   }
+  ],
+  "q53": [
+   "Customer agreements are written & accessible",
+   "Vendor agreements are written",
+   "Licenses & insurance are current",
+   "Employment agreements are current",
+   "No known legal, tax or insurance issue"
+  ],
+  "q54": [
+   "Leadership depth",
+   "SOPs & knowledge transfer",
+   "Delivery consistency"
+  ],
+  "q55": "Ready if priorities stay tight",
+  "q57": "Tired but managing"
+ },
+ "session": {
+  "engine": {
+   "leads_per_month": "n/a",
+   "conversion_rate": "n/a",
+   "avg_deal_value": "$11.40 average ticket; $148 annual value per active loyalty member",
+   "response_time": "n/a",
+   "gross_margin_pct": "66",
+   "headcount": "85 on the payroll, 52 full-time equivalent",
+   "repetitive_hours_week": "Manual inventory count (3 units × 2) — GMs & shift leads — 60.0\nDaily cash reconciliation — GMs — 14.0\nDelivery channel reconciliation — Dev — 10.3\nWeekly schedule build — GMs — 9.5\nFood-cost variance report — Jasmine — 3.5",
+   "largest_customer_pct": "0.1"
+  },
+  "blockNotes": {
+   "b1": "Jasmine's stated bottleneck is labor, and the turnover number is real — 140% against a brand benchmark of 112% on the report she gave us. Her own q4 targets are turnover, margin and GM floor time, and the third one is the interesting one: her general managers are on the floor for 41% of their shift. Five days off in twelve months and Kennesaw called her every one of them.",
+   "b2": "No funnel exists. There is no lead, no quote and no close in a drive-thru business, and the funnel-vs-revenue cross-check returns n/a rather than a failure. What can be reconciled: 807,000 transactions at an $11.40 average ticket is $9.2M, which lands exactly on the P&L. Speed of service 3:12 against a 2:50 brand standard; upsell attach 2.7 items against a 3.1 target.",
+   "b3": "Systems tour. The brand's stack is excellent and none of it is hers — POS, kitchen display, loyalty, ordering, food-safety prompts. Everything on the franchisee's side of the line is manual: paper count sheets, a bank portal, three separate franchisor portals and an Excel consolidation Jasmine builds herself every week. Watched a Marietta inventory count in progress: three people, clipboards, ninety minutes into a three-and-a-half hour job.",
+   "b4": "97.3 h/wk of repetitive work inventoried. Against 85 people it looks trivial; against the eight salaried managers who actually do it — three GMs, three assistant managers, Dev and Jasmine, about 340 available hours — it is 29% of all management time, and 60 of those hours are one task. The hours-vs-headcount cross-check FLAGS, and it should: the number is not implausible, it is badly distributed, and the distribution is the finding.",
+   "b5": "Two Profit indicators cannot apply here and both were recorded as N/A with the franchise agreement clause behind them: P5 because menu pricing is franchisor-set inside a published band, and P6 because menu, tiers, bundles and LTOs are all brand-specified. Continuity is otherwise solid — written agreements, current insurance and licences — except the Douglasville lease, fourteen months out with no renewal option on a third of the business, and one audit score below 85 in a rolling year against a two-score cure trigger."
+  },
+  "demonstrated": [
+   "POS traffic and daypart dashboard by unit, opened live in the Marietta back office",
+   "Drive-thru timer showing 3:12 average speed of service against the 2:50 standard",
+   "A Marietta inventory count in progress — three people, paper sheets, ninety minutes in",
+   "The weekly numbers review with the three GMs — five KPIs, each owned, targets on the office wall",
+   "Brand audit scorecards and GM scorecards for all three units",
+   "Delivery-channel reconciliation worked live: 40 minutes to trace nine disputed orders across two portals",
+   "The Excel consolidation Jasmine rebuilds every week from three separate franchisor portals",
+   "Loyalty inactive-member list pulled in one click — 4,900 members with no order in 90 days"
+  ],
+  "documents_seen": [
+   "Consolidated P&L and P&L by unit, 24 months — revenue $9.2M, 66% after food and paper, operating profit $560K",
+   "Sales by unit and daypart — 807,000 transactions, $11.40 average ticket",
+   "Food cost and inventory variance reports by unit and category, weekly, from the franchisor's system",
+   "Brand crew-turnover benchmark report — Carter units 140%, brand average 112%",
+   "Third-party delivery statements, twelve months — 17% of sales at 42% margin",
+   "Franchise agreements (3) and lease abstracts (3) — Douglasville expires in 14 months with no option",
+   "Loyalty program activity export — 11,400 active, 4,900 dormant at 90 days"
+  ]
+ },
+ "dataRoom": {
+  "pnl_on_file": true,
+  "documents": [
+   {
+    "name": "Consolidated P&L and P&L by unit, 24 months",
+    "kind": "pnl",
+    "received_on": "2026-08-22"
+   },
+   {
+    "name": "Sales by unit and daypart, 12 months",
+    "kind": "other",
+    "received_on": "2026-08-22"
+   },
+   {
+    "name": "Food cost and inventory variance by unit and category (franchisor)",
+    "kind": "job_cost",
+    "received_on": "2026-08-25"
+   },
+   {
+    "name": "Brand crew-turnover benchmark report",
+    "kind": "other",
+    "received_on": "2026-08-25"
+   },
+   {
+    "name": "Third-party delivery statements, 12 months",
+    "kind": "other",
+    "received_on": "2026-08-29"
+   },
+   {
+    "name": "Franchise agreements (3) and lease abstracts (3)",
+    "kind": "other",
+    "received_on": "2026-09-02"
+   },
+   {
+    "name": "Loyalty program activity export",
+    "kind": "revenue_by_customer",
+    "received_on": "2026-09-02"
+   }
+  ]
+ },
+ "scores": {
+  "P1": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Transaction counts and daypart mix come out of the POS by unit and were shown live. Spend is known — $184K national ad fund, $46K local, $62K delivery placement — but q23 marks the two largest as untracked and nothing attributes a transaction to a source.",
+   "why_not_higher": "Anchor 3 needs sources and volume logged in one place with cost or quality on the main source; traffic volume is measured beautifully and its origin is unknown, and the largest spend line is directed by the franchisor."
+  },
+  "P2": {
+   "score": 3,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "The QSR equivalent of capture and response: every transaction — counter, drive-thru and both delivery apps — lands in one POS through the aggregator integration, and the drive-thru timer measures response at 3:12 average. Shown live on the Marietta board.",
+   "why_not_higher": "Anchor 4 needs the response inside the standard; 3:12 against a 2:50 brand standard means roughly one order in three is served slower than the brand's own definition of on time."
+  },
+  "P3": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "The brand's loyalty app pushes national offers automatically. The franchisee is permitted two local offers a month; q27 says they have never run a local win-back, and q24 says the local trigger gets used 'when Dev remembers'.",
+   "why_not_higher": "Anchor 3 needs a defined sequence used on most customers with misses visible; the one lever the franchisee actually controls is used sporadically and never measured."
+  },
+  "P4": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "The nearest thing to a conversion in this model is upsell attach: 2.7 items per transaction against a brand target of 3.1, tracked by unit and by shift lead weekly. q25: the brand's upsell script exists and 'whether it is said depends entirely on who is on the headset'.",
+   "why_not_higher": "Anchor 3 needs stages defined and used; the script is defined and adherence is neither observed nor coached, so the rate is measured without anything behind it."
+  },
+  "P5": {
+   "score": null,
+   "na": true,
+   "evidence": "documented",
+   "note": "N/A because the model cannot carry this indicator. Menu pricing is set by Cluckwell Chicken Co. inside a published price band and the franchise agreement in the data room prohibits deviation except by a franchisor-approved local market test — the last request, in 2023, was declined. There is no price for this business to review against cost, no discount rule for it to write, and no price for its team to defend. The only price parameter the franchisee controls at all is the third-party delivery markup, which the franchisor also caps at 15% and which is scored as a channel-margin question under P9 rather than as pricing discipline.",
+   "why_not_higher": "N/A — not scored. Rubrics v2 §5: valid only where the indicator cannot apply to the business model, with a written reason. Franchise agreement §7.2, in the data room."
+  },
+  "P6": {
+   "score": null,
+   "na": true,
+   "evidence": "documented",
+   "note": "N/A because the model cannot carry this indicator. The menu, the combo structure, the value tier, the premium tier and the limited-time-offer calendar are all specified by the franchisor and delivered through the brand's system; the franchise agreement bars the franchisee from adding, removing, bundling or repricing any item. Offer architecture is not a weak capability here — it is a capability the operator is contractually forbidden to have. What the franchisee does control, execution of the brand's upsell at the point of order, is scored on P4.",
+   "why_not_higher": "N/A — not scored. Rubrics v2 §5: valid only where the indicator cannot apply to the business model, with a written reason. Franchise agreement §5.1 and §5.4, in the data room."
+  },
+  "P7": {
+   "score": 3,
+   "na": false,
+   "evidence": "documented",
+   "note": "Loyalty activity export (Doc): 11,400 active members, 62% reordering within 90 days, and 4,900 dormant at 90 days — the inactive list was pulled in one click in session. The brand runs national win-back on a cadence and it reaches these customers.",
+   "why_not_higher": "Anchor 4 needs retention worked with reactivation on a cadence by the business; the cadence belongs to the franchisor, the franchisee has never used either of its two monthly local offers on the dormant list, and nobody measures what the national campaign returns to these three units."
+  },
+  "P8": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Each GM owns their unit's sales number and the weekly review happens — we sat in it. But q30 says marketing locally is 'Dev, in the gaps', and customer lifetime value is never looked at: 'we review sales, transactions, average ticket and food cost'.",
+   "why_not_higher": "Anchor 3 needs leads, conversion and customer value reviewed monthly with named owners; two of the three are reviewed weekly and the third has never been looked at, and the marketing owner is an area manager doing it in spare time."
+  },
+  "P9": {
+   "score": 3,
+   "na": false,
+   "evidence": "documented",
+   "note": "Food cost by unit and by category weekly out of the franchisor's system (Doc), and margin by line is known — 68% on in-store against 42% on third-party delivery, which is 17% of sales and growing. Jasmine builds the variance report herself and uses it in the weekly review.",
+   "why_not_higher": "Anchor 4 needs the margin driving decisions; the delivery channel has been at half the margin of the in-store business for two years and nothing about how it is run has changed as a result."
+  },
+  "P10": {
+   "score": 3,
+   "na": false,
+   "evidence": "documented",
+   "note": "q20 'Monthly, within 15 days', confirmed against 24 months of consolidated and by-unit P&Ls. Jasmine reviews them and q21 carries targets on revenue, gross margin and operating profit.",
+   "why_not_higher": "Anchor 4 needs targets across the numbers; cash reserve and owner compensation both read 'No target' in a business carrying debt payments and a lease renewal inside fourteen months."
+  },
+  "S1": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Dev genuinely runs operations across three units and each GM decides inside their own building. q50 keeps hiring, purchasing, banking, vendors and strategy with Jasmine, and q51 adds the entire franchisor relationship and the lease.",
+   "why_not_higher": "Anchor 3 needs decision rights written for most areas; they are consistent in practice and written nowhere, and the brand relationship — the single largest determinant of this business's future — has no delegate at all."
+  },
+  "S2": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "q51 four-week test: all three restaurants open, serve and close without her. Hiring above shift lead, capital decisions and the weekly consolidated numbers stall because she builds them; the franchisor relationship and the Douglasville lease stop entirely. Longest real absence five days, with calls every day.",
+   "why_not_higher": "Anchor 3 needs a named deputy with only a few owner-locked items; Dev covers operations only, has no authority over money or hiring, and the lease renewal inside fourteen months is locked to one person."
+  },
+  "S3": {
+   "score": 4,
+   "na": false,
+   "evidence": "reported",
+   "note": "q14: 0% of revenue is tied to the owner's personal relationships — 'nobody buys chicken because of me'. 807,000 transactions a year close without any owner involvement, and the customer relationship is institutional by construction: the brand, the location and the loyalty program hold it.",
+   "why_not_higher": "Top of the anchor. Worth stating plainly in the report: this is the one dimension on which a franchise model is structurally superior to almost every other business the diagnostic sees."
+  },
+  "S4": {
+   "score": 3,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Three general managers, three assistant managers and an area manager — thirteen managers and team leads in total (q10). Each GM owns five KPIs for their unit with visible targets, and we watched the weekly review: real numbers, real owners, action named on food cost.",
+   "why_not_higher": "Anchor 4 needs a miss to trigger action without the owner; q39 says food cost triggers because the brand chases it and turnover 'has no target and nothing triggers' — the metric that matters most to this business is the one nobody owns."
+  },
+  "S5": {
+   "score": 3,
+   "na": false,
+   "evidence": "documented",
+   "note": "The brand operations manual covers every one of the ten workflows in q33, is current, is accessible on the manager tablet and is used in onboarding — q35 reads 85% documented, 80% current, 75% used in training. Audit scorecards for all three units were reviewed.",
+   "why_not_higher": "Anchor 4 needs the documentation actually followed; q35 puts adherence at 55%, one unit is already carrying an audit score below 85 against a two-score cure trigger, and at 140% turnover the trained population is replaced faster than it is trained."
+  },
+  "S6": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "q40 'Weekly but loose'. The weekly numbers review happens and was attended: five KPIs, each owned by a GM, targets posted in each back office. Follow-through is uneven and q39 says misses trigger action only where the franchisor is chasing.",
+   "why_not_higher": "Anchor 3 needs owners named and follow-through even if inconsistent; here follow-through exists only on the metrics an external party audits, which is not the business's own rhythm."
+  },
+  "S7": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Delivery is mostly consistent — brand standards, audit scores, a documented manual — but q36 lists quality inconsistency and unclear priorities, speed of service is 22 seconds off standard, and q31 says +20% means hiring into a market where turnover already runs at 140%.",
+   "why_not_higher": "Anchor 3 needs +20% to strain rather than break and a capacity plan; there is no staffing plan beyond the weekly schedule, and the brand already permits a late-night daypart the business cannot staff."
+  },
+  "S8": {
+   "score": 4,
+   "na": false,
+   "evidence": "documented",
+   "note": "Sales by unit and the loyalty export (Doc): no customer exceeds 0.1% of revenue and the top five together are under 0.4% across 807,000 transactions. There is no customer concentration of any kind.",
+   "why_not_higher": "Top of the anchor. The concentration risk in this business is not a customer — it is one landlord holding a third of the revenue on a lease with no renewal option, carried on S10."
+  },
+  "S9": {
+   "score": 2,
+   "na": false,
+   "evidence": "documented",
+   "note": "q12: 94% product sales, 0% contracted. Repeat is real and measurable — 62% of loyalty members reorder within 90 days, 11,400 of them — but nothing is committed and the only forward view is the franchisor's projection of the same trailing history.",
+   "why_not_higher": "Anchor 3 needs contracted or recurring revenue covering fixed costs or ≥40% of revenue plus a rolling forecast; nothing is contracted, and a third of revenue sits on a lease that expires in fourteen months with no option."
+  },
+  "S10": {
+   "score": 3,
+   "na": false,
+   "evidence": "documented",
+   "note": "Franchise agreements and lease abstracts all in the data room, insurance and licences current, employment agreements current, no known legal issue (q53). GMs are cross-trained across units and Dev can cover any of the three.",
+   "why_not_higher": "Anchor 4 needs transferable contracts and a continuity plan; the Douglasville lease expires in fourteen months with no renewal option on a third of the business, the franchise agreements are assignable only with franchisor consent, and no continuity plan exists."
+  },
+  "L1": {
+   "score": 3,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "POS and kitchen display, the loyalty platform, the franchisor ordering portal, HotSchedules, Gusto, QuickBooks Online and both delivery merchant portals — every core area in q41 has a real system, and most of them are excellent because the brand chose them.",
+   "why_not_higher": "Anchor 4 needs every core area covered; consolidated reporting across the three units does not exist and is replaced by an Excel file the owner rebuilds weekly from three separate portals."
+  },
+  "L2": {
+   "score": 1,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Inside the brand's stack the integrations are clean — aggregator orders land in the POS, food-safety prompts fire on the tablet. Across the franchisee's own systems nothing connects: POS sales are re-keyed into QuickBooks weekly, counts go from paper into the ordering portal, and delivery statements are reconciled by hand in Excel. Watched all three.",
+   "why_not_higher": "Anchor 2 needs some integrations alongside the double entry on the franchisee's side; there are none — every join the operator owns is a person retyping on a schedule."
+  },
+  "L3": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "q43: data generally accurate, backups exist, sensitive data mapped. Unit-level numbers are trustworthy because the brand's systems produce them. The consolidated view is not: it is a weekly hand-build (3.5 h) and the delivery-channel numbers require 10.3 h/wk of reconciliation before anyone believes them.",
+   "why_not_higher": "Anchor 3 needs agreed definitions and reports needing only light cleanup; the number the owner actually steers three units by is assembled from scratch every week."
+  },
+  "L4": {
+   "score": 1,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "97.3 h/wk inventoried across five tasks (q44), four of them flagged for errors. 60 of those hours are one task — two manual inventory counts a week in each of three units, one of which we watched in progress. The load is fully acknowledged in q32 and nothing has been reduced.",
+   "why_not_higher": "Anchor 2 needs a few fixes actually made; not one of the five tasks has been touched, and the largest is done exactly as it was in 2018."
+  },
+  "L5": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Real automation exists and it is all the brand's: POS to kitchen display, national loyalty campaigns, food-safety task prompts, and Gusto payroll. All reliable, all shown. q45: on the franchisee's side of the line there is nothing at all.",
+   "why_not_higher": "Anchor 3 needs automations across several functions owned and monitored by the business; every automation here belongs to a vendor or the franchisor and nobody in the company owns or monitors any of them."
+  },
+  "L6": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "q46: drafting and scheduling. Dev uses ChatGPT to draft job postings and to sanity-check a schedule against the sales forecast. Nobody else uses anything, and nothing was decided.",
+   "why_not_higher": "Anchor 2 needs individual or ad-hoc use across the business; this is one person on his own initiative."
+  },
+  "L7": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "q47: nothing checked. One verbal rule — Jasmine told Dev not to put employee information into it. No written rule, no review, nothing measured.",
+   "why_not_higher": "Anchor 2 needs some practices even if inconsistent; there is one sentence, said once, to one person."
+  },
+  "L8": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "q48: shared passwords, ex-employees may retain access, unclear account ownership. The manager tablets and both delivery merchant portals use shared unit logins, and departed managers have never been de-provisioned from the aggregator portals. Against that, brand-held customer and payment data is well controlled and backed up by the franchisor, and q43 confirms the data map.",
+   "why_not_higher": "Anchor 3 needs access controlled and off-boarding done; shared unit logins and un-revoked aggregator access are exactly the gap, and both sit on systems that move money."
+  },
+  "L9": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "q58: 'Pockets of capability.' q59: Dev takes on anything, Aaliyah would adopt a new count system tomorrow, Rochelle is careful but has the best numbers, Tomás follows the brand and nobody else, and the crew will use anything on a phone.",
+   "why_not_higher": "Anchor 3 needs the team trained on the core tools; training on the brand's stack is genuinely good, training on everything the franchisee owns is nil, and at 140% turnover the trained population turns over faster than it can be built."
+  },
+  "L10": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "q49: $25–40K 'if it shows up in the labor line', three owner hours and five team hours a week, all of them Dev's. q55: 'Ready if priorities stay tight.' Appetite is high and explicitly bounded by what the franchise agreement permits.",
+   "why_not_higher": "Anchor 3 needs budget and time named and set aside; the money is named, the only available hours belong to the one person already carrying three units, and the change surface is contractually narrow."
+  }
+ },
+ "assessment": {
+  "owner_objective": "Better operations and delivery capacity — get restaurant-level margin from 6.1% to 8% and turnover under 110%, then open a fourth unit without living in it.",
+  "owner_belief": "Labor. I cannot staff three units. Turnover was a hundred and forty percent last year and every single problem I have — speed of service, food cost, the audit scores — traces back to a crew that turns over twice a year. Everybody in this industry says it and it is still true.",
+  "primary_constraint": "Ninety-seven hours a week of manual back-office work sits on eight salaried managers — sixty of it counting inventory twice a week in three buildings — so the general managers who are the only real retention lever in a quick-service restaurant spend 41% of their shift on the floor, and the crew turns over at 140% against a brand average of 112%.",
+  "constraint_symptoms": "Block 4: 97.3 h/wk inventoried against ~340 hours of management time — 29% — with 60 hours in one task, and the hours-vs-headcount cross-check flags on the distribution. Block 1: q4's third target is GM floor time, which is Jasmine's own diagnosis arriving underneath her stated one. Block 3: speed of service is 22 seconds off standard and one unit is carrying an audit score below 85, both floor-presence problems. Block 5: q52 names Dev as the only cover across three units, and he is also the person absorbing 10.3 hours a week of delivery reconciliation. Four blocks; the rule requires two.",
+  "constraint_cost": "~$91K of expected operating profit a year from turnover above the brand benchmark (P&L labor line and the brand turnover report, Doc: 28 points of excess turnover across 85 positions at the brand's own replacement cost) · ~$27K a year of delivery-channel fees, refunds and missing-order credits not recovered · 3,120 management hours a year on inventory counting alone.",
+  "constraint_fix": "Take the counting off the managers before anything else: move the two lowest-variance categories to a weekly count immediately, then put scale-and-scan counting on the manager tablet against the franchisor's ordering portal. Every hour recovered is written into a floor-presence standard with a number attached, so the capacity goes to the crew rather than to more paperwork.",
+  "momentum_initiative": "Move produce and paper — the two lowest-variance categories on the franchisor's own variance report — from two counts a week to one. It is a decision, it needs no system, no franchisor approval is required for count frequency, and it returns roughly eleven management hours a week from the first Monday.",
+  "overlay_flags": [
+   "key_person",
+   "nontransferable_contracts"
+  ],
+  "plan_items": [
+   "Produce and paper moved to a weekly count in all three units — Dev Anand — 2026-09-14",
+   "Douglasville lease renewal conversation opened with the landlord — Jasmine Carter — 2026-09-21",
+   "Delivery-channel dispute and fee recovery process, weekly with a recorded number — Dev Anand — 2026-10-05",
+   "Scale-and-scan inventory count on the manager tablet, Douglasville first — Aaliyah Grant — 2026-11-09",
+   "Floor-presence standard set per GM with a weekly number, and turnover given an owner and a target — Jasmine Carter — 2026-10-19",
+   "Local loyalty win-back offer aimed at the 4,900 dormant members — Dev Anand — 2026-11-02"
+  ],
+  "overlap_factor": 0.7
+ },
+ "opportunities": [
+  {
+   "title": "Take sixty hours a week of inventory counting off the managers",
+   "finding": "Two manual counts a week in each of three units, sixty person-hours in total, flagged for errors, done on paper and then keyed into the franchisor's ordering portal. It is the largest line in the repetitive-work inventory by a factor of four, and the hours come out of the eight salaried managers whose presence on the floor is the only retention lever this business actually controls. Dollars below price the recovered hours; the turnover effect is stated separately in the constraint cost and is not double-counted here.",
+   "calculator": {
+    "kind": "automation_hours",
+    "inputs": {
+     "hoursPerWeek": 60,
+     "loadedHourlyRate": 29,
+     "automationSharePctLow": 30,
+     "automationSharePctExpected": 45,
+     "automationSharePctHigh": 60,
+     "weeksPerYear": 52,
+     "redeployed": true
+    }
+   },
+   "fix_cost": 21000,
+   "months_to_benefit": 3,
+   "confidence": "medium",
+   "include_in_report": true,
+   "basis_reported_only": false,
+   "blueprint": "Two stages. Immediately: move the two lowest-variance categories on the franchisor's own variance report from two counts a week to one — no system, no approval, roughly eleven hours back on the first Monday. Then: bluetooth scale and scan-to-count on the manager tablet, writing straight to the ordering portal, rolled out Douglasville first because Aaliyah asked for it. Recovered hours are written into a floor-presence standard with a number, or they will be absorbed by other paperwork.",
+   "replaces": "Six paper counts a week and the re-keying behind them."
+  },
+  {
+   "title": "Recover what the delivery channel is taking",
+   "finding": "Third-party delivery is 17% of sales at a 42% margin against 68% in store, and Dev spends 10.3 hours a week reconciling it by hand across two merchant portals — we watched forty minutes of it, tracing nine disputed orders. The twelve months of statements in the data room show fee adjustments, customer refunds charged back to the store and missing-order credits that were never disputed inside the aggregators' claim windows. q32 puts this in the owner's own top three. There is no calculator for a recovery of this shape, so the range is hand-entered from the statements and the report will say so.",
+   "hand_entered": {
+    "annual_low": 14000,
+    "annual_expected": 27000,
+    "annual_high": 41000
+   },
+   "fix_cost": 3800,
+   "months_to_benefit": 2,
+   "confidence": "medium",
+   "include_in_report": true,
+   "basis_reported_only": false,
+   "blueprint": "A standing weekly dispute routine inside each aggregator's claim window, a single reconciliation sheet across both portals instead of two, and a recorded recovery number in the weekly review so it stops being invisible. The 15% delivery markup the franchisor permits is applied consistently across both channels, which today it is not.",
+   "replaces": "Ten hours a week of untracked reconciliation and a claim window that closes before anyone gets to it."
+  },
+  {
+   "title": "Wake up the 4,900 dormant loyalty members",
+   "finding": "The loyalty export (Doc) lists 11,400 active members and 4,900 with no order in 90 days, pullable in one click. The franchise agreement permits two locally triggered offers a month and q27 confirms neither has ever been aimed at this list. An active member is worth $148 a year across roughly thirteen visits at an $11.40 ticket.",
+   "calculator": {
+    "kind": "reactivation",
+    "inputs": {
+     "dormantCustomers": 4900,
+     "reactivationRatePctLow": 6,
+     "reactivationRatePctExpected": 10,
+     "reactivationRatePctHigh": 15,
+     "averageAnnualValue": 148,
+     "grossMarginPct": 66
+    }
+   },
+   "fix_cost": 4600,
+   "months_to_benefit": 2,
+   "confidence": "medium",
+   "include_in_report": true,
+   "basis_reported_only": false,
+   "blueprint": "Use both permitted monthly local offers on the dormant segment rather than on general traffic, aim the first at the breakfast daypart — the highest-margin, least-served part of the day — and measure redemption against the segment rather than against total sales. Every element stays inside what the franchise agreement allows, which is why this is the offer lever available to an operator who has no pricing or menu lever at all.",
+   "replaces": "Two local offer slots a month that currently go unused or go to everyone."
+  }
+ ],
+ "expected": {
+  "gate_should_pass": true,
+  "expected_blockers": [],
+  "expected_warnings": [
+   "hand-entered range on the delivery-channel recovery opportunity — no calculator backs it, the report must label it as hand-entered",
+   "two N/As in the Profit pillar (P5, P6) — both cite specific franchise agreement clauses; reviewer should confirm the clauses before signing",
+   "hours-vs-headcount cross-check flagged: 97.3 h/wk of repetitive work against eight salaried managers (~340 hours), 60 hours of it in a single task"
+  ],
+  "band_guess": "Building",
+  "cross_checks": {
+   "margin_vs_pnl": "pass",
+   "funnel_vs_revenue": "n/a",
+   "concentration": "pass",
+   "hours_vs_headcount": "flag"
+  }
+ }
+}

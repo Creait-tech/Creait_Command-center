@@ -1,0 +1,1182 @@
+{
+ "n": 11,
+ "company": "Luxe Aesthetics Med Spa",
+ "owner": "Dr. Hannah Cole",
+ "industry": "Med spa",
+ "profile": {
+  "revenue": 2010000,
+  "grossMarginPct": 62,
+  "operatingProfit": 312000,
+  "headcount": 9,
+  "founded": 2017,
+  "story": "Dr. Hannah Cole left family medicine in 2017 and built a Scottsdale med spa on her own hands and her own name. Eight years later the business is $2.01M with nine people, and 78% of injectable revenue is still delivered by her personally — her calendar is booked nine weeks out while her nurse practitioner has three-day availability. She is charting until 9pm most nights, has not taken more than four consecutive days off in two years, and answered the wellbeing question with 'Running on empty.' A second, quieter problem surfaced in Block 5: the 2019 delegation agreement that lets Renata inject under her supervision cannot be found, and aestheticians have occasionally done neurotoxin touch-ups on her verbal direction."
+ },
+ "edge_cases": [
+  "owner_burnout overlay driven by q57 'Running on empty' plus the four-week test",
+  "legal_exposure overlay on an unresolved clinical-delegation question — must be referred out, never advised on",
+  "constraint is capacity of a single licensed provider, not demand",
+  "passes the release gate cleanly with 12 Demonstrated/Documented indicators"
+ ],
+ "intake": {
+  "q1": [
+   {
+    "row": "Your name",
+    "value": "Dr. Hannah Cole, MD"
+   },
+   {
+    "row": "Email",
+    "value": "hannah@luxeaestheticsmedspa.com"
+   },
+   {
+    "row": "Phone",
+    "value": "(480) 555-0184"
+   },
+   {
+    "row": "Company name",
+    "value": "Luxe Aesthetics Med Spa, PLLC"
+   },
+   {
+    "row": "Website",
+    "value": "luxeaestheticsmedspa.com"
+   },
+   {
+    "row": "Location",
+    "value": "Scottsdale, Arizona"
+   },
+   {
+    "row": "Industry",
+    "value": "Medical aesthetics / med spa"
+   }
+  ],
+  "q2": "We are a physician-owned medical spa. Injectables are the core — neurotoxin and dermal filler — alongside laser and energy-device treatments, medical-grade facials, a medical weight-management program and retail skincare. Patients are almost all women 34–62 in north Scottsdale and Paradise Valley, roughly 60% of revenue from patients who have been with us more than two years. Everything is delivered in our own four-room suite; I do the injectable work and the clinical oversight, my nurse practitioner covers a share of it, and two licensed aestheticians run the device and facial side.",
+  "q3": [
+   {
+    "row": "Primary",
+    "objective": "Reduce owner dependence"
+   },
+   {
+    "row": "Secondary 1",
+    "objective": "More profit & cash flow"
+   },
+   {
+    "row": "Secondary 2",
+    "objective": "Better operations & delivery capacity"
+   }
+  ],
+  "q4": [
+   {
+    "row": "1",
+    "outcome": "Share of injectable revenue delivered by someone other than me",
+    "target": "From 22% to 45%"
+   },
+   {
+    "row": "2",
+    "outcome": "My clinical hours per week",
+    "target": "From 38 to 26"
+   },
+   {
+    "row": "3",
+    "outcome": "Operating profit",
+    "target": "$312K to $400K"
+   }
+  ],
+  "q5": "A practice that fills two injector calendars, not one. Around $2.6M, four rooms running six days, a practice manager who owns the numbers, a second NP or PA, and me in the chair three clinical days a week instead of five — doing the complex cases and the training, not every unit of tox in the building. I would like to be able to leave for two weeks and have the schedule not collapse.",
+  "q6": "Doing the technical work",
+  "q7": [
+   {
+    "row": "Hours/week now",
+    "value": "62"
+   },
+   {
+    "row": "Hours/week you want in 12 months",
+    "value": "45"
+   },
+   {
+    "row": "Hours/week you want in 3 years",
+    "value": "32"
+   },
+   {
+    "row": "Longest uninterrupted time away in the past 12 months",
+    "value": "4 days, and I did chart notes from the hotel"
+   },
+   {
+    "row": "What pulls you back in",
+    "value": "Patients who will only see me, and every clinical decision — Renata texts me photos on her own patients"
+   }
+  ],
+  "q8": "I am the bottleneck. Patients book me by name and will wait nine weeks rather than see my NP, so revenue is capped at whatever I can physically inject in a week. It has been true since about 2022 and it got worse when we added the third room, because now I am the only thing that isn't scalable.",
+  "q9": [
+   {
+    "row": "Year founded",
+    "value": "2017"
+   },
+   {
+    "row": "Owners & percentages",
+    "value": "Hannah Cole 100%"
+   },
+   {
+    "row": "Any owner misalignment affecting decisions?",
+    "value": "No — sole owner"
+   }
+  ],
+  "q10": [
+   {
+    "row": "Full-time employees",
+    "count": "7"
+   },
+   {
+    "row": "Part-time",
+    "count": "2"
+   },
+   {
+    "row": "Regular contractors",
+    "count": "0"
+   },
+   {
+    "row": "Managers / team leads",
+    "count": "1"
+   },
+   {
+    "row": "People with direct reports",
+    "count": "2"
+   }
+  ],
+  "q11": "Local",
+  "q12": [
+   {
+    "row": "One-time projects",
+    "pct": "0"
+   },
+   {
+    "row": "Recurring contracts",
+    "pct": "19"
+   },
+   {
+    "row": "Repeat without contract",
+    "pct": "62"
+   },
+   {
+    "row": "Products",
+    "pct": "8"
+   },
+   {
+    "row": "Retainers",
+    "pct": "0"
+   },
+   {
+    "row": "Other",
+    "pct": "11"
+   }
+  ],
+  "q13": [
+   {
+    "name": "Injectables (neurotoxin & filler)",
+    "pct": "46",
+    "margin": "72",
+    "trend": "Growing",
+    "importance": "The practice — and the constraint"
+   },
+   {
+    "name": "Laser & energy devices",
+    "pct": "22",
+    "margin": "58",
+    "trend": "Growing",
+    "importance": "Only line the aestheticians can deliver without me"
+   },
+   {
+    "name": "Medical-grade facials & skin",
+    "pct": "14",
+    "margin": "55",
+    "trend": "Flat",
+    "importance": "Entry point for new patients"
+   },
+   {
+    "name": "Medical weight management",
+    "pct": "10",
+    "margin": "66",
+    "trend": "Growing",
+    "importance": "Newest line, monthly recurring"
+   },
+   {
+    "name": "Retail skincare",
+    "pct": "8",
+    "margin": "38",
+    "trend": "Flat",
+    "importance": "Margin is thin, retention value is not"
+   }
+  ],
+  "q14": [
+   {
+    "row": "Active customer count",
+    "value": "1,940 seen in the last 24 months"
+   },
+   {
+    "row": "B2B / B2C / mixed",
+    "value": "B2C"
+   },
+   {
+    "row": "% of revenue from your largest customer",
+    "value": "1.4%"
+   },
+   {
+    "row": "% of revenue from your top five",
+    "value": "5.1%"
+   },
+   {
+    "row": "% of revenue tied directly to YOUR personal relationships",
+    "value": "About 70% — they book my name"
+   }
+  ],
+  "q15": [
+   {
+    "row": "Last completed year",
+    "amount": "2010000"
+   },
+   {
+    "row": "Prior year",
+    "amount": "1780000"
+   },
+   {
+    "row": "Year to date",
+    "amount": "1520000"
+   },
+   {
+    "row": "Full-year forecast",
+    "amount": "2150000"
+   }
+  ],
+  "q16": "Up 11–25%",
+  "q17": [
+   {
+    "row": "Approximate gross margin %",
+    "value": "62%"
+   },
+   {
+    "row": "Main direct costs",
+    "value": "Product (toxin units, filler syringes, weight-management drug), clinical labor, device consumables"
+   },
+   {
+    "row": "Tracked by job / service / customer?",
+    "value": "Revenue is, cost is not — I know the injectable margin from vendor invoices in my head"
+   }
+  ],
+  "q18": [
+   {
+    "row": "Operating profit estimate",
+    "amount": "312000"
+   },
+   {
+    "row": "Owner salary",
+    "amount": "220000"
+   },
+   {
+    "row": "Owner distributions",
+    "amount": "95000"
+   },
+   {
+    "row": "Unusual one-off expenses",
+    "amount": "48000"
+   }
+  ],
+  "q19": [
+   "Comfortable",
+   "Big expense coming",
+   "Seasonality"
+  ],
+  "q20": "Monthly, within 15 days",
+  "q21": [
+   {
+    "row": "Revenue",
+    "target": "$2.4M next year"
+   },
+   {
+    "row": "Gross margin",
+    "target": "No target"
+   },
+   {
+    "row": "Operating profit",
+    "target": "No target"
+   },
+   {
+    "row": "Cash reserve",
+    "target": "No target — we keep about three months by habit"
+   },
+   {
+    "row": "Owner compensation",
+    "target": "No target"
+   }
+  ],
+  "q22": "QuickBooks P&L last 24 months, Boulevard service-line and provider-production export, the treatment menu / price list, the membership roster, AR aging. I cannot find the signed NP delegation agreement.",
+  "q23": [
+   {
+    "source": "Instagram (organic + paid)",
+    "per_month": "55",
+    "cost": "2400",
+    "quality": "4",
+    "tracked": "Yes"
+   },
+   {
+    "source": "Patient referral",
+    "per_month": "38",
+    "cost": "0",
+    "quality": "5",
+    "tracked": "No"
+   },
+   {
+    "source": "Google / maps",
+    "per_month": "30",
+    "cost": "0",
+    "quality": "3",
+    "tracked": "No"
+   },
+   {
+    "source": "Events & partner spa",
+    "per_month": "17",
+    "cost": "600",
+    "quality": "3",
+    "tracked": "No"
+   }
+  ],
+  "q24": [
+   {
+    "row": "What happens, step by step",
+    "value": "Web form, call or Instagram DM lands with Marisol, our patient coordinator; she logs it in Boulevard, calls back, books a consult or a treatment; an automated confirmation text goes out"
+   },
+   {
+    "row": "Typical response time",
+    "value": "4–6 hours on clinic days; DMs after 4pm wait until the next morning"
+   },
+   {
+    "row": "Who is responsible",
+    "value": "Marisol Vega, patient coordinator"
+   },
+   {
+    "row": "Is every inquiry captured in one system?",
+    "value": "Yes — Boulevard, all three channels"
+   },
+   {
+    "row": "Automated follow-up?",
+    "value": "Only the appointment confirmation and reminder. Nothing for a consult that didn't book"
+   },
+   {
+    "row": "% of leads that get 2+ follow-ups",
+    "value": "Maybe 35%, when Marisol has a gap"
+   }
+  ],
+  "q25": [
+   {
+    "row": "Lead→sale or proposal→close %",
+    "value": "About 48% of consults become treatment"
+   },
+   {
+    "row": "Tracked by source / person / service?",
+    "value": "No — it is a tally in Marisol's notebook"
+   },
+   {
+    "row": "Defined sales process?",
+    "value": "No stages in Boulevard. Marisol has her own way of doing it"
+   },
+   {
+    "row": "Most common reason you lose",
+    "value": "Price, and the wait to get on my calendar"
+   }
+  ],
+  "q26": [
+   {
+    "row": "Typical first sale",
+    "value": "$740"
+   },
+   {
+    "row": "Typical annual customer value",
+    "value": "$2,380"
+   },
+   {
+    "row": "Most valuable segment",
+    "value": "Membership patients on quarterly tox plus one device series a year"
+   },
+   {
+    "row": "Tracked?",
+    "value": "Revenue per patient is in Boulevard; nobody pulls it"
+   }
+  ],
+  "q27": [
+   {
+    "row": "% who buy again",
+    "value": "71%"
+   },
+   {
+    "row": "Renewal rate if applicable",
+    "value": "88% on the 214 memberships"
+   },
+   {
+    "row": "Are inactive customers identified?",
+    "value": "Only lapsed memberships. Nobody has ever pulled the general no-visit list"
+   },
+   {
+    "row": "Reactivation campaigns ever run?",
+    "value": "No"
+   },
+   {
+    "row": "Why customers leave",
+    "value": "Moved, price, or they went somewhere with a shorter wait"
+   }
+  ],
+  "q28": [
+   "Based on real job economics",
+   "Set against competitors",
+   "Set on the owner's gut",
+   "Unchanged for 2+ years",
+   "Pricing is a current worry"
+  ],
+  "q29": [
+   {
+    "row": "Complementary services routinely offered?",
+    "value": "No — offered when the provider thinks of it"
+   },
+   {
+    "row": "Bundles or packages?",
+    "value": "Device series only. No injectable bundles"
+   },
+   {
+    "row": "Premium option?",
+    "value": "No"
+   },
+   {
+    "row": "Entry-level option?",
+    "value": "The $149/mo membership, sort of"
+   },
+   {
+    "row": "Customer needs you can't currently serve",
+    "value": "Evening and Saturday injectable appointments. And anyone who wants me inside three weeks"
+   }
+  ],
+  "q30": [
+   {
+    "row": "Who owns marketing",
+    "value": "Me, plus a 10 h/wk marketing coordinator"
+   },
+   {
+    "row": "Who owns sales",
+    "value": "Marisol, informally"
+   },
+   {
+    "row": "Monthly marketing budget",
+    "value": "$3,000 including the coordinator"
+   },
+   {
+    "row": "Do sales & marketing review results together?",
+    "value": "No"
+   },
+   {
+    "row": "Are leads, conversion, CAC and customer value ever reviewed together?",
+    "value": "No — never in the same sitting"
+   }
+  ],
+  "q31": "We'd need equipment or capital",
+  "q32": [
+   {
+    "row": "1",
+    "area": "Getting patients comfortable seeing Renata"
+   },
+   {
+    "row": "2",
+    "area": "Prices — I know the menu is old"
+   },
+   {
+    "row": "3",
+    "area": "Memberships, we should have twice as many"
+   }
+  ],
+  "q33": [
+   {
+    "workflow": "Lead intake and consult booking"
+   },
+   {
+    "workflow": "Patient intake, medical history and consent"
+   },
+   {
+    "workflow": "Consult to treatment plan"
+   },
+   {
+    "workflow": "Treatment delivery and charting"
+   },
+   {
+    "workflow": "Post-treatment follow-up and complication check"
+   },
+   {
+    "workflow": "Membership enrolment and rebill"
+   },
+   {
+    "workflow": "Product inventory and reorder"
+   },
+   {
+    "workflow": "Payment, refund and gift-card handling"
+   },
+   {
+    "workflow": "Weekly provider-production reporting"
+   }
+  ],
+  "q34": [
+   {
+    "row": "One clear accountable role",
+    "frequency": "Sometimes"
+   },
+   {
+    "row": "Defined handoffs",
+    "frequency": "Sometimes"
+   },
+   {
+    "row": "Consistent exception escalation",
+    "frequency": "Rarely"
+   }
+  ],
+  "q35": [
+   {
+    "row": "Documented",
+    "pct": "35"
+   },
+   {
+    "row": "Current",
+    "pct": "15"
+   },
+   {
+    "row": "Accessible",
+    "pct": "30"
+   },
+   {
+    "row": "Used in training",
+    "pct": "15"
+   },
+   {
+    "row": "Actually followed",
+    "pct": "40"
+   }
+  ],
+  "q36": [
+   "Scheduling delays",
+   "Incomplete information",
+   "The owner has to step in",
+   "Rework"
+  ],
+  "q37": "Skilled labor",
+  "q38": "Mostly clear, with gaps",
+  "q39": [
+   {
+    "row": "How many KPIs reviewed weekly",
+    "value": "None weekly. Two monthly — revenue and membership count"
+   },
+   {
+    "row": "Does each have one owner?",
+    "value": "No"
+   },
+   {
+    "row": "Are targets visible?",
+    "value": "No"
+   },
+   {
+    "row": "Does a miss trigger action?",
+    "value": "Only if I notice it"
+   }
+  ],
+  "q40": "Weekly but loose",
+  "q41": [
+   {
+    "row": "CRM",
+    "tool": "none — Boulevard holds patients, not leads"
+   },
+   {
+    "row": "Marketing",
+    "tool": "Mailchimp + Instagram"
+   },
+   {
+    "row": "Sales / proposals",
+    "tool": "none"
+   },
+   {
+    "row": "Scheduling / project management",
+    "tool": "Boulevard"
+   },
+   {
+    "row": "Delivery",
+    "tool": "Boulevard charting"
+   },
+   {
+    "row": "Accounting",
+    "tool": "QuickBooks Online"
+   },
+   {
+    "row": "Reporting",
+    "tool": "none — Google Sheets by hand"
+   },
+   {
+    "row": "Communication",
+    "tool": "Boulevard messaging, iMessage, Instagram DM"
+   },
+   {
+    "row": "Files / knowledge",
+    "tool": "Google Drive (my personal account)"
+   },
+   {
+    "row": "HR / payroll",
+    "tool": "Gusto"
+   }
+  ],
+  "q42": "Some integrations",
+  "q43": [
+   "Data is generally accurate",
+   "Customer and financial data can be connected",
+   "Backups exist"
+  ],
+  "q44": [
+   {
+    "task": "Paper intake & consent packet scanned and re-keyed into Boulevard",
+    "who": "Front desk",
+    "frequency": "Daily",
+    "occurrences": "25",
+    "minutes": "14",
+    "errors": "Yes",
+    "systems": "Paper, Boulevard, Drive"
+   },
+   {
+    "task": "Chart notes completed after clinic",
+    "who": "Dr. Cole",
+    "frequency": "Daily",
+    "occurrences": "5",
+    "minutes": "65",
+    "errors": "No",
+    "systems": "Boulevard"
+   },
+   {
+    "task": "Membership billing exceptions and failed cards",
+    "who": "Kayla Ruiz (practice manager)",
+    "frequency": "Weekly",
+    "occurrences": "2",
+    "minutes": "90",
+    "errors": "Yes",
+    "systems": "Boulevard, Stripe"
+   },
+   {
+    "task": "Injectable inventory count and vendor reorder",
+    "who": "Kayla Ruiz",
+    "frequency": "Weekly",
+    "occurrences": "1",
+    "minutes": "120",
+    "errors": "Yes",
+    "systems": "Spreadsheet, vendor portals"
+   },
+   {
+    "task": "Weekly provider-production pull",
+    "who": "Kayla Ruiz",
+    "frequency": "Weekly",
+    "occurrences": "1",
+    "minutes": "75",
+    "errors": "No",
+    "systems": "Boulevard, Google Sheets"
+   }
+  ],
+  "q45": "Appointment confirmations and 48-hour reminders, post-treatment aftercare texts, and the monthly membership rebill — all inside Boulevard, all reliable. Failed cards are not automated; Kayla finds them at month end. Nothing at all after a consult that didn't book.",
+  "q46": [
+   "Drafting",
+   "Marketing content",
+   "Customer communication"
+  ],
+  "q47": [
+   "None of these are consistently true"
+  ],
+  "q48": [
+   "Shared passwords",
+   "Inconsistent backups",
+   "Sensitive data in unapproved tools",
+   "Unclear account ownership"
+  ],
+  "q49": [
+   {
+    "row": "Implementation budget range",
+    "value": "$8,000–$12,000 if it clearly pays back"
+   },
+   {
+    "row": "Owner hours/week available",
+    "value": "2"
+   },
+   {
+    "row": "Team hours/week available",
+    "value": "4"
+   },
+   {
+    "row": "Appetite for changing systems",
+    "value": "High for anything that gets me off the paper and out of the chair"
+   }
+  ],
+  "q58": "Pockets of capability",
+  "q59": "Kayla would take a new system on tomorrow — she is the reason Boulevard is used properly at all. Marisol adopts anything that saves her a phone call. The two aestheticians will resist: they have never been trained on anything past the booking screen and they will read a new system as somebody checking on them. Renata is neutral but overloaded.",
+  "q56": [
+   {
+    "role": "Physician injector (owner)",
+    "rate": "210"
+   },
+   {
+    "role": "Nurse practitioner",
+    "rate": "95"
+   },
+   {
+    "role": "Practice manager",
+    "rate": "46"
+   },
+   {
+    "role": "Licensed aesthetician",
+    "rate": "42"
+   },
+   {
+    "role": "Front desk / coordinator",
+    "rate": "28"
+   }
+  ],
+  "q50": [
+   "Pricing exceptions",
+   "Major sales",
+   "Customer escalations",
+   "Hiring / firing",
+   "Purchasing",
+   "Quality sign-off",
+   "Banking / payments",
+   "Vendor relationships",
+   "Technical decisions",
+   "Strategy"
+  ],
+  "q51": [
+   {
+    "row": "What keeps running",
+    "value": "Front desk, facials, laser, retail — Renata covers about 40% of the injectable book"
+   },
+   {
+    "row": "What slows down",
+    "value": "New patient consults; nobody presents a treatment plan over $2,500 without me"
+   },
+   {
+    "row": "What stops",
+    "value": "60% of injectable revenue, all complication calls, controlled-product ordering, every clinical decision"
+   },
+   {
+    "row": "Who decides",
+    "value": "Kayla on operations. Nobody on anything clinical or financial"
+   },
+   {
+    "row": "What nobody else can access",
+    "value": "The bank, the vendor accounts, the Boulevard admin settings, and my Google Drive where the consent scans live"
+   }
+  ],
+  "q52": [
+   {
+    "risk": "Dr. Cole (owner, sole primary injector)",
+    "impact": "78% of injectable revenue stops. Nine-week book empties or migrates"
+   },
+   {
+    "risk": "Medical director / NP delegation agreement",
+    "impact": "If the delegation is not valid, Renata cannot inject at all — and past treatments are exposed"
+   },
+   {
+    "risk": "Kayla Ruiz (practice manager)",
+    "impact": "Inventory, membership billing and the weekly numbers stop; nobody else knows the vendor portals"
+   },
+   {
+    "risk": "Boulevard admin account under a personal email",
+    "impact": "If that account is lost, patient records and payments are inaccessible"
+   }
+  ],
+  "q53": [
+   "Vendor agreements are written",
+   "Licenses & insurance are current",
+   "Employment agreements are current"
+  ],
+  "q54": [
+   "Delivery consistency",
+   "SOPs & knowledge transfer",
+   "Contracts & compliance"
+  ],
+  "q55": "Cash, staffing or leadership must be resolved first",
+  "q57": "Running on empty"
+ },
+ "session": {
+  "engine": {
+   "leads_per_month": "140",
+   "conversion_rate": "48%",
+   "avg_deal_value": "$740",
+   "response_time": "4–6 hours on clinic days, next morning for evening DMs",
+   "gross_margin_pct": "62",
+   "headcount": "9",
+   "repetitive_hours_week": "Intake & consent re-keying — front desk — 5.8\nChart notes after clinic — Dr. Cole — 5.4\nMembership billing exceptions — Kayla — 3.0\nInventory count & reorder — Kayla — 2.0\nProvider-production pull — Kayla — 1.3",
+   "largest_customer_pct": "1.4"
+  },
+  "blockNotes": {
+   "b1": "She named the constraint herself before we asked: 'I am the bottleneck.' Nine-week wait on her calendar, three days on Renata's. Answered q57 'Running on empty' without hesitating and then apologised for it. Longest break in twelve months is four days and she charted through it.",
+   "b2": "140 inquiries a month, all three channels land in Boulevard — the capture is genuinely good. The leak is after the consult: 48% convert, ~35% get a second touch, and the most common loss reason is the wait for her calendar, not price. Funnel reconciles: 140 × 48% × $740 = ~$597K of first visits, and 1,940 active patients at 3.2 visits a year gets to $2.01M within 12%.",
+   "b3": "Boulevard tour. Booking, charting, memberships and payments in one system, which is more than most. Then the paper: a printed intake and consent packet, scanned, and the medical history typed back into Boulevard by hand — 25 a day. Watched it happen twice during the tour.",
+   "b4": "17.5 h/wk of repetitive work inventoried, 5.4 of it Dr. Cole's own after-clinic charting priced at $210/hr loaded. Nine people, ~340 available hours — the load is 5%, well inside plausible. Kayla is the only person who touches inventory, membership billing or the numbers.",
+   "b5": "Asked about the delegation agreement and the room changed. The 2019 template could not be produced; she thinks it is in a file at her old accountant's. She also volunteered that aestheticians have done 'a couple of units of touch-up' on her verbal say-so. Told her plainly this is a question for a healthcare attorney licensed in Arizona and that we would not answer it — recorded as an overlay and a referral, not a finding."
+  },
+  "demonstrated": [
+   "Boulevard booking tour — 9-week wait on Dr. Cole, 3-day on Renata, shown live",
+   "Membership dashboard: 214 active, 88% 12-month retention, 71% repeat rate",
+   "Paper intake and consent packet printed, signed, scanned, and re-keyed into the chart",
+   "Appointment confirmation and aftercare automations running",
+   "The 2021 injection protocol binder opened — technique current, consent and complications absent",
+   "Two clinical escalations arrived on her phone during Block 1"
+  ],
+  "documents_seen": [
+   "QuickBooks P&L 24 months — revenue $2.01M, gross margin 62%, operating profit $312K",
+   "Boulevard service-line and provider-production export (revenue only, no cost)",
+   "Treatment menu / price list, footer dated March 2023",
+   "Membership roster — 214 active at $149/mo",
+   "AR aging — negligible, point-of-service practice",
+   "NOT received: signed NP delegation agreement (could not be located)"
+  ]
+ },
+ "dataRoom": {
+  "pnl_on_file": true,
+  "documents": [
+   {
+    "name": "QuickBooks P&L 24 months",
+    "kind": "pnl",
+    "received_on": "2026-08-28"
+   },
+   {
+    "name": "Boulevard service-line & provider-production export",
+    "kind": "revenue_by_customer",
+    "received_on": "2026-08-29"
+   },
+   {
+    "name": "Treatment menu / price list (dated March 2023)",
+    "kind": "rate_card",
+    "received_on": "2026-08-29"
+   },
+   {
+    "name": "Membership roster — 214 active",
+    "kind": "other",
+    "received_on": "2026-09-02"
+   },
+   {
+    "name": "AR aging",
+    "kind": "ar_aging",
+    "received_on": "2026-09-02"
+   }
+  ]
+ },
+ "scores": {
+  "P1": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Sources and rough volumes known — Instagram ~55/mo at $2,400, referral ~38, Google ~30, events ~17. Boulevard captures a source tag only when the front desk remembers to ask; about 40% of bookings carry none.",
+   "why_not_higher": "Anchor 3 needs monthly volume actually logged in one place; two out of five bookings have no source at all."
+  },
+  "P2": {
+   "score": 3,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Every inquiry — web form, call and Instagram DM — lands in Boulevard with Marisol; shown live on the tour. Response 4–6 hours on clinic days; confirmation text is automated.",
+   "why_not_higher": "Anchor 4 needs response under an hour and an automated first response; evening DMs wait until the next morning."
+  },
+  "P3": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "'Maybe 35% get a second touch, when Marisol has a gap.' Consults that did not book get a call from memory; nothing after that.",
+   "why_not_higher": "Anchor 3 needs a defined sequence used on most leads and missed follow-ups visible in the system; there is no sequence and no record."
+  },
+  "P4": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Consult→treatment ~48%, kept as a running tally in Marisol's notebook. No stages in Boulevard. Loss reason recorded anecdotally as price and calendar wait.",
+   "why_not_higher": "Anchor 3 needs stages defined and used and a close rate actually tracked in the system."
+  },
+  "P5": {
+   "score": 1,
+   "na": false,
+   "evidence": "documented",
+   "note": "Treatment menu footer dated March 2023 (Doc). One change since: neurotoxin per-unit price up $1 in January 2025 after a vendor increase. Discounts given at the chair at her discretion. q28: 'Pricing is a current worry.'",
+   "why_not_higher": "Anchor 2 needs real economics behind prices and occasional reviews; there has been one anecdotal change in two and a half years."
+  },
+  "P6": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Memberships, retail skincare and an unnamed 'lip and tox' pairing get offered when the provider thinks of it. Device series are the only packaged item; no premium tier, no injectable bundle.",
+   "why_not_higher": "Anchor 3 needs named tiers or bundles with a scripted upsell on the core offer; nothing is written and nothing is routine."
+  },
+  "P7": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Boulevard dashboard shown live: 71% repeat, 88% membership retention, 214 members. Lapsed memberships get a call. The 780 patients with no visit in 14 months have never been contacted.",
+   "why_not_higher": "Anchor 3 needs an inactive list pulled and worked at least twice a year; only membership lapses are touched."
+  },
+  "P8": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Marketing is Dr. Cole plus a 10 h/wk coordinator; sales is Marisol 'informally'; $3,000/mo budget. q30: leads, conversion, CAC and customer value have never been reviewed in the same sitting.",
+   "why_not_higher": "Anchor 2 needs named owners and numbers reviewed at least sometimes; the numbers are never reviewed together at all."
+  },
+  "P9": {
+   "score": 2,
+   "na": false,
+   "evidence": "documented",
+   "note": "Gross margin 62% confirmed on the 24-month P&L. The Boulevard export gives revenue by service line but carries no cost, so the 72% injectable margin is Dr. Cole's estimate off vendor invoices.",
+   "why_not_higher": "Anchor 3 needs margin by service line known from a record and used in pricing; it is a memory, and the March 2023 menu shows it has not driven a price decision."
+  },
+  "P10": {
+   "score": 3,
+   "na": false,
+   "evidence": "documented",
+   "note": "QuickBooks closes by the 12th (Doc: 24 monthly P&Ls, all dated). Dr. Cole and Kayla review it monthly. One target exists — revenue $2.4M.",
+   "why_not_higher": "Anchor 4 needs targets across the numbers; q21 shows 'No target' on margin, profit, cash and owner comp."
+  },
+  "S1": {
+   "score": 1,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Scheduling, front desk and retail run without her. q50: pricing exceptions, major sales, escalations, hiring, purchasing, quality sign-off, banking, vendors and strategy all return to her. Two clinical escalations arrived on her phone during Block 1.",
+   "why_not_higher": "Only routine work is delegated; anchor 2 needs several areas genuinely delegated with money and hiring the remaining exception."
+  },
+  "S2": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Four-week test (q51): week one Renata covers ~40% of the injectable book; then new consults stop, controlled-product ordering stops, and nobody decides anything clinical or financial. Longest actual absence in 12 months: four days, worked through.",
+   "why_not_higher": "Runs about a week and she answers from away; anchor 2 needs it to run short-term with decisions merely stacking up, not revenue stopping."
+  },
+  "S3": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Marisol can quote and book a plan, but Dr. Cole presents and closes everything over $2,500 and 78% of injectable revenue is on her hands. q14: ~70% of revenue tied to her personal relationships.",
+   "why_not_higher": "Anchor 2 needs the team selling with owner rescue on big deals only; here every plan is sold as 'Dr. Cole recommends'."
+  },
+  "S4": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Kayla Ruiz is 14 months into the practice-manager role and owns the schedule and supplies, but escalates anything touching money or a patient complaint. q38: 'Mostly clear, with gaps.' No manager owns a metric.",
+   "why_not_higher": "Anchor 2 needs some real managers owning outcomes even patchily; Kayla escalates rather than decides."
+  },
+  "S5": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "The 2021 injection protocol binder was opened in session: current on technique, silent on consent, complications and post-care. q35: 35% documented, 15% current. New aestheticians learn by shadowing; Boulevard chart templates are used.",
+   "why_not_higher": "Anchor 3 needs core workflows documented and current and used in training; the binder is four years old and consent is not written down anywhere."
+  },
+  "S6": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Monday 15-minute huddle covers the day's book (q40 'Weekly but loose'). A monthly numbers meeting looks at revenue and membership count — two KPIs, no owners, no visible targets (q39).",
+   "why_not_higher": "Anchor 3 needs a weekly meeting with 3–7 owned KPIs; there are two, monthly, and nobody owns them."
+  },
+  "S7": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Quality is her hands — she reviews every before/after photo herself. q31: +20% would need 'equipment or capital', and the injectable book is already nine weeks out. Recurring failures include scheduling delays and 'the owner has to step in'.",
+   "why_not_higher": "Anchor 2 needs delivery that is mostly consistent and where growth takes heroics; here growth has physically nowhere to go."
+  },
+  "S8": {
+   "score": 4,
+   "na": false,
+   "evidence": "documented",
+   "note": "Largest single patient is 1.4% of revenue on the Boulevard patient-revenue export; top five 5.1%. No concentration risk of any kind.",
+   "why_not_higher": "Top of the anchor. The concentration risk in this business is a person, not a customer — carried on S10 and the key-person overlay."
+  },
+  "S9": {
+   "score": 2,
+   "na": false,
+   "evidence": "documented",
+   "note": "214 memberships at $149/mo = $383K, 19% of revenue, on the membership roster (Doc) with 88% renewal. The other 81% is episodic. No forecast of any kind.",
+   "why_not_higher": "Anchor 3 needs recurring revenue covering fixed costs or ≥40% of revenue plus a rolling forecast; 19% and no forecast."
+  },
+  "S10": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Employment agreements and insurance current (q53). The 2019 NP delegation agreement could not be produced. Boulevard admin, vendor accounts and the consent-scan Drive folder are under her personal Google. Key-person risk named in q52 and unaddressed.",
+   "why_not_higher": "Anchor 2 needs contracts written and accessible; the one document carrying clinical and legal weight cannot be found."
+  },
+  "L1": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Systems tour: Boulevard (booking, charting, memberships, payments), QuickBooks Online, Mailchimp, Gusto, Google Drive, Stripe. q41 shows 'none' for CRM, sales/proposals and reporting; inventory is a spreadsheet.",
+   "why_not_higher": "Anchor 3 allows one significant gap; lead management, reporting and inventory are three."
+  },
+  "L2": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Boulevard→Stripe and Boulevard→QuickBooks are connected and were shown working. Intake and consent are scanned then re-keyed; inventory and vendor orders are typed twice. q42: 'Some integrations.'",
+   "why_not_higher": "Anchor 3 allows one or two double-entry points; intake, consent and inventory make three."
+  },
+  "L3": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Boulevard revenue and QuickBooks revenue disagree by 3–6% a month because retail and gift cards are booked differently; Kayla reconciles by hand before the monthly meeting. q43: no agreed KPI definitions, reports need cleanup.",
+   "why_not_higher": "Anchor 3 needs agreed definitions for the key KPIs and reports needing only light cleanup."
+  },
+  "L4": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "17.5 h/wk inventoried across five tasks (q44), of which 5.4 are Dr. Cole's own after-clinic charting at a $210 loaded rate. The load is fully acknowledged; nothing has been reduced.",
+   "why_not_higher": "Anchor 2 needs a few fixes actually made; none have been."
+  },
+  "L5": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Appointment confirmations, 48-hour reminders, aftercare texts and the membership rebill all run inside Boulevard and were shown running. Failed-card handling is manual and surfaces only at month end.",
+   "why_not_higher": "Anchor 3 needs automations across several functions with a named owner monitoring them; these are all in one system and nobody owns them."
+  },
+  "L6": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "q46: drafting, marketing content and customer communication. Dr. Cole writes Instagram captions with ChatGPT; Marisol drafts follow-up emails with it. 'Nothing we decided to do — we just started.'",
+   "why_not_higher": "Anchor 3 needs AI inside one or two defined workflows; nothing is defined and nothing produced a result anyone can name."
+  },
+  "L7": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "q47: nothing checked. One verbal rule exists — 'no patient names in ChatGPT.' No written data rule, no review step, nothing measured.",
+   "why_not_higher": "Anchor 2 needs some practices even if inconsistent; there is one spoken sentence."
+  },
+  "L8": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "q48: shared front-desk login, inconsistent backups, sensitive data in unapproved tools, unclear account ownership. Clinical staff have individual Boulevard logins; the consent scans sit in her personal Drive; Boulevard backup has never been restore-tested.",
+   "why_not_higher": "Anchor 3 needs controlled access and a backup tested at least once; the shared front-desk login and the personal Drive folder both fail it."
+  },
+  "L9": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "q58: 'Pockets of capability.' Kayla and Marisol adopt tools quickly; q59 says the two aestheticians have had no training past the booking screen and would read a new system as surveillance.",
+   "why_not_higher": "Anchor 3 needs the team trained on the core tools; half the clinical staff has had none."
+  },
+  "L10": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "q49: $8–12K 'if it clearly pays back', 2 owner hours and 4 team hours a week. q55: 'Cash, staffing or leadership must be resolved first.'",
+   "why_not_higher": "Anchor 3 needs budget and time genuinely set aside; the hours are aspirational from an owner who answered q57 'Running on empty'."
+  }
+ },
+ "assessment": {
+  "owner_objective": "Reduce owner dependence — get injectable revenue off one pair of hands without losing the patients who book her by name.",
+  "owner_belief": "I am the bottleneck. Patients book me by name and will wait nine weeks rather than see my NP, so revenue is capped at whatever I can physically inject in a week. It has been true since about 2022 and it got worse when we added the third room, because now I am the only thing that isn't scalable.",
+  "primary_constraint": "Revenue is capped at the treatment hours of a single licensed provider, because nothing in the practice — the booking flow, the consult script, the price list or the brand — has ever been built to hand a patient to anyone but Dr. Cole.",
+  "constraint_symptoms": "Block 1: nine-week wait on her calendar against three days on Renata's, and q57 'Running on empty'. Block 2: the most common loss reason is the wait, not price, and 48% consult conversion is measured only in a notebook. Block 3: the four-week test stops 60% of injectable revenue in week two. Block 5: 78% of injectable revenue and ~70% of all revenue sits on her personal relationships. Four blocks; the rule requires two.",
+  "constraint_cost": "~$186K of injectable revenue turned away or delayed past the nine-week horizon last year (Boulevard waitlist abandonment, Doc) · ~$58K of contribution sitting idle in Renata's unbooked chair at current injectable margin · 281 owner hours a year on after-clinic charting at a $210 loaded rate.",
+  "constraint_fix": "Make Renata the default injector for maintenance neurotoxin: a provider-neutral consult script, a Renata-first booking rule with Dr. Cole reserved for filler and complex cases, a written treatment protocol so the standard of care is the practice's and not one person's, and a resolved delegation agreement so the handoff is legally clean before it is operationally real.",
+  "momentum_initiative": "Reprice the treatment menu. It has not moved materially since March 2023, it is a decision rather than a project, it is entirely in her control, and it lands in the P&L inside 30 days.",
+  "overlay_flags": [
+   "owner_burnout",
+   "legal_exposure",
+   "key_person",
+   "data_risk"
+  ],
+  "plan_items": [
+   "Delegation agreement reviewed by Arizona healthcare counsel (referral, not advice) — Kayla Ruiz — 2026-09-15",
+   "Treatment menu reprice — Dr. Hannah Cole — 2026-09-22",
+   "Renata-first booking rule and provider-neutral consult script — Marisol Vega — 2026-10-06",
+   "Dormant-patient reactivation campaign (780 with no visit in 14 months) — Marisol Vega — 2026-10-20",
+   "Digital intake and consent packet in Boulevard — Kayla Ruiz — 2026-11-03"
+  ],
+  "overlap_factor": 0.7
+ },
+ "opportunities": [
+  {
+   "title": "Reprice the treatment menu — unchanged since March 2023",
+   "finding": "The price list footer reads March 2023 (Doc). The single change since is a $1 per-unit neurotoxin increase in January 2025 that passed through a vendor cost rise and kept nothing. Injectables are 46% of revenue at a 72% margin, the calendar is nine weeks out, and the stated loss reason is wait time rather than price — a demand curve that is not price-sensitive at the top of the book.",
+   "calculator": {
+    "kind": "price_change",
+    "inputs": {
+     "revenueAffected": 925000,
+     "priceChangePctLow": 4,
+     "priceChangePctExpected": 7,
+     "priceChangePctHigh": 10,
+     "volumeLossPctLow": 1,
+     "volumeLossPctExpected": 2,
+     "volumeLossPctHigh": 4,
+     "grossMarginPct": 72
+    }
+   },
+   "fix_cost": 3200,
+   "months_to_benefit": 1,
+   "confidence": "high",
+   "include_in_report": true,
+   "basis_reported_only": false,
+   "blueprint": "Rebuild the injectable menu from unit cost upward: per-unit toxin and per-syringe filler cost from the vendor invoices, target contribution by line, a written discount rule replacing chair-side discretion, and a one-page 'why' script the whole team can say out loud. Notify members 30 days ahead; hold membership pricing for existing members for one renewal cycle.",
+   "replaces": "Chair-side discounting at the owner's discretion, and a menu that has absorbed two years of product cost increases."
+  },
+  {
+   "title": "Reactivate the 780 patients with no visit in 14 months",
+   "finding": "Boulevard holds 1,940 patients seen in the last 24 months; 780 have nothing in the last 14. q27: inactive patients are not identified and no reactivation campaign has ever run. These people already chose the practice once and cost nothing to acquire again.",
+   "calculator": {
+    "kind": "reactivation",
+    "inputs": {
+     "dormantCustomers": 780,
+     "reactivationRatePctLow": 6,
+     "reactivationRatePctExpected": 11,
+     "reactivationRatePctHigh": 16,
+     "averageAnnualValue": 940,
+     "grossMarginPct": 62
+    }
+   },
+   "fix_cost": 4200,
+   "months_to_benefit": 2,
+   "confidence": "medium",
+   "include_in_report": true,
+   "basis_reported_only": false,
+   "blueprint": "Segment the dormant file by last treatment type, write three sequences (tox lapsed, device series unfinished, membership cancelled), route every booking to Renata's calendar by default so recovered demand lands in the open chair rather than the nine-week one, and measure booked-versus-contacted weekly.",
+   "replaces": "Nothing — this list has never been worked."
+  },
+  {
+   "title": "Take the paper intake and consent packet off the front desk",
+   "finding": "25 packets a day are printed, signed, scanned and then re-keyed into the Boulevard chart at 14 minutes each — 5.8 h/wk at a $28 loaded front-desk rate, flagged for errors in q44 and watched twice during the systems tour. The same manual step is where consent records go missing, which is not only an efficiency problem.",
+   "calculator": {
+    "kind": "automation_hours",
+    "inputs": {
+     "hoursPerWeek": 5.8,
+     "loadedHourlyRate": 28,
+     "automationSharePctLow": 45,
+     "automationSharePctExpected": 65,
+     "automationSharePctHigh": 80,
+     "weeksPerYear": 50,
+     "redeployed": true
+    }
+   },
+   "fix_cost": 6500,
+   "months_to_benefit": 2,
+   "confidence": "medium",
+   "include_in_report": true,
+   "basis_reported_only": false,
+   "blueprint": "Boulevard digital intake and e-consent sent with the confirmation text, medical history written straight to the chart, consent stored against the treatment rather than in a Drive folder. Front-desk hours redeploy onto consult follow-up, which is the leak in P3.",
+   "replaces": "Printing, scanning and re-typing the intake packet; and the personal-Drive consent store that also drives the L8 finding."
+  }
+ ],
+ "expected": {
+  "gate_should_pass": true,
+  "expected_blockers": [],
+  "expected_warnings": [],
+  "band_guess": "Building",
+  "cross_checks": {
+   "margin_vs_pnl": "pass",
+   "funnel_vs_revenue": "pass",
+   "concentration": "pass",
+   "hours_vs_headcount": "pass"
+  }
+ }
+}

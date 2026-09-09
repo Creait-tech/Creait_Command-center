@@ -1,0 +1,1193 @@
+{
+ "n": 9,
+ "company": "Meridian Staffing Partners",
+ "owner": "Nia Thompson",
+ "industry": "Staffing agency (light industrial & administrative)",
+ "profile": {
+  "revenue": 7500000,
+  "grossMarginPct": 18,
+  "operatingProfit": 412000,
+  "headcount": 30,
+  "founded": 2014,
+  "story": "Meridian places light-industrial and administrative contractors — warehouse, assembly, packaging, front office — with about 60 client companies across three metros. Thirty internal staff carry roughly 420 contractors on assignment at any time. It is the largest business in the cohort by revenue and one of the thinnest by margin: gross spread is 18% on the P&L, and Nia has spent years managing the business as though it were 30%. That single number sits underneath every bill rate she has approved, every recruiter incentive she has set and the two-location expansion she is planning. The systems are decent, the team is real, and the arithmetic under the pricing is wrong."
+ },
+ "edge_cases": [
+  "Margin cross-check should FLAG: the owner says 'about 30%' in the session while the P&L on file says 18 — twelve points apart",
+  "The gap is the finding, not a data-entry error — the intake was completed by her controller from the P&L, and the owner's working number came out of her own mouth in the room",
+  "Gate passes; opportunity confidence is medium throughout because pricing decisions rest on a margin the owner does not carry accurately",
+  "unreliable_financials overlay raised on the decision layer, not on the books themselves"
+ ],
+ "intake": {
+  "q1": [
+   {
+    "row": "Your name",
+    "value": "Nia Thompson"
+   },
+   {
+    "row": "Email",
+    "value": "nia@meridianstaffing.com"
+   },
+   {
+    "row": "Phone",
+    "value": "(216) 555-0128"
+   },
+   {
+    "row": "Company name",
+    "value": "Meridian Staffing Partners"
+   },
+   {
+    "row": "Website",
+    "value": "meridianstaffing.com"
+   },
+   {
+    "row": "Location",
+    "value": "Cleveland, OH — offices in Columbus and Toledo"
+   },
+   {
+    "row": "Industry",
+    "value": "Light industrial and administrative staffing"
+   }
+  ],
+  "q2": "We recruit, screen and place contract workers — warehouse, assembly, packaging, machine operation and front-office administration — with manufacturers, distributors and back-office operations across three metros. The worker is on our payroll and we bill the client an hourly rate; the spread between what we pay and what we bill is the business. About 420 contractors on assignment at any time across roughly 60 clients, supported by 30 internal staff: recruiters, account managers, a compliance team and payroll.",
+  "q3": [
+   {
+    "row": "Primary",
+    "objective": "More profit & cash flow"
+   },
+   {
+    "row": "Secondary 1",
+    "objective": "Prepare to scale"
+   },
+   {
+    "row": "Secondary 2",
+    "objective": "Better operations & delivery capacity"
+   }
+  ],
+  "q4": [
+   {
+    "row": "1",
+    "outcome": "Gross spread",
+    "target": "Get it to 21%"
+   },
+   {
+    "row": "2",
+    "outcome": "Order fill rate",
+    "target": "42% → 50%"
+   },
+   {
+    "row": "3",
+    "outcome": "Days to invoice after the week closes",
+    "target": "6 → 2"
+   }
+  ],
+  "q5": "Five metros, $12M, and an operations director running the three existing offices so I am opening markets rather than approving bill rates. I want the recruiters to be measured on margin, not on heads placed — which means I need to be sure what the margin actually is.",
+  "q6": "Leading strategy & growth",
+  "q7": [
+   {
+    "row": "Hours/week now",
+    "value": "54"
+   },
+   {
+    "row": "Hours/week you want in 12 months",
+    "value": "48"
+   },
+   {
+    "row": "Hours/week you want in 3 years",
+    "value": "42"
+   },
+   {
+    "row": "Longest uninterrupted time away in the past 12 months",
+    "value": "8 days, and I approved three bill rates from an airport"
+   },
+   {
+    "row": "What pulls you back in",
+    "value": "Bill rate exceptions and any client threatening to leave over a fill"
+   }
+  ],
+  "q8": "We are leaving margin on the table on bill rates. We win orders and I think we win too many of them at a number that does not pay us properly, and my account managers discount to keep the client rather than defend the rate. It has been the same story since we opened Toledo two years ago.",
+  "q9": [
+   {
+    "row": "Year founded",
+    "value": "2014"
+   },
+   {
+    "row": "Owners & percentages",
+    "value": "Nia Thompson 100%"
+   },
+   {
+    "row": "Any owner misalignment affecting decisions?",
+    "value": "No"
+   }
+  ],
+  "q10": [
+   {
+    "row": "Full-time employees",
+    "count": "26"
+   },
+   {
+    "row": "Part-time",
+    "count": "2"
+   },
+   {
+    "row": "Regular contractors",
+    "count": "2"
+   },
+   {
+    "row": "Managers / team leads",
+    "count": "5"
+   },
+   {
+    "row": "People with direct reports",
+    "count": "5"
+   }
+  ],
+  "q11": "Multi-state",
+  "q12": [
+   {
+    "row": "One-time projects",
+    "pct": "11"
+   },
+   {
+    "row": "Recurring contracts",
+    "pct": "58"
+   },
+   {
+    "row": "Repeat without contract",
+    "pct": "29"
+   },
+   {
+    "row": "Products",
+    "pct": "0"
+   },
+   {
+    "row": "Retainers",
+    "pct": "2"
+   },
+   {
+    "row": "Other",
+    "pct": "0"
+   }
+  ],
+  "q13": [
+   {
+    "name": "Light industrial contract placement",
+    "pct": "62",
+    "margin": "16",
+    "trend": "Growing",
+    "importance": "Volume engine; thinnest spread and the most discounting"
+   },
+   {
+    "name": "Administrative & front office",
+    "pct": "24",
+    "margin": "22",
+    "trend": "Flat",
+    "importance": "Better spread, harder to fill, our recruiters prefer it"
+   },
+   {
+    "name": "Direct hire placements",
+    "pct": "9",
+    "margin": "84",
+    "trend": "Growing",
+    "importance": "One-off fees at almost pure margin; nobody is targeted on it"
+   },
+   {
+    "name": "Payroll-only / employer of record",
+    "pct": "5",
+    "margin": "9",
+    "trend": "Flat",
+    "importance": "Accommodation work for two large clients; barely profitable"
+   }
+  ],
+  "q14": [
+   {
+    "row": "Active customer count",
+    "value": "About 60 billing clients; 420 contractors on assignment"
+   },
+   {
+    "row": "B2B / B2C / mixed",
+    "value": "B2B"
+   },
+   {
+    "row": "% of revenue from your largest customer",
+    "value": "19"
+   },
+   {
+    "row": "% of revenue from your top five",
+    "value": "48"
+   },
+   {
+    "row": "% of revenue tied directly to YOUR personal relationships",
+    "value": "Maybe 25% — the three oldest clients came with me from my last agency"
+   }
+  ],
+  "q15": [
+   {
+    "row": "Last completed year",
+    "amount": "7500000"
+   },
+   {
+    "row": "Prior year",
+    "amount": "6800000"
+   },
+   {
+    "row": "Year to date",
+    "amount": "5600000"
+   },
+   {
+    "row": "Full-year forecast",
+    "amount": "7900000"
+   }
+  ],
+  "q16": "Up 10% or less",
+  "q17": [
+   {
+    "row": "Approximate gross margin %",
+    "value": "18"
+   },
+   {
+    "row": "Main direct costs",
+    "value": "Contractor wages, payroll taxes, workers' compensation, unemployment, benefits and background screening"
+   },
+   {
+    "row": "Tracked by job / service / customer?",
+    "value": "By client and by assignment on the placement report. My controller filled this section in from the P&L — I would have told you thirty, because thirty is the spread we quote."
+   }
+  ],
+  "q18": [
+   {
+    "row": "Operating profit estimate",
+    "amount": "412000"
+   },
+   {
+    "row": "Owner salary",
+    "amount": "225000"
+   },
+   {
+    "row": "Owner distributions",
+    "amount": "120000"
+   },
+   {
+    "row": "Unusual one-off expenses",
+    "amount": "68000 — Toledo office build-out"
+   }
+  ],
+  "q19": [
+   "Profitable but tight",
+   "Customer payment timing",
+   "Payroll timing"
+  ],
+  "q20": "Monthly, within 15 days",
+  "q21": [
+   {
+    "row": "Revenue",
+    "target": "$9M"
+   },
+   {
+    "row": "Gross margin",
+    "target": "21% spread"
+   },
+   {
+    "row": "Operating profit",
+    "target": "6% of revenue"
+   },
+   {
+    "row": "Cash reserve",
+    "target": "Four weeks of contractor payroll; we hold about three"
+   },
+   {
+    "row": "Owner compensation",
+    "target": "Hold"
+   }
+  ],
+  "q22": "P&L and balance sheet 2024–2026 from our outside controller, gross spread by client and by assignment, the bill rate card by role and metro, AR aging, and the applicant-tracking export of job orders and fills.",
+  "q23": [
+   {
+    "source": "Existing client repeat orders",
+    "per_month": "52",
+    "cost": "0",
+    "quality": "5",
+    "tracked": "Yes"
+   },
+   {
+    "source": "Account manager outbound",
+    "per_month": "21",
+    "cost": "0",
+    "quality": "4",
+    "tracked": "Yes"
+   },
+   {
+    "source": "Referrals from client contacts",
+    "per_month": "9",
+    "cost": "0",
+    "quality": "5",
+    "tracked": "No"
+   },
+   {
+    "source": "Inbound web and job board presence",
+    "per_month": "6",
+    "cost": "4200",
+    "quality": "2",
+    "tracked": "Yes"
+   },
+   {
+    "source": "Vendor management system portals",
+    "per_month": "2",
+    "cost": "0",
+    "quality": "2",
+    "tracked": "Yes"
+   }
+  ],
+  "q24": [
+   {
+    "row": "What happens, step by step",
+    "value": "A job order arrives by email, portal or phone into the applicant tracking system, an account manager confirms the rate and the requirement, and a recruiter starts sourcing the same day"
+   },
+   {
+    "row": "Typical response time",
+    "value": "Order acknowledged inside an hour during business hours; first candidates usually within 24 hours"
+   },
+   {
+    "row": "Who is responsible",
+    "value": "The account manager for the client, the recruiting pod for the fill"
+   },
+   {
+    "row": "Is every inquiry captured in one system?",
+    "value": "Yes — every job order goes into the ATS, including the ones we decline"
+   },
+   {
+    "row": "Automated follow-up?",
+    "value": "Candidate-side yes: application acknowledgements, screening reminders, assignment confirmations. Client-side no."
+   },
+   {
+    "row": "% of leads that get 2+ follow-ups",
+    "value": "On the candidate side essentially all. On unfilled client orders, maybe 60%."
+   }
+  ],
+  "q25": [
+   {
+    "row": "Lead→sale or proposal→close %",
+    "value": "We fill about 42% of the job orders we accept"
+   },
+   {
+    "row": "Tracked by source / person / service?",
+    "value": "By recruiter and by client in the ATS, reviewed weekly"
+   },
+   {
+    "row": "Defined sales process?",
+    "value": "For orders yes. For new client acquisition it is whatever each account manager does."
+   },
+   {
+    "row": "Most common reason you lose",
+    "value": "We cannot fill fast enough and the client uses another agency, or we lose on rate"
+   }
+  ],
+  "q26": [
+   {
+    "row": "Typical first sale",
+    "value": "About $16,600 — one filled assignment over its average length"
+   },
+   {
+    "row": "Typical annual customer value",
+    "value": "$125,000 across the client base"
+   },
+   {
+    "row": "Most valuable segment",
+    "value": "Administrative placements at manufacturers — better spread, longer assignments"
+   },
+   {
+    "row": "Tracked?",
+    "value": "Yes, in the placement report"
+   }
+  ],
+  "q27": [
+   {
+    "row": "% who buy again",
+    "value": "About 78% of clients order again within a quarter"
+   },
+   {
+    "row": "Renewal rate if applicable",
+    "value": "Master service agreements renew at roughly 85%"
+   },
+   {
+    "row": "Are inactive customers identified?",
+    "value": "The ATS can list clients with no order in six months. We pulled it once."
+   },
+   {
+    "row": "Reactivation campaigns ever run?",
+    "value": "No"
+   },
+   {
+    "row": "Why customers leave",
+    "value": "A bad fill they remember for two years, or a competitor undercuts our bill rate"
+   }
+  ],
+  "q28": [
+   "Set against competitors",
+   "Varies by scope or value",
+   "Discount rules defined",
+   "Pricing is a current worry"
+  ],
+  "q29": [
+   {
+    "row": "Complementary services routinely offered?",
+    "value": "Direct hire conversion, background screening packages, and employer-of-record — offered when the client asks"
+   },
+   {
+    "row": "Bundles or packages?",
+    "value": "No"
+   },
+   {
+    "row": "Premium option?",
+    "value": "A managed on-site programme for two clients; we have never sold a third"
+   },
+   {
+    "row": "Entry-level option?",
+    "value": "Single-assignment placement"
+   },
+   {
+    "row": "Customer needs you can't currently serve",
+    "value": "Skilled trades, anything requiring a security clearance, and night-shift coverage in Toledo"
+   }
+  ],
+  "q30": [
+   {
+    "row": "Who owns marketing",
+    "value": "A part-time contractor for the job board and social; nobody internally"
+   },
+   {
+    "row": "Who owns sales",
+    "value": "Five account managers, each with a territory"
+   },
+   {
+    "row": "Monthly marketing budget",
+    "value": "$4,200 mostly job board spend"
+   },
+   {
+    "row": "Do sales & marketing review results together?",
+    "value": "Orders and fills yes, weekly. Marketing spend is never in that meeting."
+   },
+   {
+    "row": "Are leads, conversion, CAC and customer value ever reviewed together?",
+    "value": "Orders, fill rate and client value yes. Cost of acquisition, no."
+   }
+  ],
+  "q31": "We'd have to hire",
+  "q32": [
+   {
+    "row": "1",
+    "area": "Bill rates and discount discipline"
+   },
+   {
+    "row": "2",
+    "area": "Fill rate on the orders we already accept"
+   },
+   {
+    "row": "3",
+    "area": "Direct hire fees we are not chasing"
+   }
+  ],
+  "q33": [
+   {
+    "workflow": "Job order intake and qualification"
+   },
+   {
+    "workflow": "Bill rate setting and approval"
+   },
+   {
+    "workflow": "Sourcing and candidate screening"
+   },
+   {
+    "workflow": "Background checks and compliance onboarding"
+   },
+   {
+    "workflow": "Assignment start and client confirmation"
+   },
+   {
+    "workflow": "Timesheet collection and approval"
+   },
+   {
+    "workflow": "Contractor payroll"
+   },
+   {
+    "workflow": "Client invoicing and collections"
+   },
+   {
+    "workflow": "Assignment end, redeployment and offboarding"
+   },
+   {
+    "workflow": "Weekly order and fill review"
+   }
+  ],
+  "q34": [
+   {
+    "row": "One clear accountable role",
+    "frequency": "Usually"
+   },
+   {
+    "row": "Defined handoffs",
+    "frequency": "Usually"
+   },
+   {
+    "row": "Consistent exception escalation",
+    "frequency": "Sometimes"
+   }
+  ],
+  "q35": [
+   {
+    "row": "Documented",
+    "pct": "55"
+   },
+   {
+    "row": "Current",
+    "pct": "40"
+   },
+   {
+    "row": "Accessible",
+    "pct": "60"
+   },
+   {
+    "row": "Used in training",
+    "pct": "50"
+   },
+   {
+    "row": "Actually followed",
+    "pct": "45"
+   }
+  ],
+  "q36": [
+   "Incomplete information",
+   "Late billing",
+   "Slow collections",
+   "Missed handoffs",
+   "The owner has to step in"
+  ],
+  "q37": "Sales capacity",
+  "q38": "Mostly clear, with gaps",
+  "q39": [
+   {
+    "row": "How many KPIs reviewed weekly",
+    "value": "Four — orders received, orders filled, fill rate and contractors on assignment"
+   },
+   {
+    "row": "Does each have one owner?",
+    "value": "Yes, by branch"
+   },
+   {
+    "row": "Are targets visible?",
+    "value": "Yes, on the branch boards"
+   },
+   {
+    "row": "Does a miss trigger action?",
+    "value": "On fill rate yes. Nothing on that board is a margin number, so a margin miss triggers nothing."
+   }
+  ],
+  "q40": "Weekly, structured and action-oriented",
+  "q41": [
+   {
+    "row": "CRM",
+    "tool": "Applicant tracking system with a client CRM module"
+   },
+   {
+    "row": "Marketing",
+    "tool": "Job boards, a part-time social contractor"
+   },
+   {
+    "row": "Sales / proposals",
+    "tool": "Rate card in Excel plus templated MSAs"
+   },
+   {
+    "row": "Scheduling / project management",
+    "tool": "ATS assignment calendar"
+   },
+   {
+    "row": "Delivery",
+    "tool": "ATS plus a separate onboarding and compliance portal"
+   },
+   {
+    "row": "Accounting",
+    "tool": "QuickBooks with an outside controller; payroll in a staffing payroll platform"
+   },
+   {
+    "row": "Reporting",
+    "tool": "ATS dashboards for orders and fills; margin reporting built in Excel monthly"
+   },
+   {
+    "row": "Communication",
+    "tool": "Email, SMS to contractors, Teams internally"
+   },
+   {
+    "row": "Files / knowledge",
+    "tool": "SharePoint"
+   },
+   {
+    "row": "HR / payroll",
+    "tool": "Staffing payroll platform for contractors, a separate system for internal staff"
+   }
+  ],
+  "q42": "Some integrations",
+  "q43": [
+   "KPI definitions are agreed",
+   "Data is generally accurate",
+   "Backups exist",
+   "We know where sensitive data lives"
+  ],
+  "q44": [
+   {
+    "task": "Candidate screening calls and qualification",
+    "who": "Recruiters",
+    "frequency": "Daily",
+    "occurrences": "5",
+    "minutes": "264",
+    "errors": "No",
+    "systems": "ATS, phone, SMS"
+   },
+   {
+    "task": "Timesheet chasing and correction",
+    "who": "Payroll team",
+    "frequency": "Daily",
+    "occurrences": "5",
+    "minutes": "168",
+    "errors": "Yes",
+    "systems": "Payroll platform, client portals, SMS"
+   },
+   {
+    "task": "Client invoicing and rate reconciliation",
+    "who": "Billing coordinator",
+    "frequency": "Weekly",
+    "occurrences": "3",
+    "minutes": "180",
+    "errors": "Yes",
+    "systems": "Payroll platform, Excel, QuickBooks"
+   },
+   {
+    "task": "Compliance document collection and chasing",
+    "who": "Compliance team",
+    "frequency": "Daily",
+    "occurrences": "5",
+    "minutes": "96",
+    "errors": "Yes",
+    "systems": "Onboarding portal, email"
+   },
+   {
+    "task": "Job posting and reposting across boards",
+    "who": "Recruiting coordinator",
+    "frequency": "Several times a week",
+    "occurrences": "3",
+    "minutes": "120",
+    "errors": "No",
+    "systems": "ATS, four job boards"
+   }
+  ],
+  "q45": "Candidate-side automation is genuinely good: application acknowledgements, screening reminders, assignment confirmations, shift reminders by SMS, and compliance document requests all fire automatically and are monitored. Client-side there is almost nothing — no automated order acknowledgement, no unfilled-order follow-up, no invoicing automation. Timesheets are chased by a human every single week.",
+  "q46": [
+   "Drafting",
+   "Research",
+   "Marketing content",
+   "Sales support",
+   "Knowledge retrieval"
+  ],
+  "q47": [
+   "Someone accountable per implementation",
+   "Sensitive-data rules are defined"
+  ],
+  "q48": [
+   "Unclear access",
+   "Ex-employees may retain access",
+   "Sensitive data in unapproved tools"
+  ],
+  "q49": [
+   {
+    "row": "Implementation budget range",
+    "value": "$30–50K"
+   },
+   {
+    "row": "Owner hours/week available",
+    "value": "5"
+   },
+   {
+    "row": "Team hours/week available",
+    "value": "12 across the branch managers and the controller"
+   },
+   {
+    "row": "Appetite for changing systems",
+    "value": "High on reporting, low on anything that touches the ATS or payroll mid-year"
+   }
+  ],
+  "q58": "Pockets of capability",
+  "q59": "The Columbus branch manager would take on anything and already builds her own ATS reports. The billing coordinator wants the invoicing fixed more than anyone. The two longest-serving account managers will resist any rate discipline that limits what they can promise a client.",
+  "q56": [
+   {
+    "role": "Recruiter",
+    "rate": "34"
+   },
+   {
+    "role": "Account manager",
+    "rate": "48"
+   },
+   {
+    "role": "Payroll / billing coordinator",
+    "rate": "34"
+   },
+   {
+    "role": "Compliance specialist",
+    "rate": "32"
+   },
+   {
+    "role": "Branch manager",
+    "rate": "58"
+   },
+   {
+    "role": "Owner",
+    "rate": "105"
+   }
+  ],
+  "q50": [
+   "Pricing exceptions",
+   "Major sales",
+   "Customer escalations",
+   "Hiring / firing",
+   "Banking / payments",
+   "Strategy"
+  ],
+  "q51": [
+   {
+    "row": "What keeps running",
+    "value": "Recruiting, placements, payroll, compliance and invoicing. The branches genuinely run."
+   },
+   {
+    "row": "What slows down",
+    "value": "New client acquisition, and any bill rate that falls outside the card"
+   },
+   {
+    "row": "What stops",
+    "value": "Rate exceptions and client escalations above the account manager level"
+   },
+   {
+    "row": "Who decides",
+    "value": "Branch managers inside their branch, up to the rate card"
+   },
+   {
+    "row": "What nobody else can access",
+    "value": "The bank, the payroll funding line, and the workers' compensation policy"
+   }
+  ],
+  "q52": [
+   {
+    "risk": "The largest client at 19% of revenue on a 30-day-notice MSA",
+    "impact": "Losing it takes a fifth of revenue and roughly half of Toledo's volume"
+   },
+   {
+    "risk": "Nia on bill rate exceptions and the three founding client relationships",
+    "impact": "Rate discipline and about a quarter of revenue depend on her personally"
+   },
+   {
+    "risk": "The workers' compensation programme and its experience rating",
+    "impact": "A bad claim year moves the direct cost of every contractor and therefore the whole spread"
+   },
+   {
+    "risk": "The billing coordinator, sole owner of the invoicing reconciliation",
+    "impact": "Invoicing would stall inside a week and cash with it"
+   }
+  ],
+  "q53": [
+   "Customer agreements are written & accessible",
+   "Vendor agreements are written",
+   "Contracts are transferable",
+   "Licenses & insurance are current",
+   "Employment agreements are current",
+   "No known legal, tax or insurance issue"
+  ],
+  "q54": [
+   "Financial reporting",
+   "Customer diversification",
+   "Leadership depth"
+  ],
+  "q55": "Ready, with leadership capacity",
+  "q57": "Steady"
+ },
+ "session": {
+  "engine": {
+   "leads_per_month": "90",
+   "conversion_rate": "42%",
+   "avg_deal_value": "$16,600",
+   "response_time": "Order acknowledged inside an hour; first candidates within 24 hours",
+   "gross_margin_pct": "about 30%",
+   "headcount": "30",
+   "repetitive_hours_week": "Candidate screening & qualification — recruiters — 22\nTimesheet chasing & correction — payroll team — 14\nClient invoicing & rate reconciliation — billing coordinator — 9\nCompliance document chasing — compliance team — 8\nJob posting & reposting — recruiting coordinator — 6",
+   "largest_customer_pct": "19"
+  },
+  "blockNotes": {
+   "b1": "Q8 belief is bill rates and discounting, and the evidence half agrees — but the reason is not the one she thinks. Objective is profit and then scale into two more metros.",
+   "b2": "READ WITH THE CROSS-CHECK PANEL. Funnel reconciles cleanly: 90 job orders a month, 42% filled, $16,600 per filled assignment gives $7.53M against $7.50M on the P&L. The margin check will not. Asked for gross margin in the room, Nia said 'about thirty percent' without hesitating — twice, and she used it again later when talking about a bill rate. The P&L on file says 18%, and the intake says 18% because her controller completed that section from the same P&L. This is not a typo and not a bad P&L: the books are clean and prepared by an outside controller. It is the owner carrying a number twelve points wrong, and carrying it into every rate approval, every account manager conversation and the two-market expansion plan. Flag stands; the ask on flag was put to her and her answer was 'thirty is the spread we quote.' Quoted spread before discounting, before unbilled overtime, before workers' comp and before the payroll-only accommodation work is exactly how eighteen becomes thirty in someone's head.",
+   "b3": "Rate card on file by role and metro, set against competitor rates rather than against loaded cost. Discount rules exist and are written — and by the branch managers' own account the two longest-serving account managers use the bottom of the band as the opening number. Direct hire is 9% of revenue at 84% margin and nobody is targeted on it.",
+   "b4": "59 h/wk repetitive against a 30-person, 1,200-hour payroll — 4.9%, well inside the check and no single role overloaded. Candidate-side automation is strong; the client side has almost none, and timesheet chasing alone is 14 hours a week that also delays invoicing by six days.",
+   "b5": "Largest client 19% on the revenue-by-client report — under the 25% threshold but on a 30-day MSA and concentrated in the newest branch. Contracts, licences and insurance all written, current and transferable. Access review is the weak spot: ex-employee access has never been reviewed."
+  },
+  "demonstrated": [
+   "Job order taken live in the ATS — acknowledged, rate confirmed against the card, sourcing started inside eleven minutes",
+   "Weekly order and fill review observed across three branches: four KPIs, owners by branch, actions assigned",
+   "The candidate automation stack shown running — acknowledgements, screening reminders, shift SMS, compliance requests",
+   "Timesheet chase watched live: 31 outstanding timesheets, three client portals, SMS and phone",
+   "Systems tour: ATS ↔ payroll platform connected; payroll → Excel → QuickBooks for margin, rebuilt by hand monthly",
+   "The SharePoint procedure library opened — onboarding and compliance current, rate setting and client acquisition absent"
+  ],
+  "documents_seen": [
+   "P&L and balance sheet 2024–2026 (outside controller) — revenue $7.50M, gross spread 18%, operating profit $412K",
+   "Gross spread by client and assignment — light industrial 16%, administrative 22%, direct hire 84%, payroll-only 9%",
+   "Bill rate card by role and metro",
+   "AR aging — $1.34M out, $310K over 45 days",
+   "ATS export of job orders and fills — 1,080 orders, 42% fill rate, by branch and recruiter"
+  ]
+ },
+ "dataRoom": {
+  "pnl_on_file": true,
+  "documents": [
+   {
+    "name": "P&L and balance sheet 2024–2026 (outside controller)",
+    "kind": "pnl",
+    "received_on": "2026-08-24"
+   },
+   {
+    "name": "Gross spread by client and assignment",
+    "kind": "job_cost",
+    "received_on": "2026-08-24"
+   },
+   {
+    "name": "Bill rate card by role and metro",
+    "kind": "rate_card",
+    "received_on": "2026-08-26"
+   },
+   {
+    "name": "AR aging as of 31 Aug 2026",
+    "kind": "ar_aging",
+    "received_on": "2026-08-26"
+   },
+   {
+    "name": "Revenue by client, trailing 12 months",
+    "kind": "revenue_by_customer",
+    "received_on": "2026-08-31"
+   },
+   {
+    "name": "ATS job order and fill export",
+    "kind": "other",
+    "received_on": "2026-09-02"
+   }
+  ]
+ },
+ "scores": {
+  "P1": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Five order sources with monthly volume in the ATS (q23: repeat 52, outbound 21, referrals 9, inbound 6, portals 2), four of five tracked, cost known only on the $4,200 job board spend.",
+   "why_not_higher": "Anchor 3 needs cost or quality tracked for the main source; the main source is client repeat, which carries neither, and referrals are untracked entirely."
+  },
+  "P2": {
+   "score": 3,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Every job order lands in the ATS including declined ones (q24), acknowledged inside an hour and sourced the same day — watched live at eleven minutes from order to sourcing.",
+   "why_not_higher": "Anchor 4 needs the response automated; the acknowledgement is a person, and there is no automated client-side response at all (q45)."
+  },
+  "P3": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Candidate-side sequences are effectively universal and automated; on the client side, unfilled orders get a second touch about 60% of the time and it depends on the account manager (q24).",
+   "why_not_higher": "Anchor 3 needs a defined sequence with missed follow-ups visible — an unfilled order that goes quiet is not surfaced anywhere in the ATS."
+  },
+  "P4": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Fill rate 42% tracked by recruiter and client in the ATS and reviewed weekly (observed). Loss reasons — speed and rate — are known but recorded informally.",
+   "why_not_higher": "Q25: for new client acquisition there is no process at all, 'whatever each account manager does', so the tracked process covers only half the motion."
+  },
+  "P5": {
+   "score": 1,
+   "na": false,
+   "evidence": "documented",
+   "note": "Rate card on file by role and metro with written discount rules — but set against competitor rates rather than loaded cost, and the spread-by-client report shows light industrial at 16% against a quoted 30%. The owner's own working margin is twelve points off the P&L (b2).",
+   "why_not_higher": "Anchor 2 needs real economics behind the price; the price is set against competitors and defended with a margin number that does not exist, which is the anchor-1 line even though a discount rule is written."
+  },
+  "P6": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Direct hire conversion, screening packages, employer-of-record and a managed on-site programme all exist and are offered when the client asks (q29).",
+   "why_not_higher": "Anchor 3 needs a scripted upsell on the core offer; direct hire is 84% margin, nobody is targeted on it, and the premium on-site programme has never been sold to a third client."
+  },
+  "P7": {
+   "score": 2,
+   "na": false,
+   "evidence": "documented",
+   "note": "Placement report measures 78% quarterly reorder and 85% MSA renewal; the ATS can list clients dormant six months and it has been pulled once (q27).",
+   "why_not_higher": "Anchor 3 needs the inactive list worked at least twice a year; no reactivation has ever run."
+  },
+  "P8": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Five account managers own territories, the weekly review covers orders, fills and client value by branch with named owners (q30, q39).",
+   "why_not_higher": "Anchor 3 needs the value side reviewed monthly by named owners — marketing has no internal owner, acquisition cost is never in the meeting, and no margin number is on the branch boards."
+  },
+  "P9": {
+   "score": 1,
+   "na": false,
+   "evidence": "documented",
+   "note": "The books know: spread by client and assignment is on file and accurate (16% light industrial, 22% administrative, 84% direct hire). The business does not — the owner said 'about thirty percent' twice in the room against 18% on the P&L, and the margin report is rebuilt in Excel monthly by one person (b2, b4).",
+   "why_not_higher": "The rubric scores what the business runs on, not what its accountant can produce. A margin figure that exists in a monthly spreadsheet and is contradicted by the decision-maker is the 'estimated once a year' line, not 'known overall'."
+  },
+  "P10": {
+   "score": 2,
+   "na": false,
+   "evidence": "documented",
+   "note": "Monthly close inside 15 days with an outside controller, AR aging current, and q21 carries revenue, spread, profit, cash and comp targets.",
+   "why_not_higher": "Held at 2 rather than 3 because the review demonstrably is not landing: the owner's working margin is twelve points from the statement she receives every month, and invoicing runs six days behind the week close."
+  },
+  "S1": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Branch managers decide inside their branch up to the rate card and the branches genuinely run (q51); q50 keeps rate exceptions, major sales, escalations, hiring, banking and strategy with Nia.",
+   "why_not_higher": "Anchor 3 needs decision rights written for most areas; the rate card is the only written boundary and every exception to it is hers."
+  },
+  "S2": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Four-week test (q51): recruiting, placement, payroll, compliance and invoicing all keep running. New client acquisition and rate exceptions stop.",
+   "why_not_higher": "Anchor 3 needs a named deputy with a few owner-locked items; there are five branch managers and no one above them, so exceptions stack rather than resolve — and an 8-day absence this year included approving three rates from an airport."
+  },
+  "S3": {
+   "score": 3,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Five account managers hold their own territories and close standard business; only about 25% of revenue traces to the owner's three founding relationships (q14), and the live order came in and was worked without her.",
+   "why_not_higher": "Anchor 4 needs relationships institutional — a quarter of revenue on the owner's personal relationships and every rate exception routing to her keeps this short of it."
+  },
+  "S4": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Five managers with direct reports; each owns their branch's four KPIs and q34 rates accountable ownership 'usually' true.",
+   "why_not_higher": "Q39 is explicit: nothing on the branch boards is a margin number, so managers own volume and nobody owns profitability — anchor 3 needs managers owning outcomes and metrics that matter."
+  },
+  "S5": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "SharePoint library opened in session: onboarding and compliance procedures current and used in training (q35: 55% documented). Rate setting and client acquisition have nothing written.",
+   "why_not_higher": "Anchor 3 needs the core workflows documented and current; the two that carry the margin are the two that are missing, and only 45% is actually followed."
+  },
+  "S6": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Weekly structured review observed across three branches with four owned KPIs and visible targets (q39, q40).",
+   "why_not_higher": "Held at 2 on content rather than form: four volume KPIs with no margin measure means the rhythm is real and is pointed at the wrong number — a margin miss triggers nothing by her own answer."
+  },
+  "S7": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "420 contractors placed and supported consistently; q36 lists incomplete information and missed handoffs as recurring, and q31 says a 20% jump needs hiring.",
+   "why_not_higher": "Anchor 3 needs +20% to strain rather than break with QC steps defined; fill rate is already 42% and q37 names sales capacity as the limiting resource, so more orders would lower it."
+  },
+  "S8": {
+   "score": 2,
+   "na": false,
+   "evidence": "documented",
+   "note": "Revenue-by-client report: largest 19%, top five 48% across about 60 billing clients. Under the 25% overlay threshold — a watch item, not a warning — but on a 30-day-notice MSA and concentrated in the newest branch (q52).",
+   "why_not_higher": "v2 anchor 3 is 10–15%; 19% sits in the 15–20% band."
+  },
+  "S9": {
+   "score": 3,
+   "na": false,
+   "evidence": "documented",
+   "note": "Q12: 58% recurring contract revenue under MSAs renewing at 85%, plus 29% repeat without contract, with 420 contractors on assignment providing a visible forward book in the ATS.",
+   "why_not_higher": "Anchor 4 needs it genuinely forecastable — MSAs carry 30-day notice and no revenue forecast is produced, so the base is contracted but not planned from."
+  },
+  "S10": {
+   "score": 2,
+   "na": false,
+   "evidence": "documented",
+   "note": "Q53 returns nearly everything true including transferable contracts, and the MSAs, vendor agreements, licences and insurance were all in the data room.",
+   "why_not_higher": "Q52 names four unaddressed exposures — the 19% client on 30 days' notice, the owner on rate exceptions, the workers' comp experience rating, and a sole billing coordinator. No cross-training and no continuity plan."
+  },
+  "L1": {
+   "score": 3,
+   "na": false,
+   "evidence": "reported",
+   "note": "ATS with a client CRM module, a staffing payroll platform, an onboarding and compliance portal, QuickBooks, SharePoint and Teams cover the core areas (q41).",
+   "why_not_higher": "One significant gap remains and it is the expensive one: there is no margin reporting system — spread is rebuilt in Excel by hand every month."
+  },
+  "L2": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "ATS ↔ payroll platform is connected and works, shown on the tour; q42 'some integrations'.",
+   "why_not_higher": "Payroll → Excel → QuickBooks is manual every month, timesheets arrive through three separate client portals, and internal and contractor payroll sit in different systems — more than the one or two double-entry points anchor 3 allows."
+  },
+  "L3": {
+   "score": 1,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Q43 claims agreed definitions and accurate data, and the volume reporting is genuinely good. But the number the business is priced on is disputed inside the business itself — 18% on the statement, 30% in the owner's head (b2) — and the margin report is hand-built monthly.",
+   "why_not_higher": "Anchor 2 needs the numbers mostly right after cleanup; here the headline financial metric is not agreed between the owner and her own P&L, which is the definition of one trusted report and everything else disputed."
+  },
+  "L4": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "59 h/wk inventoried (q44). Candidate-side work has genuinely been reduced by automation; timesheet chasing (14h), invoicing reconciliation (9h) and compliance chasing (8h) are untouched and delay invoicing six days.",
+   "why_not_higher": "Anchor 2 needs a few fixes made across the load; every fix so far is on one side of the business and the client side has had none."
+  },
+  "L5": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Application acknowledgements, screening reminders, shift SMS and compliance document requests all run reliably and were shown firing, with the recruiting coordinator monitoring them (q45).",
+   "why_not_higher": "Anchor 3 needs automations across several functions; all of these sit in candidate operations and nothing exists in client, billing or reporting."
+  },
+  "L6": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q46 covers five categories — recruiters use it for job posts and screening summaries, account managers for client emails, the marketing contractor for content.",
+   "why_not_higher": "Anchor 3 needs AI inside one or two defined workflows; this is individual use spread across roles with no workflow depending on it and no result recorded."
+  },
+  "L7": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q47 returns two of eight — someone accountable per implementation and sensitive-data rules defined (driven by candidate PII obligations). No human-review rule, nothing measured, no impact-based selection.",
+   "why_not_higher": "Anchor 2 needs several practices however inconsistent; two, one of them purely compliance-driven, is not several — and q48 confirms sensitive data is already going into unapproved tools."
+  },
+  "L8": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q48: unclear access, ex-employees may retain access, sensitive data in unapproved tools — against q43 confirming backups and a known data map. Partial hygiene with known gaps.",
+   "why_not_higher": "Anchor 3 needs access controlled and off-boarding done; in a business holding social security numbers and I-9s for 420 contractors, unreviewed ex-employee access is the specific gap that holds this at 2."
+  },
+  "L9": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q58 'pockets of capability'; q59 names the Columbus branch manager building her own ATS reports and the billing coordinator as motivated, against two account managers who will resist rate discipline.",
+   "why_not_higher": "Anchor 3 needs the team trained on the core tools; no training programme exists and the capability that shows is individual initiative."
+  },
+  "L10": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q49: $30–50K budget, 5 owner hours and 12 team hours; q55 'ready, with leadership capacity' and five branch managers to carry it.",
+   "why_not_higher": "Anchor 3 needs budget and time set aside; the ATS and payroll are explicitly off-limits mid-year by her own answer, which fences the change out of the systems where the work actually is."
+  }
+ },
+ "assessment": {
+  "owner_objective": "More profit & cash flow — then Prepare to scale, Better operations & delivery capacity",
+  "owner_belief": "We are leaving margin on the table on bill rates. We win orders and I think we win too many of them at a number that does not pay us properly, and my account managers discount to keep the client rather than defend the rate. It has been the same story since we opened Toledo two years ago.",
+  "primary_constraint": "The business is priced on a margin that does not exist: the owner and her account managers approve bill rates against a 30% spread while the P&L reports 18%, so every rate decision, every discount and the two-market expansion plan rest on a number twelve points wrong — and no margin measure appears on any board, in any meeting, or in any manager's targets.",
+  "constraint_symptoms": "The owner stated 30% twice in session against 18% on her own monthly statement; light industrial, 62% of revenue, runs at a 16% spread; the rate card is set against competitors rather than loaded cost; the two longest-serving account managers open at the bottom of the discount band; direct hire at 84% margin is 9% of revenue and nobody is targeted on it; the four weekly KPIs are all volume.",
+  "constraint_cost": "~$225K of gross spread between the 18% achieved and the 21% targeted on $7.5M · ~$29K of billing payroll on 23 weekly hours of timesheet chasing and invoice reconciliation that also delays cash six days · ~$310K sitting past 45 days in AR as a direct consequence of that delay.",
+  "constraint_fix": "Rebuild the rate card on loaded cost — wages, taxes, workers' comp, benefits and processing — put realised spread on the weekly branch board next to fill rate, and give branch managers a floor they own rather than an exception they escalate.",
+  "momentum_initiative": "Put realised gross spread by branch on the existing weekly board — no new system, no purchase, and it changes what five managers talk about on the first Monday.",
+  "overlay_flags": [
+   "unreliable_financials",
+   "key_person"
+  ],
+  "plan_items": [
+   "Realised gross spread added to the weekly branch scoreboard — Nia Thompson — 2026-09-21",
+   "Rate card rebuilt on loaded cost with a written branch-level floor — Marcus Vell (controller) — 2026-10-12",
+   "Direct hire conversion target set for every account manager — Simone Adeyemi (Columbus branch manager) — 2026-10-05",
+   "Timesheet capture and invoicing automation to cut days-to-invoice from six to two — Renata Diaz (billing coordinator) — 2026-11-16"
+  ],
+  "overlap_factor": 0.7
+ },
+ "opportunities": [
+  {
+   "title": "Reprice the light-industrial book on loaded cost",
+   "finding": "The spread-by-client report (Doc) shows light industrial — 62% of revenue — running at a 16% spread while the rate card is set against competitor rates rather than loaded cost, and the owner approves against a 30% figure that the P&L does not support (b2). Confidence is medium, not high, for exactly that reason: the pricing decision has been made on the wrong number for long enough that client tolerance for a correction is genuinely unknown. This prices a small, staged move on the light-industrial book only.",
+   "calculator": {
+    "kind": "price_change",
+    "inputs": {
+     "revenueAffected": 3200000,
+     "priceChangePctLow": 1,
+     "priceChangePctExpected": 2,
+     "priceChangePctHigh": 3,
+     "volumeLossPctLow": 1,
+     "volumeLossPctExpected": 2,
+     "volumeLossPctHigh": 4,
+     "grossMarginPct": 18
+    }
+   },
+   "fix_cost": 5800,
+   "months_to_benefit": 3,
+   "confidence": "medium",
+   "include_in_report": true,
+   "basis_reported_only": false,
+   "blueprint": "Rate card rebuilt from wages, taxes, workers' comp, benefits and processing cost; a written floor each branch manager owns; new rates on new orders immediately and on existing assignments at their next renewal, largest client last and handled by the owner.",
+   "replaces": "A competitor-matched card defended with a margin that is twelve points optimistic"
+  },
+  {
+   "title": "Fill more of the orders already accepted",
+   "finding": "1,080 job orders accepted last year at a 42% fill rate (ATS export, Doc) — roughly $17.9M of order value moving through the business. Q25 names the loss reasons as speed and rate; q24 says unfilled orders get a second touch about 60% of the time and nothing surfaces an order going quiet. Recruiter capacity is real but 22 hours a week of screening is unaugmented.",
+   "calculator": {
+    "kind": "close_rate_lift",
+    "inputs": {
+     "quotedVolume": 17928000,
+     "currentClosePct": 42,
+     "liftPointsLow": 1.5,
+     "liftPointsExpected": 2,
+     "liftPointsHigh": 3.5,
+     "grossMarginPct": 18,
+     "incrementalCostPct": 3
+    }
+   },
+   "fix_cost": 9200,
+   "months_to_benefit": 3,
+   "confidence": "medium",
+   "include_in_report": true,
+   "basis_reported_only": false,
+   "blueprint": "Unfilled orders aged and surfaced on the branch board, an automated client-side acknowledgement and status update, and AI-assisted screening summaries so recruiter hours go to candidate conversations rather than to qualification calls.",
+   "replaces": "An unfilled order that quietly stops being anyone's problem"
+  },
+  {
+   "title": "Stop chasing timesheets by hand",
+   "finding": "Timesheet chasing and invoice reconciliation take 23 hours a week between the payroll team and the billing coordinator (q44; 31 outstanding timesheets across three client portals watched live). It is also the direct cause of a six-day gap between week close and invoice, with $310K of AR past 45 days behind it. Dollarised because the hours come off a billing function that is the constraint on cash conversion, not because payroll would shrink.",
+   "calculator": {
+    "kind": "automation_hours",
+    "inputs": {
+     "hoursPerWeek": 14,
+     "loadedHourlyRate": 34,
+     "automationSharePctLow": 40,
+     "automationSharePctExpected": 60,
+     "automationSharePctHigh": 75,
+     "weeksPerYear": 52,
+     "redeployed": true
+    }
+   },
+   "fix_cost": 11000,
+   "months_to_benefit": 4,
+   "confidence": "medium",
+   "include_in_report": true,
+   "basis_reported_only": false,
+   "blueprint": "Mobile timesheet capture with automated reminders and client approval, portal submissions pulled rather than re-keyed, and invoicing generated from approved time instead of reconciled in Excel.",
+   "replaces": "A person, three client portals and a phone, every Monday"
+  }
+ ],
+ "expected": {
+  "gate_should_pass": true,
+  "expected_warnings": [],
+  "expected_blockers": [],
+  "band_guess": "Building",
+  "cross_checks": {
+   "margin_vs_pnl": "flag",
+   "funnel_vs_revenue": "pass",
+   "concentration": "pass",
+   "hours_vs_headcount": "pass"
+  }
+ }
+}

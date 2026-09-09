@@ -1,0 +1,440 @@
+{
+ "n": 19,
+ "company": "Marchetti Consulting",
+ "owner": "Leo Marchetti",
+ "industry": "Solo consultant (edge: below range)",
+ "profile": {
+  "revenue": 280000,
+  "grossMarginPct": 85,
+  "operatingProfit": 72000,
+  "headcount": 1,
+  "founded": 2019,
+  "story": "Leo Marchetti left a supply-chain role at a mid-market manufacturer in 2019 and has consulted on his own since — operations diagnostics, S&OP design and implementation support for contract manufacturers between $8M and $30M. Revenue was $280K last year, down from $316K, and it arrives in a sawtooth: quarters of $40K and quarters of $9K, because every hour he spends selling is an hour he is not delivering. Thirty-eight percent of last year's revenue came from one interim engagement. He is well below the diagnostic's normal qualification range and the session was run anyway at his request."
+ },
+ "edge_cases": [
+  "below the $1M qualification range — run deliberately, and the report has to be honest about what that means",
+  "DESIGNED TO FAIL THE GATE: P2, P3 and L5 carry scores with the note field left empty",
+  "no P&L on file — the P&L disclosure fires and every opportunity range is widened ×0.75 / ×1.25 under Rubrics v2 §8",
+  "only six indicators at Demonstrated and none at Documented, so the ten-indicator evidence-mix blocker also trips",
+  "two N/As in Systems (S3, S4) — S4 is the case §5 names explicitly; S3 is the arguable one and the reviewer should say so out loud",
+  "customer_concentration overlay active at 38% on a one-person business"
+ ],
+ "intake": {
+  "q1": [
+   { "row": "Your name", "value": "Leo Marchetti" },
+   { "row": "Email", "value": "leo@marchetticonsulting.com" },
+   { "row": "Phone", "value": "(401) 555-0158" },
+   { "row": "Company name", "value": "Marchetti Consulting LLC" },
+   { "row": "Website", "value": "marchetticonsulting.com" },
+   { "row": "Location", "value": "Providence, Rhode Island" },
+   { "row": "Industry", "value": "Operations & supply-chain consulting" }
+  ],
+  "q2": "I am a one-person operations consultancy. I work with contract manufacturers and job shops between about eight and thirty million — usually the ones who have just lost a big customer or just won one and cannot cope. Three kinds of work: a diagnostic and roadmap project, planning and S&OP process design, and retained implementation support afterwards. I deliver all of it myself, on site two or three days a week when a project is live, and I use one subcontract analyst about six weeks a year when the data work gets heavy.",
+  "q3": [
+   { "row": "Primary", "objective": "Reliable revenue growth" },
+   { "row": "Secondary 1", "objective": "More profit & cash flow" },
+   { "row": "Secondary 2", "objective": "Resilience/risk reduction" }
+  ],
+  "q4": [
+   { "row": "1", "outcome": "Quarterly revenue variance", "target": "From $9K–$40K down to $55K–$85K" },
+   { "row": "2", "outcome": "Retained implementation revenue as a share of the total", "target": "From 22% to 40%" },
+   { "row": "3", "outcome": "Largest client share", "target": "From 38% to under 25%" }
+  ],
+  "q5": "Four hundred thousand, still on my own, but with two or three retainers underneath it so I am not starting from zero every January. I would rather be the person clients call every month than the person they hire once. If it gets bigger than that I would want a second consultant, and I am honestly not sure I want that.",
+  "q6": "Doing the technical work",
+  "q7": [
+   { "row": "Hours/week now", "value": "55 when a project is live, about 30 when one is not" },
+   { "row": "Hours/week you want in 12 months", "value": "45, level" },
+   { "row": "Hours/week you want in 3 years", "value": "40" },
+   { "row": "Longest uninterrupted time away in the past 12 months", "value": "9 days, between projects, which is the only time I can take one" },
+   { "row": "What pulls you back in", "value": "There is nothing to pull me back into. There is only me" }
+  ],
+  "q8": "Feast or famine. When I am delivering I am not selling, and when I am selling I am not delivering, so revenue goes forty, twelve, thirty-eight, nine across the quarters and I cannot plan anything. It has been like that since the second year and I have never solved it.",
+  "q9": [
+   { "row": "Year founded", "value": "2019" },
+   { "row": "Owners & percentages", "value": "Leo Marchetti 100%" },
+   { "row": "Any owner misalignment affecting decisions?", "value": "No — sole owner" }
+  ],
+  "q10": [
+   { "row": "Full-time employees", "count": "0" },
+   { "row": "Part-time", "count": "0" },
+   { "row": "Regular contractors", "count": "1" },
+   { "row": "Managers / team leads", "count": "0" },
+   { "row": "People with direct reports", "count": "0" }
+  ],
+  "q11": "Regional",
+  "q12": [
+   { "row": "One-time projects", "pct": "68" },
+   { "row": "Recurring contracts", "pct": "0" },
+   { "row": "Repeat without contract", "pct": "10" },
+   { "row": "Products", "pct": "0" },
+   { "row": "Retainers", "pct": "22" },
+   { "row": "Other", "pct": "0" }
+  ],
+  "q13": [
+   { "name": "Operations diagnostic & roadmap projects", "pct": "46", "margin": "88", "trend": "Flat", "importance": "How everything starts. Also the thing that eats every hour I could be selling in" },
+   { "name": "Retained implementation support", "pct": "22", "margin": "82", "trend": "Growing", "importance": "The only revenue that repeats. Two clients" },
+   { "name": "S&OP and planning process design", "pct": "18", "margin": "86", "trend": "Flat", "importance": "Best work I do and the hardest to sell cold" },
+   { "name": "Training workshops", "pct": "9", "margin": "91", "trend": "Declining", "importance": "High margin, low volume, no pipeline behind it" },
+   { "name": "Interim operations management", "pct": "5", "margin": "74", "trend": "Flat", "importance": "One client. It is 38% of my revenue this year and 5% of my line list because it started in March" }
+  ],
+  "q14": [
+   { "row": "Active customer count", "value": "9 this year; 31 lifetime" },
+   { "row": "B2B / B2C / mixed", "value": "B2B" },
+   { "row": "% of revenue from your largest customer", "value": "38% (Bracco Fabricating — the interim engagement)" },
+   { "row": "% of revenue from your top five", "value": "84%" },
+   { "row": "% of revenue tied directly to YOUR personal relationships", "value": "100%" }
+  ],
+  "q15": [
+   { "row": "Last completed year", "amount": "280000" },
+   { "row": "Prior year", "amount": "316000" },
+   { "row": "Year to date", "amount": "198000" },
+   { "row": "Full-year forecast", "amount": "295000" }
+  ],
+  "q16": "Declined 10% or less",
+  "q17": [
+   { "row": "Approximate gross margin %", "value": "About 85%" },
+   { "row": "Main direct costs", "value": "Subcontract analyst time, research and data licences, travel billed through at cost" },
+   { "row": "Tracked by job / service / customer?", "value": "No. I know it for the year and never for a project" }
+  ],
+  "q18": [
+   { "row": "Operating profit estimate", "amount": "72000" },
+   { "row": "Owner salary", "amount": "120000" },
+   { "row": "Owner distributions", "amount": "58000" },
+   { "row": "Unusual one-off expenses", "amount": "0" }
+  ],
+  "q19": ["Profitable but tight", "Customer payment timing", "Seasonality"],
+  "q20": "Quarterly",
+  "q21": [
+   { "row": "Revenue", "target": "$350K" },
+   { "row": "Gross margin", "target": "No target" },
+   { "row": "Operating profit", "target": "No target" },
+   { "row": "Cash reserve", "target": "No target" },
+   { "row": "Owner compensation", "target": "No target" }
+  ],
+  "q22": "I have a Wave P&L I could pull but honestly it is not clean and I would rather show you the bank. I never sent anything through.",
+  "q23": [
+   { "source": "Past client referral", "per_month": "2", "cost": "0", "quality": "5", "tracked": "No" },
+   { "source": "LinkedIn content & inbound", "per_month": "1", "cost": "0", "quality": "3", "tracked": "No" },
+   { "source": "Industry association & speaking", "per_month": "1", "cost": "900", "quality": "4", "tracked": "No" }
+  ],
+  "q24": [
+   { "row": "What happens, step by step", "value": "Someone emails me or messages me on LinkedIn. I reply the same day, usually inside two hours, and we get on a call within the week" },
+   { "row": "Typical response time", "value": "Same day, usually within two hours" },
+   { "row": "Who is responsible", "value": "Me" },
+   { "row": "Is every inquiry captured in one system?", "value": "It is in my inbox, and sometimes in Notion. Not consistently" },
+   { "row": "Automated follow-up?", "value": "No" },
+   { "row": "% of leads that get 2+ follow-ups", "value": "Between projects, most of them. When I am delivering, almost none" }
+  ],
+  "q25": [
+   { "row": "Lead→sale or proposal→close %", "value": "About 42% of proposals" },
+   { "row": "Tracked by source / person / service?", "value": "By memory, and a Notion board I update in bursts" },
+   { "row": "Defined sales process?", "value": "Sort of. Discovery call, then a proposal off a template" },
+   { "row": "Most common reason you lose", "value": "Budget, or they went quiet and I did not chase" }
+  ],
+  "q26": [
+   { "row": "Typical first sale", "value": "$26,000" },
+   { "row": "Typical annual customer value", "value": "$22,000" },
+   { "row": "Most valuable segment", "value": "Contract manufacturers $8–30M who have just lost a major customer" },
+   { "row": "Tracked?", "value": "No" }
+  ],
+  "q27": [
+   { "row": "% who buy again", "value": "About half come back within two years" },
+   { "row": "Renewal rate if applicable", "value": "The two retainers have both renewed twice" },
+   { "row": "Are inactive customers identified?", "value": "I could list them. Fourteen I have not spoken to in over eighteen months" },
+   { "row": "Reactivation campaigns ever run?", "value": "No" },
+   { "row": "Why customers leave", "value": "The project ended and I did not stay in touch. That is genuinely the reason" }
+  ],
+  "q28": ["Based on real job economics", "Varies by scope or value", "Unchanged for 2+ years", "Set on the owner's gut"],
+  "q29": [
+   { "row": "Complementary services routinely offered?", "value": "Sometimes. I suggest implementation support at the readout when the project has gone well" },
+   { "row": "Bundles or packages?", "value": "No" },
+   { "row": "Premium option?", "value": "No" },
+   { "row": "Entry-level option?", "value": "A two-day diagnostic, which I keep meaning to productise and never do" },
+   { "row": "Customer needs you can't currently serve", "value": "Anything needing a team, and anything with an ERP implementation attached" }
+  ],
+  "q30": [
+   { "row": "Who owns marketing", "value": "Me, when I have time" },
+   { "row": "Who owns sales", "value": "Me" },
+   { "row": "Monthly marketing budget", "value": "$150 for LinkedIn Premium" },
+   { "row": "Do sales & marketing review results together?", "value": "No" },
+   { "row": "Are leads, conversion, CAC and customer value ever reviewed together?", "value": "No" }
+  ],
+  "q31": "Quality would slip",
+  "q32": [
+   { "row": "1", "area": "Raising my day rate" },
+   { "row": "2", "area": "Selling while I am delivering" },
+   { "row": "3", "area": "Getting the past clients back" }
+  ],
+  "q33": [
+   { "workflow": "Lead intake and discovery" },
+   { "workflow": "Proposal and SOW" },
+   { "workflow": "Contracting and deposit" },
+   { "workflow": "Client data collection and analysis" },
+   { "workflow": "Workshops and working sessions" },
+   { "workflow": "Readout and recommendations" },
+   { "workflow": "Retained implementation support" },
+   { "workflow": "Invoicing and collections" },
+   { "workflow": "Knowledge capture and template maintenance" }
+  ],
+  "q34": [
+   { "row": "One clear accountable role", "frequency": "Always" },
+   { "row": "Defined handoffs", "frequency": "Rarely" },
+   { "row": "Consistent exception escalation", "frequency": "Rarely" }
+  ],
+  "q35": [
+   { "row": "Documented", "pct": "30" },
+   { "row": "Current", "pct": "20" },
+   { "row": "Accessible", "pct": "60" },
+   { "row": "Used in training", "pct": "0" },
+   { "row": "Actually followed", "pct": "35" }
+  ],
+  "q36": ["Incomplete information", "Scheduling delays", "Late billing", "Unclear priorities"],
+  "q37": "Sales capacity",
+  "q38": "Everything falls back to the owner",
+  "q39": [
+   { "row": "How many KPIs reviewed weekly", "value": "None formally. I look at the Notion pipeline on a Friday, maybe two Fridays out of four" },
+   { "row": "Does each have one owner?", "value": "n/a" },
+   { "row": "Are targets visible?", "value": "No" },
+   { "row": "Does a miss trigger action?", "value": "No" }
+  ],
+  "q40": "Reactive only",
+  "q41": [
+   { "row": "CRM", "tool": "Notion, used loosely" },
+   { "row": "Marketing", "tool": "LinkedIn" },
+   { "row": "Sales / proposals", "tool": "Google Docs template + PandaDoc" },
+   { "row": "Scheduling / project management", "tool": "Notion + Calendly" },
+   { "row": "Delivery", "tool": "Excel and Google Slides" },
+   { "row": "Accounting", "tool": "Wave" },
+   { "row": "Reporting", "tool": "none" },
+   { "row": "Communication", "tool": "Email, Zoom, LinkedIn" },
+   { "row": "Files / knowledge", "tool": "Google Drive (personal account)" },
+   { "row": "HR / payroll", "tool": "none" }
+  ],
+  "q42": "Mostly separate, plus spreadsheets",
+  "q43": ["Data is generally accurate", "We know where sensitive data lives"],
+  "q44": [
+   { "task": "Slide deck production for client readouts", "who": "Leo Marchetti", "frequency": "Weekly", "occurrences": "2", "minutes": "140", "errors": "No", "systems": "Google Slides, Excel" },
+   { "task": "Client data collection and spreadsheet cleanup at project start", "who": "Leo Marchetti", "frequency": "Weekly", "occurrences": "3", "minutes": "70", "errors": "Yes", "systems": "Excel, client ERP exports" },
+   { "task": "Proposal and SOW assembly", "who": "Leo Marchetti", "frequency": "Weekly", "occurrences": "2", "minutes": "95", "errors": "No", "systems": "Google Docs, PandaDoc, Notion" },
+   { "task": "Invoicing and expense reconciliation", "who": "Leo Marchetti", "frequency": "Monthly", "occurrences": "1", "minutes": "120", "errors": "Yes", "systems": "Wave, spreadsheets" },
+   { "task": "Scheduling and rescheduling client sessions", "who": "Leo Marchetti", "frequency": "Several times a week", "occurrences": "4", "minutes": "20", "errors": "No", "systems": "Calendly, email" }
+  ],
+  "q45": "Calendly books and reminds. PandaDoc chases a signature and tells me when it is opened. Wave sends invoice reminders on a schedule. That is the entire list and all three are reliable — I set them up myself in 2021 and have not touched them since.",
+  "q46": ["Drafting", "Research", "Marketing content", "Estimating / proposals", "Knowledge retrieval"],
+  "q47": ["Sensitive-data rules are defined"],
+  "q48": ["Inconsistent backups", "No tested recovery", "One-vendor or one-person dependence"],
+  "q49": [
+   { "row": "Implementation budget range", "value": "$3,000–$6,000" },
+   { "row": "Owner hours/week available", "value": "5 in theory. In practice zero when a project is live" },
+   { "row": "Team hours/week available", "value": "n/a — there is no team" },
+   { "row": "Appetite for changing systems", "value": "High. I like this stuff, which is part of the problem" }
+  ],
+  "q58": "Pockets of capability",
+  "q59": "There is only me. I would take a new system on happily — too happily, I have three abandoned Notion databases to prove it. The person who would resist it is also me, in month two, when a project goes live and the system stops getting updated. Whatever we build has to survive eight weeks of my complete inattention or it will not survive at all.",
+  "q56": [
+   { "role": "Principal consultant (owner)", "rate": "95" },
+   { "role": "Subcontract analyst", "rate": "65" }
+  ],
+  "q50": ["Pricing exceptions", "Major sales", "Customer escalations", "Hiring / firing", "Purchasing", "Scheduling", "Quality sign-off", "Banking / payments", "Vendor relationships", "Technical decisions", "Strategy"],
+  "q51": [
+   { "row": "What keeps running", "value": "Nothing. There is no business without me in it" },
+   { "row": "What slows down", "value": "n/a" },
+   { "row": "What stops", "value": "Everything, on day one. Two live engagements and the Bracco interim role" },
+   { "row": "Who decides", "value": "Nobody" },
+   { "row": "What nobody else can access", "value": "Everything. My wife has the password manager and that is the whole continuity plan" }
+  ],
+  "q52": [
+   { "risk": "Leo Marchetti", "impact": "The business stops the same day. There is no second person and no deliverable anyone else could finish" },
+   { "risk": "Bracco Fabricating — 38% of revenue", "impact": "The interim engagement ends in April and there is nothing behind it. It is also the only reason this year looks like last year" },
+   { "risk": "Google Drive and Notion under a personal account", "impact": "Every client deliverable, template and data set since 2019 sits under one personal login with no tested backup" },
+   { "risk": "Professional liability insurance", "impact": "Current. Two clients require it and neither has ever asked to see it" }
+  ],
+  "q53": ["Licenses & insurance are current", "No known legal, tax or insurance issue"],
+  "q54": ["Sales without the owner", "Recurring revenue", "Customer diversification"],
+  "q55": "The owner would have to drive everything",
+  "q57": "Steady"
+ },
+ "session": {
+  "engine": {
+   "leads_per_month": "4",
+   "conversion_rate": "42% of proposals",
+   "avg_deal_value": "$26,000 per project; $22,000 average annual client value",
+   "response_time": "same day, usually within two hours",
+   "gross_margin_pct": "85",
+   "headcount": "1",
+   "repetitive_hours_week": "Readout deck production — Leo — 4.7\nClient data collection & cleanup — Leo — 3.5\nProposal & SOW assembly — Leo — 3.2\nInvoicing & expense reconciliation — Leo — 2.0\nScheduling & rescheduling — Leo — 1.3",
+   "largest_customer_pct": "38"
+  },
+  "blockNotes": {
+   "b1": "Leo is below the qualification range and we told him so before taking the fee; he wanted to run it anyway. His stated bottleneck — feast or famine — is accurate and he has named it himself for four years without solving it. Steady on q57. The nine-day break last year happened between projects because that is the only window that exists.",
+   "b2": "Four inquiries a month, all inbound, all answered inside two hours — the response is genuinely excellent and the follow-up collapses the moment a project starts. 42% of proposals close. Funnel reconciles: ~20 proposals a year at $26K is $520K quoted, 42% closed is $218K of project revenue plus $62K of retainer = $280K, which matches what he says the year was. No P&L to check it against.",
+   "b3": "Systems tour. Notion, Calendly, PandaDoc, Wave, Google Drive — all real, all under a personal Google account. Three abandoned Notion databases opened in front of us, each started between projects and last edited the week a project began. That pattern is the whole diagnosis in one screen. The AI use is the strongest thing here: a standard analysis prompt chain every client data set goes through, and a proposal first-draft workflow, both defined and both actually used.",
+   "b4": "14.7 h/wk of repetitive work — 27% of the only week this business has. For a one-person consultancy that ratio is real rather than a data error, and it is the L4 finding. The hours-vs-headcount cross-check should flag it and the report should explain why it is flagged rather than treat it as an input problem.",
+   "b5": "Nothing was sent to the data room. Leo declined to provide a P&L — 'it is not clean' — so every dollar figure in this report rests on owner-reported revenue and margin and every range is widened. Bracco is 38% of revenue on his own numbers, over the 25% line, and the engagement ends in April. Client agreements are one-page SOWs; there are no master agreements. NOTE FOR THE REVIEWER: P2, P3 and L5 were scored during the session and the note fields were never filled in. They must be written before this goes anywhere."
+  },
+  "demonstrated": [
+   "The Notion pipeline board — last meaningful update six weeks ago, at the start of the current engagement",
+   "Three abandoned Notion databases, each created between projects and last edited the week a project began",
+   "The proposal template and the day rate inside it, unchanged since 2022",
+   "The standard analysis prompt chain run live against an anonymised client data set",
+   "Calendly, PandaDoc and Wave reminders all firing unattended",
+   "Google Drive folder structure under a personal account — every deliverable since 2019, no tested backup"
+  ],
+  "documents_seen": [
+   "Nothing. No documents were provided to the data room and no P&L is on file."
+  ]
+ },
+ "dataRoom": {
+  "pnl_on_file": false,
+  "documents": []
+ },
+ "scores": {
+  "P1": { "score": 2, "na": false, "evidence": "demonstrated", "note": "Three sources named with monthly volume in q23 — referral 2/mo, LinkedIn 1, association and speaking 1 at $900 — and the Notion board holds them, loosely. Opened in session: last meaningful update six weeks ago, when the current engagement started.", "why_not_higher": "Anchor 3 needs sources and volume logged in one place; the board is the right place and it stops being updated the week a project begins." },
+  "P2": { "score": 2, "na": false, "evidence": "reported", "note": "", "why_not_higher": "Anchor 3 needs every inquiry captured in one system; q24 says 'in my inbox, and sometimes in Notion. Not consistently.'" },
+  "P3": { "score": 1, "na": false, "evidence": "reported", "note": "", "why_not_higher": "Anchor 2 needs follow-up happening across most leads even person-dependently; q24 says 'when I am delivering, almost none', and delivering is most of the year." },
+  "P4": { "score": 2, "na": false, "evidence": "demonstrated", "note": "q25: ~42% of proposals close, 'by memory, and a Notion board I update in bursts'. A loose process exists — discovery call, then a proposal off a template, both shown in session. Loss reason recorded anecdotally as budget or 'they went quiet and I did not chase'.", "why_not_higher": "Anchor 3 needs stages defined and used and a close rate actually tracked; the stages exist in a board that goes stale for months at a time." },
+  "P5": { "score": 2, "na": false, "evidence": "demonstrated", "note": "The proposal template was opened in session and the day rate inside it has not moved since 2022. There is real economics behind it — a day rate built off a target utilisation and a target income — and q28 confirms scope-based variation. Discounts are decided live on the call.", "why_not_higher": "Anchor 3 needs prices reviewed against costs annually with written discount rules; there has been no review in four years and there is no rule, which is why q32 puts 'raising my day rate' first in his own list." },
+  "P6": { "score": 2, "na": false, "evidence": "reported", "note": "q29: implementation support is suggested at the readout 'when the project has gone well' — a genuine ad-hoc add-on, and it is 22% of revenue and the only line that repeats. No bundles, no premium, and the two-day diagnostic he calls an entry offer has never been productised.", "why_not_higher": "Anchor 3 needs named tiers or bundles with a scripted upsell; the upsell that produces his only recurring revenue depends on whether the project went well and whether he remembers." },
+  "P7": { "score": 2, "na": false, "evidence": "reported", "note": "q27: about half of clients return within two years and both retainers have renewed twice — roughly known, not measured. Fourteen clients dormant more than eighteen months are identifiable and none has been contacted. 'The project ended and I did not stay in touch. That is genuinely the reason.'", "why_not_higher": "Anchor 3 needs the inactive list pulled and worked at least twice a year; the list exists in his head and has never been worked once." },
+  "P8": { "score": 1, "na": false, "evidence": "reported", "note": "q30: marketing is 'me, when I have time', sales is him, $150/mo, and nothing is reviewed together. He is de facto both functions and the numbers live in Notion, an inbox and Wave.", "why_not_higher": "Anchor 2 needs named owners and numbers reviewed at least sometimes; there is one person and no review of any kind." },
+  "P9": { "score": 1, "na": false, "evidence": "reported", "note": "q17: 'About 85%', and 'I know it for the year and never for a project'. The figure comes off the annual tax return; no P&L was provided and no project-level cost has ever been calculated, including on the interim engagement that is 38% of revenue at his lowest stated margin.", "why_not_higher": "Anchor 2 needs the margin known overall from something better than an annual return; there is no monthly or quarterly view and nothing was sent to the data room." },
+  "P10": { "score": 1, "na": false, "evidence": "reported", "note": "q20 'Quarterly' — a bookkeeper closes the books quarterly for the tax filing and Leo looks at the bank balance weekly and the P&L when cash feels tight. q22: he declined to send it because 'it is not clean'. Anchor 1 verbatim.", "why_not_higher": "Anchor 2 needs monthly-ish financials that are at least lightly used; the close is quarterly, late, and the owner does not trust his own numbers enough to hand them over." },
+  "S1": { "score": 0, "na": false, "evidence": "reported", "note": "q50: all eleven categories return to the owner. q38: 'Everything falls back to the owner.' q51: 'There is no business without me in it.'", "why_not_higher": "Anchor 1 needs routine tasks delegated; nothing is delegated because there is nobody to delegate to. This is the true state of a sole practice and it is scored rather than excused." },
+  "S2": { "score": 0, "na": false, "evidence": "reported", "note": "q51 four-week test: everything stops on day one — two live engagements and the Bracco interim role. Nobody decides anything. The longest absence in twelve months was nine days and it was only possible because it fell between projects.", "why_not_higher": "Anchor 1 needs the business to run about a week; it runs zero days. This is the single most consequential number in the file and it is why S10 and the continuity discussion matter more here than the composite does." },
+  "S3": { "score": null, "na": true, "evidence": "reported", "note": "N/A because there is no selling function distinct from the owner for the indicator to measure. S3 asks whether selling and customer relationships have been distributed away from the owner; in a one-person practice with no employees and no client-facing contractor there is nobody for them to be distributed to, so the indicator has no subject. The underlying risk — 100% of revenue on one person's relationships (q14) — is not lost: it is carried on S2, on S10 and on the key-person overlay. REVIEWER NOTE: this is the arguable one of the two N/As in this pillar. A reviewer who prefers to score it 0 on the grounds that the anchor-0 text ('Owner closes everything, relationships are the owner's') describes this business exactly would be defensible, and the file should be signed either way rather than left ambiguous.",
+   "why_not_higher": "N/A — not scored. Rubrics v2 §5, with the reservation recorded above." },
+  "S4": { "score": null, "na": true, "evidence": "reported", "note": "N/A because there are no employees. Rubrics v2 §5 names this case explicitly — 'no employees for S4'. q10 records zero full-time and zero part-time staff and one occasional subcontract analyst with no reporting line. There is no management layer for the indicator to describe.",
+   "why_not_higher": "N/A — not scored. Rubrics v2 §5, the explicit case." },
+  "S5": { "score": 1, "na": false, "evidence": "reported", "note": "q35: 30% documented, 20% current, 0% used in training. Real templates exist — the proposal template, a diagnostic workbook, a readout deck skeleton — and none has been updated since 2023. Nothing else about how the work runs is written anywhere.", "why_not_higher": "Anchor 2 needs partial documentation loosely followed across the critical work; three stale templates out of nine workflows is a few checklists, not partial documentation." },
+  "S6": { "score": 1, "na": false, "evidence": "reported", "note": "q40 'Reactive only'; q39 'None formally. I look at the Notion pipeline on a Friday, maybe two Fridays out of four.' No targets, no numbers written down, nothing triggered by a miss.", "why_not_higher": "Anchor 2 needs meetings that actually happen on a rhythm with a few KPIs; a review that happens half the time with no numbers in it is the ad-hoc anchor." },
+  "S7": { "score": 1, "na": false, "evidence": "reported", "note": "Quality depends entirely on who is on the job, and there is only one person on every job. q31: +20% means 'quality would slip'. q36 lists incomplete information and scheduling delays as recurring failures.", "why_not_higher": "Anchor 2 needs delivery that is mostly consistent with growth taking heroics; here growth and delivery are the same finite calendar, which is the primary constraint." },
+  "S8": { "score": 0, "na": false, "evidence": "reported", "note": "q14: Bracco Fabricating is 38% of revenue, top five 84%, across nine active clients. v2 anchor 0 is more than 30%. Reported only — no revenue-by-customer report was provided. The engagement ends in April with nothing behind it (q52).", "why_not_higher": "This is the 0 anchor. It is also over the 25% line, so the concentration overlay is ACTIVE and growth work that depends on Bracco continuing is labelled Prepare First." },
+  "S9": { "score": 1, "na": false, "evidence": "reported", "note": "q12: 68% one-time projects, 22% retainers, 0% contracted. Two retainers have renewed twice and are the only repeating revenue. No forecast beyond what is currently signed, and q8 describes quarters of $40K and $9K.", "why_not_higher": "Anchor 2 needs some genuine repeat or contract revenue; 22% of retainer revenue sits on two clients with no written term, and the forecast is, in his own words, unplannable." },
+  "S10": { "score": 1, "na": false, "evidence": "reported", "note": "q53: insurance and licences current, no known legal issue. Client agreements are one-page SOWs off a template with no master agreement behind any of them. q52 names the key-person risk plainly and q51 says the continuity plan is 'my wife has the password manager'. Every deliverable since 2019 sits under a personal Google account.", "why_not_higher": "Anchor 2 needs some contracts written and known key-person gaps being managed; the templates exist, the risk is known, and nothing at all has been done about it." },
+  "L1": { "score": 2, "na": false, "evidence": "demonstrated", "note": "Notion, Calendly, PandaDoc, Wave, Google Drive, Google Slides and Excel, all opened in session — real tools covering pipeline, scheduling, proposals, accounting and delivery. q41 reads 'none' for reporting.", "why_not_higher": "Anchor 3 needs systems for most core areas with one significant gap; the CRM is used 'loosely' and stops being updated for months, and reporting does not exist — two gaps, one of them the system the constraint runs through." },
+  "L2": { "score": 1, "na": false, "evidence": "reported", "note": "PandaDoc and Wave are not connected; project data moves from client ERP exports to Excel to Slides by hand; the Notion board and the inbox are reconciled by memory. q42: 'Mostly separate, plus spreadsheets.'", "why_not_higher": "Anchor 2 needs some genuine integrations alongside the double entry; there are none — every join is manual, on no schedule at all." },
+  "L3": { "score": 2, "na": false, "evidence": "reported", "note": "q43: data generally accurate and sensitive data mapped. There is one person, so nothing conflicts — but nothing is defined either, and q22 records that the owner does not consider his own P&L clean enough to send.", "why_not_higher": "Anchor 3 needs agreed KPI definitions and reports needing light cleanup; there are no reports, and the financial record was withheld by its own author on quality grounds." },
+  "L4": { "score": 1, "na": false, "evidence": "reported", "note": "14.7 h/wk inventoried across five tasks (q44) — 27% of the only working week this business has, with readout deck production the largest single line at 4.7 hours. The load is acknowledged in q32 and nothing has been reduced.", "why_not_higher": "Anchor 2 needs a few fixes actually made against the load; the three automations that exist were all set up in 2021 and none of them touches any of the five tasks on this list." },
+  "L5": { "score": 2, "na": false, "evidence": "demonstrated", "note": "", "why_not_higher": "Anchor 3 needs automations across several functions owned and monitored; there are three, all set up in 2021, all in adjacent functions, and none has been reviewed since." },
+  "L6": { "score": 3, "na": false, "evidence": "demonstrated", "note": "Two genuinely defined workflows, both shown in session: a standard analysis prompt chain that every client data set goes through, run live against an anonymised set, and a proposal first-draft workflow against his own template. q46 confirms five use areas. Results are anecdotal — 'it takes a day out of the analysis, roughly'.", "why_not_higher": "Anchor 4 needs results, not anecdotes; nothing has been measured, and the client-data workflow has no written rule about what may go into it (see L7)." },
+  "L7": { "score": 1, "na": false, "evidence": "reported", "note": "q47: only 'Sensitive-data rules are defined', and on questioning that turns out to be a personal habit of anonymising client data plus a confidentiality clause he added to two SOWs. No written rule, no review step, nothing measured — on a workflow that puts client operational data through a model routinely.", "why_not_higher": "Anchor 2 needs some practices even if inconsistent; there is one habit and no rule, and this is the highest-consequence gap in the file for a consultant handling other companies' data." },
+  "L8": { "score": 2, "na": false, "evidence": "reported", "note": "q48: inconsistent backups, no tested recovery, one-person dependence. Individual logins throughout by definition, and a password manager. Against that, every deliverable, template and client data set since 2019 sits in a personal Google account that has never been restore-tested.", "why_not_higher": "Anchor 3 needs a backup tested at least once and controlled access; the backup is a sync, it has never been tested, and the account is personal rather than the company's." },
+  "L9": { "score": 2, "na": false, "evidence": "reported", "note": "q58: 'Pockets of capability' — an accurate description of one self-taught person who is strong on AI and analysis and has never been trained on anything operational. q59: 'I have three abandoned Notion databases to prove it.'", "why_not_higher": "Anchor 3 needs training on the core tools; there has been none, and q59 names the real adoption risk — the person adopting and the person abandoning are the same person eight weeks apart." },
+  "L10": { "score": 1, "na": false, "evidence": "reported", "note": "q49: $3–6K named, appetite high, and 'five hours a week in theory. In practice zero when a project is live.' q55: 'The owner would have to drive everything.'", "why_not_higher": "Anchor 2 needs capacity that is limited but real; the hours available are structurally zero for the majority of the year, which is the same mechanism as the primary constraint." }
+ },
+ "assessment": {
+  "owner_objective": "Reliable revenue growth — flatten the sawtooth, get retained implementation work from 22% to 40% of revenue, and get the largest client under 25%.",
+  "owner_belief": "Feast or famine. When I am delivering I am not selling, and when I am selling I am not delivering, so revenue goes forty, twelve, thirty-eight, nine across the quarters and I cannot plan anything. It has been like that since the second year and I have never solved it.",
+  "primary_constraint": "Selling and delivering compete for the same finite calendar with no system holding the pipeline in between, so the pipeline empties every time a project starts — and the concentration, the flat day rate and the fourteen dormant clients are all downstream of the same eight-week blackout.",
+  "constraint_symptoms": "Block 2: follow-up is 'most of them' between projects and 'almost none' while delivering. Block 3: three abandoned Notion databases, each created between projects and last edited the week a project began — the pattern is visible on screen. Block 4: 14.7 h/wk of repetitive work in a 55-hour delivery week, so the discretionary hours go first. Block 5: Bracco at 38% ends in April with nothing behind it, and fourteen clients have gone eighteen months without contact. Four blocks; the rule requires two. The evidence agrees with the owner's own diagnosis — what he has not seen is that the concentration and the stale day rate are symptoms of it rather than separate problems.",
+  "constraint_cost": "~$62K of revenue a year lost to the quarters where nothing was sold (owner-reported quarterly revenue; no P&L on file, so this and every figure in this report are widened under §8) · 14 clients dormant more than eighteen months, worth ~$22K a year each if half of a normal return rate held · a day rate unchanged since 2022 on 100% of revenue.",
+  "constraint_fix": "Build a selling rhythm that survives eight weeks of complete inattention: two hours blocked on the same morning every week that does not move when a project starts, an automated nurture that runs on the list whether or not he touches it, and a productised entry offer small enough to sell during delivery. Then raise the day rate, because the pipeline has to exist before the price conversation is safe.",
+  "momentum_initiative": "Raise the day rate on the next proposal. It is a decision, it needs no system, it costs nothing, and at 85% margin it is the fastest available change — but it is sequenced second in the plan behind the pipeline block, because a price rise into an empty pipeline is a different and worse problem.",
+  "overlay_flags": ["customer_concentration", "key_person"],
+  "plan_items": [
+   "Two-hour weekly selling block that does not move when a project starts — Leo Marchetti — 2026-09-15",
+   "Day rate raised on the next proposal issued — Leo Marchetti — 2026-09-29",
+   "Dormant-client reactivation: 14 names, one call a week — Leo Marchetti — 2026-10-06",
+   "Automated nurture sequence that runs without him — Leo Marchetti — 2026-10-27",
+   "Two-day diagnostic productised with a fixed price and a one-page offer — Leo Marchetti — 2026-11-17",
+   "Written AI data-handling rule and a company-owned Drive with a tested backup — Leo Marchetti — 2026-10-13",
+   "Notes written for P2, P3 and L5 before this report is released — advisor — 2026-09-12"
+  ],
+  "overlap_factor": 0.7
+ },
+ "opportunities": [
+  {
+   "title": "Call the fourteen clients who have gone quiet",
+   "finding": "q27: about half of clients return within two years, and fourteen have gone more than eighteen months without contact. The reason given is not dissatisfaction — 'the project ended and I did not stay in touch. That is genuinely the reason.' Average annual client value is $22,000 and these people have already bought once at 85% margin. Reported only: no client revenue report was provided, so the range is widened.",
+   "calculator": {
+    "kind": "reactivation",
+    "inputs": {
+     "dormantCustomers": 14,
+     "reactivationRatePctLow": 8,
+     "reactivationRatePctExpected": 14,
+     "reactivationRatePctHigh": 22,
+     "averageAnnualValue": 22000,
+     "grossMarginPct": 85
+    }
+   },
+   "fix_cost": 900,
+   "months_to_benefit": 2,
+   "confidence": "medium",
+   "include_in_report": true,
+   "basis_reported_only": true,
+   "blueprint": "One call a week, in the protected block, working oldest first. Not a campaign — a list of fourteen names, a one-line note on what the project was, and a question about what happened to it. Anything that comes back goes into the retained implementation line, which is the only revenue that repeats.",
+   "replaces": "Nothing. This list exists only in the owner's memory and has never been worked."
+  },
+  {
+   "title": "Close more of the proposals already going out",
+   "finding": "Roughly twenty proposals a year at a $26,000 average — about $520,000 of quoted work — close at 42%. The recorded loss reason is budget or 'they went quiet and I did not chase', and chasing stops entirely whenever a project is live. This is the same eight-week blackout as the primary constraint, priced on the proposals it drops rather than the leads it never gets. Reported only: no P&L, so the range is widened.",
+   "calculator": {
+    "kind": "close_rate_lift",
+    "inputs": {
+     "quotedVolume": 520000,
+     "currentClosePct": 42,
+     "liftPointsLow": 4,
+     "liftPointsExpected": 7,
+     "liftPointsHigh": 11,
+     "grossMarginPct": 85,
+     "incrementalCostPct": 10
+    }
+   },
+   "fix_cost": 1600,
+   "months_to_benefit": 2,
+   "confidence": "medium",
+   "include_in_report": true,
+   "basis_reported_only": true,
+   "blueprint": "A three-touch follow-up sequence that fires from PandaDoc and Wave on its own, so it survives a live project. Two options on every proposal instead of one number. A capture rule: no proposal leaves without a next date already in Calendly. Incremental cost is carried at 10% for the subcontract analyst hours the extra work would need — that hour has a rate and it is not free.",
+   "replaces": "Chasing that depends entirely on whether the owner is delivering that month."
+  },
+  {
+   "title": "Move the day rate for the first time since 2022",
+   "finding": "The proposal template was opened in session and the day rate inside it has not changed since 2022. It touches 100% of revenue at an 85% margin, q28 flags 'Unchanged for 2+ years', and q32 puts raising it first in the owner's own top three. Volume loss is modelled generously because with nine active clients and no pipeline system, losing one is a bigger proportional event here than at any other business in this cohort — which is why the plan sequences the pipeline block ahead of the price move. Reported only: no P&L, so the range is widened.",
+   "calculator": {
+    "kind": "price_change",
+    "inputs": {
+     "revenueAffected": 280000,
+     "priceChangePctLow": 8,
+     "priceChangePctExpected": 12,
+     "priceChangePctHigh": 18,
+     "volumeLossPctLow": 3,
+     "volumeLossPctExpected": 6,
+     "volumeLossPctHigh": 12,
+     "grossMarginPct": 85
+    }
+   },
+   "fix_cost": 400,
+   "months_to_benefit": 1,
+   "confidence": "medium",
+   "include_in_report": true,
+   "basis_reported_only": true,
+   "blueprint": "New rate on the next proposal issued, existing engagements honoured to completion, and a written floor below which he does not go — because q28 says the current discount rule is whatever he decides on the call. The retained implementation line is repriced separately and later, since it is the line he wants to grow.",
+   "replaces": "A 2022 day rate carried unchanged through four years of his own cost inflation."
+  }
+ ],
+ "expected": {
+  "gate_should_pass": false,
+  "expected_blockers": [
+   "P2 is scored 2 with an empty note — Rubrics v2 §5 and §9: every scored indicator must carry a note naming the quote, number or document the score rests on.",
+   "P3 is scored 1 with an empty note — same blocker.",
+   "L5 is scored 2 with an empty note — same blocker.",
+   "Fewer than 10 indicators at Demonstrated or Documented: 6 Demonstrated (P1, P4, P5, L1, L5, L6) and 0 Documented, because nothing was sent to the data room.",
+   "No reviewer named."
+  ],
+  "expected_warnings": [
+   "no P&L on file — the cover and methodology block must print the disclosure, and every opportunity range is widened ×0.75 / ×1.25 with the words 'based on your estimates'",
+   "all three included opportunities are marked basis: Reported only, so the widening applies twice over on the same figures — the report should widen once, not compound",
+   "business is below the diagnostic's $1M qualification range; run at the owner's request and the report should say so on the cover",
+   "S3 recorded as N/A on an arguable reading — the reviewer is asked to confirm or rescore it to 0 rather than leave it open"
+  ],
+  "band_guess": "Stabilizing",
+  "cross_checks": {
+   "margin_vs_pnl": "n/a",
+   "funnel_vs_revenue": "pass",
+   "concentration": "flag",
+   "hours_vs_headcount": "flag"
+  }
+ }
+}

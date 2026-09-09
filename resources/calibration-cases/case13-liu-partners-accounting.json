@@ -1,0 +1,1188 @@
+{
+ "n": 13,
+ "company": "Liu & Partners Accounting",
+ "owner": "Grace Liu, CPA",
+ "industry": "Accounting firm",
+ "profile": {
+  "revenue": 1610000,
+  "grossMarginPct": 55,
+  "operatingProfit": 290000,
+  "headcount": 10,
+  "founded": 2012,
+  "story": "Grace Liu left a regional firm in 2012 and built a ten-person practice in Bellevue serving closely-held businesses and their owners — tax compliance, monthly accounting, payroll and a growing advisory line. $1.61M of revenue, 58% of it earned between January and April. The firm is unusually well documented for its size: Karbon templates for every engagement, refreshed each August, and a review checklist the reviewing partner actually signs. It has also gone further with AI than most firms twice its size — inbound client documents are classified automatically and letters are drafted against a written policy. What has not moved is the fee schedule, dated January 2023, and the season inbox, where 42% of inquiries never get a call back."
+ },
+ "edge_cases": [
+  "seasonal business — funnel and capacity numbers must reconcile across a four-month peak",
+  "high S5 (4) and high L6/L7 (3) against a weak Profit pillar — tests that a strong pillar does not drag the composite",
+  "response_time calculator is the lead opportunity",
+  "composite lands mid-Building at ~49 with no gate blockers"
+ ],
+ "intake": {
+  "q1": [
+   {
+    "row": "Your name",
+    "value": "Grace Liu, CPA"
+   },
+   {
+    "row": "Email",
+    "value": "grace@liupartnerscpa.com"
+   },
+   {
+    "row": "Phone",
+    "value": "(425) 555-0119"
+   },
+   {
+    "row": "Company name",
+    "value": "Liu & Partners Accounting, PLLC"
+   },
+   {
+    "row": "Website",
+    "value": "liupartnerscpa.com"
+   },
+   {
+    "row": "Location",
+    "value": "Bellevue, Washington"
+   },
+   {
+    "row": "Industry",
+    "value": "Public accounting — tax, accounting and advisory"
+   }
+  ],
+  "q2": "We are a ten-person CPA firm serving closely-held businesses between $1M and $20M and the families that own them. Three lines: tax compliance for the entity and the owner, monthly client accounting and payroll, and a small but growing advisory practice — entity structure, owner compensation, cash forecasting. Everything is delivered remotely through a client portal with two in-person planning meetings a year for the advisory clients. Fifty-eight percent of the year's revenue is earned between the second week of January and April 15th.",
+  "q3": [
+   {
+    "row": "Primary",
+    "objective": "Reliable revenue growth"
+   },
+   {
+    "row": "Secondary 1",
+    "objective": "Reduce owner dependence"
+   },
+   {
+    "row": "Secondary 2",
+    "objective": "Use AI/automation effectively"
+   }
+  ],
+  "q4": [
+   {
+    "row": "1",
+    "outcome": "Advisory revenue as a share of the total",
+    "target": "From 14% to 25%"
+   },
+   {
+    "row": "2",
+    "outcome": "Season inquiries that get a call back inside 48 hours",
+    "target": "From 58% to 95%"
+   },
+   {
+    "row": "3",
+    "outcome": "Realization on the compliance book",
+    "target": "From 78% to 88%"
+   }
+  ],
+  "q5": "Two and a half million, the same ten to twelve people, and a firm where the compliance work funds the advisory work instead of eating it. I want to sign fewer returns and sit in more planning meetings. And I would like an April where I am not the last reviewer on every single file.",
+  "q6": "Split across most of these",
+  "q7": [
+   {
+    "row": "Hours/week now",
+    "value": "48 off-season, 71 in season"
+   },
+   {
+    "row": "Hours/week you want in 12 months",
+    "value": "45 and 60"
+   },
+   {
+    "row": "Hours/week you want in 3 years",
+    "value": "40 year-round"
+   },
+   {
+    "row": "Longest uninterrupted time away in the past 12 months",
+    "value": "11 days in July"
+   },
+   {
+    "row": "What pulls you back in",
+    "value": "Review. Every return goes over my desk, and fees — nobody else quotes a fee"
+   }
+  ],
+  "q8": "Our problem is capacity in March. We cannot take on more clients because the season already breaks us, and every year I promise myself we will fix it in the summer and every summer we are too tired to. It has been like this since about 2019.",
+  "q9": [
+   {
+    "row": "Year founded",
+    "value": "2012"
+   },
+   {
+    "row": "Owners & percentages",
+    "value": "Grace Liu 80%, Daniel Ortega (tax partner) 20%"
+   },
+   {
+    "row": "Any owner misalignment affecting decisions?",
+    "value": "Mild — Daniel wants to raise fees faster than I do"
+   }
+  ],
+  "q10": [
+   {
+    "row": "Full-time employees",
+    "count": "8"
+   },
+   {
+    "row": "Part-time",
+    "count": "1"
+   },
+   {
+    "row": "Regular contractors",
+    "count": "1"
+   },
+   {
+    "row": "Managers / team leads",
+    "count": "2"
+   },
+   {
+    "row": "People with direct reports",
+    "count": "3"
+   }
+  ],
+  "q11": "Regional",
+  "q12": [
+   {
+    "row": "One-time projects",
+    "pct": "12"
+   },
+   {
+    "row": "Recurring contracts",
+    "pct": "31"
+   },
+   {
+    "row": "Repeat without contract",
+    "pct": "44"
+   },
+   {
+    "row": "Products",
+    "pct": "0"
+   },
+   {
+    "row": "Retainers",
+    "pct": "13"
+   },
+   {
+    "row": "Other",
+    "pct": "0"
+   }
+  ],
+  "q13": [
+   {
+    "name": "Business tax compliance",
+    "pct": "35",
+    "margin": "58",
+    "trend": "Flat",
+    "importance": "The anchor. Everything else attaches to it"
+   },
+   {
+    "name": "Individual tax (owners & families)",
+    "pct": "27",
+    "margin": "49",
+    "trend": "Flat",
+    "importance": "Lowest realization, highest volume, all in ten weeks"
+   },
+   {
+    "name": "Client accounting & payroll (CAS)",
+    "pct": "24",
+    "margin": "52",
+    "trend": "Growing",
+    "importance": "The only revenue that is level across the year"
+   },
+   {
+    "name": "Advisory & planning",
+    "pct": "14",
+    "margin": "71",
+    "trend": "Growing",
+    "importance": "Best margin, best work, smallest line"
+   }
+  ],
+  "q14": [
+   {
+    "row": "Active customer count",
+    "value": "412 client entities across 268 relationships"
+   },
+   {
+    "row": "B2B / B2C / mixed",
+    "value": "Mixed — business entities plus their owners' personal returns"
+   },
+   {
+    "row": "% of revenue from your largest customer",
+    "value": "11% (Halvorsen construction group — nine entities plus monthly accounting)"
+   },
+   {
+    "row": "% of revenue from your top five",
+    "value": "34%"
+   },
+   {
+    "row": "% of revenue tied directly to YOUR personal relationships",
+    "value": "About 60%"
+   }
+  ],
+  "q15": [
+   {
+    "row": "Last completed year",
+    "amount": "1610000"
+   },
+   {
+    "row": "Prior year",
+    "amount": "1495000"
+   },
+   {
+    "row": "Year to date",
+    "amount": "1340000"
+   },
+   {
+    "row": "Full-year forecast",
+    "amount": "1720000"
+   }
+  ],
+  "q16": "Up 10% or less",
+  "q17": [
+   {
+    "row": "Approximate gross margin %",
+    "value": "55%"
+   },
+   {
+    "row": "Main direct costs",
+    "value": "Professional staff time, contract seasonal preparer, tax software licences, client portal"
+   },
+   {
+    "row": "Tracked by job / service / customer?",
+    "value": "Yes — realization by engagement comes out of Karbon monthly"
+   }
+  ],
+  "q18": [
+   {
+    "row": "Operating profit estimate",
+    "amount": "290000"
+   },
+   {
+    "row": "Owner salary",
+    "amount": "195000"
+   },
+   {
+    "row": "Owner distributions",
+    "amount": "110000"
+   },
+   {
+    "row": "Unusual one-off expenses",
+    "amount": "22000"
+   }
+  ],
+  "q19": [
+   "Profitable but tight",
+   "Seasonality",
+   "Customer payment timing"
+  ],
+  "q20": "Monthly, within 15 days",
+  "q21": [
+   {
+    "row": "Revenue",
+    "target": "$1.75M"
+   },
+   {
+    "row": "Gross margin",
+    "target": "58%"
+   },
+   {
+    "row": "Operating profit",
+    "target": "$330K"
+   },
+   {
+    "row": "Cash reserve",
+    "target": "Six months of payroll — we hold it through the summer"
+   },
+   {
+    "row": "Owner compensation",
+    "target": "No target"
+   }
+  ],
+  "q22": "QuickBooks P&L last 24 months, revenue by client, realization by engagement out of Karbon, the fee schedule, the Karbon template library export, AR aging, and our written AI use policy.",
+  "q23": [
+   {
+    "source": "Attorney & banker referral",
+    "per_month": "6",
+    "cost": "0",
+    "quality": "5",
+    "tracked": "No"
+   },
+   {
+    "source": "Existing client referral",
+    "per_month": "5",
+    "cost": "0",
+    "quality": "5",
+    "tracked": "No"
+   },
+   {
+    "source": "Google / website form",
+    "per_month": "4",
+    "cost": "450",
+    "quality": "2",
+    "tracked": "No"
+   },
+   {
+    "source": "Seminars & chamber events",
+    "per_month": "2",
+    "cost": "300",
+    "quality": "3",
+    "tracked": "No"
+   }
+  ],
+  "q24": [
+   {
+    "row": "What happens, step by step",
+    "value": "It hits info@ or the front desk. Robin logs it in Karbon, and it waits for me or Daniel to decide whether we want it and what to charge"
+   },
+   {
+    "row": "Typical response time",
+    "value": "Same day off-season. Three to six days in season, and a lot of them never get a call at all"
+   },
+   {
+    "row": "Who is responsible",
+    "value": "Robin logs it. Nobody owns getting back to them"
+   },
+   {
+    "row": "Is every inquiry captured in one system?",
+    "value": "Yes — Karbon captures them. Nothing happens to them"
+   },
+   {
+    "row": "Automated follow-up?",
+    "value": "No"
+   },
+   {
+    "row": "% of leads that get 2+ follow-ups",
+    "value": "Off-season most of them. In season, almost none"
+   }
+  ],
+  "q25": [
+   {
+    "row": "Lead→sale or proposal→close %",
+    "value": "About 46% of the ones we actually respond to"
+   },
+   {
+    "row": "Tracked by source / person / service?",
+    "value": "No"
+   },
+   {
+    "row": "Defined sales process?",
+    "value": "No. Daniel and I each do it our own way"
+   },
+   {
+    "row": "Most common reason you lose",
+    "value": "We took too long to call back. Second is fee"
+   }
+  ],
+  "q26": [
+   {
+    "row": "Typical first sale",
+    "value": "$2,400 first-year fee"
+   },
+   {
+    "row": "Typical annual customer value",
+    "value": "$3,900, or $11,000 if they take CAS"
+   },
+   {
+    "row": "Most valuable segment",
+    "value": "Business owners who take compliance, CAS and planning together"
+   },
+   {
+    "row": "Tracked?",
+    "value": "Yes — Karbon holds fee by client and it is reviewed at the August partner meeting"
+   }
+  ],
+  "q27": [
+   {
+    "row": "% who buy again",
+    "value": "91% return the following season"
+   },
+   {
+    "row": "Renewal rate if applicable",
+    "value": "CAS retainers 94%"
+   },
+   {
+    "row": "Are inactive customers identified?",
+    "value": "Yes — Robin runs a did-not-return list every May"
+   },
+   {
+    "row": "Reactivation campaigns ever run?",
+    "value": "Yes, twice a year: the May did-not-return list and a September extension list"
+   },
+   {
+    "row": "Why customers leave",
+    "value": "Sold the business, or moved to a firm that answered faster"
+   }
+  ],
+  "q28": [
+   "Based on real job economics",
+   "Varies by scope or value",
+   "Unchanged for 2+ years",
+   "Pricing is a current worry"
+  ],
+  "q29": [
+   {
+    "row": "Complementary services routinely offered?",
+    "value": "CAS and planning get mentioned at the year-end meeting when there is time"
+   },
+   {
+    "row": "Bundles or packages?",
+    "value": "No. Every engagement letter is priced on its own"
+   },
+   {
+    "row": "Premium option?",
+    "value": "The advisory retainer, but we have never named or packaged it"
+   },
+   {
+    "row": "Entry-level option?",
+    "value": "A standalone 1040, which we mostly regret taking"
+   },
+   {
+    "row": "Customer needs you can't currently serve",
+    "value": "Multi-state sales tax, and anything needing an audit"
+   }
+  ],
+  "q30": [
+   {
+    "row": "Who owns marketing",
+    "value": "Me, in July and August"
+   },
+   {
+    "row": "Who owns sales",
+    "value": "Daniel and me"
+   },
+   {
+    "row": "Monthly marketing budget",
+    "value": "$750"
+   },
+   {
+    "row": "Do sales & marketing review results together?",
+    "value": "No"
+   },
+   {
+    "row": "Are leads, conversion, CAC and customer value ever reviewed together?",
+    "value": "No. We review fee per client in August and that is it"
+   }
+  ],
+  "q31": "Quality would slip",
+  "q32": [
+   {
+    "row": "1",
+    "area": "Raising fees on the individual book"
+   },
+   {
+    "row": "2",
+    "area": "Converting more compliance clients to advisory"
+   },
+   {
+    "row": "3",
+    "area": "Answering people in March"
+   }
+  ],
+  "q33": [
+   {
+    "workflow": "Inquiry intake and engagement scoping"
+   },
+   {
+    "workflow": "Engagement letter and fee agreement"
+   },
+   {
+    "workflow": "Client document request and chase"
+   },
+   {
+    "workflow": "Return preparation"
+   },
+   {
+    "workflow": "Review and partner sign-off"
+   },
+   {
+    "workflow": "Delivery, e-file and client meeting"
+   },
+   {
+    "workflow": "Monthly CAS close and payroll"
+   },
+   {
+    "workflow": "Billing and collections"
+   },
+   {
+    "workflow": "Extension management"
+   },
+   {
+    "workflow": "Seasonal staff onboarding"
+   }
+  ],
+  "q34": [
+   {
+    "row": "One clear accountable role",
+    "frequency": "Always"
+   },
+   {
+    "row": "Defined handoffs",
+    "frequency": "Always"
+   },
+   {
+    "row": "Consistent exception escalation",
+    "frequency": "Usually"
+   }
+  ],
+  "q35": [
+   {
+    "row": "Documented",
+    "pct": "92"
+   },
+   {
+    "row": "Current",
+    "pct": "88"
+   },
+   {
+    "row": "Accessible",
+    "pct": "95"
+   },
+   {
+    "row": "Used in training",
+    "pct": "90"
+   },
+   {
+    "row": "Actually followed",
+    "pct": "85"
+   }
+  ],
+  "q36": [
+   "Incomplete information",
+   "Scheduling delays",
+   "Late billing",
+   "The owner has to step in"
+  ],
+  "q37": "Owner time",
+  "q38": "Mostly clear, with gaps",
+  "q39": [
+   {
+    "row": "How many KPIs reviewed weekly",
+    "value": "Three in season — returns in progress, returns in review, days in review. Nothing weekly off-season"
+   },
+   {
+    "row": "Does each have one owner?",
+    "value": "Two of the three"
+   },
+   {
+    "row": "Are targets visible?",
+    "value": "In season, yes, on the Karbon board"
+   },
+   {
+    "row": "Does a miss trigger action?",
+    "value": "In season it does. Off-season nobody is looking"
+   }
+  ],
+  "q40": "Biweekly to monthly",
+  "q41": [
+   {
+    "row": "CRM",
+    "tool": "Karbon (used as CRM and workflow)"
+   },
+   {
+    "row": "Marketing",
+    "tool": "Mailchimp"
+   },
+   {
+    "row": "Sales / proposals",
+    "tool": "Ignition (engagement letters & e-sign)"
+   },
+   {
+    "row": "Scheduling / project management",
+    "tool": "Karbon"
+   },
+   {
+    "row": "Delivery",
+    "tool": "UltraTax + SafeSend client portal"
+   },
+   {
+    "row": "Accounting",
+    "tool": "QuickBooks Online (firm) and QBO/Xero for clients"
+   },
+   {
+    "row": "Reporting",
+    "tool": "Karbon reports plus an Excel realization model"
+   },
+   {
+    "row": "Communication",
+    "tool": "Karbon email, Teams, portal messaging"
+   },
+   {
+    "row": "Files / knowledge",
+    "tool": "SharePoint plus the Karbon template library"
+   },
+   {
+    "row": "HR / payroll",
+    "tool": "Gusto"
+   }
+  ],
+  "q42": "Some integrations",
+  "q43": [
+   "KPI definitions are agreed",
+   "Data is generally accurate",
+   "Customer and financial data can be connected",
+   "Backups exist",
+   "We know where sensitive data lives"
+  ],
+  "q44": [
+   {
+    "task": "Chasing missing client documents",
+    "who": "Robin Alvarez (admin) and seniors",
+    "frequency": "Daily",
+    "occurrences": "5",
+    "minutes": "175",
+    "errors": "Yes",
+    "systems": "Karbon, SafeSend portal, email, phone"
+   },
+   {
+    "task": "Sorting and naming inbound client uploads",
+    "who": "Robin Alvarez",
+    "frequency": "Daily",
+    "occurrences": "5",
+    "minutes": "40",
+    "errors": "Yes",
+    "systems": "Portal, Karbon (AI classifier assists)"
+   },
+   {
+    "task": "Building the weekly WIP and realization report",
+    "who": "Grace Liu",
+    "frequency": "Weekly",
+    "occurrences": "1",
+    "minutes": "110",
+    "errors": "No",
+    "systems": "Karbon, Excel"
+   },
+   {
+    "task": "Engagement letter assembly and e-sign chasing",
+    "who": "Robin Alvarez",
+    "frequency": "Several times a week",
+    "occurrences": "3",
+    "minutes": "55",
+    "errors": "Yes",
+    "systems": "Ignition, Word"
+   },
+   {
+    "task": "Payroll-client journal entry re-keying",
+    "who": "CAS staff",
+    "frequency": "Monthly",
+    "occurrences": "1",
+    "minutes": "130",
+    "errors": "Yes",
+    "systems": "Gusto, QuickBooks Online"
+   }
+  ],
+  "q45": "Engagement letters and e-signature reminders run out of Ignition on their own. SafeSend chases the client for the 8879 without us touching it. Karbon moves a job through its stages automatically and nags the assignee. The document-request reminder ladder is automated up to the third nudge and then a human has to call. All of it is reliable and Robin owns it.",
+  "q46": [
+   "Drafting",
+   "Research",
+   "Knowledge retrieval",
+   "Customer communication"
+  ],
+  "q47": [
+   "Use cases picked by business impact",
+   "Someone accountable per implementation",
+   "Human-review rules are clear",
+   "Sensitive-data rules are defined",
+   "The team is trained"
+  ],
+  "q48": [
+   "Inconsistent backups"
+  ],
+  "q49": [
+   {
+    "row": "Implementation budget range",
+    "value": "$15,000–$25,000, decided in the August partner meeting"
+   },
+   {
+    "row": "Owner hours/week available",
+    "value": "4 from May to December, zero in season"
+   },
+   {
+    "row": "Team hours/week available",
+    "value": "6 off-season"
+   },
+   {
+    "row": "Appetite for changing systems",
+    "value": "High, but only between May and November. Nothing changes in season"
+   }
+  ],
+  "q58": "Trained on the core tools, adoption uneven",
+  "q59": "Daniel and the CAS manager will take anything on — Daniel built the document classifier himself. Robin adopts anything that reduces chasing. The two seniors are cautious and want to know who is responsible if the machine is wrong, which is a fair question and the reason we wrote the policy. The contract seasonal preparer will use whatever we hand her and nothing we do not.",
+  "q56": [
+   {
+    "role": "Partner",
+    "rate": "135"
+   },
+   {
+    "role": "Tax manager",
+    "rate": "88"
+   },
+   {
+    "role": "Senior accountant",
+    "rate": "62"
+   },
+   {
+    "role": "CAS / bookkeeper",
+    "rate": "46"
+   },
+   {
+    "role": "Administrative",
+    "rate": "38"
+   }
+  ],
+  "q50": [
+   "Pricing exceptions",
+   "Major sales",
+   "Customer escalations",
+   "Hiring / firing",
+   "Quality sign-off",
+   "Banking / payments",
+   "Strategy"
+  ],
+  "q51": [
+   {
+    "row": "What keeps running",
+    "value": "CAS, payroll, bookkeeping, billing — all of it. Daniel can run the season floor"
+   },
+   {
+    "row": "What slows down",
+    "value": "Review. Daniel can sign, but he is also preparing, so files queue"
+   },
+   {
+    "row": "What stops",
+    "value": "Fees. Nobody else quotes an engagement. And the Halvorsen relationship"
+   },
+   {
+    "row": "Who decides",
+    "value": "Daniel on technical and staffing. Me on money and clients"
+   },
+   {
+    "row": "What nobody else can access",
+    "value": "The operating account and the fee history reasoning, which is in my head not in Karbon"
+   }
+  ],
+  "q52": [
+   {
+    "risk": "Grace Liu — fee setting and final review",
+    "impact": "Nothing gets priced and files stack in review; the season would finish but the margin would not"
+   },
+   {
+    "risk": "Daniel Ortega — tax partner",
+    "impact": "We lose the only other signer and the person who built our AI workflows"
+   },
+   {
+    "risk": "Halvorsen group — 11% of revenue across nine entities",
+    "impact": "A tenth of revenue and the flagship advisory relationship"
+   },
+   {
+    "risk": "CPA licence and firm registration",
+    "impact": "Obvious, and it is current"
+   }
+  ],
+  "q53": [
+   "Customer agreements are written & accessible",
+   "Vendor agreements are written",
+   "Licenses & insurance are current",
+   "Employment agreements are current",
+   "The company owns its IP and digital accounts",
+   "No known legal, tax or insurance issue"
+  ],
+  "q54": [
+   "Leadership depth",
+   "Sales without the owner",
+   "Recurring revenue"
+  ],
+  "q55": "Ready if priorities stay tight",
+  "q57": "Tired but managing"
+ },
+ "session": {
+  "engine": {
+   "leads_per_month": "17 average — 34 a month in season, 9 off-season (208/yr)",
+   "conversion_rate": "46%",
+   "avg_deal_value": "$2,400 first-year fee",
+   "response_time": "same day off-season; 3–6 days in season, and 42% of the year's inquiries never get a call back",
+   "gross_margin_pct": "55",
+   "headcount": "10",
+   "repetitive_hours_week": "Chasing client documents — Robin + seniors — 14.6\nSorting inbound uploads — Robin — 3.3\nWIP and realization report — Grace — 1.8\nEngagement letters and e-sign chasing — Robin — 2.8\nPayroll journal re-keying — CAS staff — 2.2",
+   "largest_customer_pct": "11"
+  },
+  "blockNotes": {
+   "b1": "Grace's stated bottleneck is March capacity. She said it three times. Objective is growth, but the outcomes she wrote in q4 are all about intake and realization, not about doing more returns — worth showing her that her own targets disagree with her diagnosis.",
+   "b2": "208 inquiries a year, all captured in Karbon, and that is exactly why the leak is measurable: Robin pulled the season log and 61 of 136 January–April inquiries have no outbound activity of any kind. Off-season is fine. Funnel reconciles: 208 × 46% × $2,400 = ~$230K of new fees against 91% retention on a $1.61M base — pass.",
+   "b3": "Best-documented small firm we have scored. Karbon templates for all ten workflows, refreshed each August, and the review checklist is signed on every file — we opened four at random and all four were complete. This is a genuine 4 on S5 and we should say so plainly.",
+   "b4": "24.7 h/wk of repetitive work across ten people, 14.6 of it document chasing during season. Against ~380 available hours that is 6.5% — pass. The chasing is seasonal: it is 18 weeks of the year, not 52, and the calculator is built that way.",
+   "b5": "Daniel walked us through the AI stack: a document classifier on inbound portal uploads, and first-draft letters. There is a written policy — we read it — naming who reviews, what data may not go near a public model, and who owns each implementation. Measurement is the gap: nobody can say what the classifier saved. Largest client 11%, contracts written, no legal exposure. Backups are the only hygiene flag."
+  },
+  "demonstrated": [
+   "Karbon workflow board and the four job templates opened at random — all current, all signed off",
+   "The season inquiry log pulled live: 61 of 136 January–April inquiries with no outbound activity",
+   "AI document classifier running on a live portal upload batch",
+   "Ignition engagement-letter automation and the SafeSend 8879 chase running unattended",
+   "Karbon retention view — 91% return rate and the May did-not-return list from last year"
+  ],
+  "documents_seen": [
+   "QuickBooks P&L 24 months — revenue $1.61M, gross margin 55%, operating profit $290K",
+   "Revenue by client — Halvorsen group 11%, top five 34%",
+   "Realization by engagement (Karbon export) — compliance book at 78%",
+   "Fee schedule, footer dated January 2023",
+   "Karbon template library export — ten workflows, last refreshed August 2026",
+   "Written AI use policy, v2, dated February 2026",
+   "AR aging — DSO 34 days"
+  ]
+ },
+ "dataRoom": {
+  "pnl_on_file": true,
+  "documents": [
+   {
+    "name": "QuickBooks P&L 24 months",
+    "kind": "pnl",
+    "received_on": "2026-08-26"
+   },
+   {
+    "name": "Revenue by client, trailing 12 months",
+    "kind": "revenue_by_customer",
+    "received_on": "2026-08-26"
+   },
+   {
+    "name": "Realization by engagement (Karbon export)",
+    "kind": "job_cost",
+    "received_on": "2026-08-31"
+   },
+   {
+    "name": "Fee schedule (dated January 2023)",
+    "kind": "rate_card",
+    "received_on": "2026-08-31"
+   },
+   {
+    "name": "Karbon template library export — ten workflows",
+    "kind": "other",
+    "received_on": "2026-09-02"
+   },
+   {
+    "name": "Written AI use policy v2 (February 2026)",
+    "kind": "other",
+    "received_on": "2026-09-02"
+   },
+   {
+    "name": "AR aging",
+    "kind": "ar_aging",
+    "received_on": "2026-09-03"
+   }
+  ]
+ },
+ "scores": {
+  "P1": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "q23: attorney/banker referral ~6/mo, client referral ~5, website ~4 at $450, events ~2. All produced from memory in the room; 'tracked' is No on every row.",
+   "why_not_higher": "Anchor 2 needs volume at least roughly tracked; Karbon logs the inquiry but nobody counts by source."
+  },
+  "P2": {
+   "score": 1,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Every inquiry is captured in Karbon — the capture is good. The response is not: the season log pulled live shows 61 of 136 January–April inquiries with no outbound activity at all, and q24 says 'nobody owns getting back to them'.",
+   "why_not_higher": "Anchor 2 needs inquiries usually answered within a day; for four months of the year 45% are never answered."
+  },
+  "P3": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "q24: off-season most inquiries get a second touch, 'in season, almost none'. There is no sequence — it depends on whether Grace or Daniel remembers the name.",
+   "why_not_higher": "Anchor 2 needs follow-up that happens across most leads even if person-dependent; for the four months that produce 58% of revenue it does not happen."
+  },
+  "P4": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "q25: ~46% close 'of the ones we actually respond to', not tracked by source or person, and 'Daniel and I each do it our own way'. Loss reason recorded anecdotally as slow response then fee.",
+   "why_not_higher": "Anchor 2 needs a loose process and a rate roughly tracked; the rate is a partner's impression and the denominator excludes everyone never called back."
+  },
+  "P5": {
+   "score": 1,
+   "na": false,
+   "evidence": "documented",
+   "note": "Fee schedule footer dated January 2023 (Doc). One across-the-board 3% move since, applied in 2024 without a cost basis. Realization report shows the compliance book at 78%. q28: 'Unchanged for 2+ years' and 'Pricing is a current worry'; Daniel wants to move faster than Grace does (q9).",
+   "why_not_higher": "Anchor 2 needs real economics behind prices and occasional reviews; the realization data exists and has never been used to reset a fee."
+  },
+  "P6": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "q29: CAS and planning are 'mentioned at the year-end meeting when there is time'. Advisory is the highest-margin line at 71% and the smallest at 14%. No bundles, no named packages, no scripted upsell.",
+   "why_not_higher": "Anchor 3 needs named tiers or bundles and a scripted upsell on the core offer; the advisory retainer exists but has never been named or packaged."
+  },
+  "P7": {
+   "score": 3,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Karbon retention view shown live: 91% return the following season, CAS retainers at 94%. Robin runs a did-not-return list every May and an extension list every September, and both were worked last year.",
+   "why_not_higher": "Anchor 4 needs retention worked on a cadence with reactivation measured; the two campaigns run but nobody reports what they recovered."
+  },
+  "P8": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "q30: marketing is 'me, in July and August', sales is the two partners, budget $750/mo, and leads, conversion, CAC and value are never reviewed together — only fee per client, once a year in August.",
+   "why_not_higher": "Anchor 2 needs named owners and numbers reviewed at least sometimes; marketing has no owner for ten months of the year."
+  },
+  "P9": {
+   "score": 3,
+   "na": false,
+   "evidence": "documented",
+   "note": "Gross margin 55% on the P&L, and realization by engagement comes out of Karbon monthly (Doc) — the compliance book sits at 78%, advisory at 91%. Grace and Daniel read it at the August partner meeting.",
+   "why_not_higher": "Anchor 4 needs the number driving decisions; the 2023 fee schedule proves three years of realization data has not changed a price."
+  },
+  "P10": {
+   "score": 3,
+   "na": false,
+   "evidence": "documented",
+   "note": "q20 'Monthly, within 15 days', confirmed against 24 dated monthly P&Ls. Grace reviews them. q21 carries real targets on revenue, margin, profit and cash reserve.",
+   "why_not_higher": "Anchor 4 needs targets across the board reviewed against actuals on a rhythm; owner compensation has no target and the review is a partner-meeting event, not a monthly one."
+  },
+  "S1": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "q7: 'Every return goes over my desk, and fees — nobody else quotes an engagement.' q50 keeps pricing, major sales, escalations, hiring, quality sign-off, banking and strategy with Grace. Daniel can sign returns but is also preparing them.",
+   "why_not_higher": "Anchor 2 needs several areas genuinely delegated with money and hiring the exception; final review on every file is not routine delegation."
+  },
+  "S2": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "q51 four-week test: CAS, payroll and billing all keep running and Daniel can run the season floor; review queues, fees stop, and the Halvorsen relationship stops. Longest actual absence 11 days in July.",
+   "why_not_higher": "Anchor 3 needs a named deputy with only a few owner-locked items; pricing is locked to Grace and the deputy is already fully loaded."
+  },
+  "S3": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Daniel and the managers can scope an engagement, but q51 says 'nobody else quotes an engagement' and q14 puts ~60% of revenue on Grace's personal relationships.",
+   "why_not_higher": "Anchor 2 needs the team selling with owner rescue on big deals; here the fee — which is the close — is always Grace's."
+  },
+  "S4": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Two real managers, tax and CAS, and three people with direct reports (q10). In season they own the board metrics on Karbon; off-season q39 says 'nobody is looking'. q38: 'Mostly clear, with gaps.'",
+   "why_not_higher": "Anchor 3 needs managers owning outcomes and metrics year-round; the accountability switches off in May."
+  },
+  "S5": {
+   "score": 4,
+   "na": false,
+   "evidence": "documented",
+   "note": "Karbon template library export covers all ten critical workflows (Doc), last refreshed August 2026; q35 reads 92% documented, 88% current, 90% used in training, 85% actually followed. Four job files opened at random in session were complete with the review checklist signed. This is the anchor-4 definition met on evidence, not on claim.",
+   "why_not_higher": "Top of the anchor. The gap is not documentation — it is that the documented process stops at the firm's door and never reaches the inquiry that has not become a client yet."
+  },
+  "S6": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "q40 'Biweekly to monthly'. In season there is a real rhythm with three KPIs on the Karbon board, two with owners and visible targets (q39). Off-season the meeting and the KPIs both stop.",
+   "why_not_higher": "Anchor 3 needs a weekly meeting with 3–7 owned KPIs; this exists for four months a year and then disappears."
+  },
+  "S7": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Delivery is consistent — 91% retention and a signed review checklist on every file. But q31 says +20% means 'quality would slip' and the whole model absorbs growth by working a 71-hour season.",
+   "why_not_higher": "Anchor 3 needs +20% to strain rather than break and a capacity plan; there is no capacity plan and the peak is already the ceiling."
+  },
+  "S8": {
+   "score": 3,
+   "na": false,
+   "evidence": "documented",
+   "note": "Halvorsen construction group 11% of revenue across nine entities on the revenue-by-client report; top five 34%. v2 anchor 3 is 10–15%.",
+   "why_not_higher": "Anchor 4 needs the largest client under 10%; 11% and it carries the flagship advisory relationship as well as the fees."
+  },
+  "S9": {
+   "score": 3,
+   "na": false,
+   "evidence": "documented",
+   "note": "CAS retainers and recurring contracts are 44% of revenue on the engagement roster (Doc), renewing at 94%, and they cover the firm's fixed costs through the summer. Grace builds a season capacity forecast each November and updates it monthly.",
+   "why_not_higher": "Anchor 4 needs the whole base forecastable; 56% of revenue is compliance work re-won every January and the forecast covers capacity, not revenue."
+  },
+  "S10": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "q53: client agreements, vendor agreements, licences, employment agreements and IP ownership all confirmed, and no known legal issue. But q52 names Grace's fee reasoning as living in her head, cross-training has not started, and there is no continuity plan.",
+   "why_not_higher": "Anchor 3 needs cross-training started for key roles and a continuity plan at least drafted; neither exists, and the second signer is also the second preparer."
+  },
+  "L1": {
+   "score": 3,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "q41 and the systems tour: Karbon for CRM and workflow, Ignition for proposals, UltraTax and SafeSend for delivery, QBO, Gusto, SharePoint, Teams, Mailchimp. Every core area has a real tool.",
+   "why_not_higher": "Anchor 4 needs every core area covered; reporting is still Karbon plus a hand-built Excel realization model, which is the one real gap."
+  },
+  "L2": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Karbon↔Ignition and Karbon↔email are connected and were shown working. Payroll journals are re-keyed from Gusto into client QuickBooks files monthly, and the realization model is exported to Excel by hand. q42: 'Some integrations.'",
+   "why_not_higher": "Anchor 3 allows one or two double-entry points; the payroll re-key runs across every CAS client and the realization export runs weekly."
+  },
+  "L3": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "q43: KPI definitions agreed, data accurate, customer and financial data connectable. But the weekly WIP and realization report is hand-built in Excel from a Karbon export — 110 minutes a week of Grace's time (q44).",
+   "why_not_higher": "Anchor 3 needs reports that require only light cleanup; the number the partners actually steer by is rebuilt from scratch every week."
+  },
+  "L4": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "24.7 h/wk inventoried (q44), of which 14.6 is document chasing during season and 3.3 is upload sorting. The classifier has taken a real bite out of the sorting; the chasing is untouched and is the largest single line.",
+   "why_not_higher": "Anchor 2 needs a few fixes made against the major tasks; the one fix made was to the second-smallest task on the list."
+  },
+  "L5": {
+   "score": 3,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Ignition engagement letters and e-sign reminders, SafeSend 8879 chasing, Karbon stage progression and a three-step document-request ladder all run unattended and were shown running. Robin owns them by name.",
+   "why_not_higher": "Anchor 4 needs reliable automation across functions actively maintained; the request ladder stops at the third nudge and hands 14.6 h/wk back to a human, and nobody monitors failure rates."
+  },
+  "L6": {
+   "score": 3,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Two defined workflows: an AI classifier on inbound portal uploads, shown running on a live batch, and first-draft advisory and engagement letters. Both are chosen, owned and in daily use. Results are anecdotal — 'Robin says it saves her about an hour a day'.",
+   "why_not_higher": "Anchor 4 needs results, not anecdotes; nobody can state what either workflow has saved or improved in a number."
+  },
+  "L7": {
+   "score": 3,
+   "na": false,
+   "evidence": "documented",
+   "note": "Written AI use policy v2, February 2026 (Doc), read in session: use cases picked by impact, an accountable owner per implementation, human-review rules, and explicit rules on what client data may not go near a public model. q47 confirms five of eight, plus staff training.",
+   "why_not_higher": "Anchor 4 needs results measured; q47 leaves 'Results are measured' and 'Failures are detectable' unchecked and nobody could produce a number for either workflow."
+  },
+  "L8": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "q48: the only flag is inconsistent backups. Individual logins throughout, off-boarding done, sensitive data mapped (q43), portal-based document exchange. But the SharePoint backup has never been restore-tested and the Excel realization model lives on one laptop.",
+   "why_not_higher": "Anchor 3 needs a backup tested at least once; it has never been tested, and the firm's steering report has no second copy."
+  },
+  "L9": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "q58: 'Trained on the core tools, adoption uneven.' q59: Daniel builds, Robin adopts, the two seniors want to know who is accountable when the model is wrong, the seasonal contractor uses only what she is handed.",
+   "why_not_higher": "Anchor 3 needs the team trained on the core tools with adoption merely uneven; here two of five professional staff are actively holding back and the seasonal preparer has had none."
+  },
+  "L10": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "q49: $15–25K decided at the August partner meeting, four owner hours and six team hours a week — but only from May to December, and 'nothing changes in season'. q55: 'Ready if priorities stay tight.'",
+   "why_not_higher": "Anchor 3 needs budget and time named and set aside; the time exists for seven months of the year and the budget is decided once, annually, in a meeting that has already happened."
+  }
+ },
+ "assessment": {
+  "owner_objective": "Reliable revenue growth — grow the advisory line without growing the season, and stop being the only person who can price an engagement.",
+  "owner_belief": "Our problem is capacity in March. We cannot take on more clients because the season already breaks us, and every year I promise myself we will fix it in the summer and every summer we are too tired to. It has been like this since about 2019.",
+  "primary_constraint": "The firm's intake and pricing both run through one partner's desk in the four months when that desk is fully occupied by review, so new revenue is lost at the door in season and the fees on the work that does come in are set against a 2023 schedule the firm's own realization data contradicts.",
+  "constraint_symptoms": "Block 2: 61 of 136 season inquiries have no outbound activity at all, and the top loss reason is 'we took too long to call back'. Block 1: 'nobody else quotes an engagement', and Grace's own q4 targets are intake and realization, not throughput. Block 3: the documented process is excellent — and starts only after someone has become a client. Block 5: fee reasoning is named in q52 as living in Grace's head rather than in Karbon. Four blocks; the rule requires two.",
+  "constraint_cost": "~$53K of expected operating profit a year from inquiries never called back (87 unanswered × 46% close × $2,400 × 55% margin, funnel Doc) · ~$41K of fee realization given away by a January 2023 schedule against a compliance book running at 78% (realization report, Doc) · 263 season hours a year chasing client documents.",
+  "constraint_fix": "Separate intake from review. One named owner for every inquiry with a 24-hour callback standard that holds in February, a scoping and fee matrix that lets Daniel and the two managers quote standard engagements without Grace, and a fee schedule rebuilt from the realization report before the January engagement-letter run.",
+  "momentum_initiative": "The 24-hour callback rule with Robin as the named owner and a Karbon view that shows any inquiry older than one day in red. It is a decision, not a project, it costs nothing, and it can be measured inside 30 days.",
+  "overlay_flags": [],
+  "plan_items": [
+   "24-hour callback standard and named intake owner — Robin Alvarez — 2026-09-21",
+   "Fee schedule rebuilt from the realization report — Daniel Ortega — 2026-10-19",
+   "Scoping and fee matrix so managers can quote standard engagements — Grace Liu — 2026-11-09",
+   "Document-request automation extended past the third nudge — Robin Alvarez — 2026-11-30",
+   "Advisory packaged and named as a tier, with a scripted year-end offer — Grace Liu — 2026-12-07"
+  ],
+  "overlap_factor": 0.7
+ },
+ "opportunities": [
+  {
+   "title": "Answer the inquiries that arrive between January and April",
+   "finding": "The season inquiry log pulled live shows 61 of 136 January–April inquiries with no outbound activity of any kind, and q24 confirms 'nobody owns getting back to them'. Across the year that is 42% of 208 inquiries. The firm's own close rate on the ones it does answer is 46%, and the loss reason it records most often is 'we took too long to call back'. The capture is already perfect — every one of these is sitting in Karbon.",
+   "calculator": {
+    "kind": "response_time",
+    "inputs": {
+     "leadsPerYear": 208,
+     "shareLostPct": 42,
+     "recoveryRatePctLow": 25,
+     "recoveryRatePctExpected": 40,
+     "recoveryRatePctHigh": 55,
+     "closePct": 46,
+     "averageFirstYearValue": 2400,
+     "grossMarginPct": 55
+    }
+   },
+   "fix_cost": 2800,
+   "months_to_benefit": 1,
+   "confidence": "high",
+   "include_in_report": true,
+   "basis_reported_only": false,
+   "blueprint": "Robin owns intake with a 24-hour callback standard that does not lapse in February. A Karbon view flags any inquiry older than one day. A two-question qualifying script routes the ones the firm wants to Daniel with a fee from the matrix, and politely declines the rest the same week instead of silently.",
+   "replaces": "A season inbox where 45% of inquiries are never contacted and the decline is delivered by silence."
+  },
+  {
+   "title": "Reset the individual-return fees against the firm's own realization data",
+   "finding": "The fee schedule footer reads January 2023 (Doc) and the only move since was a 3% across-the-board increase in 2024 applied without a cost basis. The Karbon realization report (Doc) puts the compliance book at 78% and the individual book — 27% of revenue, all of it delivered inside ten weeks — at the bottom of it. The firm already has the data; it has never been used to set a price.",
+   "calculator": {
+    "kind": "price_change",
+    "inputs": {
+     "revenueAffected": 608000,
+     "priceChangePctLow": 4,
+     "priceChangePctExpected": 6,
+     "priceChangePctHigh": 9,
+     "volumeLossPctLow": 3,
+     "volumeLossPctExpected": 5,
+     "volumeLossPctHigh": 8,
+     "grossMarginPct": 55
+    }
+   },
+   "fix_cost": 3400,
+   "months_to_benefit": 4,
+   "confidence": "medium",
+   "include_in_report": true,
+   "basis_reported_only": false,
+   "blueprint": "Rebuild the individual-return fee bands from realized hours by complexity tier, publish the bands in the January engagement letters, and set a written minimum for the standalone 1040 work the firm says it regrets taking. The volume that walks at a 6% increase is the volume that is already below the minimum.",
+   "replaces": "A three-year-old schedule and an annual across-the-board percentage that treats a 78%-realization engagement the same as a 91% one."
+  },
+  {
+   "title": "Take the document chase past the third nudge",
+   "finding": "14.6 h/wk of season time goes on chasing missing client documents — the largest single line in the repetitive-work inventory, flagged for errors, and the point where the automated ladder deliberately stops and hands the work to a person. It runs for the 18 weeks of the season, not all year, and the calculator is built on 18 weeks.",
+   "calculator": {
+    "kind": "automation_hours",
+    "inputs": {
+     "hoursPerWeek": 14.6,
+     "loadedHourlyRate": 38,
+     "automationSharePctLow": 40,
+     "automationSharePctExpected": 60,
+     "automationSharePctHigh": 75,
+     "weeksPerYear": 18,
+     "redeployed": true
+    }
+   },
+   "fix_cost": 5200,
+   "months_to_benefit": 4,
+   "confidence": "medium",
+   "include_in_report": true,
+   "basis_reported_only": false,
+   "blueprint": "Extend the SafeSend and Karbon request ladder to a fourth and fifth touch with escalating channels, drive it from the actual document checklist rather than a generic reminder, and give the client a running 'what is still missing' view instead of a phone call. Recovered admin hours redeploy onto intake callbacks, which is where opportunity one gets its capacity.",
+   "replaces": "A three-step ladder that stops exactly where the work gets hard, and 263 season hours of phone calls."
+  }
+ ],
+ "expected": {
+  "gate_should_pass": true,
+  "expected_blockers": [],
+  "expected_warnings": [],
+  "band_guess": "Building",
+  "cross_checks": {
+   "margin_vs_pnl": "pass",
+   "funnel_vs_revenue": "pass",
+   "concentration": "pass",
+   "hours_vs_headcount": "pass"
+  }
+ }
+}

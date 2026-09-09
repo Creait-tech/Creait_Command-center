@@ -1,0 +1,1189 @@
+{
+ "n": 14,
+ "company": "GreenScape Pros",
+ "owner": "Tommy Reyes",
+ "industry": "Commercial landscaping",
+ "profile": {
+  "revenue": 2930000,
+  "grossMarginPct": 41,
+  "operatingProfit": 205000,
+  "headcount": 24,
+  "founded": 2011,
+  "story": "Tommy Reyes runs commercial grounds maintenance out of Charlotte — five crews, 24 people, $2.93M. Unlike most companies his size he actually runs a CRM: every inquiry lands in Aspire, gets a call inside two hours, and sits in a five-touch follow-up sequence that a person can watch working. What he does not have is a price. The unit price book is dated February 2022, the job-cost module in Aspire was never configured, and the largest customer — a six-property retail portfolio called Ridgeline Commons — is 27% of revenue and has been renewed three times without the price ever being tested."
+ },
+ "edge_cases": [
+  "same trade family as the Summit Exterior calibration case, deliberately different situation — tests rubric consistency across similar trades",
+  "strong follow-up (P3 = 3) alongside weak pricing (P5 = 1) in one company",
+  "customer_concentration overlay ACTIVE at 27%, S8 = 1 — Prepare First labels on growth that depends on the concentrated account",
+  "composite lands ~24 points above Summit Exterior on the same trade — the score has to survive that comparison"
+ ],
+ "intake": {
+  "q1": [
+   {
+    "row": "Your name",
+    "value": "Tommy Reyes"
+   },
+   {
+    "row": "Email",
+    "value": "tommy@greenscapepros.com"
+   },
+   {
+    "row": "Phone",
+    "value": "(704) 555-0166"
+   },
+   {
+    "row": "Company name",
+    "value": "GreenScape Pros, Inc."
+   },
+   {
+    "row": "Website",
+    "value": "greenscapepros.com"
+   },
+   {
+    "row": "Location",
+    "value": "Charlotte, North Carolina"
+   },
+   {
+    "row": "Industry",
+    "value": "Commercial grounds maintenance & landscape enhancement"
+   }
+  ],
+  "q2": "We maintain commercial properties — retail centers, office parks, HOA common areas and two hospital campuses. Sixty percent of revenue is annual maintenance contracts: mowing, pruning, bed care, turf treatment. The rest is enhancement work off those contracts — seasonal color, plant replacement, drainage, hardscape repair — plus irrigation service and a small subcontracted snow line. Five crews out of one yard, an estimator, an ops manager and two people in the office.",
+  "q3": [
+   {
+    "row": "Primary",
+    "objective": "More profit & cash flow"
+   },
+   {
+    "row": "Secondary 1",
+    "objective": "Reliable revenue growth"
+   },
+   {
+    "row": "Secondary 2",
+    "objective": "Resilience/risk reduction"
+   }
+  ],
+  "q4": [
+   {
+    "row": "1",
+    "outcome": "Gross margin",
+    "target": "From 41% to 46%"
+   },
+   {
+    "row": "2",
+    "outcome": "Enhancement proposal close rate",
+    "target": "From 38% to 48%"
+   },
+   {
+    "row": "3",
+    "outcome": "Largest customer share of revenue",
+    "target": "From 27% to under 20%"
+   }
+  ],
+  "q5": "Four million, seven crews, and a number I can trust on every job before we bid it. I want to be running the company instead of building estimates on Sunday nights, and I would like to not lie awake in December wondering whether Ridgeline renews.",
+  "q6": "Selling & managing customer relationships",
+  "q7": [
+   {
+    "row": "Hours/week now",
+    "value": "56"
+   },
+   {
+    "row": "Hours/week you want in 12 months",
+    "value": "48"
+   },
+   {
+    "row": "Hours/week you want in 3 years",
+    "value": "40"
+   },
+   {
+    "row": "Longest uninterrupted time away in the past 12 months",
+    "value": "8 days at the beach, and I did four estimates from there"
+   },
+   {
+    "row": "What pulls you back in",
+    "value": "Estimates. And Ridgeline's property manager calls me, not the office"
+   }
+  ],
+  "q8": "We are leaving money on the table because we do not have enough crews. Every spring we turn down enhancement work we could have done, and every fall I tell myself next year we hire earlier. That has been the pattern four years running.",
+  "q9": [
+   {
+    "row": "Year founded",
+    "value": "2011"
+   },
+   {
+    "row": "Owners & percentages",
+    "value": "Tommy Reyes 100%"
+   },
+   {
+    "row": "Any owner misalignment affecting decisions?",
+    "value": "No — sole owner"
+   }
+  ],
+  "q10": [
+   {
+    "row": "Full-time employees",
+    "count": "21"
+   },
+   {
+    "row": "Part-time",
+    "count": "1"
+   },
+   {
+    "row": "Regular contractors",
+    "count": "2"
+   },
+   {
+    "row": "Managers / team leads",
+    "count": "3"
+   },
+   {
+    "row": "People with direct reports",
+    "count": "4"
+   }
+  ],
+  "q11": "Local",
+  "q12": [
+   {
+    "row": "One-time projects",
+    "pct": "28"
+   },
+   {
+    "row": "Recurring contracts",
+    "pct": "60"
+   },
+   {
+    "row": "Repeat without contract",
+    "pct": "8"
+   },
+   {
+    "row": "Products",
+    "pct": "0"
+   },
+   {
+    "row": "Retainers",
+    "pct": "0"
+   },
+   {
+    "row": "Other",
+    "pct": "4"
+   }
+  ],
+  "q13": [
+   {
+    "name": "Commercial maintenance contracts",
+    "pct": "60",
+    "margin": "38",
+    "trend": "Flat",
+    "importance": "The base — and 27% of the whole company is one landlord inside it"
+   },
+   {
+    "name": "Landscape enhancements & seasonal color",
+    "pct": "28",
+    "margin": "46",
+    "trend": "Growing",
+    "importance": "Where the margin is, and where we lose the most proposals"
+   },
+   {
+    "name": "Irrigation service & repair",
+    "pct": "8",
+    "margin": "44",
+    "trend": "Growing",
+    "importance": "Sticky, and I know we underprice it"
+   },
+   {
+    "name": "Snow & ice (subcontracted)",
+    "pct": "4",
+    "margin": "22",
+    "trend": "Flat",
+    "importance": "Thin, but it keeps the contracts whole"
+   }
+  ],
+  "q14": [
+   {
+    "row": "Active customer count",
+    "value": "78 contracted properties across 41 customers"
+   },
+   {
+    "row": "B2B / B2C / mixed",
+    "value": "B2B"
+   },
+   {
+    "row": "% of revenue from your largest customer",
+    "value": "27% (Ridgeline Commons — six retail properties on one master agreement)"
+   },
+   {
+    "row": "% of revenue from your top five",
+    "value": "58%"
+   },
+   {
+    "row": "% of revenue tied directly to YOUR personal relationships",
+    "value": "About 45%"
+   }
+  ],
+  "q15": [
+   {
+    "row": "Last completed year",
+    "amount": "2930000"
+   },
+   {
+    "row": "Prior year",
+    "amount": "2610000"
+   },
+   {
+    "row": "Year to date",
+    "amount": "2280000"
+   },
+   {
+    "row": "Full-year forecast",
+    "amount": "3150000"
+   }
+  ],
+  "q16": "Up 11–25%",
+  "q17": [
+   {
+    "row": "Approximate gross margin %",
+    "value": "41%"
+   },
+   {
+    "row": "Main direct costs",
+    "value": "Crew labor and burden, materials and plant, equipment fuel and maintenance, snow subcontractor"
+   },
+   {
+    "row": "Tracked by job / service / customer?",
+    "value": "Revenue is, by job, in Aspire. Cost is not — we never turned the job-costing on"
+   }
+  ],
+  "q18": [
+   {
+    "row": "Operating profit estimate",
+    "amount": "205000"
+   },
+   {
+    "row": "Owner salary",
+    "amount": "145000"
+   },
+   {
+    "row": "Owner distributions",
+    "amount": "40000"
+   },
+   {
+    "row": "Unusual one-off expenses",
+    "amount": "62000"
+   }
+  ],
+  "q19": [
+   "Profitable but tight",
+   "Customer payment timing",
+   "Seasonality",
+   "Big expense coming"
+  ],
+  "q20": "Monthly, delayed",
+  "q21": [
+   {
+    "row": "Revenue",
+    "target": "$3.4M"
+   },
+   {
+    "row": "Gross margin",
+    "target": "46%"
+   },
+   {
+    "row": "Operating profit",
+    "target": "No target"
+   },
+   {
+    "row": "Cash reserve",
+    "target": "No target"
+   },
+   {
+    "row": "Owner compensation",
+    "target": "No target"
+   }
+  ],
+  "q22": "QuickBooks P&L last 24 months, revenue by customer, revenue by job out of Aspire, the unit price book, AR aging, the contract roster with renewal dates. There is no actual job cost — the module exists and we never configured it.",
+  "q23": [
+   {
+    "source": "Property manager referral",
+    "per_month": "11",
+    "cost": "0",
+    "quality": "5",
+    "tracked": "Yes"
+   },
+   {
+    "source": "Enhancement request from an existing contract",
+    "per_month": "9",
+    "cost": "0",
+    "quality": "5",
+    "tracked": "Yes"
+   },
+   {
+    "source": "Google / LSA",
+    "per_month": "7",
+    "cost": "1150",
+    "quality": "3",
+    "tracked": "Yes"
+   },
+   {
+    "source": "RFP / bid boards",
+    "per_month": "3",
+    "cost": "0",
+    "quality": "2",
+    "tracked": "Yes"
+   },
+   {
+    "source": "Truck and yard signage",
+    "per_month": "1",
+    "cost": "0",
+    "quality": "2",
+    "tracked": "No"
+   }
+  ],
+  "q24": [
+   {
+    "row": "What happens, step by step",
+    "value": "Call, web form or an email from a property manager — all of it lands in Aspire. Dee gets an alert, calls back within two hours, books a walk, and Aspire drops the lead into a five-touch sequence that keeps running until somebody marks it won or lost"
+   },
+   {
+    "row": "Typical response time",
+    "value": "Under two hours in business hours. Next morning for anything after 6pm"
+   },
+   {
+    "row": "Who is responsible",
+    "value": "Dee Mbeki, estimator — and it is on her scorecard"
+   },
+   {
+    "row": "Is every inquiry captured in one system?",
+    "value": "Yes. Aspire, all channels"
+   },
+   {
+    "row": "Automated follow-up?",
+    "value": "Yes — five touches over eighteen days, email and task-driven calls"
+   },
+   {
+    "row": "% of leads that get 2+ follow-ups",
+    "value": "About 90%. The sequence does it whether we remember or not"
+   }
+  ],
+  "q25": [
+   {
+    "row": "Lead→sale or proposal→close %",
+    "value": "38% on enhancement proposals; about 55% on maintenance bids we choose to chase"
+   },
+   {
+    "row": "Tracked by source / person / service?",
+    "value": "By source and by person, in Aspire. Not by service line"
+   },
+   {
+    "row": "Defined sales process?",
+    "value": "Sort of. Dee has stages in Aspire and uses them; I have my own way with the big accounts"
+   },
+   {
+    "row": "Most common reason you lose",
+    "value": "Price. Almost always price on enhancements"
+   }
+  ],
+  "q26": [
+   {
+    "row": "Typical first sale",
+    "value": "$5,900 enhancement job"
+   },
+   {
+    "row": "Typical annual customer value",
+    "value": "$47,000 on a maintenance contract, $71,000 with enhancements"
+   },
+   {
+    "row": "Most valuable segment",
+    "value": "Multi-property retail — one relationship, several sites"
+   },
+   {
+    "row": "Tracked?",
+    "value": "Yes, revenue per customer per year comes out of Aspire"
+   }
+  ],
+  "q27": [
+   {
+    "row": "% who buy again",
+    "value": "82% of contracts renew"
+   },
+   {
+    "row": "Renewal rate if applicable",
+    "value": "82%, and every renewal date is on a calendar in Aspire"
+   },
+   {
+    "row": "Are inactive customers identified?",
+    "value": "Yes — we can list who did not renew. We have never called them"
+   },
+   {
+    "row": "Reactivation campaigns ever run?",
+    "value": "No"
+   },
+   {
+    "row": "Why customers leave",
+    "value": "Underbid by somebody cheaper, or the property changed management companies"
+   }
+  ],
+  "q28": [
+   "Varies by scope or value",
+   "Unchanged for 2+ years",
+   "Set against competitors",
+   "Set on the owner's gut",
+   "Pricing is a current worry"
+  ],
+  "q29": [
+   {
+    "row": "Complementary services routinely offered?",
+    "value": "Irrigation checks and seasonal color get offered on most walks"
+   },
+   {
+    "row": "Bundles or packages?",
+    "value": "No. Every contract is scoped from scratch"
+   },
+   {
+    "row": "Premium option?",
+    "value": "No"
+   },
+   {
+    "row": "Entry-level option?",
+    "value": "No"
+   },
+   {
+    "row": "Customer needs you can't currently serve",
+    "value": "Tree work over 30 feet, and anything needing a landscape architect"
+   }
+  ],
+  "q30": [
+   {
+    "row": "Who owns marketing",
+    "value": "Me, plus a contractor who runs the Google ads"
+   },
+   {
+    "row": "Who owns sales",
+    "value": "Dee on everything under $25K, me above it"
+   },
+   {
+    "row": "Monthly marketing budget",
+    "value": "$1,400"
+   },
+   {
+    "row": "Do sales & marketing review results together?",
+    "value": "Sometimes — we look at the Aspire lead report most months"
+   },
+   {
+    "row": "Are leads, conversion, CAC and customer value ever reviewed together?",
+    "value": "Leads and conversion yes. Cost per lead and customer value, no"
+   }
+  ],
+  "q31": "We'd have to hire",
+  "q32": [
+   {
+    "row": "1",
+    "area": "Enhancement work we are not closing"
+   },
+   {
+    "row": "2",
+    "area": "Crew productivity"
+   },
+   {
+    "row": "3",
+    "area": "Getting a second big account so Ridgeline is not everything"
+   }
+  ],
+  "q33": [
+   {
+    "workflow": "Lead intake and response"
+   },
+   {
+    "workflow": "Site walk and estimate"
+   },
+   {
+    "workflow": "Proposal and follow-up"
+   },
+   {
+    "workflow": "Contract onboarding and site setup"
+   },
+   {
+    "workflow": "Weekly route scheduling"
+   },
+   {
+    "workflow": "Crew daily logs and quality check"
+   },
+   {
+    "workflow": "Enhancement work order and field ticket"
+   },
+   {
+    "workflow": "Invoicing and collections"
+   },
+   {
+    "workflow": "Contract renewal"
+   },
+   {
+    "workflow": "Equipment maintenance"
+   }
+  ],
+  "q34": [
+   {
+    "row": "One clear accountable role",
+    "frequency": "Usually"
+   },
+   {
+    "row": "Defined handoffs",
+    "frequency": "Usually"
+   },
+   {
+    "row": "Consistent exception escalation",
+    "frequency": "Sometimes"
+   }
+  ],
+  "q35": [
+   {
+    "row": "Documented",
+    "pct": "45"
+   },
+   {
+    "row": "Current",
+    "pct": "35"
+   },
+   {
+    "row": "Accessible",
+    "pct": "50"
+   },
+   {
+    "row": "Used in training",
+    "pct": "30"
+   },
+   {
+    "row": "Actually followed",
+    "pct": "55"
+   }
+  ],
+  "q36": [
+   "Scheduling delays",
+   "Quality inconsistency",
+   "Rework",
+   "Late billing",
+   "The owner has to step in"
+  ],
+  "q37": "Skilled labor",
+  "q38": "Mostly clear, with gaps",
+  "q39": [
+   {
+    "row": "How many KPIs reviewed weekly",
+    "value": "Three — leads, proposals out, and crew hours against schedule"
+   },
+   {
+    "row": "Does each have one owner?",
+    "value": "Two of them. Crew hours belongs to everybody, which means nobody"
+   },
+   {
+    "row": "Are targets visible?",
+    "value": "On the whiteboard in the yard, yes"
+   },
+   {
+    "row": "Does a miss trigger action?",
+    "value": "Usually a conversation. Not always an action"
+   }
+  ],
+  "q40": "Weekly but loose",
+  "q41": [
+   {
+    "row": "CRM",
+    "tool": "Aspire"
+   },
+   {
+    "row": "Marketing",
+    "tool": "Google Ads via a contractor, Mailchimp"
+   },
+   {
+    "row": "Sales / proposals",
+    "tool": "Aspire estimating + a PDF unit price book"
+   },
+   {
+    "row": "Scheduling / project management",
+    "tool": "Aspire"
+   },
+   {
+    "row": "Delivery",
+    "tool": "Aspire crew mobile app"
+   },
+   {
+    "row": "Accounting",
+    "tool": "QuickBooks Online"
+   },
+   {
+    "row": "Reporting",
+    "tool": "Aspire reports plus a spreadsheet I keep"
+   },
+   {
+    "row": "Communication",
+    "tool": "Phone, text, email, WhatsApp for the crews"
+   },
+   {
+    "row": "Files / knowledge",
+    "tool": "Google Drive"
+   },
+   {
+    "row": "HR / payroll",
+    "tool": "ADP"
+   }
+  ],
+  "q42": "Some integrations",
+  "q43": [
+   "Data is generally accurate",
+   "Customer and financial data can be connected",
+   "Backups exist"
+  ],
+  "q44": [
+   {
+    "task": "Building enhancement estimates by hand from the price book",
+    "who": "Tommy Reyes and Dee Mbeki",
+    "frequency": "Several times a week",
+    "occurrences": "4",
+    "minutes": "70",
+    "errors": "Yes",
+    "systems": "Aspire, Excel, price book PDF"
+   },
+   {
+    "task": "Crew daily-log review and hour re-entry",
+    "who": "Luis Ferrer (ops manager)",
+    "frequency": "Daily",
+    "occurrences": "5",
+    "minutes": "45",
+    "errors": "Yes",
+    "systems": "Crew app, Aspire"
+   },
+   {
+    "task": "Invoicing enhancement work from paper field tickets",
+    "who": "Bianca Ortiz (office)",
+    "frequency": "Weekly",
+    "occurrences": "2",
+    "minutes": "130",
+    "errors": "Yes",
+    "systems": "Paper tickets, Aspire, QuickBooks"
+   },
+   {
+    "task": "Weather route reshuffling",
+    "who": "Luis Ferrer",
+    "frequency": "Several times a week",
+    "occurrences": "3",
+    "minutes": "60",
+    "errors": "No",
+    "systems": "Aspire, phone"
+   },
+   {
+    "task": "Contract renewal packet assembly",
+    "who": "Bianca Ortiz",
+    "frequency": "Monthly",
+    "occurrences": "1",
+    "minutes": "150",
+    "errors": "Yes",
+    "systems": "Word, Aspire, DocuSign"
+   }
+  ],
+  "q45": "The five-touch lead sequence in Aspire — that one is the best thing we own and it runs whether anybody remembers or not. Renewal reminders fire 90 days out. Crew schedules push to the app automatically. Invoices for maintenance contracts go out on their own; enhancement invoices do not, because they start life on a paper ticket.",
+  "q46": [
+   "Drafting",
+   "Customer communication"
+  ],
+  "q47": [
+   "None of these are consistently true"
+  ],
+  "q48": [
+   "Inconsistent backups",
+   "Unclear account ownership",
+   "One-vendor or one-person dependence"
+  ],
+  "q49": [
+   {
+    "row": "Implementation budget range",
+    "value": "$12,000–$18,000"
+   },
+   {
+    "row": "Owner hours/week available",
+    "value": "4"
+   },
+   {
+    "row": "Team hours/week available",
+    "value": "6, mostly Dee and Bianca"
+   },
+   {
+    "row": "Appetite for changing systems",
+    "value": "High for anything that touches pricing. Low for anything that changes what the crews do in the truck"
+   }
+  ],
+  "q58": "Pockets of capability",
+  "q59": "Dee will take anything on — she is the reason the sequence exists at all, she built it herself out of the Aspire help docs. Bianca will follow if it removes paper. Luis is the question mark: he can run the yard in his sleep and he does not believe a system can schedule around weather better than he can, and honestly he might be right. The crew leaders will use the app because it is already how they get paid.",
+  "q56": [
+   {
+    "role": "Owner / estimator",
+    "rate": "92"
+   },
+   {
+    "role": "Operations manager",
+    "rate": "58"
+   },
+   {
+    "role": "Crew leader",
+    "rate": "41"
+   },
+   {
+    "role": "Crew member",
+    "rate": "32"
+   },
+   {
+    "role": "Office / admin",
+    "rate": "34"
+   }
+  ],
+  "q50": [
+   "Pricing exceptions",
+   "Major sales",
+   "Customer escalations",
+   "Hiring / firing",
+   "Purchasing",
+   "Banking / payments",
+   "Vendor relationships",
+   "Strategy"
+  ],
+  "q51": [
+   {
+    "row": "What keeps running",
+    "value": "Everything on contract. Crews roll, routes run, maintenance invoices go out"
+   },
+   {
+    "row": "What slows down",
+    "value": "Enhancement estimates over $25K, and any pricing question"
+   },
+   {
+    "row": "What stops",
+    "value": "The Ridgeline relationship. Their property manager calls my cell"
+   },
+   {
+    "row": "Who decides",
+    "value": "Luis on the yard, Dee on anything under $25K, nobody on price"
+   },
+   {
+    "row": "What nobody else can access",
+    "value": "The bank, the Google Ads account which is under my personal login, and the reasoning behind the price book"
+   }
+  ],
+  "q52": [
+   {
+    "risk": "Ridgeline Commons — 27% of revenue, six properties, one master agreement",
+    "impact": "Losing it takes more than a quarter of revenue and two crews' worth of routed work in one renewal"
+   },
+   {
+    "risk": "Tommy Reyes",
+    "impact": "Pricing, the top accounts, and every estimate over $25K"
+   },
+   {
+    "risk": "Luis Ferrer — operations manager, 9 years",
+    "impact": "Route scheduling and weather logic are in his head; the crews would still roll but the routes would fall apart in a week"
+   },
+   {
+    "risk": "Pesticide applicator licence (held by Tommy and one crew leader)",
+    "impact": "Turf treatment stops on every contract until somebody else certifies"
+   }
+  ],
+  "q53": [
+   "Customer agreements are written & accessible",
+   "Vendor agreements are written",
+   "Licenses & insurance are current",
+   "Employment agreements are current",
+   "No known legal, tax or insurance issue"
+  ],
+  "q54": [
+   "Customer diversification",
+   "Financial reporting",
+   "Delivery consistency"
+  ],
+  "q55": "Ready if priorities stay tight",
+  "q57": "Steady"
+ },
+ "session": {
+  "engine": {
+   "leads_per_month": "31",
+   "conversion_rate": "38% on enhancement proposals",
+   "avg_deal_value": "$5,900 enhancement job; $47,000 annual maintenance contract",
+   "response_time": "under 2 hours — Aspire alerts and Dee calls",
+   "gross_margin_pct": "41",
+   "headcount": "24",
+   "repetitive_hours_week": "Estimate building from the price book — Tommy & Dee — 4.7\nCrew daily-log review — Luis — 3.8\nEnhancement invoicing from paper tickets — Bianca — 4.3\nWeather route reshuffling — Luis — 3.0\nRenewal packet assembly — Bianca — 2.5",
+   "largest_customer_pct": "27"
+  },
+  "blockNotes": {
+   "b1": "Tommy's stated bottleneck is crews. His own q4 targets are margin, close rate and concentration — none of which are crew problems. Worth putting those two things side by side in the results session. He is Steady on q57; this is not a burnout case.",
+   "b2": "This is the best-run front end we have scored at this size. 31 leads a month, every one in Aspire, two-hour callback on Dee's scorecard, a five-touch sequence she built herself. Funnel reconciles: 31 × 38% × $5,900 = ~$834K of enhancement against the $820K enhancement line on the P&L — 2%, pass. Loss reason is price, every time.",
+   "b3": "Systems tour. Aspire is genuinely used — CRM, estimating, scheduling, crew app, renewal calendar. Two gaps: the job-costing module was licensed and never configured, and enhancement work starts on a paper field ticket that Bianca re-types. Asked to open the unit price book: a PDF, footer dated February 2022.",
+   "b4": "18.3 h/wk of repetitive work across 24 people (~940 available hours) — 2%, pass. 4.7 of it is estimate assembly split between the owner and the estimator, which is the same hour that decides the margin on every job.",
+   "b5": "Ridgeline Commons is 27% on the revenue-by-customer report. That is over the 25% line and the overlay is active. Renewal is January. Tommy has never asked for an increase on it, has no second relationship inside the management company, and their property manager calls his cell rather than the office. Everything else on continuity is in good order — contracts written, licences current, no legal exposure."
+  },
+  "demonstrated": [
+   "Aspire lead dashboard by source with two-hour response times on Dee's scorecard",
+   "The five-touch follow-up sequence opened and shown mid-run on three live leads",
+   "Aspire renewal calendar with all 78 property renewal dates and 90-day reminders firing",
+   "Crew mobile app pushing the day's route and collecting daily logs",
+   "The job-costing module in Aspire opened — licensed, empty, never configured",
+   "The unit price book PDF opened, footer dated February 2022",
+   "A paper enhancement field ticket followed from the truck to Bianca's desk to QuickBooks"
+  ],
+  "documents_seen": [
+   "QuickBooks P&L 24 months — revenue $2.93M, gross margin 41%, operating profit $205K",
+   "Revenue by customer — Ridgeline Commons 27%, top five 58%",
+   "Revenue by job (Aspire export) — revenue and estimated hours only, no actual cost",
+   "Unit price book PDF, footer dated February 2022",
+   "Contract roster with renewal dates — 78 properties, 41 customers, 82% renewal",
+   "AR aging — DSO 47 days"
+  ]
+ },
+ "dataRoom": {
+  "pnl_on_file": true,
+  "documents": [
+   {
+    "name": "QuickBooks P&L 24 months",
+    "kind": "pnl",
+    "received_on": "2026-08-24"
+   },
+   {
+    "name": "Revenue by customer, trailing 12 months",
+    "kind": "revenue_by_customer",
+    "received_on": "2026-08-24"
+   },
+   {
+    "name": "Revenue by job (Aspire export, no actual cost)",
+    "kind": "job_cost",
+    "received_on": "2026-08-30"
+   },
+   {
+    "name": "Unit price book (dated February 2022)",
+    "kind": "rate_card",
+    "received_on": "2026-08-30"
+   },
+   {
+    "name": "Contract roster with renewal dates",
+    "kind": "other",
+    "received_on": "2026-09-01"
+   },
+   {
+    "name": "AR aging",
+    "kind": "ar_aging",
+    "received_on": "2026-09-01"
+   }
+  ]
+ },
+ "scores": {
+  "P1": {
+   "score": 3,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Aspire lead dashboard shown live: five sources logged in one place with monthly volume — referral 11, enhancement request 9, Google/LSA 7 at $1,150, bid boards 3, signage 1. Cost and quality tracked on the paid source; q23 marks four of five 'tracked: Yes'.",
+   "why_not_higher": "Anchor 4 needs cost and quality tracked monthly across sources; only the paid channel carries a cost, and quality is Dee's 1–5 impression rather than a measured outcome."
+  },
+  "P2": {
+   "score": 3,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Every channel lands in Aspire; the two-hour callback is on Dee's scorecard and was verified against the dashboard's response-time column. Partly automated — the alert fires, the human calls.",
+   "why_not_higher": "Anchor 4 needs response under an hour and the first response automated; anything arriving after 6pm waits until the next morning with no automated acknowledgement."
+  },
+  "P3": {
+   "score": 3,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "A five-touch sequence over eighteen days, built by Dee in Aspire, opened in session and shown running on three live leads. q24: ~90% of leads get two or more touches, and missed follow-ups appear as overdue tasks on the board.",
+   "why_not_higher": "Anchor 4 needs 2+ systematic touches on every lead; the sequence stops for anything Tommy takes personally above $25K, and those are the largest ones."
+  },
+  "P4": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "q25: 38% on enhancement proposals, 55% on chased maintenance bids, tracked by source and by person in Aspire. Stages exist and Dee uses them — but 'I have my own way with the big accounts', and loss reasons are recorded as one word: price.",
+   "why_not_higher": "Anchor 3 needs stages defined and used and loss reasons captured; the owner's own pipeline sits outside the stages and 'price' is a category, not a reason."
+  },
+  "P5": {
+   "score": 1,
+   "na": false,
+   "evidence": "documented",
+   "note": "Unit price book PDF, footer dated February 2022 (Doc), opened in session. Competitor-referenced. One change since: a materials pass-through in 2024. Discounts are Tommy's call on the walk. q28: 'Unchanged for 2+ years', 'Set on the owner's gut', 'Pricing is a current worry'.",
+   "why_not_higher": "Anchor 2 needs some real economics behind prices; with job-costing never configured (see P9) there is no cost to price from, only a four-year-old competitor read."
+  },
+  "P6": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "q29: irrigation checks and seasonal color are offered on most site walks, which is a real ad-hoc add-on habit. No bundles, no tiers, no premium contract level; every contract is scoped from scratch.",
+   "why_not_higher": "Anchor 3 needs named tiers or bundles with a scripted upsell; nothing is packaged and the add-on depends on who is walking the site."
+  },
+  "P7": {
+   "score": 3,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "82% contract renewal, every renewal date on the Aspire calendar with 90-day reminders firing — shown in session. q27: non-renewals can be listed on demand.",
+   "why_not_higher": "Anchor 4 needs the inactive list reactivated on a cadence; the list exists and q27 says 'We have never called them' — 61 lost contracts over three years, untouched."
+  },
+  "P8": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "q30: marketing is Tommy plus an ads contractor, sales is Dee under $25K and Tommy above, $1,400/mo. The Aspire lead report gets looked at most months. Cost per lead and customer value are not in that conversation.",
+   "why_not_higher": "Anchor 3 needs leads, conversion and value reviewed monthly with named owners; the review is 'most months' and value never enters it."
+  },
+  "P9": {
+   "score": 2,
+   "na": false,
+   "evidence": "documented",
+   "note": "Gross margin 41% on the 24-month P&L. The Aspire export gives revenue and estimated hours by job but no actual cost — the job-costing module was opened in session, licensed and empty. q17: 'We never turned the job-costing on.'",
+   "why_not_higher": "Anchor 3 needs margin by service line or job type known; the company can say what a job billed and cannot say what it cost."
+  },
+  "P10": {
+   "score": 2,
+   "na": false,
+   "evidence": "documented",
+   "note": "q20 'Monthly, delayed' — the 24 monthly P&Ls are on file and land five to six weeks out. Tommy reads them. q21 carries a revenue target and a margin target, nothing on profit, cash or owner pay.",
+   "why_not_higher": "Anchor 3 needs a close inside 30 days plus owner review; the close is consistently late enough that the March numbers arrive in May."
+  },
+  "S1": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Luis genuinely owns the yard and Dee owns sales under $25K — two real areas delegated. q50 keeps pricing exceptions, major sales, escalations, hiring, purchasing, banking, vendors and strategy with Tommy, and q51 says 'nobody on price'.",
+   "why_not_higher": "Anchor 3 needs decision rights written for most areas; nothing is written, and price — the decision that sets margin on every job — has no delegate at all."
+  },
+  "S2": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "q51 four-week test: contracted work all keeps running, crews roll, maintenance invoices go out. Estimates over $25K stall and the Ridgeline relationship stops because their manager calls his cell. Longest real absence eight days, worked through.",
+   "why_not_higher": "Anchor 3 needs a named deputy and only a few owner-locked items; there is no deputy on price or on the account that is 27% of revenue."
+  },
+  "S3": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Dee sells and closes everything under $25K on her own with her own stages — a real selling team, not a quoting assistant. Tommy takes everything above it and holds ~45% of revenue on personal relationships (q14).",
+   "why_not_higher": "Anchor 3 needs the team closing standard deals with the owner in on the largest 10–20%; the $25K line puts far more than 20% of the dollar value on Tommy."
+  },
+  "S4": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Three managers (q10), and Dee owns a scorecard metric — response time — that she is measured on. Luis owns the yard but no number: q39 says crew hours 'belongs to everybody, which means nobody'. q38: 'Mostly clear, with gaps'.",
+   "why_not_higher": "Anchor 3 needs managers owning outcomes and metrics; one of three does, and the largest cost line in the business has no owner."
+  },
+  "S5": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "q35: 45% documented, 35% current, 30% used in training. The lead-to-proposal path is genuinely documented inside Aspire and was shown; site setup, quality check and the enhancement ticket path are not. Crew standards are verbal and vary by leader (q36 flags quality inconsistency and rework).",
+   "why_not_higher": "Anchor 3 needs core workflows documented and current and used in training; a third of the critical work is current and the delivery side is the part that is not."
+  },
+  "S6": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "q40 'Weekly but loose'; q39 three KPIs on the yard whiteboard with visible targets, two of them owned, and a miss produces 'usually a conversation, not always an action'.",
+   "why_not_higher": "Anchor 3 needs 3–7 owned KPIs with follow-through even if inconsistent; one of the three has no owner and misses do not reliably produce an action."
+  },
+  "S7": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "q31: +20% means hiring. q36 lists quality inconsistency and rework among recurring failures, and crew standards vary by leader. Delivery holds an 82% renewal rate, so it is mostly consistent — but it takes Luis's personal route logic to do it.",
+   "why_not_higher": "Anchor 3 needs standards and QC steps defined and +20% straining rather than breaking; QC is a crew leader's eye and there is no capacity plan."
+  },
+  "S8": {
+   "score": 1,
+   "na": false,
+   "evidence": "documented",
+   "note": "Ridgeline Commons 27% of revenue across six properties on one master agreement — revenue-by-customer report (Doc). Top five 58%. v2 anchor 1 is 20–30%.",
+   "why_not_higher": "Anchor 2 needs 15–20%. At 27% this is over the 25% line: the concentration overlay is ACTIVE, not a watch item, and January's renewal is the whole exposure in one conversation."
+  },
+  "S9": {
+   "score": 3,
+   "na": false,
+   "evidence": "documented",
+   "note": "60% of revenue on annual maintenance contracts renewing at 82%, with all 78 renewal dates on the Aspire calendar (Doc) and 90-day reminders firing. That base covers fixed costs and gives a genuine rolling twelve-month view.",
+   "why_not_higher": "Anchor 4 needs a meaningful base that is forecastable; 27% of that base renews on one signature in January, so the forecast has a single point of failure inside it."
+  },
+  "S10": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "q53: customer and vendor agreements written and accessible, licences and insurance current, employment agreements current, no known legal issue. But q52 names Luis's route logic and Tommy's pricing reasoning as undocumented, cross-training has not started, and there is no continuity plan.",
+   "why_not_higher": "Anchor 3 needs cross-training started and a continuity plan at least drafted; the applicator licence sits with two people and nobody has been put forward for a third."
+  },
+  "L1": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Aspire covers CRM, estimating, scheduling, the crew app and renewals; QuickBooks, ADP, Mailchimp and Drive fill the rest. Shown on the tour. Two real gaps: job costing (licensed, never configured) and reporting, which is Aspire plus a spreadsheet Tommy keeps himself.",
+   "why_not_higher": "Anchor 3 allows one significant gap; costing and reporting are two, and one of them is the gap that sets the price."
+  },
+  "L2": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Aspire↔QuickBooks is connected for maintenance invoicing and was shown working. Enhancement work starts on a paper field ticket that Bianca re-types, crew log hours are reviewed and re-entered by Luis, and the reporting spreadsheet is hand-built. q42: 'Some integrations.'",
+   "why_not_higher": "Anchor 3 allows one or two double-entry points; the ticket path, the hour re-entry and the reporting export make three, and the ticket path is the one that delays cash."
+  },
+  "L3": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "q43: data generally accurate, customer and financial data connectable, backups exist. But there is no agreed definition of a completed job's cost, and the number Tommy steers by lives in his own spreadsheet rather than in a report anyone else can pull.",
+   "why_not_higher": "Anchor 3 needs agreed KPI definitions and reports needing only light cleanup; margin has no agreed definition at job level because no job has a cost."
+  },
+  "L4": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "18.3 h/wk inventoried (q44). Real reductions have been made: the follow-up sequence removed the manual chase, renewal reminders fire automatically, maintenance invoices go out unattended. The remaining load sits on estimate assembly, hour re-entry and paper enhancement tickets.",
+   "why_not_higher": "Anchor 3 needs the major repetitive tasks reduced with a few hours a week left per role; the two largest tasks — estimating and enhancement invoicing — are untouched at 4.7 and 4.3 hours."
+  },
+  "L5": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Four automations shown running: the five-touch lead sequence, 90-day renewal reminders, crew schedule push, and maintenance invoicing. Dee owns the sequence; nobody owns the other three and nobody could say what happens when one fails.",
+   "why_not_higher": "Anchor 3 needs automations across several functions owned and monitored; three of the four have no owner and there is no failure alert on any of them."
+  },
+  "L6": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "q46: drafting and customer communication. One crew leader uses ChatGPT to write customer emails; Dee has tried it on proposal text. Nothing chosen, nothing defined.",
+   "why_not_higher": "Anchor 2 needs individual or ad-hoc use across the business; this is two people trying things privately."
+  },
+  "L7": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "q47: nothing checked. One verbal rule exists — Tommy told the crew leader not to put customer addresses in it. No written rule, no review, nothing measured.",
+   "why_not_higher": "Anchor 2 needs some practices even if inconsistent; there is one sentence said once."
+  },
+  "L8": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "q48: inconsistent backups, unclear account ownership, one-person dependence. Individual Aspire logins, off-boarding done through ADP. But the Google Ads account is under Tommy's personal login (q51) and Aspire's backup has never been restore-tested.",
+   "why_not_higher": "Anchor 3 needs controlled access with a backup tested once; the ads account is personally owned and no restore has ever been attempted."
+  },
+  "L9": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "q58: 'Pockets of capability.' q59: Dee built the Aspire sequence herself from the help docs, Bianca follows anything that removes paper, Luis does not believe a system beats his weather judgement, crew leaders already live in the app.",
+   "why_not_higher": "Anchor 3 needs the team trained on the core tools; nobody has had formal training on Aspire — Dee taught herself and the rest learned from her."
+  },
+  "L10": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "q49: $12–18K, Tommy 4 h/wk, team 6 h/wk. q55: 'Ready if priorities stay tight.' Appetite is high on pricing and low on anything that changes the crews' day.",
+   "why_not_higher": "Anchor 3 needs budget and time named and set aside; the money is named, the hours are not protected, and the appetite is explicitly conditional on where the change lands."
+  }
+ },
+ "assessment": {
+  "owner_objective": "More profit and cash flow — lift gross margin from 41% to 46% without adding crews, and reduce the share of the company that renews on one signature.",
+  "owner_belief": "We are leaving money on the table because we do not have enough crews. Every spring we turn down enhancement work we could have done, and every fall I tell myself next year we hire earlier. That has been the pattern four years running.",
+  "primary_constraint": "GreenScape prices every job from a February 2022 unit book with no actual job cost behind it, so the company cannot tell a profitable contract from an unprofitable one — and the contract it can least afford to be wrong about, at 27% of revenue, has been renewed three times without the price ever being tested.",
+  "constraint_symptoms": "Block 2: enhancement proposals close at 38% and the single recorded loss reason is price, on a price nobody can defend from cost. Block 3: the Aspire job-costing module is licensed and empty, and the price book PDF is dated February 2022. Block 4: 4.7 h/wk of estimate assembly is split between the owner and the estimator and is the hour that sets margin on every job. Block 5: Ridgeline is 27%, renews in January, and has never been asked for an increase. Four blocks; the rule requires two.",
+  "constraint_cost": "~$71K of contribution a year given away on maintenance contracts renewed against a four-year-old unit book (P&L and price book, Doc) · ~$52K of enhancement contribution lost at a 38% close where price is the only recorded objection · 244 owner-and-estimator hours a year assembling estimates by hand from a PDF.",
+  "constraint_fix": "Configure job costing in Aspire against crew hours the app already collects, rebuild the unit book from three months of real cost, and prove it on the two smallest maintenance contracts before January. Then take Ridgeline's renewal with cost math attached and a second relationship inside the management company built before the conversation, not during it.",
+  "momentum_initiative": "Reprice the two smallest maintenance contracts using actual crew hours out of the app. It is a decision rather than a project, it costs nothing, it is entirely in Tommy's control, and it produces the evidence he needs for January.",
+  "overlay_flags": [
+   "customer_concentration"
+  ],
+  "plan_items": [
+   "Aspire job costing configured against crew-app hours — Luis Ferrer — 2026-09-28",
+   "Two smallest maintenance contracts repriced from actual cost — Tommy Reyes — 2026-10-12",
+   "Unit price book rebuilt from three months of job cost — Dee Mbeki — 2026-11-16",
+   "Second relationship established inside Ridgeline's management company — Tommy Reyes — 2026-11-30",
+   "Enhancement field tickets moved into the crew app, off paper — Bianca Ortiz — 2026-12-14",
+   "Lost-contract reactivation list (61 names, three years) worked — Dee Mbeki — 2027-01-11"
+  ],
+  "overlap_factor": 0.7
+ },
+ "opportunities": [
+  {
+   "title": "Reprice the maintenance book off actual cost",
+   "finding": "The unit price book is dated February 2022 (Doc) and is set against competitors rather than cost, while the Aspire job-costing module sits licensed and empty. Maintenance contracts are $1.76M of the $2.93M P&L at a stated 38% margin — the lowest of the four lines — and renew at 82%, which is a renewal rate high enough to carry a price move. Crew hours are already being collected in the app; the cost data exists, it has simply never been turned on.",
+   "calculator": {
+    "kind": "price_change",
+    "inputs": {
+     "revenueAffected": 1760000,
+     "priceChangePctLow": 4,
+     "priceChangePctExpected": 6,
+     "priceChangePctHigh": 9,
+     "volumeLossPctLow": 3,
+     "volumeLossPctExpected": 5,
+     "volumeLossPctHigh": 9,
+     "grossMarginPct": 41
+    }
+   },
+   "fix_cost": 9500,
+   "months_to_benefit": 3,
+   "confidence": "medium",
+   "include_in_report": true,
+   "basis_reported_only": false,
+   "blueprint": "Configure job costing against the hours the crew app already collects, run it for one full cycle, rebuild the unit book from real cost per service per site type, and take the new numbers into renewals in renewal-date order. PREPARE FIRST on Ridgeline: the concentration overlay is active, so that renewal goes last and only after a second relationship exists inside the management company.",
+   "replaces": "A four-year-old competitor-referenced PDF, and the annual renewal habit of re-signing last year's number."
+  },
+  {
+   "title": "Close more of the enhancement proposals already going out",
+   "finding": "Enhancement work is 28% of revenue at a 46% margin — the best line in the company — and it closes at 38%. The front end is not the problem: every lead is captured, called inside two hours and run through a five-touch sequence. The proposals lose on price, against a price the estimator cannot defend from cost, and the largest ones step out of the sequence entirely because Tommy takes them personally.",
+   "calculator": {
+    "kind": "close_rate_lift",
+    "inputs": {
+     "quotedVolume": 1940000,
+     "currentClosePct": 38,
+     "liftPointsLow": 3,
+     "liftPointsExpected": 5.5,
+     "liftPointsHigh": 8,
+     "grossMarginPct": 41,
+     "incrementalCostPct": 6
+    }
+   },
+   "fix_cost": 6200,
+   "months_to_benefit": 3,
+   "confidence": "medium",
+   "include_in_report": true,
+   "basis_reported_only": false,
+   "blueprint": "Put good-better-best options on every enhancement proposal instead of one number, give Dee written cost-backed floors so she can hold a price without calling Tommy, capture a real loss reason instead of the word 'price', and put the over-$25K proposals into the same sequence as everything else. Incremental delivery cost is carried at 6% for the overtime the added work will take before a sixth crew exists.",
+   "replaces": "Single-option proposals priced from the 2022 book, and an owner pipeline that sits outside the follow-up system that works."
+  },
+  {
+   "title": "Call the 61 contracts that did not renew",
+   "finding": "82% renewal over three years leaves 61 lost contracts, all of them listable out of Aspire today. q27: 'We can list who did not renew. We have never called them.' Most were lost to a cheaper bid, and the cheaper bidder has now had two seasons to disappoint them. Average annual contract value on the lost list is $11,500.",
+   "calculator": {
+    "kind": "reactivation",
+    "inputs": {
+     "dormantCustomers": 61,
+     "reactivationRatePctLow": 8,
+     "reactivationRatePctExpected": 14,
+     "reactivationRatePctHigh": 20,
+     "averageAnnualValue": 11500,
+     "grossMarginPct": 41
+    }
+   },
+   "fix_cost": 2400,
+   "months_to_benefit": 2,
+   "confidence": "medium",
+   "include_in_report": true,
+   "basis_reported_only": false,
+   "blueprint": "Pull the non-renewal list with the reason recorded at the time, route it into the same five-touch sequence that already works, and time the outreach to land 60 days before each property's anniversary date rather than in a batch. Every recovered property reduces the Ridgeline share of revenue, which is the second reason to do it.",
+   "replaces": "Nothing — the list exists in Aspire and has never been worked."
+  }
+ ],
+ "expected": {
+  "gate_should_pass": true,
+  "expected_blockers": [],
+  "expected_warnings": [],
+  "band_guess": "Building",
+  "cross_checks": {
+   "margin_vs_pnl": "pass",
+   "funnel_vs_revenue": "pass",
+   "concentration": "flag",
+   "hours_vs_headcount": "pass"
+  }
+ }
+}
