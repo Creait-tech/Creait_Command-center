@@ -30,7 +30,8 @@ import type {
   Json,
 } from "@/lib/supabase/types";
 
-export const DOCUMENTS_BUCKET = "assessment-documents";
+// Not exported: a "use server" module may export only async functions.
+const DOCUMENTS_BUCKET = "assessment-documents";
 const MAX_BYTES = 25 * 1024 * 1024;
 const ALLOWED_TYPES = new Set([
   "application/pdf",
