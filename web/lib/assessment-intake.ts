@@ -1604,10 +1604,11 @@ export interface IntakePrefill {
   repetitive_hours_weekly: number | null;
   loaded_rates: IntakeLoadedRate[];
   /**
-   * q12 — the share of revenue that has to be won fresh each year (one-time
-   * projects, products, other) as a fraction 0–1; null when the revenue model
-   * was not answered. Recurring contracts, repeat-without-contract and
-   * retainers are excluded because a lead funnel never explains them.
+   * q12 — the share of revenue a lead funnel can explain, as a fraction 0–1:
+   * everything except recurring contracts and retainers, which renew without
+   * an inquiry. Repeat customers without a contract still arrive as a fresh
+   * inquiry each time, so they stay in. null when the revenue model was not
+   * answered.
    */
   new_business_share: number | null;
 }
@@ -1701,23 +1702,23 @@ export function intakePrefill(intake: unknown): IntakePrefill {
   };
 }
 
-const NEW_BUSINESS_ROWS = ["One-time projects", "Products", "Other"];
+const CONTRACTED_ROWS = ["Recurring contracts", "Retainers"];
 
 /** See IntakePrefill.new_business_share. */
 export function newBusinessShare(q12: IntakeAnswer | undefined): number | null {
   const rows = tableRows(q12);
   let total = 0;
-  let fresh = 0;
+  let contracted = 0;
   let answered = false;
   for (const row of rows) {
     const pct = parsePercent(row.pct);
     if (pct === null) continue;
     answered = true;
     total += pct;
-    if (NEW_BUSINESS_ROWS.includes(row[TABLE_ROW_KEY] ?? "")) fresh += pct;
+    if (CONTRACTED_ROWS.includes(row[TABLE_ROW_KEY] ?? "")) contracted += pct;
   }
   if (!answered || total <= 0) return null;
-  return Math.max(0, Math.min(1, fresh / total));
+  return Math.max(0, Math.min(1, 1 - contracted / total));
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

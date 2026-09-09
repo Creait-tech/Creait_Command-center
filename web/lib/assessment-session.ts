@@ -101,8 +101,8 @@ export const ENGINE_METRICS = [
   },
   {
     key: "avg_deal_value",
-    label: "Average job / deal value",
-    hint: "Dollars, typical not best.",
+    label: "Average first-year value of a new customer",
+    hint: "Dollars, typical not best — a year of the customer, not the first visit or first job alone.",
     block: "b2",
   },
   {
@@ -554,26 +554,30 @@ export const CROSS_CHECKS: CrossCheck[] = [
       const leadsPerYear = (perMonth as number) * 12;
       const implied =
         leadsPerYear * ((close as number) / 100) * (value as number);
-      // A funnel only explains the revenue that has to be won fresh each year.
-      // Recurring contracts, repeat customers and retainers arrive without a
-      // lead, so a subscription or repeat-visit business compared against its
-      // whole top line flags every time. When the intake's revenue-model split
-      // is on file, compare against the new-business share of revenue and say
-      // so; without it, compare against the total and say that instead.
+      // A funnel only explains revenue that arrives through an inquiry.
+      // Recurring contracts and retainers renew without one, so a contract-
+      // heavy business compared against its whole top line flags every time.
+      // When the intake's revenue-model split is on file, compare against the
+      // lead-driven share and say so; without it, compare against the total
+      // and say that instead.
       const share = intakeFigures(assessment)?.new_business_share ?? null;
-      const basis = share === null ? (revenue as number) : (revenue as number) * share;
-      if (basis <= 0) {
-        return insufficient(
-          "The revenue-model answer says nothing is won fresh each year — no funnel to check."
-        );
-      }
-      const ratio = implied / basis;
-      const against =
-        share === null
-          ? `${money(revenue as number)} (no revenue-model split on file, so the whole top line)`
-          : `${money(basis)} of new-business revenue (${Math.round(share * 100)}% of ${money(revenue as number)} per the intake)`;
-      const detail = `${Math.round(leadsPerYear)} leads/yr × ${round1(close as number)}% × ${money(value as number)} = ${money(implied)} against ${against} — ${Math.round(ratio * 100)}%.`;
-      return ratio < 0.6 || ratio > 1.4 ? flag(detail) : pass(detail);
+      const total = revenue as number;
+      const leadDriven = share === null ? total : total * share;
+      // Two ways the numbers cannot hang together: the funnel implies more
+      // revenue than the whole company books, or it explains well under the
+      // lead-driven part of it. Anything between is a pass — the detail still
+      // prints both bases so the facilitator can read the gap out loud.
+      const overTotal = implied / total;
+      const ofLeadDriven = leadDriven > 0 ? implied / leadDriven : null;
+      const detail =
+        `${Math.round(leadsPerYear)} leads/yr × ${round1(close as number)}% × ${money(value as number)} = ${money(implied)} — ` +
+        `${Math.round(overTotal * 100)}% of the ${money(total)} top line` +
+        (share === null
+          ? " (no revenue-model split on file)."
+          : `, ${ofLeadDriven === null ? "n/a" : `${Math.round(ofLeadDriven * 100)}%`} of the ${money(leadDriven)} that is not contracted (${Math.round(share * 100)}% per the intake).`);
+      const tooHigh = overTotal > 1.6;
+      const tooLow = ofLeadDriven !== null && ofLeadDriven < 0.6;
+      return tooHigh || tooLow ? flag(detail) : pass(detail);
     },
   }),
   defineCrossCheck({
