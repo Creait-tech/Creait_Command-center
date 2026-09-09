@@ -17,7 +17,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, FileText } from "lucide-react";
+import { ArrowLeft, FileText, Lock } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -107,6 +107,24 @@ const STATUS_OPTIONS: AssessmentStatus[] = [
 
 /** Fallback pace before this session has produced enough samples of its own. */
 const DEFAULT_SECONDS_PER_INDICATOR = 45;
+
+/**
+ * The parent-row fields that may still change on a delivered engagement: the
+ * release record and the results-session link. Mirrors RELEASE_SAFE_FIELDS in
+ * assessment-actions and the cc_assessments_lock_delivered_row trigger.
+ */
+const RELEASE_SAFE_PATCH = new Set(["status", "reviewed_by", "meeting_id"]);
+
+/** `delivered_at` is a date column ("2026-09-09"); read it as a local day. */
+function formatDeliveredDate(d: string): string {
+  const date = new Date(`${d}T00:00:00`);
+  if (Number.isNaN(date.getTime())) return d;
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
 
 function jsonToStrings(value: unknown): string[] {
   return Array.isArray(value)
@@ -369,7 +387,32 @@ export function AssessmentWorkbench({
       }
   }
 
+  /**
+   * A delivered engagement is locked — the client holds a document built from
+   * these fields, and migration 0012 refuses any write that would change it.
+   * The controls below are disabled while it is, and every write path checks
+   * again here so a running timer or a queued save cannot reach the database
+   * and come back as a toast that names a table instead of saying what to do.
+   * The release record itself (status, reviewer, meeting link) stays writable,
+   * which is how "Reopen for edits" works.
+   */
+  const locked = assessment.status === "delivered";
+  function refuseIfLocked(): boolean {
+    if (!locked) return false;
+    toast.error(
+      "This engagement is delivered and locked. Use “Reopen for edits” before changing anything.",
+      { id: "delivered-lock" }
+    );
+    return true;
+  }
+
   function patchAssessment(patch: AssessmentPatch) {
+      if (
+        Object.keys(patch).some((k) => !RELEASE_SAFE_PATCH.has(k)) &&
+        refuseIfLocked()
+      ) {
+        return;
+      }
       const previous = assessment;
       setAssessment((p) => ({ ...p, ...(patch as Partial<CcAssessment>) }));
       void runSave(
@@ -380,6 +423,7 @@ export function AssessmentWorkbench({
   }
 
   function patchScore(indicator: IndicatorDef, patch: IndicatorPatch) {
+      if (refuseIfLocked()) return;
       const previous = scores;
       const existing = scores[indicator.key];
 
@@ -430,6 +474,7 @@ export function AssessmentWorkbench({
   function queueWrite(
     run: () => Promise<ActionResult<{ assessment: CcAssessment }>>
   ) {
+      if (refuseIfLocked()) return;
       writeQueue.current = writeQueue.current
         .then(() =>
           runSave(run, (data) => data && setAssessment(data.assessment))
@@ -519,6 +564,7 @@ export function AssessmentWorkbench({
     pnl_on_file?: boolean;
     documents?: AssessmentDocument[];
   }) {
+    if (refuseIfLocked()) return;
     const previous = assessment;
     setAssessment((p) => ({
       ...p,
@@ -675,6 +721,41 @@ export function AssessmentWorkbench({
         </div>
       </header>
 
+      {locked && (
+        <div
+          role="status"
+          className="relative z-10 flex flex-wrap items-center gap-x-4 gap-y-2 rounded-xl bg-[color:var(--color-brand-warning)]/10 px-5 py-3 ring-1 ring-inset ring-[color:var(--color-brand-warning)]/40"
+        >
+          <Lock
+            aria-hidden
+            className="size-4 shrink-0 text-[color:var(--color-brand-warning)]"
+          />
+          <p className="min-w-0 flex-1 text-[13px] leading-relaxed">
+            <span className="font-semibold">
+              Delivered
+              {assessment.delivered_at
+                ? ` ${formatDeliveredDate(assessment.delivered_at)}`
+                : ""}
+              {assessment.reviewed_by
+                ? `, released by ${assessment.reviewed_by}`
+                : ""}
+              .
+            </span>{" "}
+            The client holds this version, so scores, session notes,
+            opportunities, the constraint and the plan are locked. Day-30 and
+            day-90 reviews stay open under Review.
+          </p>
+          <Button
+            size="sm"
+            variant="outline"
+            title="Moves the engagement back to Review. The reviewer sign-off is cleared; the delivered snapshot is kept as history."
+            onClick={() => patchAssessment({ status: "review" })}
+          >
+            Reopen for edits
+          </Button>
+        </div>
+      )}
+
       {/*
         The score bar is hidden during Session. The guide's whole reveal depends
         on the owner not seeing a verdict until the Results Session, and this
@@ -767,6 +848,15 @@ export function AssessmentWorkbench({
           }
         />
 
+        {/* Every editing control from Setup through Plan sits inside one
+            fieldset: `disabled` on a fieldset disables each descendant input,
+            textarea, select and button in one place, so a delivered engagement
+            reads as the record it is instead of a form that refuses. */}
+        <fieldset
+          disabled={locked}
+          aria-disabled={locked}
+          className="contents"
+        >
         {/* ── Setup ────────────────────────────────────────────────────── */}
         {step === "setup" && (
           <div className="flex max-w-3xl flex-col gap-4">
@@ -1011,6 +1101,7 @@ export function AssessmentWorkbench({
             />
           </div>
         )}
+        </fieldset>
 
         {/* ── Review ───────────────────────────────────────────────────── */}
         {step === "review" && (
@@ -1065,7 +1156,14 @@ export function AssessmentWorkbench({
 
             {/* The data room. "We have the P&L" is the one fact that decides
                 whether the report prints the unaudited-figures disclosure and
-                widens Reported-only ranges, so it is a deliberate tick. */}
+                widens Reported-only ranges, so it is a deliberate tick. Both
+                it and the reviewer name are part of the delivered document,
+                so they lock with it. */}
+            <fieldset
+              disabled={locked}
+              aria-disabled={locked}
+              className="contents"
+            >
             <div className="border-t border-border/60 pt-4">
               <h3 className="text-[13px] font-semibold">Documents on file</h3>
               <label className="mt-2.5 flex cursor-pointer items-start gap-2.5 text-[13px]">
@@ -1183,6 +1281,7 @@ export function AssessmentWorkbench({
                 </p>
               )}
             </div>
+            </fieldset>
 
             <div className="flex flex-wrap items-center gap-3 border-t border-border/60 pt-4">
               <Button
