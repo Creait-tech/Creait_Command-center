@@ -125,15 +125,15 @@ export const ENGINE_METRICS = [
   },
   {
     key: "repetitive_hours_week",
-    label: "Repetitive hours / week",
-    hint: "One role per line — 'Admin 22'.",
+    label: "Repetitive hours per week, by role",
+    hint: "Hours one person in that role spends each week on work that repeats — one role per line, 'Admin 22'. Not the role's total hours.",
     block: "b4",
     multiline: true,
   },
   {
     key: "largest_customer_pct",
-    label: "Largest customer % of revenue",
-    hint: "Percentage. Above 25 raises the overlay flag.",
+    label: "Largest paying customer, % of annual revenue",
+    hint: "One customer who pays you — not a referral source, agent or channel. Percentage; above 25 raises the overlay flag.",
     block: "b5",
   },
 ] as const satisfies ReadonlyArray<{
