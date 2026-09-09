@@ -68,6 +68,11 @@ import {
   type AssessmentPatch,
 } from "@/lib/assessment-actions";
 import {
+  ClientLinkPanel,
+  DocumentRowActions,
+  DocumentUploadRow,
+} from "@/components/assessments/data-room-controls";
+import {
   PracticeBadge,
   STATUS_LABELS,
   STATUS_STYLES,
@@ -1208,17 +1213,17 @@ export function AssessmentWorkbench({
                           {doc.received_on}
                         </span>
                       )}
-                      <Button
-                        size="xs"
-                        variant="ghost"
-                        onClick={() =>
+                      <DocumentRowActions
+                        assessmentId={assessment.id}
+                        doc={doc}
+                        disabled={locked}
+                        onRemoveLogged={() =>
                           saveDocuments({
                             documents: documents.filter((_, x) => x !== i),
                           })
                         }
-                      >
-                        Remove
-                      </Button>
+                        onAssessment={setAssessment}
+                      />
                     </li>
                   ))}
                 </ul>
@@ -1262,9 +1267,22 @@ export function AssessmentWorkbench({
                   </SelectContent>
                 </Select>
                 <Button size="sm" variant="outline" onClick={addDocument}>
-                  Add document
+                  Log without a file
                 </Button>
+                <DocumentUploadRow
+                  assessmentId={assessment.id}
+                  kind={docDraft.kind}
+                  disabled={locked}
+                  onAssessment={setAssessment}
+                  label={`Upload ${DOCUMENT_KIND_LABELS[docDraft.kind]}`}
+                />
               </div>
+              <p className="mt-2 text-[11px] leading-relaxed text-muted-foreground/80">
+                Upload the file itself where you can — &ldquo;on file&rdquo; then means a
+                file, and the report&apos;s evidence claims rest on something a
+                reviewer can open. Logging without a file is for documents you
+                saw on screen but were not sent.
+              </p>
             </div>
 
             <div className="border-t border-border/60 pt-4">
@@ -1329,12 +1347,18 @@ export function AssessmentWorkbench({
                 before that there is nothing to review against, and it would
                 read as part of the release gate rather than after it. */}
             {assessment.status === "delivered" && (
-              <OutcomesStep
-                assessment={assessment}
-                planItems={planItems}
-                currentUserName={currentUserName}
-                onAssessment={setAssessment}
-              />
+              <>
+                <ClientLinkPanel
+                  assessment={assessment}
+                  onAssessment={setAssessment}
+                />
+                <OutcomesStep
+                  assessment={assessment}
+                  planItems={planItems}
+                  currentUserName={currentUserName}
+                  onAssessment={setAssessment}
+                />
+              </>
             )}
           </div>
         )}

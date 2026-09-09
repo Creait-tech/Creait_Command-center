@@ -1129,6 +1129,7 @@ export const ASSESSMENT_DOCUMENT_KINDS = [
   "ar_aging",
   "rate_card",
   "job_cost",
+  "blueprint",
   "other",
 ] as const;
 
@@ -1140,6 +1141,7 @@ export const DOCUMENT_KIND_LABELS: Record<AssessmentDocumentKind, string> = {
   ar_aging: "AR aging",
   rate_card: "Rate card",
   job_cost: "Job cost example",
+  blueprint: "Executive Blueprint (PDF)",
   other: "Other",
 };
 

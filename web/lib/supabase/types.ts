@@ -833,6 +833,14 @@ export interface CcAssessment {
   intake_token: string | null;
   intake_submitted_at: string | null;
   /**
+   * Path segment of the owner's results page (/results/<token>, migration
+   * 0014); honoured only while status = delivered. Null when no link is live.
+   */
+  client_token: string | null;
+  client_token_issued_at: string | null;
+  /** The released Blueprint PDF's object path (migration 0014); attached after delivery. */
+  blueprint_storage_path: string | null;
+  /**
    * Day-30 / day-90 follow-through — planned vs actual per plan item
    * (migration 0013, AssessmentOutcomes). Recorded after delivery; never
    * gates it.
@@ -872,9 +880,18 @@ export interface AssessmentDocument {
     | "ar_aging"
     | "rate_card"
     | "job_cost"
+    | "blueprint"
     | "other";
   /** YYYY-MM-DD, America/New_York — when we received it. */
   received_on: string | null;
+  /**
+   * Object path in the private `assessment-documents` bucket (migration
+   * 0014): `{org_id}/{assessment_id}/{uuid}-{filename}`. Null for a document
+   * that was only logged, never uploaded.
+   */
+  storage_path?: string | null;
+  content_type?: string | null;
+  size_bytes?: number | null;
 }
 
 export interface CcAssessmentScore {
