@@ -388,15 +388,28 @@ function OpportunityDialog({
     toast.success(editing ? "Opportunity updated" : "Opportunity added");
   }
 
+  // A click outside this dialog used to close it and drop everything typed —
+  // on a laptop the calculator inputs run below the fold, so reaching for the
+  // scrollbar was enough to lose the form. Outside clicks no longer dismiss;
+  // Cancel, Save, the × and Escape are the ways out. The fields scroll inside
+  // the dialog and the footer stays put, so Save is always on screen.
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg">
+    <Dialog
+      open={open}
+      onOpenChange={onOpenChange}
+      disablePointerDismissal
+    >
+      <DialogContent className="max-h-[calc(100dvh-2rem)] sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>
             {editing ? "Edit opportunity" : "Add opportunity"}
           </DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-3 pt-1">
+        <form
+          onSubmit={handleSubmit}
+          className="flex min-h-0 flex-col gap-3 pt-1"
+        >
+        <div className="flex min-h-0 max-h-[calc(100dvh-11rem)] flex-col gap-3 overflow-y-auto overscroll-contain pr-1">
           <div className="space-y-1">
             <label className="text-xs font-medium text-muted-foreground">
               Initiative *
@@ -666,6 +679,7 @@ function OpportunityDialog({
               </div>
             </div>
           </div>
+        </div>
           <DialogFooter>
             <Button
               type="button"
