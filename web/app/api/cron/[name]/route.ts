@@ -30,6 +30,9 @@ const ALLOWED_NAMES = new Set([
   'recruiting-monitor',
   'client-health',
   'tech-watch-crawl',
+  // Files to-dos for the Diagnostic's follow-through moments (intake nudge,
+  // day-30 / day-90 reviews, credit clock). Idempotent — safe to re-fire.
+  'assessment-follow-through',
 ])
 
 /**

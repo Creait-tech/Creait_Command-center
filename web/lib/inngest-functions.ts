@@ -1695,6 +1695,452 @@ export const ghlChangeRelay = inngest.createFunction(
 )
 
 // ---------------------------------------------------------------------------
+// Assessment follow-through → Command Center to-dos
+// ---------------------------------------------------------------------------
+
+/**
+ * The four moments after a Growth & AI Diagnostic where the next step is
+ * easy to forget. Each becomes exactly one to-do per assessment, ever.
+ */
+type FollowThroughKind = 'intake-3d' | 'intake-7d' | 'day30' | 'day90' | 'credit'
+
+const FOLLOW_THROUGH_KINDS: readonly FollowThroughKind[] = [
+  'intake-3d',
+  'intake-7d',
+  'day30',
+  'day90',
+  'credit',
+]
+
+/** The `description` line that makes a follow-through to-do recognisable. */
+const FOLLOW_THROUGH_KEY_PREFIX = 'assessment:'
+
+/** Matches every idempotency key inside a to-do description. */
+const FOLLOW_THROUGH_KEY_RE = /assessment:[0-9a-f-]{36}:[a-z0-9-]+/g
+
+/** The Diagnostic fee, credited toward a Build or Advisory inside 60 days. */
+const DIAGNOSTIC_CREDIT_LABEL = '$7,500'
+const CREDIT_WINDOW_OPENS_DAY = 45
+const CREDIT_EXPIRES_DAY = 60
+
+/** Shown as the author on the /todos page, since no person filed these. */
+const FOLLOW_THROUGH_AUTHOR = 'Assessment Follow-Through'
+
+interface FollowThroughCandidate {
+  orgId: string
+  kind: FollowThroughKind
+  key: string
+  title: string
+  description: string
+  dueDate: string
+}
+
+/** The slice of `cc_assessments` the follow-through rules read. */
+interface FollowThroughAssessment {
+  id: string
+  org_id: string
+  company: string | null
+  client_name: string
+  status: string
+  is_practice: boolean
+  intake_token: string | null
+  intake_submitted_at: string | null
+  started_at: string | null
+  delivered_at: string | null
+  outcomes: unknown
+  updated_at: string
+}
+
+/** Stable per-(assessment, moment) key: `assessment:<uuid>:<kind>`. */
+function followThroughKey(assessmentId: string, kind: FollowThroughKind): string {
+  return `${FOLLOW_THROUGH_KEY_PREFIX}${assessmentId}:${kind}`
+}
+
+/** Today's calendar date in the company's timezone, as YYYY-MM-DD. */
+function easternToday(): string {
+  return new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
+}
+
+/**
+ * Whole days from a DATE column (YYYY-MM-DD) to `today`. Both are calendar
+ * dates, so the arithmetic is done at UTC midnight — no DST hour can shift a
+ * 30-day review onto day 29.
+ */
+function daysSinceDate(date: string, today: string): number | null {
+  const from = Date.parse(`${date.slice(0, 10)}T00:00:00Z`)
+  const to = Date.parse(`${today}T00:00:00Z`)
+  if (!Number.isFinite(from) || !Number.isFinite(to)) return null
+  return Math.floor((to - from) / 86_400_000)
+}
+
+/** Add whole days to a YYYY-MM-DD date. */
+function addDays(date: string, days: number): string {
+  const ms = Date.parse(`${date.slice(0, 10)}T00:00:00Z`)
+  return new Date(ms + days * 86_400_000).toISOString().slice(0, 10)
+}
+
+/** Whole days since a TIMESTAMPTZ value; null when it doesn't parse. */
+function daysSinceTimestamp(iso: string | null, nowMs: number): number | null {
+  if (!iso) return null
+  const ms = Date.parse(iso)
+  if (!Number.isFinite(ms)) return null
+  return Math.floor((nowMs - ms) / 86_400_000)
+}
+
+/** Whether `outcomes.<day>` holds a review (anything non-null counts). */
+function hasOutcomeReview(outcomes: unknown, day: 'day30' | 'day90'): boolean {
+  if (!outcomes || typeof outcomes !== 'object' || Array.isArray(outcomes)) {
+    return false
+  }
+  const value = (outcomes as Record<string, unknown>)[day]
+  return value !== null && value !== undefined
+}
+
+/** Case-insensitive match token for a company or client name. */
+function companyToken(value: string | null | undefined): string | null {
+  if (typeof value !== 'string') return null
+  const normalized = value.trim().toLowerCase().replace(/\s+/g, ' ')
+  return normalized.length > 0 ? normalized : null
+}
+
+/**
+ * The name the to-do should use for the engagement: the company, falling back
+ * to the owner's name for an assessment filed without one.
+ */
+function assessmentLabel(row: FollowThroughAssessment): string {
+  return row.company?.trim() || row.client_name.trim() || 'Untitled assessment'
+}
+
+/**
+ * Every follow-through to-do one assessment is due for today, before
+ * de-duplication. Pure: the same row and clock always yield the same set.
+ *
+ * `linkedCompanies` holds the case-insensitive names of this org's cc_clients
+ * rows. There is no link column from an assessment to a client — cc_clients
+ * carries no assessment_id and cc_client_journey only joins a client to a
+ * template deliverable (migration 0003) — so "converted to a Build or
+ * Advisory" is approximated as "a cc_clients row exists whose company or name
+ * matches the assessment's company, case-insensitively". Until a real link
+ * exists, an assessment whose client was entered under a different spelling
+ * will get a credit-clock to-do it doesn't need; the operator can tick it off.
+ */
+function followThroughCandidates(
+  row: FollowThroughAssessment,
+  linkedCompanies: ReadonlySet<string>,
+  today: string,
+  nowMs: number,
+): FollowThroughCandidate[] {
+  const out: FollowThroughCandidate[] = []
+  const label = assessmentLabel(row)
+  const push = (
+    kind: FollowThroughKind,
+    title: string,
+    description: string,
+    dueDate: string,
+  ) => {
+    out.push({
+      orgId: row.org_id,
+      kind,
+      key: followThroughKey(row.id, kind),
+      title,
+      // The key rides on its own trailing line so the dedupe scan can find it
+      // no matter how the human-readable text above it is edited.
+      description: `${description}\n\n${followThroughKey(row.id, kind)}`,
+      dueDate,
+    })
+  }
+
+  if (row.status === 'intake' && row.intake_token && !row.intake_submitted_at) {
+    // issueIntakeLink writes intake_token + updated_at and leaves started_at
+    // alone, so updated_at is the issue time. The owner's in-form autosave
+    // also bumps it, which is the right clock for a nudge: an owner who saved
+    // yesterday is not ignoring the link, one who hasn't touched it in a week
+    // is. (`updated_at` has no trigger — only these explicit writes move it.)
+    const days = daysSinceTimestamp(row.updated_at, nowMs)
+    if (days !== null && days >= 7) {
+      push(
+        'intake-7d',
+        `Escalate ${label}: intake link still unsubmitted ${days} days — call the owner`,
+        `The owner's pre-assessment intake link for ${label} has been open for ${days} days without a submission. A second nudge by message is unlikely to land; call, and if the engagement is dead move it out of Intake or revoke the link.`,
+        today,
+      )
+    } else if (days !== null && days >= 3) {
+      push(
+        'intake-3d',
+        `Nudge ${label}: intake link unsubmitted ${days} days`,
+        `The owner's pre-assessment intake link for ${label} was issued ${days} days ago and hasn't been submitted. Send a reminder — the Diagnostic Intensive can't be scheduled until the intake is in.`,
+        today,
+      )
+    }
+  }
+
+  if (row.status === 'delivered' && row.delivered_at) {
+    const days = daysSinceDate(row.delivered_at, today)
+    if (days === null) return out
+
+    if (days >= 30 && !hasOutcomeReview(row.outcomes, 'day30')) {
+      push(
+        'day30',
+        `${label}: run the day-30 review`,
+        `${label}'s Diagnostic was delivered on ${row.delivered_at}. Record planned-vs-actual for each 90-day plan item in the assessment's Outcomes tab — this is the only way the instrument learns from its own deliveries.`,
+        addDays(row.delivered_at, 30),
+      )
+    }
+
+    if (days >= 90 && !hasOutcomeReview(row.outcomes, 'day90')) {
+      push(
+        'day90',
+        `${label}: run the day-90 review`,
+        `${label}'s Diagnostic was delivered on ${row.delivered_at}. Record the day-90 planned-vs-actual in the assessment's Outcomes tab and close the loop with the owner.`,
+        addDays(row.delivered_at, 90),
+      )
+    }
+
+    if (days >= CREDIT_WINDOW_OPENS_DAY && days < CREDIT_EXPIRES_DAY) {
+      const token = companyToken(row.company) ?? companyToken(row.client_name)
+      const linked = token !== null && linkedCompanies.has(token)
+      if (!linked) {
+        const daysLeft = CREDIT_EXPIRES_DAY - days
+        push(
+          'credit',
+          `${label}: ${DIAGNOSTIC_CREDIT_LABEL} credit expires in ${daysLeft} days`,
+          `${label} was delivered ${days} days ago and has no Build or Advisory on file. The ${DIAGNOSTIC_CREDIT_LABEL} Diagnostic credit toward the next engagement expires on day ${CREDIT_EXPIRES_DAY} (${addDays(row.delivered_at, CREDIT_EXPIRES_DAY)}). Book the conversion call now.`,
+          addDays(row.delivered_at, CREDIT_EXPIRES_DAY),
+        )
+      }
+    }
+  }
+
+  return out
+}
+
+/**
+ * Assessment follow-through — daily 8am ET. Files Command Center to-dos for
+ * the moments after a Diagnostic that otherwise depend on someone
+ * remembering:
+ *
+ *   1. Intake link unsubmitted 3+ days (nudge), again at 7+ days (escalate).
+ *   2. Day-30 review due and not recorded in `outcomes.day30`.
+ *   3. Day-90 review due and not recorded in `outcomes.day90`.
+ *   4. Delivered 45–59 days ago with no Build/Advisory client on file — the
+ *      $7,500 credit clock.
+ *
+ * Scans every org (the rules need no per-org config) and skips practice
+ * assessments. Idempotent by construction: each to-do carries a stable
+ * `assessment:<id>:<kind>` key on the last line of its description, and the
+ * job skips any key already present on an open OR completed to-do, so a moment
+ * is filed once and ticking it off never invites a repeat. Failing the dedupe
+ * lookup files nothing — a blind insert is how other tables ended up with
+ * duplicate rows.
+ */
+export const assessmentFollowThrough = inngest.createFunction(
+  {
+    id: 'assessment-follow-through',
+    name: 'Assessment Follow-Through',
+    // Cron and event triggers can fire together. Serializing runs keeps the
+    // read-then-insert dedupe below from racing itself.
+    concurrency: { limit: 1 },
+    triggers: [
+      { cron: 'TZ=America/New_York 0 8 * * *' },
+      { event: 'cron/assessment-follow-through' },
+    ],
+  },
+  async ({ step }) => {
+    const scan = await step.run('scan-assessments', async () => {
+      const supabase = createServiceClient()
+      const today = easternToday()
+      const nowMs = Date.now()
+
+      const { data, error } = await supabase
+        .from('cc_assessments')
+        .select(
+          'id, org_id, company, client_name, status, is_practice, intake_token, intake_submitted_at, started_at, delivered_at, outcomes, updated_at',
+        )
+        .eq('is_practice', false)
+        .in('status', ['intake', 'delivered'])
+      if (error) {
+        console.error(
+          '[inngest] assessment-follow-through scan failed:',
+          error.message,
+        )
+        return { scanned: 0, orgs: 0, candidates: [] as FollowThroughCandidate[] }
+      }
+
+      const rows = ((data ?? []) as unknown as FollowThroughAssessment[]).filter(
+        (row) => !row.is_practice,
+      )
+      const orgIds = [...new Set(rows.map((row) => row.org_id))]
+
+      // Only delivered rows inside the credit window need the client list.
+      const needsClients = new Set(
+        rows
+          .filter((row) => {
+            if (row.status !== 'delivered' || !row.delivered_at) return false
+            const days = daysSinceDate(row.delivered_at, today)
+            return (
+              days !== null &&
+              days >= CREDIT_WINDOW_OPENS_DAY &&
+              days < CREDIT_EXPIRES_DAY
+            )
+          })
+          .map((row) => row.org_id),
+      )
+
+      const linkedByOrg = new Map<string, Set<string>>()
+      for (const orgId of needsClients) {
+        const { data: clients, error: clientsError } = await supabase
+          .from('cc_clients')
+          .select('name, company')
+          .eq('org_id', orgId)
+        if (clientsError) {
+          // Without the client list every credit-window assessment would look
+          // unlinked. Skip the credit rule for this org rather than filing a
+          // false alarm on every converted client; tomorrow's run retries.
+          console.error(
+            `[inngest] assessment-follow-through client lookup for ${orgId} failed:`,
+            clientsError.message,
+          )
+          linkedByOrg.set(orgId, new Set(['*']))
+          continue
+        }
+        const tokens = new Set<string>()
+        for (const client of (clients ?? []) as Array<{
+          name: string | null
+          company: string | null
+        }>) {
+          for (const value of [client.name, client.company]) {
+            const token = companyToken(value)
+            if (token) tokens.add(token)
+          }
+        }
+        linkedByOrg.set(orgId, tokens)
+      }
+
+      const candidates: FollowThroughCandidate[] = []
+      for (const row of rows) {
+        const linked = linkedByOrg.get(row.org_id) ?? new Set<string>()
+        const forRow = linked.has('*')
+          ? followThroughCandidates(row, linked, today, nowMs).filter(
+              (c) => c.kind !== 'credit',
+            )
+          : followThroughCandidates(row, linked, today, nowMs)
+        candidates.push(...forRow)
+      }
+
+      return { scanned: rows.length, orgs: orgIds.length, candidates }
+    })
+
+    const emptyCounts = (): Record<FollowThroughKind, number> => ({
+      'intake-3d': 0,
+      'intake-7d': 0,
+      day30: 0,
+      day90: 0,
+      credit: 0,
+    })
+
+    if (scan.candidates.length === 0) {
+      return {
+        ok: true,
+        scanned: scan.scanned,
+        orgs: scan.orgs,
+        due: 0,
+        filed: emptyCounts(),
+        skippedExisting: 0,
+      }
+    }
+
+    const filed = await step.run('file-todos', async () => {
+      const supabase = createServiceClient()
+      const counts = emptyCounts()
+      let skippedExisting = 0
+      let failed = 0
+
+      const byOrg = new Map<string, FollowThroughCandidate[]>()
+      for (const candidate of scan.candidates) {
+        const list = byOrg.get(candidate.orgId) ?? []
+        list.push(candidate)
+        byOrg.set(candidate.orgId, list)
+      }
+
+      for (const [orgId, candidates] of byOrg) {
+        // Open OR done: a completed review to-do must never come back.
+        const { data: existing, error: existingError } = await supabase
+          .from('cc_todos')
+          .select('description')
+          .eq('org_id', orgId)
+          .like('description', `%${FOLLOW_THROUGH_KEY_PREFIX}%`)
+        if (existingError) {
+          // Fail closed — see the function comment.
+          console.error(
+            `[inngest] assessment-follow-through dedupe lookup for ${orgId} failed:`,
+            existingError.message,
+          )
+          failed += candidates.length
+          continue
+        }
+
+        const known = new Set<string>()
+        for (const row of (existing ?? []) as Array<{ description: string | null }>) {
+          for (const key of row.description?.match(FOLLOW_THROUGH_KEY_RE) ?? []) {
+            known.add(key)
+          }
+        }
+
+        const fresh = candidates.filter((c) => !known.has(c.key))
+        skippedExisting += candidates.length - fresh.length
+        if (fresh.length === 0) continue
+
+        const { data: inserted, error: insertError } = await supabase
+          .from('cc_todos')
+          .insert(
+            fresh.map((c) => ({
+              org_id: orgId,
+              title: c.title,
+              description: c.description,
+              owner_id: null,
+              done: false,
+              due_date: c.dueDate,
+              meeting_id: null,
+              created_by: null,
+              created_by_name: FOLLOW_THROUGH_AUTHOR,
+            })),
+          )
+          .select('id')
+        if (insertError) {
+          console.error(
+            `[inngest] assessment-follow-through insert for ${orgId} failed:`,
+            insertError.message,
+          )
+          failed += fresh.length
+          continue
+        }
+        // A service-role insert can't be refused by RLS, but a row count that
+        // disagrees with what was sent is still worth surfacing.
+        if ((inserted?.length ?? 0) !== fresh.length) {
+          console.warn(
+            `[inngest] assessment-follow-through: sent ${fresh.length} to-dos for ${orgId}, database reports ${inserted?.length ?? 0}`,
+          )
+        }
+        for (const c of fresh) counts[c.kind] += 1
+      }
+
+      return { counts, skippedExisting, failed }
+    })
+
+    return {
+      ok: filed.failed === 0,
+      scanned: scan.scanned,
+      orgs: scan.orgs,
+      due: scan.candidates.length,
+      filed: filed.counts,
+      filedTotal: FOLLOW_THROUGH_KINDS.reduce((sum, k) => sum + filed.counts[k], 0),
+      skippedExisting: filed.skippedExisting,
+      failed: filed.failed,
+    }
+  },
+)
+
+// ---------------------------------------------------------------------------
 // Registered functions
 // ---------------------------------------------------------------------------
 
@@ -1712,4 +2158,5 @@ export const functions = [
   recruitingMonitor,
   clientHealth,
   techWatchCrawler,
+  assessmentFollowThrough,
 ]

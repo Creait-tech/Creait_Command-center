@@ -10,6 +10,7 @@
     { "path": "/api/cron/youtube-research", "schedule": "0 13 * * *" },
     { "path": "/api/cron/recruiting-monitor", "schedule": "0 14 * * *" },
     { "path": "/api/cron/client-health", "schedule": "0 15 * * *" },
-    { "path": "/api/cron/tech-watch-crawl", "schedule": "0 13 * * *" }
+    { "path": "/api/cron/tech-watch-crawl", "schedule": "0 13 * * *" },
+    { "path": "/api/cron/assessment-follow-through", "schedule": "0 13 * * *" }
   ]
 }
