@@ -2,7 +2,7 @@
  * Regenerate sim/intake-schema.json — the driver's source of truth for
  * question ids, types, options, table rows/columns and allowUnknown.
  *
- * Run from /home/claude/creait_command-center/web:
+ * Run from the web/ directory of the repo:
  *   ./node_modules/.bin/tsx ../../../tmp/.../sim/dump-intake-schema.ts
  * (see the header of intake-driver.js for the exact command)
  */
@@ -19,7 +19,7 @@ import {
   UNKNOWN_LABEL,
   INTAKE_TITLE,
   INTAKE_COMPLETION,
-} from "/home/claude/creait_command-center/web/lib/assessment-intake";
+} from "@/lib/assessment-intake";
 
 const here = dirname(fileURLToPath(import.meta.url));
 

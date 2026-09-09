@@ -3,8 +3,8 @@
 Source of truth for ids, types, options and column keys: `schema.json` in this folder
 (`questions[]` with id/type/options/columns/allowUnknown/required/feedsIndicators;
 `indicators[]` with anchor0..anchor4; `overlay[]` keys; `calculators[]` with fields; `engineMetrics[]`).
-Style reference for scoring notes: /home/claude/creait_command-center/resources/CREAIT-Summit-Exterior-Answer-Key.md
-Rubric: /home/claude/creait_command-center/resources/CREAIT-Scoring-Engine-and-Rubrics.md
+Style reference for scoring notes: resources/CREAIT-Summit-Exterior-Answer-Key.md
+Rubric: resources/CREAIT-Scoring-Engine-and-Rubrics.md
 
 ```jsonc
 {

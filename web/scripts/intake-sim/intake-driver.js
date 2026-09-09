@@ -27,7 +27,7 @@
  *
  * Schema: sim/intake-schema.json, dumped straight out of
  * web/lib/assessment-intake.ts by sim/dump-intake-schema.ts. Regenerate with:
- *   cd /home/claude/creait_command-center/web && \
+ *   cd web && \
  *     ./node_modules/.bin/tsx <thisDir>/dump-intake-schema.ts
  *
  * Environment: playwright is required out of the scratchpad tools install,
@@ -41,8 +41,11 @@
 const fs = require("node:fs");
 const path = require("node:path");
 
-const TOOLS = "/tmp/claude-0/-home-claude/a34cff6d-e28e-53c1-9842-582c5f5ece56/scratchpad/tools/node_modules";
-const { chromium } = require(path.join(TOOLS, "playwright"));
+// Playwright is not a dependency of the app. Point INTAKE_TOOLS at a
+// node_modules directory that has it, or install it next to this script.
+const { chromium } = process.env.INTAKE_TOOLS
+  ? require(path.join(process.env.INTAKE_TOOLS, "playwright"))
+  : require("playwright");
 
 const HERE = __dirname;
 const SCHEMA = JSON.parse(

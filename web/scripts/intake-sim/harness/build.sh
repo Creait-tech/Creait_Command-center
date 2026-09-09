@@ -2,7 +2,7 @@
 # Bundle the REAL IntakeForm + the REAL assessment-intake schema for the local
 # harness. Only @/lib/intake-actions is swapped for a fetch stub.
 set -e
-WEB=/home/claude/creait_command-center/web
+WEB="${WEB:-$(cd "$(dirname "$0")/../../.." && pwd)}"
 H="$(cd "$(dirname "$0")" && pwd)"
 mkdir -p "$H/build"
 
