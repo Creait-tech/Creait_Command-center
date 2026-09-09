@@ -45,6 +45,7 @@ import {
   discardTranscriptDraft,
   draftSessionFromTranscript,
   listTranscriptMeetings,
+  uploadTranscriptFile,
   type TranscriptMeetingOption,
 } from "@/lib/assessment-transcript-actions";
 import {
@@ -436,6 +437,10 @@ function RecordingPanel({
   const [meetingId, setMeetingId] = useState<string>(draft?.meeting_id ?? "");
   const [busy, setBusy] = useState(false);
   const [taken, setTaken] = useState<Set<string>>(() => new Set());
+  const [uploadFile, setUploadFile] = useState<File | null>(null);
+  const [uploadDate, setUploadDate] = useState("");
+  const [uploading, setUploading] = useState(false);
+  const uploadInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!open || meetings !== null) return;
@@ -474,6 +479,33 @@ function RecordingPanel({
       return;
     }
     if (res.data) onAssessment?.(res.data.assessment);
+  }
+
+  /**
+   * An in-person session: the file becomes a meeting row with a transcript,
+   * lands at the top of the picker and is selected, so "Draft notes" is the
+   * next click.
+   */
+  async function runUpload() {
+    if (!uploadFile) return;
+    const form = new FormData();
+    form.set("file", uploadFile);
+    if (uploadDate) form.set("session_date", uploadDate);
+    setUploading(true);
+    const res = await uploadTranscriptFile(assessment.id, form);
+    setUploading(false);
+    if (!res.ok) {
+      toast.error(res.error);
+      return;
+    }
+    const meeting = res.data?.meeting;
+    if (!meeting) return;
+    setMeetings((list) => [meeting, ...(list ?? []).filter((m) => m.id !== meeting.id)]);
+    setMeetingId(meeting.id);
+    setUploadFile(null);
+    setUploadDate("");
+    if (uploadInputRef.current) uploadInputRef.current.value = "";
+    toast.success("Transcript uploaded. Press Draft notes when you're ready.");
   }
 
   const block = draft?.blocks[activeBlock];
@@ -521,7 +553,7 @@ function RecordingPanel({
         <span className="ml-auto text-[11px] text-muted-foreground/70">
           {draft
             ? `drafted from ${draft.meeting_title || "a recording"}`
-            : "draft notes from a Zoom transcript"}
+            : "draft notes from a transcript"}
         </span>
         {open ? (
           <ChevronDown className="size-3.5 text-muted-foreground/60" />
@@ -564,8 +596,42 @@ function RecordingPanel({
               {busy ? "Reading the recording…" : draft ? "Draft again" : "Draft notes"}
             </Button>
           </div>
+          <div className="flex flex-col gap-1.5">
+            <p className="text-[11px] font-medium text-muted-foreground">
+              Upload a transcript
+            </p>
+            <div className="flex flex-wrap items-center gap-2">
+              <Input
+                ref={uploadInputRef}
+                type="file"
+                accept=".vtt,.srt,.txt"
+                aria-label="Transcript file"
+                className="h-8 min-w-0 flex-1 text-xs"
+                disabled={uploading}
+                onChange={(e) => setUploadFile(e.target.files?.[0] ?? null)}
+              />
+              <Input
+                type="date"
+                aria-label="Session date"
+                value={uploadDate}
+                className="h-8 w-36 text-xs"
+                disabled={uploading}
+                onChange={(e) => setUploadDate(e.target.value)}
+              />
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => void runUpload()}
+                disabled={!uploadFile || uploading}
+              >
+                {uploading ? "Uploading…" : "Upload"}
+              </Button>
+            </div>
+          </div>
           <p className="text-[11px] leading-relaxed text-muted-foreground/80">
-            Recordings arrive here through the daily Zoom sync. The draft
+            Recordings arrive here through the daily Zoom sync. An in-person
+            session can be uploaded instead as a .vtt, .srt or .txt file from
+            any recorder (a phone app, an Otter export). Either way the draft
             proposes; you accept per block and per number, and what you accept
             is marked as coming from the recording.
           </p>

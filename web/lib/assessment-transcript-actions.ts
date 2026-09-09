@@ -37,9 +37,19 @@ import {
 } from "@/lib/assessment-session";
 import type { ActionResult } from "@/lib/assessment-actions";
 import type { CcAssessment, Json } from "@/lib/supabase/types";
+import { vttToText } from "@/lib/zoom-sync";
 
 /** A Zoom transcript of a four-hour intensive runs to ~250 KB; this is headroom, not a target. */
 const MAX_TRANSCRIPT_CHARS = 700_000;
+
+/**
+ * Uploads: `serverActions.bodySizeLimit` in next.config.ts is set just above
+ * this so the file fits the request; Vercel refuses any body past 4.5 MB.
+ */
+const MAX_UPLOAD_BYTES = 4 * 1024 * 1024;
+const UPLOAD_EXTENSIONS = new Set(["vtt", "srt", "txt"]);
+/** Below this a transcript is a fragment, not a session — same bar as the draft action. */
+const MIN_TRANSCRIPT_CHARS = 200;
 
 export interface TranscriptMeetingOption {
   id: string;
@@ -386,4 +396,105 @@ export async function discardTranscriptDraft(
   const ctx = await requireOrg();
   if ("error" in ctx) return { ok: false, error: ctx.error };
   return writeDraft(assessmentId, ctx.orgId, null);
+}
+
+/**
+ * An in-person session has no Zoom recording. The facilitator records on a
+ * phone or another tool and uploads the transcript here; it becomes a
+ * `meetings` row like the ones Zoom sync writes, so the picker and the draft
+ * action treat it exactly like a cloud recording. The file's own name never
+ * reaches the row — the title is composed from the engagement.
+ */
+export async function uploadTranscriptFile(
+  assessmentId: string,
+  form: FormData
+): Promise<ActionResult<{ meeting: TranscriptMeetingOption }>> {
+  const ctx = await requireOrg();
+  if ("error" in ctx) return { ok: false, error: ctx.error };
+
+  const file = form.get("file");
+  if (!(file instanceof File) || file.size === 0) {
+    return { ok: false, error: "Choose a transcript file to upload." };
+  }
+  const extension = file.name.toLowerCase().split(".").pop() ?? "";
+  if (!file.name.includes(".") || !UPLOAD_EXTENSIONS.has(extension)) {
+    return {
+      ok: false,
+      error: "Transcripts must be a .vtt, .srt or .txt file.",
+    };
+  }
+  if (file.size > MAX_UPLOAD_BYTES) {
+    return {
+      ok: false,
+      error:
+        "That file is over 4 MB, which is as much as a server action will carry. Export the transcript as plain text, or split it.",
+    };
+  }
+
+  const sessionDateRaw = form.get("session_date");
+  let scheduledAt = new Date().toISOString();
+  if (typeof sessionDateRaw === "string" && sessionDateRaw.trim()) {
+    const parsed = z.string().regex(/^\d{4}-\d{2}-\d{2}$/).safeParse(sessionDateRaw.trim());
+    const date = parsed.success ? new Date(`${parsed.data}T12:00:00Z`) : null;
+    if (!date || Number.isNaN(date.getTime())) {
+      return { ok: false, error: "The session date must be a calendar date (YYYY-MM-DD)." };
+    }
+    scheduledAt = date.toISOString();
+  }
+
+  const rawText = await file.text();
+  const transcript = (extension === "txt" ? rawText : vttToText(rawText)).trim();
+  if (transcript.length < MIN_TRANSCRIPT_CHARS) {
+    return {
+      ok: false,
+      error:
+        "That file holds almost no speech once the timestamps are stripped. Check it is the transcript, not the audio or a summary.",
+    };
+  }
+
+  const supabase = await createClient();
+  const { data: assessmentRow, error: aError } = await supabase
+    .from("cc_assessments")
+    .select("id, company, client_name, status")
+    .eq("id", assessmentId)
+    .eq("org_id", ctx.orgId)
+    .maybeSingle();
+  if (aError) return { ok: false, error: aError.message };
+  if (!assessmentRow) return { ok: false, error: "Assessment not found" };
+  const assessment = assessmentRow as Pick<
+    CcAssessment,
+    "id" | "company" | "client_name" | "status"
+  >;
+  if (assessment.status === "delivered") {
+    return {
+      ok: false,
+      error:
+        "This engagement is delivered. Reopen it for edits before drafting from a recording.",
+    };
+  }
+
+  const who = assessment.company?.trim() || assessment.client_name;
+  const { data, error } = await supabase
+    .from("meetings")
+    .insert({
+      org_id: ctx.orgId,
+      title: `Diagnostic session — ${who} (uploaded transcript)`,
+      meeting_type: "client",
+      scheduled_at: scheduledAt,
+      duration_minutes: null,
+      attendees: [],
+      source: "manual",
+      source_id: null,
+      transcript,
+    })
+    .select("id, title, scheduled_at, duration_minutes, source")
+    .maybeSingle();
+  if (error) return { ok: false, error: error.message };
+  if (!data) {
+    return {
+      ok: false,
+      error: "The transcript did not save — you may not have access to this workspace.",
+    };
+  }
+  return { ok: true, data: { meeting: data as TranscriptMeetingOption } };
 }

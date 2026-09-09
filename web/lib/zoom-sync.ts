@@ -62,18 +62,62 @@ async function zoomToken(): Promise<string> {
   return json.access_token;
 }
 
-/** Zoom transcript VTT → "Speaker: words" plain text. */
+/**
+ * Transcript VTT (or SRT) → "Speaker: words" plain text.
+ *
+ * Zoom writes `Speaker: words` as the cue text itself; other recorders (Otter,
+ * phone apps) use the WebVTT `<v Speaker>words</v>` voice tag. Both land on the
+ * same shape. Cue numbers and identifiers, timestamps, NOTE/STYLE/REGION
+ * blocks and any other tag are dropped, and a line repeated back-to-back (the
+ * usual artefact of rolling captions) is kept once. SRT differs from VTT only
+ * in its header and timestamp punctuation, so the same pass covers it.
+ */
 export function vttToText(vtt: string): string {
+  const raw = vtt.replace(/^\uFEFF/, "").split(/\r?\n/);
   const lines: string[] = [];
-  for (const raw of vtt.split(/\r?\n/)) {
-    const line = raw.trim();
-    if (!line) continue;
-    if (line === "WEBVTT") continue;
-    if (/^\d+$/.test(line)) continue; // cue number
+  let skippingBlock = false;
+  for (let i = 0; i < raw.length; i++) {
+    const line = raw[i].trim();
+    if (!line) {
+      skippingBlock = false;
+      continue;
+    }
+    if (skippingBlock) continue;
+    if (/^WEBVTT\b/.test(line)) continue;
+    if (/^(NOTE|STYLE|REGION)\b/.test(line)) {
+      skippingBlock = true;
+      continue;
+    }
     if (line.includes("-->")) continue; // timestamps
-    lines.push(line);
+    if (/^\d+$/.test(line)) continue; // cue number
+    if (i + 1 < raw.length && raw[i + 1].includes("-->")) continue; // named cue identifier
+    const text = cueLineToText(line);
+    if (!text) continue;
+    if (lines[lines.length - 1] === text) continue;
+    lines.push(text);
   }
   return lines.join("\n");
+}
+
+/** One cue line: lift the `<v Name>` speaker out, drop every other tag. */
+function cueLineToText(line: string): string {
+  const voice = /<v(?:\.[^\s>]*)?\s+([^>]*)>/i.exec(line);
+  const speaker = voice ? voice[1].trim() : "";
+  const body = decodeEntities(line.replace(/<[^>]+>/g, ""))
+    .replace(/\s+/g, " ")
+    .trim();
+  if (!body) return "";
+  return speaker ? `${speaker}: ${body}` : body;
+}
+
+function decodeEntities(value: string): string {
+  return value
+    .replace(/&nbsp;/g, " ")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;|&apos;/g, "'")
+    .replace(/&amp;/g, "&");
 }
 
 async function listRecordings(token: string, fromISO: string): Promise<ZoomRecordingMeeting[]> {
