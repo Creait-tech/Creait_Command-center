@@ -18,6 +18,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowRight,
+  AudioLines,
   ChevronDown,
   ChevronRight,
   Coffee,
@@ -26,12 +27,26 @@ import {
   Quote,
   Scissors,
 } from "lucide-react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { updateSessionNotes } from "@/lib/assessment-actions";
+import {
+  discardTranscriptDraft,
+  draftSessionFromTranscript,
+  listTranscriptMeetings,
+  type TranscriptMeetingOption,
+} from "@/lib/assessment-transcript-actions";
 import {
   BLOCK_IDS,
   CROSS_CHECKS,
@@ -42,11 +57,13 @@ import {
   pacedPromptIndex,
   promptSchedule,
   runCrossChecks,
+  TRANSCRIPT_BASELINE_KEYS,
   type BlockId,
   type CrossCheckId,
   type CrossCheckRecord,
   type CrossCheckResult,
   type SessionNotes,
+  type TranscriptBaselineKey,
 } from "@/lib/assessment-session";
 import {
   SESSION_BLOCK_SCRIPTS,
@@ -350,6 +367,350 @@ function CrossCheckPanel({
   );
 }
 
+const BASELINE_LABELS: Record<TranscriptBaselineKey, string> = {
+  owner_objective: "Owner's primary objective",
+  owner_belief: "Their bottleneck belief",
+  annual_revenue: "Revenue $",
+  gross_margin: "Margin %",
+  operating_profit: "Op profit $",
+};
+const NUMERIC_BASELINE: ReadonlySet<TranscriptBaselineKey> = new Set([
+  "annual_revenue",
+  "gross_margin",
+  "operating_profit",
+]);
+
+/** "2,900,000", "$2.9M", "41%" → a number the row can store; anything else stays text. */
+function numericFromDraft(value: string): number | null {
+  const m = value
+    .trim()
+    .replace(/^about\s+|^roughly\s+|^around\s+/i, "")
+    .match(/^\$?\s*([\d,]+(?:\.\d+)?)\s*([kKmM])?\s*%?$/);
+  if (!m) return null;
+  const n = Number(m[1].replace(/,/g, ""));
+  if (!Number.isFinite(n)) return null;
+  const unit = (m[2] ?? "").toLowerCase();
+  return unit === "k" ? n * 1_000 : unit === "m" ? n * 1_000_000 : n;
+}
+
+function formatMeetingWhen(m: TranscriptMeetingOption): string {
+  if (!m.scheduled_at) return "";
+  const d = new Date(m.scheduled_at);
+  if (Number.isNaN(d.getTime())) return "";
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+}
+
+/**
+ * The recording as a second note-taker.
+ *
+ * Picks a Zoom transcript that the daily sync already pulled into the War
+ * Room, asks for a draft of the block notes, the engine numbers and the Block
+ * 1 baseline, and shows each proposal against the line it rests on. Nothing
+ * moves into the notes until the facilitator says so — and what moves is
+ * marked as coming from the recording, so tonight's scoring can tell the two
+ * apart. A block change remounts this panel, so the draft is read from
+ * `notes.transcriptDraft` rather than held here.
+ */
+function RecordingPanel({
+  assessment,
+  notes,
+  activeBlock,
+  currentNote,
+  onApplyNote,
+  onSaveMetric,
+  onPatchAssessment,
+  onAssessment,
+}: {
+  assessment: CcAssessment;
+  notes: SessionNotes;
+  activeBlock: BlockId;
+  currentNote: string;
+  onApplyNote: (text: string) => void;
+  onSaveMetric: (key: string, value: string) => void;
+  onPatchAssessment: (patch: Record<string, string>) => void;
+  onAssessment?: (a: CcAssessment) => void;
+}) {
+  const draft = notes.transcriptDraft ?? null;
+  const [open, setOpen] = useState(Boolean(draft));
+  const [meetings, setMeetings] = useState<TranscriptMeetingOption[] | null>(null);
+  const [meetingId, setMeetingId] = useState<string>(draft?.meeting_id ?? "");
+  const [busy, setBusy] = useState(false);
+  const [taken, setTaken] = useState<Set<string>>(() => new Set());
+
+  useEffect(() => {
+    if (!open || meetings !== null) return;
+    let cancelled = false;
+    void listTranscriptMeetings().then((res) => {
+      if (cancelled) return;
+      if (!res.ok) {
+        toast.error(res.error);
+        setMeetings([]);
+        return;
+      }
+      setMeetings(res.data?.meetings ?? []);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [open, meetings]);
+
+  async function runDraft() {
+    if (!meetingId) return;
+    setBusy(true);
+    const res = await draftSessionFromTranscript(assessment.id, meetingId);
+    setBusy(false);
+    if (!res.ok) {
+      toast.error(res.error);
+      return;
+    }
+    if (res.data) onAssessment?.(res.data.assessment);
+    toast.success("Draft ready. Nothing has been written to your notes yet.");
+  }
+
+  async function discard() {
+    const res = await discardTranscriptDraft(assessment.id);
+    if (!res.ok) {
+      toast.error(res.error);
+      return;
+    }
+    if (res.data) onAssessment?.(res.data.assessment);
+  }
+
+  const block = draft?.blocks[activeBlock];
+  const metricRows = draft
+    ? engineMetricsForBlock(activeBlock).flatMap((m) => {
+        const item = draft.metrics[m.key];
+        return item ? [{ key: m.key, label: m.label, item }] : [];
+      })
+    : [];
+  const baselineRows =
+    draft && activeBlock === "b1"
+      ? TRANSCRIPT_BASELINE_KEYS.flatMap((key) => {
+          const item = draft.baseline[key];
+          return item ? [{ key, item }] : [];
+        })
+      : [];
+
+  function applyBlockNote() {
+    if (!block) return;
+    const body = [
+      block.note,
+      block.quotes.length > 0
+        ? `Quotes:\n${block.quotes.map((q) => `“${q}”`).join("\n")}`
+        : "",
+    ]
+      .filter(Boolean)
+      .join("\n\n");
+    const text = `— From the recording (${draft?.meeting_title ?? "transcript"}) —\n${body}`;
+    onApplyNote(currentNote.trim() ? `${currentNote.trimEnd()}\n\n${text}` : text);
+    setTaken((s) => new Set(s).add(`block:${activeBlock}`));
+  }
+
+  return (
+    <section className="rounded-xl bg-[color:var(--color-brand-slate)]/40 ring-1 ring-inset ring-border/60">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        className="flex w-full items-center gap-2 px-3.5 py-2.5 text-left"
+      >
+        <AudioLines className="size-3.5 text-[color:var(--color-brand-aqua)]" />
+        <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+          From the recording
+        </span>
+        <span className="ml-auto text-[11px] text-muted-foreground/70">
+          {draft
+            ? `drafted from ${draft.meeting_title || "a recording"}`
+            : "draft notes from a Zoom transcript"}
+        </span>
+        {open ? (
+          <ChevronDown className="size-3.5 text-muted-foreground/60" />
+        ) : (
+          <ChevronRight className="size-3.5 text-muted-foreground/60" />
+        )}
+      </button>
+
+      {open && (
+        <div className="flex flex-col gap-3 border-t border-border/50 px-3.5 py-3">
+          <div className="flex flex-wrap items-center gap-2">
+            <Select
+              value={meetingId}
+              onValueChange={(v) => typeof v === "string" && setMeetingId(v)}
+            >
+              <SelectTrigger className="h-8 min-w-0 flex-1 text-xs">
+                <SelectValue placeholder={meetings === null ? "Loading recordings…" : "Pick the session recording"} />
+              </SelectTrigger>
+              <SelectContent>
+                {(meetings ?? []).map((m) => (
+                  <SelectItem key={m.id} value={m.id}>
+                    {formatMeetingWhen(m) ? `${formatMeetingWhen(m)} · ` : ""}
+                    {m.title}
+                    {m.duration_minutes ? ` (${m.duration_minutes} min)` : ""}
+                  </SelectItem>
+                ))}
+                {meetings !== null && meetings.length === 0 && (
+                  <SelectItem value="__none" disabled>
+                    No transcripts in the last six months
+                  </SelectItem>
+                )}
+              </SelectContent>
+            </Select>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => void runDraft()}
+              disabled={!meetingId || busy}
+            >
+              {busy ? "Reading the recording…" : draft ? "Draft again" : "Draft notes"}
+            </Button>
+          </div>
+          <p className="text-[11px] leading-relaxed text-muted-foreground/80">
+            Recordings arrive here through the daily Zoom sync. The draft
+            proposes; you accept per block and per number, and what you accept
+            is marked as coming from the recording.
+          </p>
+
+          {draft && (
+            <div className="flex flex-col gap-3 border-t border-border/50 pt-3">
+              {block ? (
+                <div className="flex flex-col gap-2">
+                  <p className="text-[11px] font-medium text-muted-foreground">
+                    Proposed notes for this block
+                  </p>
+                  <pre className="max-h-56 overflow-y-auto whitespace-pre-wrap rounded-lg bg-background/60 p-3 font-sans text-[12.5px] leading-relaxed">
+                    {block.note || "Nothing in the recording answered this block's questions."}
+                  </pre>
+                  {block.quotes.length > 0 && (
+                    <ul className="flex flex-col gap-1">
+                      {block.quotes.slice(0, 6).map((q) => (
+                        <li
+                          key={q}
+                          className="border-l-2 border-[color:var(--color-brand-aqua)]/60 pl-2 text-[12px] italic leading-snug text-muted-foreground"
+                        >
+                          “{q}”
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                  {block.not_covered.length > 0 && (
+                    <p className="text-[11px] leading-snug text-[color:var(--color-brand-warning)]">
+                      Not covered on the recording: {block.not_covered.join("; ")}
+                    </p>
+                  )}
+                  <div className="flex items-center gap-2">
+                    <Button
+                      size="sm"
+                      onClick={applyBlockNote}
+                      disabled={!block.note || taken.has(`block:${activeBlock}`)}
+                    >
+                      {taken.has(`block:${activeBlock}`)
+                        ? "Added to your notes"
+                        : currentNote.trim()
+                          ? "Append to my notes"
+                          : "Use as my notes"}
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <p className="text-[11px] text-muted-foreground">
+                  The draft has nothing for this block.
+                </p>
+              )}
+
+              {(metricRows.length > 0 || baselineRows.length > 0) && (
+                <div className="flex flex-col gap-2 border-t border-border/50 pt-3">
+                  <p className="text-[11px] font-medium text-muted-foreground">
+                    Numbers the recording states
+                  </p>
+                  <ul className="flex flex-col gap-2">
+                    {baselineRows.map(({ key, item }) => {
+                      const numeric = NUMERIC_BASELINE.has(key)
+                        ? numericFromDraft(item.value)
+                        : null;
+                      const usable = !NUMERIC_BASELINE.has(key) || numeric !== null;
+                      const id = `base:${key}`;
+                      return (
+                        <li key={id} className="flex items-start gap-2 text-[12px]">
+                          <div className="min-w-0 flex-1">
+                            <span className="text-muted-foreground">{BASELINE_LABELS[key]}: </span>
+                            <span className="font-medium">{item.value}</span>
+                            {item.quote && (
+                              <span className="block truncate text-[11px] italic text-muted-foreground/70" title={item.quote}>
+                                “{item.quote}”
+                              </span>
+                            )}
+                            {!usable && (
+                              <span className="block text-[11px] text-[color:var(--color-brand-warning)]">
+                                Not a plain number — type it in yourself.
+                              </span>
+                            )}
+                          </div>
+                          <Button
+                            size="xs"
+                            variant="outline"
+                            disabled={!usable || taken.has(id)}
+                            onClick={() => {
+                              onPatchAssessment({
+                                [key]: numeric !== null ? String(numeric) : item.value,
+                              });
+                              setTaken((s) => new Set(s).add(id));
+                            }}
+                          >
+                            {taken.has(id) ? "Used" : "Use"}
+                          </Button>
+                        </li>
+                      );
+                    })}
+                    {metricRows.map(({ key, label, item }) => {
+                      const id = `metric:${key}`;
+                      return (
+                        <li key={id} className="flex items-start gap-2 text-[12px]">
+                          <div className="min-w-0 flex-1">
+                            <span className="text-muted-foreground">{label}: </span>
+                            <span className="font-medium">{item.value}</span>
+                            {item.quote && (
+                              <span className="block truncate text-[11px] italic text-muted-foreground/70" title={item.quote}>
+                                “{item.quote}”
+                              </span>
+                            )}
+                          </div>
+                          <Button
+                            size="xs"
+                            variant="outline"
+                            disabled={taken.has(id)}
+                            onClick={() => {
+                              onSaveMetric(key, item.value);
+                              setTaken((s) => new Set(s).add(id));
+                            }}
+                          >
+                            {taken.has(id) ? "Used" : "Use"}
+                          </Button>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              )}
+
+              <div className="flex items-center justify-between border-t border-border/50 pt-2 text-[11px] text-muted-foreground/70">
+                <span>
+                  {draft.model ? `Drafted by ${draft.model}` : "Drafted"}
+                  {draft.drafted_at
+                    ? ` · ${new Date(draft.drafted_at).toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}`
+                    : ""}
+                </span>
+                <Button size="xs" variant="ghost" onClick={() => void discard()}>
+                  Discard draft
+                </Button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </section>
+  );
+}
+
 export function SessionStep({
   assessment,
   notes,
@@ -360,6 +721,7 @@ export function SessionStep({
   onSaveMetric,
   onSaveCrossCheck,
   onPatchAssessment,
+  onAssessment,
   onFinish,
 }: {
   assessment: CcAssessment;
@@ -369,6 +731,8 @@ export function SessionStep({
   onSaveNote: (id: BlockId, text: string) => void;
   onSaveElapsed: (id: BlockId, seconds: number) => void;
   onSaveMetric: (key: string, value: string) => void;
+  /** Replaces the engagement row after a server action returns it (the transcript draft). */
+  onAssessment?: (a: CcAssessment) => void;
   /**
    * Optional: the workbench serialises its session writes through one queue, so
    * pass this to put cross-check notes in the same line. Without it the note is
@@ -702,6 +1066,19 @@ export function SessionStep({
 
         {/* Capture */}
         <div className="flex min-w-0 flex-col gap-4">
+          <RecordingPanel
+            assessment={assessment}
+            notes={notes}
+            activeBlock={activeBlock}
+            currentNote={draft}
+            onApplyNote={(text) => {
+              setDraft(text);
+              onSaveNote(activeBlock, text);
+            }}
+            onSaveMetric={onSaveMetric}
+            onPatchAssessment={onPatchAssessment}
+            onAssessment={onAssessment}
+          />
           <div>
             <label
               htmlFor="block-notes"
@@ -720,7 +1097,18 @@ export function SessionStep({
           </div>
 
           {activeBlock === "b1" && (
-            <div className="flex flex-col gap-3 border-t border-border/60 pt-4">
+            <div
+              // Same reason as the metric boxes: remount when a baseline value
+              // is accepted from the recording, so the field shows it.
+              key={[
+                assessment.owner_objective,
+                assessment.owner_belief,
+                assessment.annual_revenue,
+                assessment.gross_margin,
+                assessment.operating_profit,
+              ].join("|")}
+              className="flex flex-col gap-3 border-t border-border/60 pt-4"
+            >
               <Field label="Owner's primary objective">
                 <Input
                   defaultValue={assessment.owner_objective ?? ""}
@@ -789,7 +1177,9 @@ export function SessionStep({
                   const multiline = "multiline" in m && m.multiline;
                   return (
                     <div
-                      key={m.key}
+                      // Keyed on the stored value so a number accepted from the
+                      // recording shows up in the box (these are uncontrolled).
+                      key={`${m.key}:${notes[m.key] ?? ""}`}
                       className={cn("min-w-0", multiline && "col-span-2")}
                     >
                       <Field label={m.label} hint={m.hint}>

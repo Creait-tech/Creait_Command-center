@@ -17,7 +17,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, FileText, Lock } from "lucide-react";
+import { ArrowLeft, FileText, Lock, Presentation } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -714,6 +714,14 @@ export function AssessmentWorkbench({
           </Select>
           <Button
             size="sm"
+            variant="outline"
+            render={<Link href={`/assessments/${assessment.id}/present`} />}
+            title="Full-screen frames for the results session: score, pillars, the mirror, what it's worth, the 90 days"
+          >
+            <Presentation className="size-4" /> Present
+          </Button>
+          <Button
+            size="sm"
             render={<Link href={`/assessments/${assessment.id}/report`} />}
           >
             <FileText className="size-4" /> Executive Blueprint
@@ -938,6 +946,7 @@ export function AssessmentWorkbench({
             onPatchAssessment={(patch) =>
               patchAssessment(patch as AssessmentPatch)
             }
+            onAssessment={setAssessment}
             onFinish={() => goStep("scoring")}
           />
         )}
@@ -1288,6 +1297,12 @@ export function AssessmentWorkbench({
                 render={<Link href={`/assessments/${assessment.id}/report`} />}
               >
                 <FileText className="size-4" /> Open the Executive Blueprint
+              </Button>
+              <Button
+                variant="outline"
+                render={<Link href={`/assessments/${assessment.id}/present`} />}
+              >
+                <Presentation className="size-4" /> Present on screen
               </Button>
               {assessment.status !== "delivered" && (
                 <Button
