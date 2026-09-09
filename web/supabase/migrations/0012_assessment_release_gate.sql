@@ -46,11 +46,12 @@
 --                               editor. It triggers the ±25% widening on its
 --                               own, whether or not a P&L is on file.
 --
--- SCORE INTEGRALITY: 0004 already declares score and potential_score as
--- SMALLINT CHECK (BETWEEN 0 AND 4). SMALLINT cannot hold 2.5, so integrality
--- is already guaranteed by the column type and no further CHECK is added here.
--- The app rejects fractional input before it reaches Postgres as well
--- (upsertIndicatorScore), because a rounded score is a silently wrong score.
+-- SCORE INTEGRALITY: 0004 declares score and potential_score as SMALLINT
+-- CHECK (BETWEEN 0 AND 4). Correction (9 Sep 2026, found by the simulated
+-- engagements): Postgres does NOT refuse a fraction on assignment to SMALLINT —
+-- it rounds it, so an INSERT of 2.5 lands as 3 with no error, and a CHECK
+-- cannot see the pre-cast value. The integer check in upsertIndicatorScore is
+-- therefore the real guard; every write path must go through it.
 --
 -- RLS: the new columns live on tables that already carry org_isolation from
 -- 0004; no policy changes are needed and none are made.
