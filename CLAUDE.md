@@ -6,7 +6,7 @@ Internal business OS for CREAIT (AI consulting agency, Atlanta — 4 co-founders
 
 ## Architecture
 
-- `web/` — Next.js (App Router) + Clerk (Organizations; org `org_3Ef1YcutwEZFZHEMLwhF57jbEEh` = CREAIT, all four founders are org:admin) + Supabase Postgres (project `choxhzsfmiftdaanrkpa`, RLS keyed on Clerk org_id claim) + Inngest (crons + events) + Tailwind + Base UI.
+- `web/` — Next.js (App Router) + Clerk (Organizations; org `org_3J6RO66XyUmqeMbZ8RwIyFTCf7J` = CREAIT, all four founders are org:admin) + Supabase Postgres (project `choxhzsfmiftdaanrkpa`, RLS keyed on Clerk org_id claim) + Inngest (crons + events) + Tailwind + Base UI.
 - `mcp/` — the MCP server source (deployed separately to the VPS).
 - Key routes: `/command-center` (scoreboard), `/level-10` (EOS meeting runner, 8 meeting types), `/war-room` (transcript search), `/meetings`, `/rocks`, `/todos`, `/clients`, `/agents`.
 - Background jobs live in `web/lib/inngest-functions.ts`; each has BOTH a cron trigger and a `cron/<name>` event trigger fired by `GET /api/cron/[name]` (auth: `Bearer CRON_SECRET` or Vercel cron headers).

@@ -27,7 +27,7 @@
  */
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
-export const ORG_ID = process.env.DEFAULT_ORG_ID ?? "org_3Ef1YcutwEZFZHEMLwhF57jbEEh";
+export const ORG_ID = process.env.DEFAULT_ORG_ID ?? "org_3J6RO66XyUmqeMbZ8RwIyFTCf7J";
 
 /** Who the agent is, on every row it writes. */
 export const AGENT_ACTOR_ID = "hermes";

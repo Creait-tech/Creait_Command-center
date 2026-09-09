@@ -14,7 +14,7 @@ import { createClient } from "@supabase/supabase-js";
 const SUPABASE_URL = process.env.SUPABASE_URL ?? "";
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY ?? "";
 const DEFAULT_OWNER_USER_ID = process.env.DEFAULT_OWNER_USER_ID ?? "maurice";
-const DEFAULT_ORG_ID = process.env.DEFAULT_ORG_ID ?? "org_3Ef1YcutwEZFZHEMLwhF57jbEEh";
+const DEFAULT_ORG_ID = process.env.DEFAULT_ORG_ID ?? "org_3J6RO66XyUmqeMbZ8RwIyFTCf7J";
 
 function sb() {
   if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
