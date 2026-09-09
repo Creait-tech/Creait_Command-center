@@ -1,0 +1,1200 @@
+{
+ "n": 16,
+ "company": "Brooks Realty Collective",
+ "owner": "Danielle Brooks",
+ "industry": "Real estate brokerage",
+ "profile": {
+  "revenue": 8500000,
+  "grossMarginPct": 23,
+  "operatingProfit": 340000,
+  "headcount": 45,
+  "founded": 2016,
+  "story": "Danielle Brooks holds the broker licence for a 40-agent independent brokerage in Nashville. Gross commission income last year was $8.5M; the brokerage's own share after splits — the company dollar — was $1.96M, and $340K of that reached the operating line. The forty agents are independent contractors she is legally barred from supervising as employees; the five people on payroll are a flat administrative function reporting to her. The brokerage's product to an agent is company-generated business, and its own routing log shows 31% of those leads never get a logged contact from anyone."
+ },
+ "edge_cases": [
+  "exactly two legitimate N/As in one pillar (S4 and S7), each with a written model-based reason — under the three-N/A threshold, so Systems is still scored on eight indicators",
+  "S4 and S7 are the deliberately arguable ones: the reasons are model constraints (independent-contractor status, delivery owned by the contractor), not 'we don't do that'",
+  "revenue field is GCI ($8.5M) while the margin, the opportunities and the constraint cost all run on company dollar — tests that the chain does not silently mix the two",
+  "customer concentration is genuinely nil while producer concentration is real — S8 scores 4 and the risk is carried on S10"
+ ],
+ "intake": {
+  "q1": [
+   {
+    "row": "Your name",
+    "value": "Danielle Brooks"
+   },
+   {
+    "row": "Email",
+    "value": "danielle@brooksrealtycollective.com"
+   },
+   {
+    "row": "Phone",
+    "value": "(615) 555-0173"
+   },
+   {
+    "row": "Company name",
+    "value": "Brooks Realty Collective, LLC"
+   },
+   {
+    "row": "Website",
+    "value": "brooksrealtycollective.com"
+   },
+   {
+    "row": "Location",
+    "value": "Nashville, Tennessee"
+   },
+   {
+    "row": "Industry",
+    "value": "Residential real estate brokerage"
+   }
+  ],
+  "q2": "We are an independent residential brokerage. Forty licensed agents, all independent contractors on a graduated split, and five people on payroll: two transaction coordinators, a marketing coordinator, a front-desk and licensing administrator, and a bookkeeper. The brokerage earns its money on the company side of each agent's commission, plus a per-transaction coordination fee and referral income from an affiliated title company. What we sell to an agent is leads, compliance cover, marketing support and a place to hang a licence. I hold the broker licence, so every file is legally mine whether I touched it or not.",
+  "q3": [
+   {
+    "row": "Primary",
+    "objective": "Prepare to scale"
+   },
+   {
+    "row": "Secondary 1",
+    "objective": "More profit & cash flow"
+   },
+   {
+    "row": "Secondary 2",
+    "objective": "Reduce owner dependence"
+   }
+  ],
+  "q4": [
+   {
+    "row": "1",
+    "outcome": "GCI per agent",
+    "target": "From $212K back to $240K"
+   },
+   {
+    "row": "2",
+    "outcome": "Routed leads with a logged contact inside one hour",
+    "target": "From 69% to 95%"
+   },
+   {
+    "row": "3",
+    "outcome": "Agent retention",
+    "target": "From 78% to 88%"
+   }
+  ],
+  "q5": "Sixty agents doing better numbers than forty are doing now, a second broker on the licence so I am not the only signature in the building, and a lead operation good enough that agents come to us for the business rather than the split. I would like recruiting to be a process somebody else runs and I close, instead of a thing I do in the evenings.",
+  "q6": "Selling & managing customer relationships",
+  "q7": [
+   {
+    "row": "Hours/week now",
+    "value": "54"
+   },
+   {
+    "row": "Hours/week you want in 12 months",
+    "value": "45"
+   },
+   {
+    "row": "Hours/week you want in 3 years",
+    "value": "35"
+   },
+   {
+    "row": "Longest uninterrupted time away in the past 12 months",
+    "value": "6 days, and I signed twelve files from a phone"
+   },
+   {
+    "row": "What pulls you back in",
+    "value": "Broker sign-off on every file, and any agent who is thinking about leaving"
+   }
+  ],
+  "q8": "We need more agents. Every brokerage in this market is a recruiting business and I am losing the race — two of the big franchises opened offices within a mile of us in eighteen months and they are outspending me on recruiting. If I had sixty agents instead of forty this would all take care of itself.",
+  "q9": [
+   {
+    "row": "Year founded",
+    "value": "2016"
+   },
+   {
+    "row": "Owners & percentages",
+    "value": "Danielle Brooks 100%"
+   },
+   {
+    "row": "Any owner misalignment affecting decisions?",
+    "value": "No — sole owner"
+   }
+  ],
+  "q10": [
+   {
+    "row": "Full-time employees",
+    "count": "5"
+   },
+   {
+    "row": "Part-time",
+    "count": "0"
+   },
+   {
+    "row": "Regular contractors",
+    "count": "40"
+   },
+   {
+    "row": "Managers / team leads",
+    "count": "0"
+   },
+   {
+    "row": "People with direct reports",
+    "count": "1"
+   }
+  ],
+  "q11": "Local",
+  "q12": [
+   {
+    "row": "One-time projects",
+    "pct": "88"
+   },
+   {
+    "row": "Recurring contracts",
+    "pct": "0"
+   },
+   {
+    "row": "Repeat without contract",
+    "pct": "0"
+   },
+   {
+    "row": "Products",
+    "pct": "0"
+   },
+   {
+    "row": "Retainers",
+    "pct": "0"
+   },
+   {
+    "row": "Other",
+    "pct": "12"
+   }
+  ],
+  "q13": [
+   {
+    "name": "Company dollar on agent transactions",
+    "pct": "79",
+    "margin": "100",
+    "trend": "Flat",
+    "importance": "The whole business. It is the split, and the split is under permanent pressure"
+   },
+   {
+    "name": "Transaction coordination fee ($495/side)",
+    "pct": "11",
+    "margin": "38",
+    "trend": "Growing",
+    "importance": "Pays for the TC team and not much more"
+   },
+   {
+    "name": "Affiliated title & mortgage referral income",
+    "pct": "6",
+    "margin": "94",
+    "trend": "Growing",
+    "importance": "Best margin we have and the attach rate is 41%"
+   },
+   {
+    "name": "Agent marketing packages and desk fees",
+    "pct": "4",
+    "margin": "62",
+    "trend": "Flat",
+    "importance": "Small, and half the agents opt out"
+   }
+  ],
+  "q14": [
+   {
+    "row": "Active customer count",
+    "value": "714 closed sides last year; 4,200 past clients in the database, 1,340 of them from company-generated leads"
+   },
+   {
+    "row": "B2B / B2C / mixed",
+    "value": "B2C for the consumer; the agents are the real customer"
+   },
+   {
+    "row": "% of revenue from your largest customer",
+    "value": "0.9% — one luxury side. No consumer is material"
+   },
+   {
+    "row": "% of revenue from your top five",
+    "value": "3.4% of GCI across the five largest transactions"
+   },
+   {
+    "row": "% of revenue tied directly to YOUR personal relationships",
+    "value": "About 30% — three agents I personally recruited do 22% of the GCI, and they stay because of me"
+   }
+  ],
+  "q15": [
+   {
+    "row": "Last completed year",
+    "amount": "8500000"
+   },
+   {
+    "row": "Prior year",
+    "amount": "7940000"
+   },
+   {
+    "row": "Year to date",
+    "amount": "6620000"
+   },
+   {
+    "row": "Full-year forecast",
+    "amount": "8900000"
+   }
+  ],
+  "q16": "Up 10% or less",
+  "q17": [
+   {
+    "row": "Approximate gross margin %",
+    "value": "23% — that is company dollar retained on $8.5M of GCI, about $1.96M"
+   },
+   {
+    "row": "Main direct costs",
+    "value": "Agent commission splits, referral fees out, MLS and franchise-free association dues we cover, transaction coordinator payroll"
+   },
+   {
+    "row": "Tracked by job / service / customer?",
+    "value": "Yes — company dollar per transaction and per agent comes out of Brokermint monthly"
+   }
+  ],
+  "q18": [
+   {
+    "row": "Operating profit estimate",
+    "amount": "340000"
+   },
+   {
+    "row": "Owner salary",
+    "amount": "185000"
+   },
+   {
+    "row": "Owner distributions",
+    "amount": "70000"
+   },
+   {
+    "row": "Unusual one-off expenses",
+    "amount": "58000"
+   }
+  ],
+  "q19": [
+   "Profitable but tight",
+   "Seasonality",
+   "Customer payment timing"
+  ],
+  "q20": "Monthly, within 15 days",
+  "q21": [
+   {
+    "row": "Revenue",
+    "target": "$10M GCI"
+   },
+   {
+    "row": "Gross margin",
+    "target": "25% company dollar"
+   },
+   {
+    "row": "Operating profit",
+    "target": "$450K"
+   },
+   {
+    "row": "Cash reserve",
+    "target": "No target — commissions are lumpy and I just watch it"
+   },
+   {
+    "row": "Owner compensation",
+    "target": "No target"
+   }
+  ],
+  "q22": "QuickBooks P&L last 24 months, production by agent, company dollar per transaction out of Brokermint, the commission split schedule, the commission disbursement register, the Follow Up Boss lead routing and contact log, and the independent contractor agreement set.",
+  "q23": [
+   {
+    "source": "Portal leads (Zillow / Realtor.com)",
+    "per_month": "190",
+    "cost": "9400",
+    "quality": "2",
+    "tracked": "Yes"
+   },
+   {
+    "source": "Brokerage website & paid social",
+    "per_month": "86",
+    "cost": "4100",
+    "quality": "3",
+    "tracked": "Yes"
+   },
+   {
+    "source": "Open house & sign calls",
+    "per_month": "44",
+    "cost": "0",
+    "quality": "4",
+    "tracked": "Yes"
+   },
+   {
+    "source": "Past client & sphere referral (brokerage-owned)",
+    "per_month": "20",
+    "cost": "0",
+    "quality": "5",
+    "tracked": "Yes"
+   },
+   {
+    "source": "Agent recruiting conversations",
+    "per_month": "18",
+    "cost": "1800",
+    "quality": "3",
+    "tracked": "Yes"
+   }
+  ],
+  "q24": [
+   {
+    "row": "What happens, step by step",
+    "value": "Every consumer lead lands in Follow Up Boss and round-robins to an agent on the lead roster. The agent gets a text and a task. What happens after that is between the agent and the lead"
+   },
+   {
+    "row": "Typical response time",
+    "value": "Median four hours twenty minutes to a logged contact. Thirty-one percent have no logged contact at all"
+   },
+   {
+    "row": "Who is responsible",
+    "value": "The receiving agent. Nobody at the brokerage owns the outcome"
+   },
+   {
+    "row": "Is every inquiry captured in one system?",
+    "value": "Yes — Follow Up Boss captures every one. What we cannot see is whether the agent worked it outside the system"
+   },
+   {
+    "row": "Automated follow-up?",
+    "value": "A three-email nurture fires from the brokerage account regardless of what the agent does"
+   },
+   {
+    "row": "% of leads that get 2+ follow-ups",
+    "value": "The nurture hits everybody. Agent-initiated second contacts, maybe half"
+   }
+  ],
+  "q25": [
+   {
+    "row": "Lead→sale or proposal→close %",
+    "value": "2.4% of routed consumer leads become a closed side. 22% of recruiting conversations become a signed agent"
+   },
+   {
+    "row": "Tracked by source / person / service?",
+    "value": "By source and by agent in Follow Up Boss and Brokermint"
+   },
+   {
+    "row": "Defined sales process?",
+    "value": "For the consumer, no — that is the agent's business. For recruiting, no. That is me over coffee"
+   },
+   {
+    "row": "Most common reason you lose",
+    "value": "Consumer: nobody called them back fast enough. Agent: a franchise offered a better split"
+   }
+  ],
+  "q26": [
+   {
+    "row": "Typical first sale",
+    "value": "$11,900 GCI per closed side; $2,740 of company dollar"
+   },
+   {
+    "row": "Typical annual customer value",
+    "value": "$212,500 of GCI per agent per year"
+   },
+   {
+    "row": "Most valuable segment",
+    "value": "Agents doing 12–20 sides who use our leads. The mega-producers take a split that leaves us almost nothing"
+   },
+   {
+    "row": "Tracked?",
+    "value": "Yes, monthly, per agent"
+   }
+  ],
+  "q27": [
+   {
+    "row": "% who buy again",
+    "value": "Consumers, roughly 4% a year — it is a seven-year move cycle"
+   },
+   {
+    "row": "Renewal rate if applicable",
+    "value": "Agent retention 78% a year"
+   },
+   {
+    "row": "Are inactive customers identified?",
+    "value": "The 1,340 past clients from brokerage leads are identifiable in Follow Up Boss. Agent-sourced past clients belong to the agent"
+   },
+   {
+    "row": "Reactivation campaigns ever run?",
+    "value": "No. We send a market-update email that nobody opens"
+   },
+   {
+    "row": "Why customers leave",
+    "value": "Consumers go to whoever called them back. Agents go for a split, or because they stopped feeling like the leads were real"
+   }
+  ],
+  "q28": [
+   "Reviewed annually",
+   "Based on real job economics",
+   "Varies by scope or value",
+   "Pricing is a current worry"
+  ],
+  "q29": [
+   {
+    "row": "Complementary services routinely offered?",
+    "value": "Title and mortgage get mentioned at contract. Attach rate is 41%"
+   },
+   {
+    "row": "Bundles or packages?",
+    "value": "The split tiers, sort of. There is no named package"
+   },
+   {
+    "row": "Premium option?",
+    "value": "No"
+   },
+   {
+    "row": "Entry-level option?",
+    "value": "A 50/50 split with full lead access for new licensees"
+   },
+   {
+    "row": "Customer needs you can't currently serve",
+    "value": "Property management, and commercial. We refer both out for nothing"
+   }
+  ],
+  "q30": [
+   {
+    "row": "Who owns marketing",
+    "value": "Neena, our marketing coordinator, for listings. Nobody owns brokerage marketing"
+   },
+   {
+    "row": "Who owns sales",
+    "value": "Me — recruiting is the brokerage's only sale and it is entirely mine"
+   },
+   {
+    "row": "Monthly marketing budget",
+    "value": "$15,300 including portal lead spend"
+   },
+   {
+    "row": "Do sales & marketing review results together?",
+    "value": "Sometimes. We look at cost per lead most months"
+   },
+   {
+    "row": "Are leads, conversion, CAC and customer value ever reviewed together?",
+    "value": "Leads and cost per lead yes. Conversion to closed side and GCI per agent sit in a different report and a different month"
+   }
+  ],
+  "q31": "Quality would slip",
+  "q32": [
+   {
+    "row": "1",
+    "area": "Leads we are paying for and not working"
+   },
+   {
+    "row": "2",
+    "area": "Title and mortgage attach rate"
+   },
+   {
+    "row": "3",
+    "area": "The split exceptions I keep granting"
+   }
+  ],
+  "q33": [
+   {
+    "workflow": "Consumer lead capture and routing"
+   },
+   {
+    "workflow": "Agent recruiting and onboarding"
+   },
+   {
+    "workflow": "Licence transfer and association registration"
+   },
+   {
+    "workflow": "Listing intake and marketing package"
+   },
+   {
+    "workflow": "Contract to close — transaction coordination"
+   },
+   {
+    "workflow": "Broker compliance review and file sign-off"
+   },
+   {
+    "workflow": "Commission disbursement"
+   },
+   {
+    "workflow": "Split schedule and exception approval"
+   },
+   {
+    "workflow": "Agent offboarding and pipeline transfer"
+   },
+   {
+    "workflow": "Title and mortgage referral handoff"
+   }
+  ],
+  "q34": [
+   {
+    "row": "One clear accountable role",
+    "frequency": "Usually"
+   },
+   {
+    "row": "Defined handoffs",
+    "frequency": "Sometimes"
+   },
+   {
+    "row": "Consistent exception escalation",
+    "frequency": "Sometimes"
+   }
+  ],
+  "q35": [
+   {
+    "row": "Documented",
+    "pct": "50"
+   },
+   {
+    "row": "Current",
+    "pct": "40"
+   },
+   {
+    "row": "Accessible",
+    "pct": "55"
+   },
+   {
+    "row": "Used in training",
+    "pct": "35"
+   },
+   {
+    "row": "Actually followed",
+    "pct": "45"
+   }
+  ],
+  "q36": [
+   "Missed handoffs",
+   "Incomplete information",
+   "Late billing",
+   "The owner has to step in",
+   "Accountability problems"
+  ],
+  "q37": "Owner time",
+  "q38": "Informal",
+  "q39": [
+   {
+    "row": "How many KPIs reviewed weekly",
+    "value": "Two — leads routed and pendings. Everything else is monthly"
+   },
+   {
+    "row": "Does each have one owner?",
+    "value": "Leads, no. Pendings, the TC team"
+   },
+   {
+    "row": "Are targets visible?",
+    "value": "No"
+   },
+   {
+    "row": "Does a miss trigger action?",
+    "value": "Rarely. There is nothing to enforce against a contractor"
+   }
+  ],
+  "q40": "Weekly but loose",
+  "q41": [
+   {
+    "row": "CRM",
+    "tool": "Follow Up Boss"
+   },
+   {
+    "row": "Marketing",
+    "tool": "Canva, BombBomb, Meta Ads"
+   },
+   {
+    "row": "Sales / proposals",
+    "tool": "none — recruiting runs out of my phone and a spreadsheet"
+   },
+   {
+    "row": "Scheduling / project management",
+    "tool": "Brokermint"
+   },
+   {
+    "row": "Delivery",
+    "tool": "Dotloop + Brokermint (compliance)"
+   },
+   {
+    "row": "Accounting",
+    "tool": "QuickBooks Online"
+   },
+   {
+    "row": "Reporting",
+    "tool": "Brokermint reports plus an Excel split model"
+   },
+   {
+    "row": "Communication",
+    "tool": "Slack for staff, text and email for agents"
+   },
+   {
+    "row": "Files / knowledge",
+    "tool": "Dropbox and a Google Site the agents rarely open"
+   },
+   {
+    "row": "HR / payroll",
+    "tool": "Gusto (staff only — agents are 1099)"
+   }
+  ],
+  "q42": "Mostly separate, plus spreadsheets",
+  "q43": [
+   "Data is generally accurate",
+   "Customer and financial data can be connected",
+   "Backups exist"
+  ],
+  "q44": [
+   {
+    "task": "Compliance file review and chasing missing documents",
+    "who": "Transaction coordinators (2)",
+    "frequency": "Daily",
+    "occurrences": "5",
+    "minutes": "165",
+    "errors": "Yes",
+    "systems": "Brokermint, Dotloop, email"
+   },
+   {
+    "task": "Commission disbursement authorisation prep",
+    "who": "Yvette Salas (bookkeeper)",
+    "frequency": "Several times a week",
+    "occurrences": "3",
+    "minutes": "70",
+    "errors": "Yes",
+    "systems": "Brokermint, QuickBooks"
+   },
+   {
+    "task": "Agent onboarding and licence transfer paperwork",
+    "who": "Cam Whitfield (front desk / licensing)",
+    "frequency": "Weekly",
+    "occurrences": "1",
+    "minutes": "140",
+    "errors": "Yes",
+    "systems": "State licensing portal, Brokermint, Gusto"
+   },
+   {
+    "task": "Listing marketing package assembly",
+    "who": "Neena Chandra (marketing coordinator)",
+    "frequency": "Daily",
+    "occurrences": "5",
+    "minutes": "55",
+    "errors": "Yes",
+    "systems": "Canva, MLS, Dropbox"
+   },
+   {
+    "task": "Monthly production and split reconciliation",
+    "who": "Yvette Salas",
+    "frequency": "Monthly",
+    "occurrences": "1",
+    "minutes": "210",
+    "errors": "Yes",
+    "systems": "Brokermint, QuickBooks, Excel"
+   }
+  ],
+  "q45": "Lead round-robin routing out of Follow Up Boss, a three-email consumer nurture that fires whatever the agent does, listing-status alerts to the marketing coordinator, and closing-date reminders to the transaction coordinators. All four work. Nothing is automated on the recruiting side, and nothing chases an agent who has not touched a lead.",
+  "q46": [
+   "Drafting",
+   "Marketing content",
+   "Customer communication"
+  ],
+  "q47": [
+   "Sensitive-data rules are defined"
+  ],
+  "q48": [
+   "Shared passwords",
+   "Ex-employees may retain access",
+   "Inconsistent backups",
+   "Unclear account ownership"
+  ],
+  "q49": [
+   {
+    "row": "Implementation budget range",
+    "value": "$20,000–$30,000, if it shows up in company dollar"
+   },
+   {
+    "row": "Owner hours/week available",
+    "value": "4"
+   },
+   {
+    "row": "Team hours/week available",
+    "value": "6 across the five staff"
+   },
+   {
+    "row": "Appetite for changing systems",
+    "value": "Mine is high. The agents will adopt exactly nothing they are not paid to adopt, and I cannot make them"
+   }
+  ],
+  "q58": "Pockets of capability",
+  "q59": "Yvette and Cam will take on anything that reduces paperwork — Cam has asked twice for a better onboarding flow. Neena is the most capable technically and the most underused. The transaction coordinators are drowning and will adopt anything that stops the chasing. The agents are the wall: forty independent contractors with no obligation to use a single tool I buy, and the top producers are the least likely to change because they already have their own stack.",
+  "q56": [
+   {
+    "role": "Principal broker (owner)",
+    "rate": "118"
+   },
+   {
+    "role": "Bookkeeper / controller",
+    "rate": "49"
+   },
+   {
+    "role": "Transaction coordinator",
+    "rate": "41"
+   },
+   {
+    "role": "Marketing coordinator",
+    "rate": "38"
+   },
+   {
+    "role": "Front desk & licensing administrator",
+    "rate": "34"
+   }
+  ],
+  "q50": [
+   "Pricing exceptions",
+   "Major sales",
+   "Customer escalations",
+   "Hiring / firing",
+   "Purchasing",
+   "Quality sign-off",
+   "Banking / payments",
+   "Vendor relationships",
+   "Strategy"
+  ],
+  "q51": [
+   {
+    "row": "What keeps running",
+    "value": "Agents sell. Transactions coordinate. Marketing goes out. Nothing about the revenue stops"
+   },
+   {
+    "row": "What slows down",
+    "value": "Recruiting stops entirely. Split exceptions have nobody to approve them"
+   },
+   {
+    "row": "What stops",
+    "value": "Broker file sign-off. Legally there is one other licensed broker in the building and she has never signed a file. Three agent relationships are mine and would start looking"
+   },
+   {
+    "row": "Who decides",
+    "value": "Yvette on money to $5K. Nobody on anything else"
+   },
+   {
+    "row": "What nobody else can access",
+    "value": "The escrow account, the state licensing portal, and the recruiting spreadsheet on my laptop"
+   }
+  ],
+  "q52": [
+   {
+    "risk": "Danielle Brooks — principal broker licence and file sign-off",
+    "impact": "Without a designated broker the brokerage cannot legally close a transaction. There is a second licensed broker on staff who has never been trained or used"
+   },
+   {
+    "risk": "Top three producing agents — 22% of GCI",
+    "impact": "They are contractors, they can leave on notice with their pipelines, and they stay because of a personal relationship with the owner"
+   },
+   {
+    "risk": "The lead roster as a recruiting promise",
+    "impact": "If agents conclude the leads are not worked, the recruiting story collapses and retention follows it"
+   },
+   {
+    "risk": "Escrow account and state licensing portal access",
+    "impact": "Owner-only. Nothing closes and no licence transfers if she is unreachable"
+   }
+  ],
+  "q53": [
+   "Customer agreements are written & accessible",
+   "Vendor agreements are written",
+   "Licenses & insurance are current",
+   "The company owns its IP and digital accounts",
+   "No known legal, tax or insurance issue"
+  ],
+  "q54": [
+   "Leadership depth",
+   "Sales without the owner",
+   "Succession"
+  ],
+  "q55": "The owner would have to drive everything",
+  "q57": "Steady"
+ },
+ "session": {
+  "engine": {
+   "leads_per_month": "340 consumer leads routed to agents; 18 recruiting conversations",
+   "conversion_rate": "2.4% of routed consumer leads to a closed side; 22% of recruiting conversations to a signed agent",
+   "avg_deal_value": "$11,900 GCI per closed side ($2,740 company dollar); $212,500 GCI per agent per year",
+   "response_time": "median 4h 20m to first logged agent contact — and 31% have no logged contact at all",
+   "gross_margin_pct": "23 (company dollar on GCI)",
+   "headcount": "45 (5 staff, 40 contractor agents)",
+   "repetitive_hours_week": "Compliance file review & document chasing — TC team — 13.8\nListing marketing package assembly — Neena — 4.6\nCommission disbursement prep — Yvette — 3.5\nProduction & split reconciliation — Yvette — 3.5\nAgent onboarding & licence transfer — Cam — 2.3",
+   "largest_customer_pct": "0.9"
+  },
+  "blockNotes": {
+   "b1": "Danielle's stated bottleneck is agent count. Her own q4 targets are GCI per agent, lead contact rate and retention — three measures of what happens to the agents she already has. Agent count went 31 to 40 over two years while GCI per agent went $228K to $212K, which is the argument in one line. Steady on q57, not a burnout case.",
+   "b2": "340 consumer leads a month, all captured in Follow Up Boss, round-robined to a lead roster — and the routing log shows 31% with no logged contact by anyone, ever. Median time to contact on the rest is 4h 20m. Funnel reconciles: 4,080 routed leads × 2.4% × $11,900 = ~$1.17M of GCI, which is the 14% of the $8.5M that comes from company leads; the other 86% is agents' own business at 40 × $212,500. Pass.",
+   "b3": "Systems tour. Follow Up Boss, Brokermint, Dotloop and QuickBooks are all real and all used, but the joins are manual — the split model is an Excel file and production reconciliation is 3.5 hours a month of retyping. Compliance queue opened: one Dotloop file carried eleven chase emails for a single missing disclosure.",
+   "b4": "27.7 h/wk of repetitive work against a five-person staff pool of ~200 hours — 14%, plausible, pass. The 40 agents are deliberately outside that pool: they are contractors, their hours are not the brokerage's to count, and counting them would flatter the ratio.",
+   "b5": "Two N/As recorded here and both are model constraints, not gaps. S4: the revenue-producing population is 40 independent contractors the brokerage is legally barred from supervising, and the five staff are a flat function. S7: consumer-facing delivery consistency and capacity belong to each contractor. What the brokerage does control — file compliance and coordination — is scored on S5. Concentration on the customer axis is nil; the real concentration is three agents at 22% of GCI and it is carried on S10."
+  },
+  "demonstrated": [
+   "Follow Up Boss routing and contact log — 31% of routed leads with no logged contact, median 4h 20m on the rest",
+   "Lead source dashboard with spend and cost per lead on both paid channels",
+   "The three-email consumer nurture firing from the brokerage account independent of the agent",
+   "Brokermint compliance queue and a Dotloop file carrying eleven chase emails for one missing disclosure",
+   "The Excel split-exception model — eight producers on off-schedule splits",
+   "Brokermint company-dollar-per-agent view, opened live",
+   "Agent onboarding and licence transfer run end to end on a live new agent",
+   "Monthly production reconciliation retyped from Brokermint into Excel"
+  ],
+  "documents_seen": [
+   "QuickBooks P&L 24 months — GCI $8.5M, company dollar 23% ($1.96M), operating profit $340K",
+   "Production by agent — top three agents 22% of GCI; no consumer above 0.9%",
+   "Company dollar per transaction (Brokermint) — $2,740 average, $1,910 on the top-producer splits",
+   "Commission split schedule, revised March 2024 with the desk-cost analysis behind it",
+   "Commission disbursement register, trailing 12 months",
+   "Follow Up Boss routing and contact log export",
+   "Independent contractor agreement set — 40 agreements, one template, all current"
+  ]
+ },
+ "dataRoom": {
+  "pnl_on_file": true,
+  "documents": [
+   {
+    "name": "QuickBooks P&L 24 months",
+    "kind": "pnl",
+    "received_on": "2026-08-26"
+   },
+   {
+    "name": "Production by agent, trailing 12 months",
+    "kind": "revenue_by_customer",
+    "received_on": "2026-08-26"
+   },
+   {
+    "name": "Company dollar per transaction (Brokermint)",
+    "kind": "job_cost",
+    "received_on": "2026-08-29"
+   },
+   {
+    "name": "Commission split schedule (March 2024) with desk-cost analysis",
+    "kind": "rate_card",
+    "received_on": "2026-08-29"
+   },
+   {
+    "name": "Commission disbursement register, 12 months",
+    "kind": "other",
+    "received_on": "2026-09-01"
+   },
+   {
+    "name": "Follow Up Boss routing and contact log export",
+    "kind": "other",
+    "received_on": "2026-09-01"
+   },
+   {
+    "name": "Independent contractor agreement set (40)",
+    "kind": "other",
+    "received_on": "2026-09-03"
+   }
+  ]
+ },
+ "scores": {
+  "P1": {
+   "score": 3,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Follow Up Boss source dashboard shown live: five sources logged in one place with monthly volume and spend — portals 190/mo at $9,400, website and paid social 86 at $4,100, open house 44, sphere referral 20, recruiting conversations 18 at $1,800. Cost per lead reviewed most months (q30).",
+   "why_not_higher": "Anchor 4 needs cost and quality tracked monthly alongside volume; quality is a 1–5 impression and conversion to closed side sits in a different report in a different month."
+  },
+  "P2": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Capture is complete — every consumer lead lands in Follow Up Boss. Response is not: the routing log shows a median 4h 20m to first logged contact and 31% with no logged contact by anyone. q24: 'Nobody at the brokerage owns the outcome.'",
+   "why_not_higher": "Anchor 3 needs a response inside the same half-day on every inquiry with an owner; nearly a third are never touched and the receiving agent cannot be compelled to touch them."
+  },
+  "P3": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "A three-email brokerage nurture fires on every routed lead regardless of the agent — shown running. Beyond that, q24 puts agent-initiated second contacts at 'maybe half', and the brokerage cannot see follow-up done outside Follow Up Boss.",
+   "why_not_higher": "Anchor 3 needs a defined sequence used on most leads with missed follow-ups visible in the system; the sequence is three emails and the human follow-up is invisible by design."
+  },
+  "P4": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "q25: 2.4% of routed leads become a closed side and 22% of recruiting conversations become a signed agent, both tracked by source and person in Follow Up Boss and Brokermint. No process behind either — 'that is the agent's business', and recruiting is 'me over coffee'.",
+   "why_not_higher": "Anchor 3 needs stages defined and used; there are no stages on either of the two conversions the brokerage actually depends on."
+  },
+  "P5": {
+   "score": 2,
+   "na": false,
+   "evidence": "documented",
+   "note": "Commission split schedule revised March 2024 with the desk-cost analysis behind it (Doc) — real economics, reviewed. But the disbursement register shows eight producers on off-schedule splits granted to retain them, and q28 flags pricing as a current worry.",
+   "why_not_higher": "Anchor 3 needs written discount rules; there are none — split exceptions are granted case by case by the owner and cost $74K of company dollar last year."
+  },
+  "P6": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "q29: title and mortgage referral is mentioned at contract with a 41% attach rate; there is a 50/50 entry split for new licensees. Nothing is named or packaged and there is no premium tier.",
+   "why_not_higher": "Anchor 3 needs named tiers or bundles and a scripted upsell; the split tiers exist as a schedule rather than an offer, and the highest-margin line in the business (94% on referral income) is offered ad hoc."
+  },
+  "P7": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Agent retention 78% a year and consumer re-transaction around 4% are both roughly known, and the 1,340 brokerage-sourced past clients are identifiable in Follow Up Boss — shown live. q27: no reactivation campaign has ever run; 'we send a market-update email that nobody opens'.",
+   "why_not_higher": "Anchor 3 needs the inactive list pulled and worked at least twice a year; it can be pulled in one click and has never been worked."
+  },
+  "P8": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Neena owns listing marketing; q30 says nobody owns brokerage marketing and recruiting is entirely Danielle. Cost per lead is reviewed most months in the meeting we sat in.",
+   "why_not_higher": "Anchor 3 needs leads, conversion and value reviewed monthly with named owners; cost per lead is reviewed and conversion to closed side and GCI per agent are not in the same meeting or the same month."
+  },
+  "P9": {
+   "score": 3,
+   "na": false,
+   "evidence": "documented",
+   "note": "Company dollar per transaction and per agent comes out of Brokermint monthly (Doc): $2,740 average, $1,910 on the top-producer splits. Used at split negotiation and in the March 2024 schedule revision.",
+   "why_not_higher": "Anchor 4 needs the number driving decisions; eight off-schedule splits were granted after the analysis existed, which is the definition of knowing the margin and not using it."
+  },
+  "P10": {
+   "score": 3,
+   "na": false,
+   "evidence": "documented",
+   "note": "q20 'Monthly, within 15 days', confirmed against 24 dated monthly P&Ls. Danielle reviews them. q21 carries targets on GCI, company dollar and operating profit.",
+   "why_not_higher": "Anchor 4 needs targets across the numbers; cash reserve and owner compensation both read 'No target', and commissions are the lumpiest cash line in the business."
+  },
+  "S1": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Transaction coordination and marketing genuinely run without her — watched both operate through the session. q50 keeps pricing exceptions, recruiting, escalations, hiring, purchasing, file sign-off, banking, vendors and strategy with Danielle, and q38 reads 'Informal'.",
+   "why_not_higher": "Anchor 3 needs decision rights written for most areas; nothing is written, and file sign-off is a legal obligation that cannot be delegated without training the second broker — which has not been done."
+  },
+  "S2": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "q51 four-week test: revenue does not stop — agents sell, transactions coordinate, marketing goes out. Recruiting stops, split exceptions have no approver, and broker file sign-off stops, which means nothing legally closes. Longest real absence six days, with twelve files signed from a phone.",
+   "why_not_higher": "Anchor 3 needs a named deputy; the one other licensed broker on staff has never signed a file and has never been trained to."
+  },
+  "S3": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Consumer-side revenue closes entirely without the owner — that part is a 4. But the brokerage's own sale is recruiting, and q30 says it is 'entirely mine'; q14 puts three personally recruited agents at 22% of GCI who 'stay because of me'.",
+   "why_not_higher": "Anchor 3 needs the team closing standard deals with the owner in on the largest 10–20%; nobody except Danielle has ever recruited an agent, and recruiting is the only sale the brokerage itself makes."
+  },
+  "S4": {
+   "score": null,
+   "na": true,
+   "evidence": "reported",
+   "note": "N/A because the model cannot carry this indicator. The revenue-producing workforce is 40 independent contractors the brokerage is legally barred from supervising, directing or holding to employee-style accountability — doing so would convert them to employees and void the contractor agreements in the data room. The five people on payroll are a flat administrative function reporting directly to the owner, with one team lead over the two transaction coordinators. There is no layer of management for the indicator to describe, and scoring 0 would record a licensing constraint as a failure. The management-depth risk that does exist — no second broker trained to sign files — is scored on S2 and S10 rather than lost.",
+   "why_not_higher": "N/A — not scored. Rubrics v2 §5: valid only where the indicator cannot apply to the business model, with a written reason. Reason given above."
+  },
+  "S5": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "q35: 50% documented, 40% current, 35% used in training. Compliance review and transaction coordination are the two workflows that are genuinely written down and were shown in Brokermint — but one Dotloop file opened in session carried eleven chase emails for a single missing disclosure. Recruiting and onboarding are undocumented.",
+   "why_not_higher": "Anchor 3 needs core workflows documented and current and used in training; two of ten are, and the ones that touch agents are not."
+  },
+  "S6": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "q40 'Weekly but loose'; q39 two weekly numbers — leads routed and pendings — one of which has no owner, with no visible targets. Monthly production review is the real rhythm and it happens.",
+   "why_not_higher": "Anchor 3 needs 3–7 owned KPIs with visible targets; there are two, one is unowned, and q39 says a miss rarely triggers action because 'there is nothing to enforce against a contractor'."
+  },
+  "S7": {
+   "score": null,
+   "na": true,
+   "evidence": "reported",
+   "note": "N/A because the model cannot carry this indicator. Consistency and capacity of the service delivered to the consumer sit entirely with 40 independent contractors: each sets their own standards, their own service level and their own transaction volume, and the brokerage cannot define or enforce a delivery standard over them without converting them to employees. A 20% increase in market volume lands on the agents' capacity, not the brokerage's. The portion of delivery the brokerage does control — file compliance review and transaction coordination — is documented, staffed and scored on S5, and the capacity strain in that team is carried in the L4 inventory at 13.8 h/wk.",
+   "why_not_higher": "N/A — not scored. Rubrics v2 §5: valid only where the indicator cannot apply to the business model, with a written reason. Reason given above."
+  },
+  "S8": {
+   "score": 4,
+   "na": false,
+   "evidence": "documented",
+   "note": "Production-by-agent report (Doc): the largest single transaction is 0.9% of GCI and the five largest together are 3.4%. Across 714 closed sides no consumer is material. Recorded for context: the top three producing agents are 22% of GCI — a producer concentration, not a customer one, and it is carried on S10 rather than here.",
+   "why_not_higher": "Top of the anchor on the customer axis, which is what v2 scores. The genuine concentration in this business is that those three agents are contractors who can leave on notice with their pipelines."
+  },
+  "S9": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "q12: 88% of revenue is one-time transactions and 0% is contracted. Consumer re-transaction is ~4% a year on a seven-year move cycle. The only forward view is the pendings list, which covers about 45 days and converts at ~88%.",
+   "why_not_higher": "Anchor 2 needs some genuine repeat or contract revenue; there is no contracted revenue at all and the agents whose production makes the forecast are free to leave with it — q31 and q39 both say the forecast is a hope."
+  },
+  "S10": {
+   "score": 2,
+   "na": false,
+   "evidence": "documented",
+   "note": "Independent contractor agreement set — 40 agreements on one current template (Doc) — plus written vendor agreements, current licences and insurance, company-owned IP (q53). Against that, q52: the principal broker licence is the only signature that can close a file, the second licensed broker has never been trained, three agents at 22% of GCI stay on a personal relationship, and there is no continuity plan.",
+   "why_not_higher": "Anchor 3 needs cross-training started for key roles and a continuity plan drafted; the one role whose absence stops every closing has no trained backup, and nothing is written."
+  },
+  "L1": {
+   "score": 3,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Follow Up Boss, Brokermint, Dotloop, QuickBooks Online, Canva, BombBomb, Gusto, Slack, Dropbox — every core area in q41 has a real tool except one.",
+   "why_not_higher": "Anchor 4 needs every core area on a real system; recruiting — the brokerage's only sales function — runs out of the owner's phone and a spreadsheet on her laptop."
+  },
+  "L2": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Follow Up Boss→Brokermint and Dotloop→Brokermint are connected and were shown working. Brokermint→QuickBooks is not: monthly production and split reconciliation is 3.5 hours of retyping into an Excel model, watched in session. q42: 'Mostly separate, plus spreadsheets.'",
+   "why_not_higher": "Anchor 3 needs main systems connected with one or two double-entry points; the join between production and the general ledger — the one that produces company dollar — is a person and a spreadsheet."
+  },
+  "L3": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "q43: data generally accurate, customer and financial data connectable, backups exist. But there is no agreed definition of a worked lead — the routing log and the agents disagree about what happened to a third of them — and the split model that produces company dollar is hand-built monthly.",
+   "why_not_higher": "Anchor 3 needs agreed KPI definitions and reports needing only light cleanup; the brokerage's central number is rebuilt by hand and its central operational metric is disputed."
+  },
+  "L4": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "27.7 h/wk inventoried across five tasks (q44). Real fixes exist — routing, nurture, listing alerts and closing reminders all run unattended — but the largest task, 13.8 h/wk of compliance chasing across two coordinators, is untouched and every one of the five tasks is flagged for errors.",
+   "why_not_higher": "Anchor 3 needs the major repetitive tasks reduced; the two biggest, compliance chasing and marketing package assembly, are exactly as manual as they were three years ago."
+  },
+  "L5": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Four automations shown running: lead round-robin routing, the three-email consumer nurture, listing-status alerts and closing-date reminders. q45: all four work. Nobody owns any of them and nothing automates the recruiting side or chases an untouched lead.",
+   "why_not_higher": "Anchor 3 needs automations across several functions owned and monitored; all four sit in one function, none has an owner, and the obvious next one — alerting on an uncontacted lead — has never been built."
+  },
+  "L6": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "q46: drafting, marketing content and customer communication. Neena writes listing copy with it, Danielle drafts recruiting messages with it, two agents use their own tools. Ad hoc and individual throughout.",
+   "why_not_higher": "Anchor 3 needs AI inside one or two defined workflows; nothing has been chosen, assigned or measured."
+  },
+  "L7": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "q47: only 'Sensitive-data rules are defined' — and that is a verbal instruction not to put client financial information into a public tool. No written rules, no review, no measurement, no owner.",
+   "why_not_higher": "Anchor 2 needs some practices even if inconsistent; there is one spoken rule, and forty contractors it does not bind."
+  },
+  "L8": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "q48: shared passwords, ex-employees may retain access, inconsistent backups, unclear account ownership. The MLS and portal accounts are shared across the staff, the Dropbox has never been restore-tested, and q51 puts the escrow account and licensing portal under the owner alone.",
+   "why_not_higher": "Anchor 3 needs controlled access with off-boarding done and a backup tested once; departed staff access has never been audited and no restore has been attempted."
+  },
+  "L9": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "q58: 'Pockets of capability.' q59: Cam has asked twice for a better onboarding flow, Neena is the most capable and most underused, the coordinators will adopt anything that stops the chasing. The forty agents will adopt nothing they are not paid to adopt and cannot be required to.",
+   "why_not_higher": "Anchor 3 needs the team trained on the core tools; the staff have had no formal training and the larger population is structurally outside training altogether."
+  },
+  "L10": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "q49: $20–30K 'if it shows up in company dollar', four owner hours and six team hours a week — real, limited, and named. q55: 'The owner would have to drive everything.'",
+   "why_not_higher": "Anchor 3 needs budget and time named with execution merely depending on the owner; here the owner's own answer is that she would have to drive all of it, and the population the change is aimed at cannot be compelled to participate."
+  }
+ },
+ "assessment": {
+  "owner_objective": "Prepare to scale — grow from 40 to 60 agents without the GCI-per-agent number continuing to fall, and get recruiting out of the owner's evenings.",
+  "owner_belief": "We need more agents. Every brokerage in this market is a recruiting business and I am losing the race — two of the big franchises opened offices within a mile of us in eighteen months and they are outspending me on recruiting. If I had sixty agents instead of forty this would all take care of itself.",
+  "primary_constraint": "The brokerage's only differentiated product to an agent is company-generated business, and 31% of it is never contacted by anyone — so recruiting sells a promise the operation does not keep, retention is bought back with off-schedule split concessions, and every additional agent dilutes the same leaking lead pool further.",
+  "constraint_symptoms": "Block 2: the routing log shows 31% of leads with no logged contact and a 4h 20m median on the rest, and the recorded consumer loss reason is 'nobody called them back fast enough'. Block 1: agent count rose from 31 to 40 while GCI per agent fell from $228K to $212K. Block 5: q52 names the lead roster itself as a key risk — 'if agents conclude the leads are not worked, the recruiting story collapses'. Block 4: the disbursement register shows eight producers on off-schedule splits granted to keep them. Four blocks; the rule requires two.",
+  "constraint_cost": "~$83K of expected company dollar a year from routed leads that are never contacted (routing log, Doc: 1,265 uncontacted × 2.4% close × $11,900 GCI × 23% company dollar) · ~$74K of company dollar given away in off-schedule split concessions to retain eight producers (disbursement register, Doc) · $13,500/mo of portal and paid-social spend buying leads a third of which nobody touches.",
+  "constraint_fix": "Make the lead a brokerage asset with an owner rather than a gift to whoever is next on the roster: a 20-minute contact rule enforced by automatic reclaim and re-route, a visible per-agent contact-rate number, and lead-roster access earned by working the ones already given. Then recruit on a demonstrated number instead of a promise, and stop paying for retention in split points.",
+  "momentum_initiative": "Turn on the reclaim rule — any routed lead with no logged contact in 20 minutes returns to the pool and re-routes. It is a configuration change in a system already in use, it costs nothing, and the contact-rate number moves inside 30 days.",
+  "overlay_flags": [
+   "key_person"
+  ],
+  "plan_items": [
+   "20-minute lead reclaim and re-route rule enabled in Follow Up Boss — Danielle Brooks — 2026-09-16",
+   "Per-agent lead contact rate published weekly and tied to roster access — Danielle Brooks — 2026-09-30",
+   "Second licensed broker trained and authorised for file sign-off — Danielle Brooks — 2026-10-28",
+   "Written split-exception rule replacing case-by-case concessions — Yvette Salas — 2026-11-11",
+   "Compliance document collection automated at contract execution — transaction coordination team — 2026-12-02",
+   "Past-client reactivation campaign on the 1,340 brokerage-sourced clients — Neena Chandra — 2027-01-13"
+  ],
+  "overlap_factor": 0.7
+ },
+ "opportunities": [
+  {
+   "title": "Contact the leads the brokerage is already paying for",
+   "finding": "The Follow Up Boss routing log (Doc) shows 4,080 consumer leads routed a year and 31% with no logged contact by anyone. Median time to contact on the rest is 4 hours 20 minutes. The brokerage spends $13,500 a month on portal and paid-social lead generation, and q27 records the consumer loss reason as 'they go to whoever called them back'. Every figure below runs on company dollar at 23%, not on GCI.",
+   "calculator": {
+    "kind": "response_time",
+    "inputs": {
+     "leadsPerYear": 4080,
+     "shareLostPct": 31,
+     "recoveryRatePctLow": 20,
+     "recoveryRatePctExpected": 35,
+     "recoveryRatePctHigh": 50,
+     "closePct": 2.4,
+     "averageFirstYearValue": 11900,
+     "grossMarginPct": 23
+    }
+   },
+   "fix_cost": 3600,
+   "months_to_benefit": 1,
+   "confidence": "high",
+   "include_in_report": true,
+   "basis_reported_only": false,
+   "blueprint": "A 20-minute contact rule with automatic reclaim and re-route, a per-agent contact-rate number published weekly, and lead-roster access conditional on working the leads already received. None of this requires supervising a contractor: it conditions a benefit the brokerage owns, which is the only lever the model actually allows.",
+   "replaces": "A round-robin that treats a paid lead as a gift and never asks what happened to it."
+  },
+  {
+   "title": "Replace split concessions with a written exception rule",
+   "finding": "The commission split schedule was revised in March 2024 off a real desk-cost analysis (Doc) — the economics exist and are sound. The disbursement register then shows eight producers on off-schedule splits granted case by case to retain them, worth ~$74K of company dollar last year, and company dollar per transaction on those agents is $1,910 against a $2,740 average. q28 flags no written discount rules; q32 puts 'the split exceptions I keep granting' in the owner's own top three.",
+   "calculator": {
+    "kind": "price_change",
+    "inputs": {
+     "revenueAffected": 1960000,
+     "priceChangePctLow": 1.5,
+     "priceChangePctExpected": 2.5,
+     "priceChangePctHigh": 4,
+     "volumeLossPctLow": 0.3,
+     "volumeLossPctExpected": 0.8,
+     "volumeLossPctHigh": 2,
+     "grossMarginPct": 100
+    }
+   },
+   "fix_cost": 2800,
+   "months_to_benefit": 4,
+   "confidence": "medium",
+   "include_in_report": true,
+   "basis_reported_only": false,
+   "blueprint": "Write the exception rule: what a producer must do to earn a split above schedule, for how long, and reviewed annually against their actual desk cost. Apply it at anniversary rather than in a retention conversation, which is why the modelled volume loss is small — an anniversary conversation with the cost math attached loses far fewer producers than a concession withdrawn mid-year. Revenue affected is company dollar ($1.96M) and the margin field is 100% because a split point is contribution with no cost beneath it; the volume-loss leg therefore carries the full company dollar of any producer who leaves, which is what makes this a narrow, disciplined move rather than a broad one.",
+   "replaces": "Retention bought one conversation at a time by the only person authorised to grant it."
+  },
+  {
+   "title": "Work the 1,340 brokerage-owned past clients",
+   "finding": "1,340 of the 4,200 past clients in Follow Up Boss came from brokerage-generated leads, which makes them the brokerage's to contact rather than an individual agent's. q27: no reactivation campaign has ever run and the market-update email 'nobody opens' is the entire programme. Rates below are annual re-transaction rates against a seven-year move cycle and deliberately exclude referral volume, which is where most of the real value of a worked past-client file sits.",
+   "calculator": {
+    "kind": "reactivation",
+    "inputs": {
+     "dormantCustomers": 1340,
+     "reactivationRatePctLow": 0.6,
+     "reactivationRatePctExpected": 1,
+     "reactivationRatePctHigh": 1.8,
+     "averageAnnualValue": 11900,
+     "grossMarginPct": 23
+    }
+   },
+   "fix_cost": 5400,
+   "months_to_benefit": 3,
+   "confidence": "medium",
+   "include_in_report": true,
+   "basis_reported_only": false,
+   "blueprint": "Segment the 1,340 by close date and property type, run an annual home-value and equity touch that is genuinely useful rather than a market blast, and route any response to the agent who closed the original side — with the reclaim rule applying to those too. Referral outcomes are tracked separately and not counted in the range above.",
+   "replaces": "A market-update email with a 6% open rate."
+  }
+ ],
+ "expected": {
+  "gate_should_pass": true,
+  "expected_blockers": [],
+  "expected_warnings": [
+   "two N/As in the Systems pillar (S4, S7) — both carry written model-based reasons; reviewer should confirm they are model constraints and not gaps"
+  ],
+  "band_guess": "Building",
+  "cross_checks": {
+   "margin_vs_pnl": "pass",
+   "funnel_vs_revenue": "pass",
+   "concentration": "pass",
+   "hours_vs_headcount": "pass"
+  }
+ }
+}

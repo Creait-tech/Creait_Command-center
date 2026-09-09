@@ -915,6 +915,31 @@ export interface CcAssessmentScore {
   updated_at: string;
 }
 
+/**
+ * One blind-scoring attempt at a calibration case (migration 0015). The case
+ * and its key live in the codebase (lib/calibration-cases); this row holds the
+ * trainee's answers and, once submitted, the comparison result.
+ */
+export interface CcAssessmentCalibration {
+  id: string;
+  org_id: string;
+  /** File name of the case in lib/calibration-cases, without .json. */
+  case_slug: string;
+  /** The key's version string when the attempt was started. */
+  key_version: string | null;
+  /** Clerk user id of the trainee. */
+  trainee_id: string;
+  trainee_name: string | null;
+  /** CalibrationAnswers (lib/calibration.ts). Autosaved; frozen at submission. */
+  answers: Json;
+  /** CalibrationResult (lib/calibration.ts); null while in progress. */
+  result: Json | null;
+  started_at: string;
+  submitted_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface CcAssessmentOpportunity {
   id: string;
   assessment_id: string;
@@ -1274,6 +1299,7 @@ export interface Database {
       cc_assessments: Table<CcAssessment>;
       cc_assessment_scores: Table<CcAssessmentScore>;
       cc_assessment_opportunities: Table<CcAssessmentOpportunity>;
+      cc_assessment_calibrations: Table<CcAssessmentCalibration>;
       // AI Tuesday class
       cc_class_registrations: Table<CcClassRegistration>;
       cc_class_sessions: Table<CcClassSession>;

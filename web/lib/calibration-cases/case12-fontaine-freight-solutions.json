@@ -1,0 +1,1180 @@
+{
+ "n": 12,
+ "company": "Fontaine Freight Solutions",
+ "owner": "Ray Fontaine",
+ "industry": "Regional trucking",
+ "profile": {
+  "revenue": 6210000,
+  "grossMarginPct": 22,
+  "operatingProfit": 310000,
+  "headcount": 28,
+  "founded": 2009,
+  "story": "Ray Fontaine bought two tractors in 2009 and now runs 19 power units out of Shreveport across a five-state regional footprint — dedicated contract lanes, regional partial loads, some port drayage. $6.21M of revenue and a 5% operating line. The entire routing, pricing and customer memory of the business lives in one dispatcher: Bobby Lynn Deschamps, nineteen years in, who works from a whiteboard, a personal Excel file on his own laptop and his cell phone. There is no TMS. Logins are shared, the dispatch spreadsheet has never been backed up, and Ray's stated problem is that he cannot find drivers."
+ },
+ "edge_cases": [
+  "key_person overlay — one dispatcher is the routing system, the rate memory and the customer memory",
+  "data_risk overlay — shared logins, no backup of the file the business runs on",
+  "Leverage pillar deliberately floored (L1–L8 all 0–1) with the pillar still scored, not excluded",
+  "owner's Q8 belief (driver shortage) contradicted by the evidence",
+  "one opportunity above 50% of the raw expected total — reviewer warning, not a blocker"
+ ],
+ "intake": {
+  "q1": [
+   {
+    "row": "Your name",
+    "value": "Ray Fontaine"
+   },
+   {
+    "row": "Email",
+    "value": "ray@fontainefreight.com"
+   },
+   {
+    "row": "Phone",
+    "value": "(318) 555-0132"
+   },
+   {
+    "row": "Company name",
+    "value": "Fontaine Freight Solutions, LLC"
+   },
+   {
+    "row": "Website",
+    "value": "fontainefreight.com"
+   },
+   {
+    "row": "Location",
+    "value": "Shreveport, Louisiana"
+   },
+   {
+    "row": "Industry",
+    "value": "Regional truckload & dedicated contract carriage"
+   }
+  ],
+  "q2": "We are an asset-based regional carrier. Nineteen power units, twenty-two drivers, running Louisiana, east Texas, Arkansas, Mississippi and the Gulf coast. About half the revenue is dedicated contract lanes for four shippers — food distribution, building products, chemical packaging — and the rest is regional partial loads, some spot freight off the boards, and port drayage out of New Orleans. We have a small cross-dock behind the yard. I sell, Bobby dispatches, Denise bills, Curtis keeps us legal with DOT.",
+  "q3": [
+   {
+    "row": "Primary",
+    "objective": "Better operations & delivery capacity"
+   },
+   {
+    "row": "Secondary 1",
+    "objective": "Resilience/risk reduction"
+   },
+   {
+    "row": "Secondary 2",
+    "objective": "More profit & cash flow"
+   }
+  ],
+  "q4": [
+   {
+    "row": "1",
+    "outcome": "Empty miles as a share of total miles",
+    "target": "From 29% to 20%"
+   },
+   {
+    "row": "2",
+    "outcome": "Operating profit",
+    "target": "$310K to $450K"
+   },
+   {
+    "row": "3",
+    "outcome": "Days sales outstanding",
+    "target": "From 61 to 45"
+   }
+  ],
+  "q5": "Twenty-five trucks, the same crew of drivers still here, and a dispatch operation that does not live in one man's head. I want to be able to look at a screen and see what every load made, and I want somebody other than Bobby to be able to cover a Tuesday.",
+  "q6": "Split across most of these",
+  "q7": [
+   {
+    "row": "Hours/week now",
+    "value": "58"
+   },
+   {
+    "row": "Hours/week you want in 12 months",
+    "value": "50"
+   },
+   {
+    "row": "Hours/week you want in 3 years",
+    "value": "40"
+   },
+   {
+    "row": "Longest uninterrupted time away in the past 12 months",
+    "value": "9 days, and it went fine until a customer called me directly"
+   },
+   {
+    "row": "What pulls you back in",
+    "value": "Pricing anything new, and any customer who is unhappy"
+   }
+  ],
+  "q8": "We need more trucks and I cannot find drivers. Every time I get a shot at more freight from Cardinal or Delta Building I have to turn it down because I have nobody to seat. That has been the story for three years straight.",
+  "q9": [
+   {
+    "row": "Year founded",
+    "value": "2009"
+   },
+   {
+    "row": "Owners & percentages",
+    "value": "Ray Fontaine 85%, Marla Fontaine 15%"
+   },
+   {
+    "row": "Any owner misalignment affecting decisions?",
+    "value": "No. Marla does not work in the business"
+   }
+  ],
+  "q10": [
+   {
+    "row": "Full-time employees",
+    "count": "26"
+   },
+   {
+    "row": "Part-time",
+    "count": "0"
+   },
+   {
+    "row": "Regular contractors",
+    "count": "2"
+   },
+   {
+    "row": "Managers / team leads",
+    "count": "2"
+   },
+   {
+    "row": "People with direct reports",
+    "count": "2"
+   }
+  ],
+  "q11": "Multi-state",
+  "q12": [
+   {
+    "row": "One-time projects",
+    "pct": "12"
+   },
+   {
+    "row": "Recurring contracts",
+    "pct": "48"
+   },
+   {
+    "row": "Repeat without contract",
+    "pct": "40"
+   },
+   {
+    "row": "Products",
+    "pct": "0"
+   },
+   {
+    "row": "Retainers",
+    "pct": "0"
+   },
+   {
+    "row": "Other",
+    "pct": "0"
+   }
+  ],
+  "q13": [
+   {
+    "name": "Dedicated contract lanes",
+    "pct": "48",
+    "margin": "24",
+    "trend": "Flat",
+    "importance": "The base. Four shippers, annual rate confirmations"
+   },
+   {
+    "name": "Regional partial / LTL",
+    "pct": "22",
+    "margin": "19",
+    "trend": "Growing",
+    "importance": "Fills the board around the dedicated lanes"
+   },
+   {
+    "name": "Spot & brokered freight",
+    "pct": "18",
+    "margin": "14",
+    "trend": "Declining",
+    "importance": "Backhaul filler. Thin and getting thinner"
+   },
+   {
+    "name": "Port drayage (New Orleans)",
+    "pct": "8",
+    "margin": "26",
+    "trend": "Growing",
+    "importance": "Best margin we have and we barely chase it"
+   },
+   {
+    "name": "Cross-dock & short-term storage",
+    "pct": "4",
+    "margin": "38",
+    "trend": "Flat",
+    "importance": "Offered only when someone asks"
+   }
+  ],
+  "q14": [
+   {
+    "row": "Active customer count",
+    "value": "64 shippers tendered freight in the last 12 months"
+   },
+   {
+    "row": "B2B / B2C / mixed",
+    "value": "B2B"
+   },
+   {
+    "row": "% of revenue from your largest customer",
+    "value": "21% (Cardinal Foods)"
+   },
+   {
+    "row": "% of revenue from your top five",
+    "value": "54%"
+   },
+   {
+    "row": "% of revenue tied directly to YOUR personal relationships",
+    "value": "About 55%"
+   }
+  ],
+  "q15": [
+   {
+    "row": "Last completed year",
+    "amount": "6210000"
+   },
+   {
+    "row": "Prior year",
+    "amount": "5840000"
+   },
+   {
+    "row": "Year to date",
+    "amount": "4720000"
+   },
+   {
+    "row": "Full-year forecast",
+    "amount": "6500000"
+   }
+  ],
+  "q16": "Up 10% or less",
+  "q17": [
+   {
+    "row": "Approximate gross margin %",
+    "value": "22%"
+   },
+   {
+    "row": "Main direct costs",
+    "value": "Driver pay and benefits, fuel, tractor and trailer maintenance, liability and cargo insurance, tolls, broker commissions on spot"
+   },
+   {
+    "row": "Tracked by job / service / customer?",
+    "value": "No. We know it for the company. We have never known it for a load"
+   }
+  ],
+  "q18": [
+   {
+    "row": "Operating profit estimate",
+    "amount": "310000"
+   },
+   {
+    "row": "Owner salary",
+    "amount": "165000"
+   },
+   {
+    "row": "Owner distributions",
+    "amount": "60000"
+   },
+   {
+    "row": "Unusual one-off expenses",
+    "amount": "85000"
+   }
+  ],
+  "q19": [
+   "Profitable but tight",
+   "Customer payment timing",
+   "Debt payments",
+   "Big expense coming"
+  ],
+  "q20": "Monthly, delayed",
+  "q21": [
+   {
+    "row": "Revenue",
+    "target": "$7M"
+   },
+   {
+    "row": "Gross margin",
+    "target": "No target"
+   },
+   {
+    "row": "Operating profit",
+    "target": "No target"
+   },
+   {
+    "row": "Cash reserve",
+    "target": "No target"
+   },
+   {
+    "row": "Owner compensation",
+    "target": "No target"
+   }
+  ],
+  "q22": "QuickBooks P&L last 24 months, revenue by customer, AR aging, the 2023 lane rate sheet plus a folder of rate confirmations, driver settlement summary, DOT and insurance certificates. There is no per-load profitability report — it does not exist.",
+  "q23": [
+   {
+    "source": "Referral from an existing shipper",
+    "per_month": "2",
+    "cost": "0",
+    "quality": "5",
+    "tracked": "No"
+   },
+   {
+    "source": "Inbound off the load boards / brokers",
+    "per_month": "2",
+    "cost": "0",
+    "quality": "2",
+    "tracked": "No"
+   },
+   {
+    "source": "Ray's own cold calls and yard visits",
+    "per_month": "1",
+    "cost": "0",
+    "quality": "4",
+    "tracked": "No"
+   }
+  ],
+  "q24": [
+   {
+    "row": "What happens, step by step",
+    "value": "A call or email comes to me or straight to Bobby; whoever gets it quotes a rate off the top of his head from the last lane that looked like it; if it fits the board we take it"
+   },
+   {
+    "row": "Typical response time",
+    "value": "Same day. I call back"
+   },
+   {
+    "row": "Who is responsible",
+    "value": "Me, or Bobby if it is a lane he knows"
+   },
+   {
+    "row": "Is every inquiry captured in one system?",
+    "value": "No. Nothing is captured anywhere"
+   },
+   {
+    "row": "Automated follow-up?",
+    "value": "No"
+   },
+   {
+    "row": "% of leads that get 2+ follow-ups",
+    "value": "Not many. If they do not call back we move on"
+   }
+  ],
+  "q25": [
+   {
+    "row": "Lead→sale or proposal→close %",
+    "value": "About 30% of the ones we quote"
+   },
+   {
+    "row": "Tracked by source / person / service?",
+    "value": "No"
+   },
+   {
+    "row": "Defined sales process?",
+    "value": "No. I have my way of doing it"
+   },
+   {
+    "row": "Most common reason you lose",
+    "value": "Rate. Somebody was eight cents a mile cheaper"
+   }
+  ],
+  "q26": [
+   {
+    "row": "Typical first sale",
+    "value": "$2,900 — one load or a short lane trial"
+   },
+   {
+    "row": "Typical annual customer value",
+    "value": "$38,000 for a new shipper that sticks"
+   },
+   {
+    "row": "Most valuable segment",
+    "value": "Dedicated food distribution — steady, and they plan ahead"
+   },
+   {
+    "row": "Tracked?",
+    "value": "Only in QuickBooks after the fact"
+   }
+  ],
+  "q27": [
+   {
+    "row": "% who buy again",
+    "value": "About 80% tender again within 90 days"
+   },
+   {
+    "row": "Renewal rate if applicable",
+    "value": "Dedicated lanes renew annually, roughly 85%"
+   },
+   {
+    "row": "Are inactive customers identified?",
+    "value": "No"
+   },
+   {
+    "row": "Reactivation campaigns ever run?",
+    "value": "No"
+   },
+   {
+    "row": "Why customers leave",
+    "value": "Rate, or one bad service failure they never forgot"
+   }
+  ],
+  "q28": [
+   "Set against competitors",
+   "Set on the owner's gut",
+   "Unchanged for 2+ years",
+   "Pricing is a current worry"
+  ],
+  "q29": [
+   {
+    "row": "Complementary services routinely offered?",
+    "value": "Only if they ask. We do have cross-dock space and we do drayage"
+   },
+   {
+    "row": "Bundles or packages?",
+    "value": "No"
+   },
+   {
+    "row": "Premium option?",
+    "value": "No. We have one service. We haul"
+   },
+   {
+    "row": "Entry-level option?",
+    "value": "No"
+   },
+   {
+    "row": "Customer needs you can't currently serve",
+    "value": "Refrigerated, and anything east of the Mississippi"
+   }
+  ],
+  "q30": [
+   {
+    "row": "Who owns marketing",
+    "value": "Nobody"
+   },
+   {
+    "row": "Who owns sales",
+    "value": "Me"
+   },
+   {
+    "row": "Monthly marketing budget",
+    "value": "$0"
+   },
+   {
+    "row": "Do sales & marketing review results together?",
+    "value": "No"
+   },
+   {
+    "row": "Are leads, conversion, CAC and customer value ever reviewed together?",
+    "value": "No"
+   }
+  ],
+  "q31": "We'd have to hire",
+  "q32": [
+   {
+    "row": "1",
+    "area": "Better rates on the dedicated lanes"
+   },
+   {
+    "row": "2",
+    "area": "Cutting empty miles"
+   },
+   {
+    "row": "3",
+    "area": "Getting paid faster"
+   }
+  ],
+  "q33": [
+   {
+    "workflow": "Load intake and rate quote"
+   },
+   {
+    "workflow": "Load assignment and dispatch"
+   },
+   {
+    "workflow": "Driver communication and check calls"
+   },
+   {
+    "workflow": "Pickup, delivery and BOL capture"
+   },
+   {
+    "workflow": "Driver settlement and pay"
+   },
+   {
+    "workflow": "Invoicing"
+   },
+   {
+    "workflow": "Collections and POD chasing"
+   },
+   {
+    "workflow": "Maintenance scheduling"
+   },
+   {
+    "workflow": "DOT compliance and driver qualification files"
+   },
+   {
+    "workflow": "IFTA fuel-tax reporting"
+   }
+  ],
+  "q34": [
+   {
+    "row": "One clear accountable role",
+    "frequency": "Usually"
+   },
+   {
+    "row": "Defined handoffs",
+    "frequency": "Sometimes"
+   },
+   {
+    "row": "Consistent exception escalation",
+    "frequency": "Rarely"
+   }
+  ],
+  "q35": [
+   {
+    "row": "Documented",
+    "pct": "20"
+   },
+   {
+    "row": "Current",
+    "pct": "10"
+   },
+   {
+    "row": "Accessible",
+    "pct": "25"
+   },
+   {
+    "row": "Used in training",
+    "pct": "5"
+   },
+   {
+    "row": "Actually followed",
+    "pct": "30"
+   }
+  ],
+  "q36": [
+   "Missed handoffs",
+   "Scheduling delays",
+   "Incomplete information",
+   "Rework",
+   "Late billing",
+   "Slow collections"
+  ],
+  "q37": "Skilled labor",
+  "q38": "Mostly clear, with gaps",
+  "q39": [
+   {
+    "row": "How many KPIs reviewed weekly",
+    "value": "None weekly. I look at revenue per truck when the month closes"
+   },
+   {
+    "row": "Does each have one owner?",
+    "value": "No"
+   },
+   {
+    "row": "Are targets visible?",
+    "value": "No"
+   },
+   {
+    "row": "Does a miss trigger action?",
+    "value": "Only if I catch it"
+   }
+  ],
+  "q40": "Reactive only",
+  "q41": [
+   {
+    "row": "CRM",
+    "tool": "none"
+   },
+   {
+    "row": "Marketing",
+    "tool": "none"
+   },
+   {
+    "row": "Sales / proposals",
+    "tool": "none — email and the phone"
+   },
+   {
+    "row": "Scheduling / project management",
+    "tool": "A whiteboard and an Excel file on Bobby's laptop"
+   },
+   {
+    "row": "Delivery",
+    "tool": "Samsara ELD (regulatory only)"
+   },
+   {
+    "row": "Accounting",
+    "tool": "QuickBooks Desktop"
+   },
+   {
+    "row": "Reporting",
+    "tool": "none"
+   },
+   {
+    "row": "Communication",
+    "tool": "Phone, Outlook, text messages"
+   },
+   {
+    "row": "Files / knowledge",
+    "tool": "Office network drive, and Bobby's laptop"
+   },
+   {
+    "row": "HR / payroll",
+    "tool": "Paychex"
+   }
+  ],
+  "q42": "One person is the integration",
+  "q43": [
+   "None of these are consistently true"
+  ],
+  "q44": [
+   {
+    "task": "Load entry onto the board from broker emails and calls",
+    "who": "Bobby Lynn Deschamps (dispatcher)",
+    "frequency": "Daily",
+    "occurrences": "5",
+    "minutes": "95",
+    "errors": "Yes",
+    "systems": "Outlook, Excel, whiteboard"
+   },
+   {
+    "task": "Driver settlement — scanned BOLs, mileage, pay calculation",
+    "who": "Denise Arceneaux (office)",
+    "frequency": "Weekly",
+    "occurrences": "1",
+    "minutes": "420",
+    "errors": "Yes",
+    "systems": "Paper, Excel, QuickBooks"
+   },
+   {
+    "task": "Invoicing from scanned BOLs",
+    "who": "Denise Arceneaux",
+    "frequency": "Several times a week",
+    "occurrences": "3",
+    "minutes": "110",
+    "errors": "Yes",
+    "systems": "Paper, QuickBooks"
+   },
+   {
+    "task": "Collections calls and chasing missing PODs",
+    "who": "Denise Arceneaux",
+    "frequency": "Weekly",
+    "occurrences": "2",
+    "minutes": "120",
+    "errors": "Yes",
+    "systems": "Phone, email"
+   },
+   {
+    "task": "IFTA fuel-tax and hours-of-service reconciliation",
+    "who": "Curtis Meadows (safety)",
+    "frequency": "Weekly",
+    "occurrences": "1",
+    "minutes": "180",
+    "errors": "Yes",
+    "systems": "Samsara portal, Excel"
+   }
+  ],
+  "q45": "The fuel card feed drops transactions into QuickBooks automatically — the card company set that up years ago and nobody here maintains it. The ELD logs hours by itself because the law says it has to. That is the whole list. Everything else is a person typing.",
+  "q46": [
+   "None"
+  ],
+  "q47": [
+   "None of these are consistently true"
+  ],
+  "q48": [
+   "Shared passwords",
+   "Unclear access",
+   "Ex-employees may retain access",
+   "Inconsistent backups",
+   "No tested recovery",
+   "Unclear account ownership",
+   "One-vendor or one-person dependence"
+  ],
+  "q49": [
+   {
+    "row": "Implementation budget range",
+    "value": "Maybe $10,000, and I would need to see it first"
+   },
+   {
+    "row": "Owner hours/week available",
+    "value": "2"
+   },
+   {
+    "row": "Team hours/week available",
+    "value": "Bobby has none. Denise maybe 3"
+   },
+   {
+    "row": "Appetite for changing systems",
+    "value": "Mine is fine. Bobby's is not"
+   }
+  ],
+  "q58": "A few curious people, no training",
+  "q59": "Denise would take a new system on — she is the one drowning in paper and she has asked for help twice. Curtis is fine with anything that keeps DOT off our backs. Bobby will resist, hard. The board is his job and his standing in this company, and he will read a TMS as somebody saying he is replaceable. Drivers will use whatever is on the phone if it means fewer check calls.",
+  "q56": [
+   {
+    "role": "Dispatcher",
+    "rate": "52"
+   },
+   {
+    "role": "Safety & compliance",
+    "rate": "41"
+   },
+   {
+    "role": "Office / billing & AR",
+    "rate": "34"
+   },
+   {
+    "role": "Company driver",
+    "rate": "38"
+   },
+   {
+    "role": "Shop mechanic",
+    "rate": "44"
+   }
+  ],
+  "q50": [
+   "Pricing exceptions",
+   "Major sales",
+   "Customer escalations",
+   "Hiring / firing",
+   "Purchasing",
+   "Banking / payments",
+   "Vendor relationships",
+   "Strategy"
+  ],
+  "q51": [
+   {
+    "row": "What keeps running",
+    "value": "Trucks roll. Bobby dispatches, drivers drive, Denise bills"
+   },
+   {
+    "row": "What slows down",
+    "value": "Pricing anything new, anything over $10K of spend, hiring"
+   },
+   {
+    "row": "What stops",
+    "value": "Not much for about three weeks. Then bank decisions, insurance renewals, and the four customer relationships that are mine"
+   },
+   {
+    "row": "Who decides",
+    "value": "Bobby on freight. Me on everything else"
+   },
+   {
+    "row": "What nobody else can access",
+    "value": "The bank, the insurance portal, the signed contracts in my truck — and nobody but Bobby can get into Bobby's laptop"
+   }
+  ],
+  "q52": [
+   {
+    "risk": "Bobby Lynn Deschamps — dispatcher, 19 years",
+    "impact": "The board, the lane rates and the shipper history are in his head and on his personal laptop. If he goes we cannot route freight for a month"
+   },
+   {
+    "risk": "Cardinal Foods — 21% of revenue",
+    "impact": "Losing them takes a fifth of the revenue and idles two dedicated tractors"
+   },
+   {
+    "risk": "Ray Fontaine",
+    "impact": "Pricing, banking and the top four shipper relationships"
+   },
+   {
+    "risk": "DOT operating authority and safety rating",
+    "impact": "A conditional rating parks the fleet and voids two customer contracts"
+   }
+  ],
+  "q53": [
+   "Vendor agreements are written",
+   "Licenses & insurance are current"
+  ],
+  "q54": [
+   "SOPs & knowledge transfer",
+   "Tech & data ownership",
+   "Leadership depth"
+  ],
+  "q55": "Cash, staffing or leadership must be resolved first",
+  "q57": "Tired but managing"
+ },
+ "session": {
+  "engine": {
+   "leads_per_month": "5",
+   "conversion_rate": "30%",
+   "avg_deal_value": "$38,000 first-year freight per new shipper",
+   "response_time": "same day, Ray calls back personally",
+   "gross_margin_pct": "22",
+   "headcount": "28",
+   "repetitive_hours_week": "Load entry onto the board — Bobby — 7.9\nDriver settlement — Denise — 7.0\nInvoicing from paper BOLs — Denise — 5.5\nCollections and POD chasing — Denise — 4.0\nIFTA and HOS reconciliation — Curtis — 3.0",
+   "largest_customer_pct": "21"
+  },
+  "blockNotes": {
+   "b1": "Ray opened with the driver shortage and stayed on it for twenty minutes. Objective is capacity; the secondary answer — resilience — is the one he gave more quietly, after we asked what happens if Bobby quits. Nine days away last year and it held until a customer phoned him directly.",
+   "b2": "Five inbound inquiries a month, all quoted from memory, nothing captured anywhere. 30% close, loss reason is always rate. Funnel reconciles: 5/mo × 30% × $38K = ~$684K of new annual freight against $5.46M of repeat and contracted revenue = $6.14M versus the P&L's $6.21M — inside 2%, pass.",
+   "b3": "Systems tour, and it is the shortest one we have run. The dispatch board is a whiteboard plus an Excel file that lives on Bobby's own laptop. Asked where the file is backed up: it is not. Asked who else has opened it: nobody. Watched Denise type a QuickBooks login that three people share.",
+   "b4": "27.4 h/wk of repetitive work inventoried, 19.5 of it Denise's, against an office pool of four people and about 160 available hours — 17%, plausible, pass. Bobby's 7.9 hours of load entry are the ones that matter, because that typing is the only place the routing logic ever gets written down.",
+   "b5": "Cardinal Foods 21% on the revenue-by-customer report — a watch item, under the 25% overlay. The real concentration is a person. Also flagged: no backup of the file the company runs on, shared QuickBooks and Samsara logins, and two ex-drivers who may still have portal access."
+  },
+  "demonstrated": [
+   "The dispatch board — whiteboard plus a personal Excel file on Bobby's own laptop, opened in session",
+   "Shared QuickBooks Desktop login typed in front of us; same password used for the Samsara portal",
+   "The paper BOL basket on Denise's desk feeding invoicing and settlement by hand",
+   "Fuel-card transaction feed dropping into QuickBooks unattended — the only automation in the building",
+   "Attempted to locate a backup of the dispatch spreadsheet; none exists on the network drive or anywhere else",
+   "Two DOT driver-qualification files pulled at random — both current"
+  ],
+  "documents_seen": [
+   "QuickBooks P&L 24 months — revenue $6.21M, gross margin 22%, operating profit $310K",
+   "Revenue by customer — Cardinal Foods 21%, top five 54%",
+   "AR aging — DSO 61 days, $412K past 60",
+   "2023 lane rate sheet plus a folder of annual rate confirmations",
+   "Driver settlement summary, four weeks",
+   "DOT authority and insurance certificates — current",
+   "NOT received: per-load profitability. It does not exist"
+  ]
+ },
+ "dataRoom": {
+  "pnl_on_file": true,
+  "documents": [
+   {
+    "name": "QuickBooks P&L 24 months",
+    "kind": "pnl",
+    "received_on": "2026-08-25"
+   },
+   {
+    "name": "Revenue by customer, trailing 12 months",
+    "kind": "revenue_by_customer",
+    "received_on": "2026-08-25"
+   },
+   {
+    "name": "AR aging",
+    "kind": "ar_aging",
+    "received_on": "2026-08-27"
+   },
+   {
+    "name": "2023 lane rate sheet and rate-confirmation folder",
+    "kind": "rate_card",
+    "received_on": "2026-09-01"
+   },
+   {
+    "name": "Driver settlement summary, four weeks",
+    "kind": "other",
+    "received_on": "2026-09-01"
+   }
+  ]
+ },
+ "scores": {
+  "P1": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Three sources named from memory in q23 — shipper referral ~2/mo, load-board inbound ~2/mo, Ray's own calls ~1/mo. None tracked, no cost, no counts kept anywhere.",
+   "why_not_higher": "Anchor 2 needs volume at least roughly tracked; these are numbers he produced in the room, not numbers anybody keeps."
+  },
+  "P2": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Inquiries land on Ray's phone or Bobby's, are quoted from memory, and are captured nowhere. q24: 'Nothing is captured anywhere.' Response is same day when Ray is free.",
+   "why_not_higher": "Anchor 2 needs usually-within-a-day and some capture; the capture is zero."
+  },
+  "P3": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "q24: 'If they do not call back we move on.' A second call happens when Ray remembers a name; no record of who was followed up.",
+   "why_not_higher": "Anchor 2 needs follow-up that at least happens person-dependently across most leads; here it is occasional and unrecorded."
+  },
+  "P4": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "q25: ~30% close, 'no defined process, I have my way of doing it', no stages, loss reason always 'rate — somebody was eight cents cheaper'.",
+   "why_not_higher": "Anchor 2 needs a loose process and a rate that is actually tracked; 30% is a guess and nothing is tracked."
+  },
+  "P5": {
+   "score": 1,
+   "na": false,
+   "evidence": "documented",
+   "note": "Lane rate sheet dated 2023 (Doc), competitor-referenced. One change since: two lanes raised in 2025 after Cardinal reopened its rate confirmation. Fuel surcharge floats; base rates do not. q28: 'Unchanged for 2+ years' and 'Pricing is a current worry.'",
+   "why_not_higher": "Anchor 2 needs real economics behind the price and occasional reviews; with no per-load cost (see P9) there is no economics to price from."
+  },
+  "P6": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "q29: cross-dock storage and drayage exist and are 'only offered if they ask'. No bundles, no premium service, no entry offer. Drayage is the highest-margin line at 26% and is 8% of revenue.",
+   "why_not_higher": "Anchor 2 needs add-ons offered ad hoc by the team; here the customer has to raise it first."
+  },
+  "P7": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "q27: ~80% of shippers tender again within 90 days, dedicated lanes renew at ~85%. Both are rough. Inactive shippers are not identified and no reactivation has ever run.",
+   "why_not_higher": "Anchor 3 needs an inactive list pulled and worked at least twice a year; 46 shippers have gone quiet in 12 months and none have been called."
+  },
+  "P8": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "q30: marketing owner 'Nobody', sales owner 'Me', budget $0, and leads/conversion/CAC/value have never been reviewed together.",
+   "why_not_higher": "Anchor 2 needs named owners and numbers reviewed at least sometimes; there is one de-facto owner and no numbers."
+  },
+  "P9": {
+   "score": 2,
+   "na": false,
+   "evidence": "documented",
+   "note": "Gross margin 22% confirmed on the 24-month P&L. q17: 'We know it for the company. We have never known it for a load.' No per-load profitability report exists — it was requested and could not be produced.",
+   "why_not_higher": "Anchor 3 needs margin by lane or service known and used in pricing; with 29% empty miles and no load-level cost, the rate sheet is priced blind."
+  },
+  "P10": {
+   "score": 2,
+   "na": false,
+   "evidence": "documented",
+   "note": "q20 'Monthly, delayed' — the outside bookkeeper closes five to seven weeks out; the 24 monthly P&Ls are on file and dated. Ray reviews when cash feels tight. One target: revenue $7M.",
+   "why_not_higher": "Anchor 3 needs a close inside 30 days and a routine owner review; neither holds."
+  },
+  "S1": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Freight decisions genuinely sit with Bobby and compliance with Curtis — watched both make calls without checking in. q50 keeps pricing exceptions, major sales, escalations, hiring, purchasing, banking, vendors and strategy with Ray.",
+   "why_not_higher": "Anchor 3 needs written decision rights across most areas; nothing is written, and money and hiring are not the only exceptions."
+  },
+  "S2": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "q51 four-week test: trucks roll and billing continues for about three weeks; new pricing, spend over $10K and hiring stall; bank, insurance and four customer relationships stop. Longest real absence nine days.",
+   "why_not_higher": "Anchor 3 needs a named deputy and only a few owner-locked items; there is no deputy and the customer relationships are locked to Ray."
+  },
+  "S3": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Bobby quotes and books lane freight without Ray. Ray closes every new shipper and holds ~55% of revenue on personal relationships (q14); he is called directly when a customer is unhappy.",
+   "why_not_higher": "Anchor 3 needs the team closing standard deals with the owner in only on the largest 10–20%; every new shipper is Ray's."
+  },
+  "S4": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Two real managers — Bobby on operations and Curtis on safety — and Curtis genuinely owns the DOT outcome because the regulator forces a metric. Bobby owns the board but no number. q38: 'Mostly clear, with gaps.'",
+   "why_not_higher": "Anchor 3 needs managers owning outcomes and metrics; only the compliance metric exists, and it is imposed from outside."
+  },
+  "S5": {
+   "score": 1,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Two DOT driver-qualification files pulled at random were current — the regulator keeps that one workflow alive. q35: 20% documented, 10% current, 5% used in training. Dispatch, quoting, settlement and collections are undocumented; new hires shadow.",
+   "why_not_higher": "Anchor 2 needs partial documentation loosely followed across the critical work; only the regulated files exist."
+  },
+  "S6": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "q40 'Reactive only'; q39 no weekly KPIs, no owners, no visible targets. Ray looks at revenue per truck when the month closes.",
+   "why_not_higher": "Anchor 2 needs meetings that actually happen on a rhythm with a few KPIs; there is no regular meeting at all."
+  },
+  "S7": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Service is reliable enough to hold 85% dedicated renewal, but q31 says +20% means hiring and q36 lists missed handoffs, scheduling delays and rework. Consistency depends on Bobby being at the board.",
+   "why_not_higher": "Anchor 3 needs defined standards and QC steps; there are none outside DOT, and growth takes heroics from one dispatcher."
+  },
+  "S8": {
+   "score": 1,
+   "na": false,
+   "evidence": "documented",
+   "note": "Cardinal Foods 21% of revenue on the revenue-by-customer report; top five 54%. v2 anchor 1 is 20–30%.",
+   "why_not_higher": "Anchor 2 needs the largest customer between 15% and 20%. At 21% this sits just under the 25% overlay — a watch item, not a warning."
+  },
+  "S9": {
+   "score": 2,
+   "na": false,
+   "evidence": "documented",
+   "note": "48% of revenue on annual dedicated rate confirmations (Doc) renewing at ~85%, plus 40% repeat without contract. No forecast of any kind — q39 and q21 show no rolling view.",
+   "why_not_higher": "Anchor 3 needs the recurring base plus a rolling forecast; the rate confirmations are annual price letters, not committed volume, and nothing is forecast."
+  },
+  "S10": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "q53: only vendor agreements and insurance are confirmed. Customer 'contracts' are annual rate confirmations, transferability never checked, and the signed originals are in Ray's truck. q52 names Bobby's dispatch knowledge as the top risk and nothing has been done about it.",
+   "why_not_higher": "Anchor 2 needs some contracts written and accessible; the customer agreements are neither contracts nor accessible."
+  },
+  "L1": {
+   "score": 1,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Systems tour: QuickBooks Desktop and Paychex are the only real systems. Dispatch is a whiteboard and a personal Excel file; Samsara is a regulatory ELD, not an operating system. q41 reads 'none' for CRM, marketing, sales, reporting.",
+   "why_not_higher": "Anchor 2 needs key tools with big gaps; here there is one accounting system and the rest is spreadsheets and texts — the anchor-1 wording verbatim."
+  },
+  "L2": {
+   "score": 0,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "q42: 'One person is the integration.' Watched load data go from an email to a whiteboard to Bobby's spreadsheet to a paper BOL to QuickBooks, re-typed at every step.",
+   "why_not_higher": "Anchor 1 needs at least a scheduled export and import between systems; there is no export because there is no system to export from."
+  },
+  "L3": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Ray trusts the bank balance and the fuel card statement. Revenue per truck differs depending on whether Denise or the bookkeeper produces it; nothing in q43 was checked as true.",
+   "why_not_higher": "Anchor 2 needs numbers that are mostly right after cleanup; here two people produce two different answers and neither is reconciled."
+  },
+  "L4": {
+   "score": 1,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "27.4 h/wk inventoried across five tasks (q44), 19.5 of it in Denise's hands on settlement, invoicing and collections — the paper basket was on her desk. The load is acknowledged and nothing has been reduced.",
+   "why_not_higher": "Anchor 2 needs a few fixes actually made; nothing has been touched."
+  },
+  "L5": {
+   "score": 1,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "One automation: the fuel-card transaction feed into QuickBooks, set up years ago by the card vendor. Shown running. Nobody here maintains it and nobody could say what happens when it fails.",
+   "why_not_higher": "Anchor 2 needs a few automations across the business; there is exactly one and it is somebody else's."
+  },
+  "L6": {
+   "score": 0,
+   "na": false,
+   "evidence": "reported",
+   "note": "q46: 'None.' Nobody in the business uses an AI tool for anything, and Ray had not considered it before the intake asked.",
+   "why_not_higher": "Anchor 1 needs at least one person experimenting on their own; there is nobody."
+  },
+  "L7": {
+   "score": 0,
+   "na": false,
+   "evidence": "reported",
+   "note": "q47: nothing checked. No rules, no review, nothing measured — consistent with L6, since there is nothing yet to govern.",
+   "why_not_higher": "Anchor 1 needs at least a verbal rule; none has ever been said."
+  },
+  "L8": {
+   "score": 0,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "q48: shared passwords, unclear access, ex-employees may retain access, inconsistent backups, no tested recovery, unclear account ownership. Watched a QuickBooks login three people share; the Samsara portal uses the same password; the dispatch spreadsheet the company runs on has no backup anywhere.",
+   "why_not_higher": "This is the 0 anchor verbatim — shared passwords, no backups, unknown access."
+  },
+  "L9": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "q58: 'A few curious people, no training.' q59: Denise has asked for help twice, Curtis is willing, drivers will use anything on a phone; Bobby will resist because the board is his standing in the company.",
+   "why_not_higher": "Anchor 2 needs pockets of actual capability; nobody has been trained on anything."
+  },
+  "L10": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "q49: '$10,000, and I would need to see it first', Ray 2 h/wk, Denise 3, Bobby none. q55: 'Cash, staffing or leadership must be resolved first.' Real appetite, real money, no time from the person who holds the process.",
+   "why_not_higher": "Anchor 3 needs budget and time genuinely named and set aside; the dispatcher who owns the work to be changed has zero hours allocated."
+  }
+ },
+ "assessment": {
+  "owner_objective": "Better operations and delivery capacity — move more freight with the equipment he already has, and stop being one resignation away from a shutdown.",
+  "owner_belief": "We need more trucks and I cannot find drivers. Every time I get a shot at more freight from Cardinal or Delta Building I have to turn it down because I have nobody to seat. That has been the story for three years straight.",
+  "primary_constraint": "The dispatch function is one undocumented person: the routing logic, the lane rates and the shipper history exist only on Bobby's whiteboard, his personal laptop and in his memory, so the business cannot see what a load makes, cannot price from cost, and cannot add capacity without adding him.",
+  "constraint_symptoms": "Block 2: every quote is priced from a remembered lane and 30% close with 'rate' as the only loss reason. Block 3: the board is a spreadsheet on a personal laptop with no backup and no second reader. Block 4: 7.9 h/wk of load entry is the only place routing decisions are ever written down, and it is written where nobody can read it. Block 5: q52 names Bobby first, and the four-week test survives on him, not on Ray. Four blocks; the rule requires two.",
+  "constraint_cost": "~$214K of contribution a year lost to 29% empty miles that nobody can see at load level (derived from P&L fuel, revenue and mileage, Doc) · ~$34K of office payroll on settlement, invoicing and collections paperwork · 411 dispatcher hours a year of load entry that produce no record the business can read.",
+  "constraint_fix": "Get the board out of one head and onto a system the business owns: a TMS or, as a staged first step, a shared dispatch sheet with lane cost per mile, a second reader, and a nightly backup. Price the dedicated lanes from that cost. Cross-train Curtis or Denise to cover the board two days a month so absence stops being theoretical.",
+  "momentum_initiative": "Back up the dispatch spreadsheet to a company-owned location tonight and give one other person read access. It costs nothing, takes an hour, and removes the single largest continuity risk in the business before anything else is attempted.",
+  "overlay_flags": [
+   "key_person",
+   "data_risk",
+   "cash_distress"
+  ],
+  "plan_items": [
+   "Dispatch spreadsheet backed up to company-owned storage with a second reader — Ray Fontaine — 2026-09-11",
+   "Individual logins for QuickBooks and Samsara, ex-driver access revoked — Curtis Meadows — 2026-09-18",
+   "Cost-per-mile model by lane built from the P&L and settlement data — Ray Fontaine — 2026-10-05",
+   "Dedicated-lane reprice using the cost model — Ray Fontaine — 2026-11-02",
+   "Settlement and invoicing off paper: BOL capture in the driver app — Denise Arceneaux — 2026-11-16",
+   "Dormant-shipper reactivation call list (46 names) — Ray Fontaine — 2026-10-13"
+  ],
+  "overlap_factor": 0.7
+ },
+ "opportunities": [
+  {
+   "title": "Reprice the dedicated lanes off a real cost-per-mile",
+   "finding": "The lane rate sheet is dated 2023 (Doc) and is set against competitors, not cost. Dedicated and regional lanes are $3.72M of the $6.21M P&L. Driver pay, insurance and maintenance have all moved since 2023 and none of it has been passed through except a floating fuel surcharge. Renewal on these lanes runs ~85%, and the two lanes reopened in 2025 both accepted an increase.",
+   "calculator": {
+    "kind": "price_change",
+    "inputs": {
+     "revenueAffected": 3720000,
+     "priceChangePctLow": 2,
+     "priceChangePctExpected": 3.5,
+     "priceChangePctHigh": 5,
+     "volumeLossPctLow": 2,
+     "volumeLossPctExpected": 4,
+     "volumeLossPctHigh": 7,
+     "grossMarginPct": 22
+    }
+   },
+   "fix_cost": 4800,
+   "months_to_benefit": 3,
+   "confidence": "medium",
+   "include_in_report": true,
+   "basis_reported_only": false,
+   "blueprint": "Build cost per mile per lane from the P&L and four weeks of settlement data, set a target contribution floor, and take the increase into the next rate-confirmation cycle lane by lane with the cost math attached. Cardinal is 21% of revenue and is repriced last, after two smaller lanes have proved the conversation.",
+   "replaces": "A competitor-referenced rate sheet that has absorbed three years of driver-pay and insurance inflation."
+  },
+  {
+   "title": "Reactivate the 46 shippers who have gone quiet",
+   "finding": "64 shippers tendered freight in the last twelve months; the customer ledger shows 46 more that tendered in the prior two years and nothing since. q27: inactive customers are not identified and no reactivation has ever been run. These are lanes the trucks already know and relationships that cost nothing to reopen.",
+   "calculator": {
+    "kind": "reactivation",
+    "inputs": {
+     "dormantCustomers": 46,
+     "reactivationRatePctLow": 10,
+     "reactivationRatePctExpected": 18,
+     "reactivationRatePctHigh": 26,
+     "averageAnnualValue": 34000,
+     "grossMarginPct": 22
+    }
+   },
+   "fix_cost": 2600,
+   "months_to_benefit": 2,
+   "confidence": "medium",
+   "include_in_report": true,
+   "basis_reported_only": false,
+   "blueprint": "Pull the dormant list out of QuickBooks, sort by the lanes the fleet already runs so recovered freight fills empty miles instead of adding them, and give Ray a twenty-name call sheet a week with a one-line note on what they last shipped.",
+   "replaces": "Nothing — this list has never existed as a list."
+  },
+  {
+   "title": "Take driver settlement and invoicing off paper",
+   "finding": "12.5 h/wk sits in settlement and invoicing from scanned and paper BOLs, both flagged for errors in q44 and both watched in session on Denise's desk. The same paper delay is why DSO is 61 days with $412K past 60 on the AR aging.",
+   "calculator": {
+    "kind": "automation_hours",
+    "inputs": {
+     "hoursPerWeek": 12.5,
+     "loadedHourlyRate": 34,
+     "automationSharePctLow": 40,
+     "automationSharePctExpected": 60,
+     "automationSharePctHigh": 75,
+     "weeksPerYear": 52,
+     "redeployed": true
+    }
+   },
+   "fix_cost": 11500,
+   "months_to_benefit": 3,
+   "confidence": "medium",
+   "include_in_report": true,
+   "basis_reported_only": false,
+   "blueprint": "Driver-app BOL capture at delivery, image straight to the invoice, settlement calculated from the same record. Hours redeploy onto collections, which is the constraint on cash rather than on profit — the report states the recovered hours and the cash-timing effect separately.",
+   "replaces": "The paper BOL basket, the weekly seven-hour settlement build, and most of the POD chasing."
+  }
+ ],
+ "expected": {
+  "gate_should_pass": true,
+  "expected_blockers": [],
+  "expected_warnings": [
+   "one opportunity above 50% of the raw expected total — the lane reprice is ~56%, reviewer acknowledgement required"
+  ],
+  "band_guess": "Stabilizing",
+  "cross_checks": {
+   "margin_vs_pnl": "pass",
+   "funnel_vs_revenue": "pass",
+   "concentration": "pass",
+   "hours_vs_headcount": "pass"
+  }
+ }
+}

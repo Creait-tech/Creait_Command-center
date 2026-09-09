@@ -1,0 +1,461 @@
+{
+ "n": 15,
+ "company": "Summit Peak IT",
+ "owner": "Anil Patel",
+ "industry": "Managed IT services",
+ "profile": {
+  "revenue": 3100000,
+  "grossMarginPct": 58,
+  "operatingProfit": 520000,
+  "headcount": 16,
+  "founded": 2014,
+  "story": "Anil Patel has run Summit Peak IT out of Denver since 2014 — 61 managed clients, 1,480 seats, sixteen people. Eighty percent of revenue is contracted and recurring, logo retention is 96%, and the company closes its books inside fifteen days into a board pack it actually reads. This is the healthy case: the machine works. What is left is a set of small, specific gaps — 40% of the seat base still priced on pre-2025 agreements, a security attach rate stuck at 34%, and 9.2 hours a week of after-hours tier-1 triage that two engineers rotate a pager for. Anil is 51 and has put a partial recapitalisation on the objective list, which is why module E is in scope."
+ },
+ "edge_cases": [
+  "the healthy control case — composite in the low 70s, Scaling band",
+  "23 of 30 indicators at Demonstrated or Documented; tests that the evidence-mix gate is comfortably cleared",
+  "small opportunities on a large base — raw expected total is under $60K on $3.1M of revenue",
+  "module E in scope: q3 carries a transition objective, so e1–e6 are answered",
+  "a genuine finding inside a healthy company: the company secures its clients better than itself"
+ ],
+ "intake": {
+  "q1": [
+   { "row": "Your name", "value": "Anil Patel" },
+   { "row": "Email", "value": "anil@summitpeakit.com" },
+   { "row": "Phone", "value": "(303) 555-0147" },
+   { "row": "Company name", "value": "Summit Peak IT, Inc." },
+   { "row": "Website", "value": "summitpeakit.com" },
+   { "row": "Location", "value": "Denver, Colorado" },
+   { "row": "Industry", "value": "Managed IT & security services (MSP)" }
+  ],
+  "q2": "We are a managed service provider. Sixty-one clients between 15 and 210 seats — professional services, healthcare practices, credit unions, a few light manufacturers — on per-seat monthly agreements that cover the service desk, endpoint management, patching, backup and a quarterly technology review. On top of that we sell security add-ons, backup and DR as a service, co-managed support for clients who have their own IT person, and project work: migrations, refreshes, office moves. Everything is delivered remotely from Denver with a field engineer on the road three days a week.",
+  "q3": [
+   { "row": "Primary", "objective": "Prepare to scale" },
+   { "row": "Secondary 1", "objective": "Future sale or partial exit" },
+   { "row": "Secondary 2", "objective": "More profit & cash flow" }
+  ],
+  "q4": [
+   { "row": "1", "outcome": "Security add-on attach rate across the seat base", "target": "From 34% to 60%" },
+   { "row": "2", "outcome": "Monthly recurring revenue", "target": "From $207K to $250K" },
+   { "row": "3", "outcome": "New-logo deals closed without me in the room", "target": "From 0 to 6 a year" }
+  ],
+  "q5": "Five million, twenty-two people, and a company that does not need me in a sales conversation. I want Priya running client strategy and Devon running delivery with their own P&L view, a security attach rate that looks like a real security company's, and agreements a buyer's lawyer would be happy to read. My own week should be the annual plan, the top ten relationships, and not much else.",
+  "q6": "Leading strategy & growth",
+  "q7": [
+   { "row": "Hours/week now", "value": "47" },
+   { "row": "Hours/week you want in 12 months", "value": "42" },
+   { "row": "Hours/week you want in 3 years", "value": "25" },
+   { "row": "Longest uninterrupted time away in the past 12 months", "value": "17 days in India, and the business did not call me once" },
+   { "row": "What pulls you back in", "value": "New client pricing outside the standard tiers, and hiring" }
+  ],
+  "q8": "Honestly I do not think we have one big bottleneck — I think we have four small ones and I cannot tell which to do first. If you pushed me I would say sales: every new logo still closes because I am in the room, and that is the thing that will cap us at five million.",
+  "q9": [
+   { "row": "Year founded", "value": "2014" },
+   { "row": "Owners & percentages", "value": "Anil Patel 78%, Priya Ramanathan 12%, Devon Marsh 10% (both vesting since 2023)" },
+   { "row": "Any owner misalignment affecting decisions?", "value": "No. Priya and Devon want the same exit shape I do, which is partly why they have equity" }
+  ],
+  "q10": [
+   { "row": "Full-time employees", "count": "15" },
+   { "row": "Part-time", "count": "0" },
+   { "row": "Regular contractors", "count": "1" },
+   { "row": "Managers / team leads", "count": "3" },
+   { "row": "People with direct reports", "count": "3" }
+  ],
+  "q11": "Regional",
+  "q12": [
+   { "row": "One-time projects", "pct": "18" },
+   { "row": "Recurring contracts", "pct": "80" },
+   { "row": "Repeat without contract", "pct": "0" },
+   { "row": "Products", "pct": "2" },
+   { "row": "Retainers", "pct": "0" },
+   { "row": "Other", "pct": "0" }
+  ],
+  "q13": [
+   { "name": "Managed services agreements (per-seat)", "pct": "56", "margin": "61", "trend": "Growing", "importance": "The base. 96% logo retention and the reason the company is worth anything" },
+   { "name": "Co-managed IT", "pct": "14", "margin": "57", "trend": "Growing", "importance": "Fastest-growing line; wins clients who already hired someone" },
+   { "name": "Security & compliance add-ons (MDR/SOC)", "pct": "6", "margin": "52", "trend": "Growing", "importance": "Attach rate is 34%. It should be double that" },
+   { "name": "Backup & DR as a service", "pct": "4", "margin": "66", "trend": "Growing", "importance": "Best margin in the catalogue" },
+   { "name": "Projects, migrations & hardware", "pct": "20", "margin": "41", "trend": "Flat", "importance": "Lumpy, lower margin, but it is how the roadmap gets funded" }
+  ],
+  "q14": [
+   { "row": "Active customer count", "value": "61 managed clients, 1,480 seats" },
+   { "row": "B2B / B2C / mixed", "value": "B2B" },
+   { "row": "% of revenue from your largest customer", "value": "12% (Front Range Credit Union — 210 seats)" },
+   { "row": "% of revenue from your top five", "value": "31%" },
+   { "row": "% of revenue tied directly to YOUR personal relationships", "value": "About 25%" }
+  ],
+  "q15": [
+   { "row": "Last completed year", "amount": "3100000" },
+   { "row": "Prior year", "amount": "2820000" },
+   { "row": "Year to date", "amount": "2410000" },
+   { "row": "Full-year forecast", "amount": "3380000" }
+  ],
+  "q16": "Up 10% or less",
+  "q17": [
+   { "row": "Approximate gross margin %", "value": "58%" },
+   { "row": "Main direct costs", "value": "Engineer labor, per-seat tool stack licences (RMM, EDR, backup, M365), subcontracted after-hours NOC, hardware COGS on projects" },
+   { "row": "Tracked by job / service / customer?", "value": "By service line monthly in the board pack; by client quarterly. Not per project in real time" }
+  ],
+  "q18": [
+   { "row": "Operating profit estimate", "amount": "520000" },
+   { "row": "Owner salary", "amount": "240000" },
+   { "row": "Owner distributions", "amount": "130000" },
+   { "row": "Unusual one-off expenses", "amount": "35000" }
+  ],
+  "q19": ["Comfortable"],
+  "q20": "Monthly, within 15 days",
+  "q21": [
+   { "row": "Revenue", "target": "$3.5M" },
+   { "row": "Gross margin", "target": "60%" },
+   { "row": "Operating profit", "target": "$600K" },
+   { "row": "Cash reserve", "target": "Four months of operating expense, held" },
+   { "row": "Owner compensation", "target": "$260K" }
+  ],
+  "q22": "QuickBooks P&L last 36 months, revenue by client, the MRR and seat report out of ConnectWise, margin by service line, the January 2026 rate card and tier sheet, AR aging, the IT Glue SOP library export, the February 2026 backup restore-test report, the KPI definitions document, and the contract set with the continuity plan draft.",
+  "q23": [
+   { "source": "Client & partner referral", "per_month": "7", "cost": "0", "quality": "5", "tracked": "Yes" },
+   { "source": "Google / paid search", "per_month": "5", "cost": "3800", "quality": "3", "tracked": "Yes" },
+   { "source": "Vendor co-marketing (Microsoft, Datto)", "per_month": "3", "cost": "900", "quality": "4", "tracked": "Yes" },
+   { "source": "Outbound SDR (contractor)", "per_month": "2", "cost": "2200", "quality": "2", "tracked": "Yes" },
+   { "source": "Webinars & local events", "per_month": "1", "cost": "700", "quality": "3", "tracked": "Yes" }
+  ],
+  "q24": [
+   { "row": "What happens, step by step", "value": "Web form, phone and partner intro all route into HubSpot. The on-duty account manager gets a Teams alert and calls inside fifteen minutes in business hours. Outside them an automated acknowledgement goes out with a booking link and a human calls the next morning" },
+   { "row": "Typical response time", "value": "Under 15 minutes in business hours; automated acknowledgement plus a next-morning call outside them" },
+   { "row": "Who is responsible", "value": "The on-duty account manager. It rotates weekly and first-response time is on the weekly scorecard" },
+   { "row": "Is every inquiry captured in one system?", "value": "Yes — HubSpot, every channel including the partner intros" },
+   { "row": "Automated follow-up?", "value": "Yes — seven touches over 21 days, plus a re-engagement at 90 days" },
+   { "row": "% of leads that get 2+ follow-ups", "value": "Effectively all of the inbound ones" }
+  ],
+  "q25": [
+   { "row": "Lead→sale or proposal→close %", "value": "52% of qualified opportunities; about 62% on project proposals to existing clients" },
+   { "row": "Tracked by source / person / service?", "value": "Yes — by source and by person in HubSpot, reviewed monthly" },
+   { "row": "Defined sales process?", "value": "Yes. Five stages in HubSpot and the AMs use them" },
+   { "row": "Most common reason you lose", "value": "Price against a cheaper break-fix shop, and incumbent inertia. It is a free-text note, not a required field" }
+  ],
+  "q26": [
+   { "row": "Typical first sale", "value": "$2,850/month recurring plus a $6,400 onboarding project" },
+   { "row": "Typical annual customer value", "value": "$41,000" },
+   { "row": "Most valuable segment", "value": "40–120 seat professional services and healthcare" },
+   { "row": "Tracked?", "value": "Yes — revenue and margin per client per month in ConnectWise, on the board pack" }
+  ],
+  "q27": [
+   { "row": "% who buy again", "value": "Recurring model — the question is retention, not repeat" },
+   { "row": "Renewal rate if applicable", "value": "96% logo retention, 103% net revenue retention" },
+   { "row": "Are inactive customers identified?", "value": "Yes — a lost-deal list and a lapsed-client list, both reviewed quarterly" },
+   { "row": "Reactivation campaigns ever run?", "value": "Yes — a lost-deal re-engagement every spring" },
+   { "row": "Why customers leave", "value": "Acquired, or they hired an internal IT manager and went co-managed elsewhere" }
+  ],
+  "q28": ["Reviewed annually", "Based on real job economics", "Varies by scope or value", "Discount rules defined"],
+  "q29": [
+   { "row": "Complementary services routinely offered?", "value": "Yes — security and backup are a standing item on every quarterly review agenda" },
+   { "row": "Bundles or packages?", "value": "Yes. Three named tiers: Core, Secure, Secure+" },
+   { "row": "Premium option?", "value": "Secure+, with MDR and a compliance report pack" },
+   { "row": "Entry-level option?", "value": "Co-managed, for clients with their own IT person" },
+   { "row": "Customer needs you can't currently serve", "value": "Line-of-business application development, and genuine 24/7 on-site" }
+  ],
+  "q30": [
+   { "row": "Who owns marketing", "value": "Rina Osei, marketing manager, 20 h/wk" },
+   { "row": "Who owns sales", "value": "Anil plus two account managers, Jaycee and Ben" },
+   { "row": "Monthly marketing budget", "value": "$7,600 including Rina" },
+   { "row": "Do sales & marketing review results together?", "value": "Yes, monthly, same meeting" },
+   { "row": "Are leads, conversion, CAC and customer value ever reviewed together?", "value": "Leads, conversion and customer value yes, monthly. Cost per acquisition by source we compute quarterly and it sits in a different deck" }
+  ],
+  "q31": "Minor adjustments",
+  "q32": [
+   { "row": "1", "area": "Security attach rate" },
+   { "row": "2", "area": "Repricing the older per-seat agreements" },
+   { "row": "3", "area": "New logos closing without me" }
+  ],
+  "q33": [
+   { "workflow": "Lead intake and qualification" },
+   { "workflow": "Assessment, proposal and close" },
+   { "workflow": "New client onboarding and documentation" },
+   { "workflow": "Service desk ticket handling and escalation" },
+   { "workflow": "Patch and vulnerability management" },
+   { "workflow": "Backup verification and restore testing" },
+   { "workflow": "Quarterly business review (QBR)" },
+   { "workflow": "Project scoping and delivery" },
+   { "workflow": "Monthly invoicing and seat reconciliation" },
+   { "workflow": "Offboarding a departing client" }
+  ],
+  "q34": [
+   { "row": "One clear accountable role", "frequency": "Always" },
+   { "row": "Defined handoffs", "frequency": "Usually" },
+   { "row": "Consistent exception escalation", "frequency": "Usually" }
+  ],
+  "q35": [
+   { "row": "Documented", "pct": "78" },
+   { "row": "Current", "pct": "70" },
+   { "row": "Accessible", "pct": "85" },
+   { "row": "Used in training", "pct": "72" },
+   { "row": "Actually followed", "pct": "66" }
+  ],
+  "q36": ["Incomplete information", "Scheduling delays"],
+  "q37": "Leadership",
+  "q38": "Mostly clear, with gaps",
+  "q39": [
+   { "row": "How many KPIs reviewed weekly", "value": "Six — first response, SLA attainment, ticket backlog, engineer utilization, MRR added, project margin" },
+   { "row": "Does each have one owner?", "value": "Yes, all six" },
+   { "row": "Are targets visible?", "value": "Yes — BrightGauge dashboard in the office and in the Monday meeting" },
+   { "row": "Does a miss trigger action?", "value": "Usually. About a third of the issues we open carry to the next week without closing" }
+  ],
+  "q40": "Weekly, structured and action-oriented",
+  "q41": [
+   { "row": "CRM", "tool": "HubSpot" },
+   { "row": "Marketing", "tool": "HubSpot" },
+   { "row": "Sales / proposals", "tool": "HubSpot + Quoter" },
+   { "row": "Scheduling / project management", "tool": "ConnectWise Manage — plus a shared project spreadsheet we have not killed" },
+   { "row": "Delivery", "tool": "ConnectWise Manage + NinjaOne RMM" },
+   { "row": "Accounting", "tool": "QuickBooks Online" },
+   { "row": "Reporting", "tool": "BrightGauge + Power BI" },
+   { "row": "Communication", "tool": "Microsoft Teams" },
+   { "row": "Files / knowledge", "tool": "IT Glue + SharePoint" },
+   { "row": "HR / payroll", "tool": "Rippling" }
+  ],
+  "q42": "Some integrations",
+  "q43": ["KPI definitions are agreed", "Data is generally accurate", "Customer and financial data can be connected", "Backups exist", "We know where sensitive data lives"],
+  "q44": [
+   { "task": "After-hours tier-1 triage and password resets", "who": "Service desk (rotating pager)", "frequency": "Daily", "occurrences": "5", "minutes": "110", "errors": "No", "systems": "ConnectWise, NinjaOne, Entra ID" },
+   { "task": "Monthly seat reconciliation against agreements before invoicing", "who": "Marta Kowal (controller)", "frequency": "Monthly", "occurrences": "1", "minutes": "190", "errors": "Yes", "systems": "ConnectWise, M365 admin, QuickBooks" },
+   { "task": "QBR deck assembly", "who": "Priya Ramanathan (vCIO)", "frequency": "Weekly", "occurrences": "2", "minutes": "75", "errors": "No", "systems": "ConnectWise, BrightGauge, PowerPoint" },
+   { "task": "New-client onboarding documentation entry", "who": "Onboarding engineer", "frequency": "Weekly", "occurrences": "1", "minutes": "160", "errors": "Yes", "systems": "IT Glue, ConnectWise" },
+   { "task": "Patch-compliance exception review", "who": "Tier-2 engineer", "frequency": "Weekly", "occurrences": "2", "minutes": "55", "errors": "No", "systems": "NinjaOne, ConnectWise" }
+  ],
+  "q45": "A lot. Ticket routing and SLA clocks in ConnectWise. Patch deployment and compliance reporting in NinjaOne. Nightly backup verification with an automated failure alert into the service desk queue. HubSpot's seven-touch sequence and the 90-day re-engagement. Invoicing generated from ConnectWise agreements. Onboarding checklists that spawn themselves from the deal record. All of it is monitored, and Devon owns the list — there is a named owner per automation in the runbook.",
+  "q46": ["Drafting", "Research", "Customer communication", "Knowledge retrieval", "Reporting"],
+  "q47": ["Human-review rules are clear", "Sensitive-data rules are defined"],
+  "q48": ["Unclear account ownership"],
+  "q49": [
+   { "row": "Implementation budget range", "value": "$40,000–$60,000 a year, and it is a line in the annual plan" },
+   { "row": "Owner hours/week available", "value": "6" },
+   { "row": "Team hours/week available", "value": "12 across Priya, Devon and Rina" },
+   { "row": "Appetite for changing systems", "value": "High. We sell change for a living and it would be embarrassing not to" }
+  ],
+  "q58": "Trained on the core tools, adoption uneven",
+  "q59": "Devon and Priya take everything on — Devon built the backup-alert automation himself. Rina adopts fast. The two account managers use what is put in front of them and improve nothing. The tier-1 desk is where the resistance is, and it is not attitude: they are the ones on the pager and every new thing has landed on them first. If we change the after-hours load before we change anything else, that resistance goes away.",
+  "q56": [
+   { "role": "vCIO", "rate": "96" },
+   { "role": "Project engineer", "rate": "74" },
+   { "role": "Tier-2 / tier-3 engineer", "rate": "68" },
+   { "role": "Controller / administration", "rate": "52" },
+   { "role": "Service desk tier-1", "rate": "48" }
+  ],
+  "q50": ["Major sales", "Customer escalations", "Hiring / firing", "Banking / payments", "Vendor relationships", "Strategy"],
+  "q51": [
+   { "row": "What keeps running", "value": "Everything. Service desk, projects, invoicing, the Monday meeting, QBRs" },
+   { "row": "What slows down", "value": "New client pricing outside the standard tiers, and any hire" },
+   { "row": "What stops", "value": "Nothing for four weeks. Past that, the annual plan and two board-level client relationships" },
+   { "row": "Who decides", "value": "Devon on delivery, Priya on client strategy, Marta on money up to $25K" },
+   { "row": "What nobody else can access", "value": "The bank above $25K, the cap table, and the Microsoft partner portal, which is still under my login" }
+  ],
+  "q52": [
+   { "risk": "Anil Patel", "impact": "New-logo acquisition stops and two board-level relationships go unattended. Delivery is unaffected" },
+   { "risk": "Priya Ramanathan — vCIO", "impact": "Client strategy and every QBR. She holds the roadmap conversations that drive the project line" },
+   { "risk": "Front Range Credit Union — 12% of revenue, 210 seats", "impact": "A tenth of revenue plus the compliance reference we sell other credit unions with" },
+   { "risk": "Assignability of the 61 auto-renewing agreements", "impact": "Unknown, and that is the point — no lawyer has read them for change-of-control" }
+  ],
+  "q53": ["Customer agreements are written & accessible", "Vendor agreements are written", "Licenses & insurance are current", "Employment agreements are current", "The company owns its IP and digital accounts", "No known legal, tax or insurance issue"],
+  "q54": ["Leadership depth", "Sales without the owner", "Contracts & compliance"],
+  "q55": "Ready, with leadership capacity",
+  "q57": "Steady",
+  "e1": "Partial sale / investment",
+  "e2": "4–5 years",
+  "e3": "I would stay on as vCIO for the top ten accounts and chair a board. Not CEO. By then the sales and delivery machine should be somebody else's daily job, and I would like that somebody to be Priya and Devon rather than a stranger.",
+  "e4": "Personally: enough liquidity that the house and the kids' schooling are not tied to this company, and a role I actually want on a Monday morning. Financially: the recurring base has to carry the company without me in any single account, the two people who would run it after me have to already be running it before the deal, and the agreements have to be genuinely assignable.",
+  "e5": ["CPA", "Attorney", "Financial planner"],
+  "e6": "Whether the recurring revenue is as transferable as I think it is. Sixty-one agreements auto-renew and I have never had a lawyer read one for change-of-control. That is the thing I would least like to discover in diligence."
+ },
+ "session": {
+  "engine": {
+   "leads_per_month": "18 inquiries, ~2 qualified new-client opportunities",
+   "conversion_rate": "52% of qualified opportunities",
+   "avg_deal_value": "$2,850/mo recurring, ~$34,200 first-year plus a $6,400 onboarding project",
+   "response_time": "under 15 minutes in business hours; automated acknowledgement and a next-morning call outside them",
+   "gross_margin_pct": "58",
+   "headcount": "16",
+   "repetitive_hours_week": "After-hours tier-1 triage — service desk — 9.2\nQBR deck assembly — Priya — 2.5\nOnboarding documentation entry — onboarding engineer — 2.7\nPatch exception review — tier-2 — 1.8\nSeat reconciliation before invoicing — Marta — 3.2",
+   "largest_customer_pct": "12"
+  },
+  "blockNotes": {
+   "b1": "Anil is the rare owner who did not name one bottleneck — he named four small ones and said he could not sequence them. That is an accurate read of his own business and the session should say so rather than manufacture a crisis. Objective is Prepare to scale with a partial exit in 4–5 years, so module E is in scope. Seventeen days away last year with no calls.",
+   "b2": "Front end is genuinely good. Eighteen inquiries a month, every one in HubSpot, sub-fifteen-minute callback on the scorecard, five stages actually used, 52% close on qualified opportunities. Funnel reconciles: 24 qualified opportunities a year × 52% × $34,200 first-year recurring = ~$427K of new ARR against 96% logo retention on a $3.1M base — lands on the P&L's 10% growth. Pass.",
+   "b3": "Systems tour ran long because there was a lot to see. HubSpot↔ConnectWise↔QuickBooks↔BrightGauge all connected and shown moving data. Two double-entry points survive: the monthly seat reconciliation before invoicing, and a project spreadsheet running alongside ConnectWise that Devon admits should have died two years ago. IT Glue SOP library opened at random — four of five entries current.",
+   "b4": "19.3 h/wk of repetitive work across sixteen people (~630 available hours) — 3%, pass. 9.2 of those hours are after-hours tier-1 triage on a rotating pager, which is both the largest task and the source of the only real resistance in the company (q59).",
+   "b5": "Continuity is in better shape than most companies twice this size: written agreements, current insurance, IP owned, a continuity plan drafted. The finding is the one Anil raised himself in e6 — 61 auto-renewing agreements and no lawyer has ever read one for change-of-control. Recorded as a nontransferable-contracts watch and an attorney referral, not as advice. Second finding worth printing: q48 flags unclear ownership on the company's own marketing and domain accounts, and the Microsoft partner portal is under Anil's personal login. They secure their clients better than themselves."
+  },
+  "demonstrated": [
+   "HubSpot source dashboard with cost per lead and first-response times by account manager",
+   "The seven-touch inbound sequence and the 90-day re-engagement running on live records",
+   "Five-stage pipeline with close rate by source and by person, reviewed monthly",
+   "BrightGauge weekly dashboard — six owned KPIs with visible targets, opened in the Monday meeting",
+   "ConnectWise↔HubSpot↔QuickBooks↔BrightGauge data flow walked end to end",
+   "IT Glue SOP library — five entries opened at random, four current",
+   "Nightly backup verification firing a failure alert into the service desk queue",
+   "Engineer utilization dashboard, and the project spreadsheet that still runs beside ConnectWise",
+   "ChatGPT used ad hoc by five people for drafting and research; the ticket-summarisation pilot opened and confirmed never rolled out"
+  ],
+  "documents_seen": [
+   "QuickBooks P&L 36 months — revenue $3.10M, gross margin 58%, operating profit $520K",
+   "Revenue by client — Front Range Credit Union 12%, top five 31%",
+   "MRR and seat report (ConnectWise) — $207K MRR, 1,480 seats, 80% of revenue contracted",
+   "Margin by service line, monthly, twelve months",
+   "Rate card and tier sheet dated January 2026 with the annual price-review memo",
+   "IT Glue SOP library export — all ten critical workflows",
+   "Backup restore-test report, February 2026 — full restore verified on three clients",
+   "KPI definitions document, v3",
+   "Contract set (61 agreements) plus the continuity plan draft, unsigned and untested",
+   "AR aging — DSO 22 days"
+  ]
+ },
+ "dataRoom": {
+  "pnl_on_file": true,
+  "documents": [
+   { "name": "QuickBooks P&L 36 months", "kind": "pnl", "received_on": "2026-08-20" },
+   { "name": "Revenue by client, trailing 12 months", "kind": "revenue_by_customer", "received_on": "2026-08-20" },
+   { "name": "MRR and seat report (ConnectWise)", "kind": "other", "received_on": "2026-08-21" },
+   { "name": "Margin by service line, 12 months", "kind": "job_cost", "received_on": "2026-08-21" },
+   { "name": "Rate card and tier sheet (January 2026) with price-review memo", "kind": "rate_card", "received_on": "2026-08-24" },
+   { "name": "IT Glue SOP library export", "kind": "other", "received_on": "2026-08-27" },
+   { "name": "Backup restore-test report, February 2026", "kind": "other", "received_on": "2026-08-27" },
+   { "name": "KPI definitions document v3", "kind": "other", "received_on": "2026-08-28" },
+   { "name": "Contract set (61 agreements) and continuity plan draft", "kind": "other", "received_on": "2026-09-02" },
+   { "name": "AR aging", "kind": "ar_aging", "received_on": "2026-09-02" }
+  ]
+ },
+ "scores": {
+  "P1": { "score": 3, "na": false, "evidence": "demonstrated", "note": "HubSpot source dashboard shown live: five sources with monthly volume, spend on all four paid channels, and a quality rating maintained by the account managers. Referral 7/mo, paid search 5 at $3,800, vendor co-marketing 3 at $900, SDR 2 at $2,200, events 1 at $700.", "why_not_higher": "Anchor 4 needs cost and quality tracked monthly together with volume; cost per acquisition by source is computed quarterly and lives in a separate deck (q30)." },
+  "P2": { "score": 3, "na": false, "evidence": "demonstrated", "note": "Every channel including partner intros lands in HubSpot; the on-duty account manager gets a Teams alert and first-response time is a weekly scorecard KPI. Sub-fifteen-minute callback verified against the dashboard.", "why_not_higher": "Anchor 4 needs every inquiry answered inside an hour; roughly a third arrive outside business hours and get an automated acknowledgement plus a call the next morning." },
+  "P3": { "score": 3, "na": false, "evidence": "demonstrated", "note": "A seven-touch sequence over 21 days plus a 90-day re-engagement, shown running on live records; missed touches surface as overdue tasks on the board.", "why_not_higher": "Anchor 4 needs 2+ systematic touches on every lead. Partner-introduced opportunities — the highest-quality source at 7 a month — are worked by Anil personally outside the sequence." },
+  "P4": { "score": 3, "na": false, "evidence": "reported", "note": "q25: five HubSpot stages actually used by both account managers, 52% close on qualified opportunities and 62% on project proposals, tracked by source and by person and reviewed monthly.", "why_not_higher": "Anchor 4 needs loss reasons logged; q25 says the reason is a free-text note rather than a required field, and about a third of closed-lost records have it blank." },
+  "P5": { "score": 3, "na": false, "evidence": "documented", "note": "Rate card and tier sheet dated January 2026 with the annual price-review memo attached (Doc) — priced off per-seat tool cost plus a target engineer-hours-per-seat load. q28 confirms annual review, real job economics, scope-based variation and written discount rules.", "why_not_higher": "Anchor 4 needs the team able to defend the price; q28 leaves that box unchecked and both account managers route any pushback beyond 5% to Anil." },
+  "P6": { "score": 3, "na": false, "evidence": "documented", "note": "Tier sheet (Doc) names three tiers — Core, Secure, Secure+ — plus a co-managed entry offer, and security and backup are a standing item on the QBR agenda (q29).", "why_not_higher": "Anchor 4 needs the upsell routine across the team; the security attach rate is 34% against a 60% target, so the ladder exists on paper and is not yet routine in the conversation." },
+  "P7": { "score": 3, "na": false, "evidence": "documented", "note": "MRR and retention report (Doc): 96% logo retention, 103% net revenue retention. Lost-deal and lapsed-client lists are reviewed quarterly and a lost-deal re-engagement runs every spring.", "why_not_higher": "Anchor 4 needs retention measured and worked with reactivation on a cadence; the spring campaign covers lost deals only — the fourteen clients lost to acquisition or in-housing over three years have never been contacted, and nobody measures the campaign's return." },
+  "P8": { "score": 3, "na": false, "evidence": "demonstrated", "note": "Named owners: Rina on marketing, Anil and two AMs on sales, $7,600/mo budget. The monthly growth review deck was opened — leads, conversion and customer value reviewed together in one meeting.", "why_not_higher": "Anchor 4 needs acquisition cost reviewed alongside the rest; q30 puts CAC by source on a quarterly cycle in a different deck." },
+  "P9": { "score": 3, "na": false, "evidence": "documented", "note": "Gross margin 58% on the 36-month P&L, and margin by service line comes out monthly in the board pack (Doc) — 61% on managed agreements down to 41% on projects. Per-client margin is computed quarterly and used at renewal.", "why_not_higher": "Anchor 4 needs margin tracked by job and used in decisions; project margin is only known after the project closes, which is why the 41% line has not moved in two years." },
+  "P10": { "score": 4, "na": false, "evidence": "documented", "note": "36 monthly P&Ls on file, closing inside fifteen days (q20), read into a board pack with targets on revenue, margin, profit, cash reserve and owner compensation (q21). Cash position 'Comfortable' with four months of opex held to target.", "why_not_higher": "Top of the anchor — monthly within fifteen days, reviewed, and every line carries a target." },
+  "S1": { "score": 2, "na": false, "evidence": "demonstrated", "note": "Devon owns delivery and Priya owns client strategy with real authority — both made calls in front of us without checking in. q50 keeps major sales, escalations, hiring, banking, vendors and strategy with Anil.", "why_not_higher": "Anchor 3 needs decision rights written for most areas. The authority levels are consistent in practice but exist nowhere on paper — Devon described them from memory in session and got two of the thresholds wrong." },
+  "S2": { "score": 3, "na": false, "evidence": "reported", "note": "q51 four-week test: everything keeps running, and the seventeen-day absence last year is the live proof — 'the business did not call me once'. Devon, Priya and Marta each hold a named decision lane. New-tier pricing and hiring stall; two board-level relationships go unattended.", "why_not_higher": "Anchor 4 needs nothing critical owner-locked; the bank above $25K, the cap table and the Microsoft partner portal are all still Anil's alone." },
+  "S3": { "score": 2, "na": false, "evidence": "reported", "note": "Jaycee and Ben close renewals, expansions and project proposals on their own with a 62% close rate. q8 and q4: 'every new logo still closes because I am in the room', and the target is six a year without him.", "why_not_higher": "Anchor 3 needs the team closing standard deals with the owner in on only the largest 10–20%; new-logo acquisition of any size still runs through Anil." },
+  "S4": { "score": 3, "na": false, "evidence": "demonstrated", "note": "Three managers, each owning KPIs on the weekly dashboard — Devon on SLA and backlog, Priya on MRR added, Marta on project margin. Watched a missed SLA number produce a named owner and a dated action in the Monday meeting.", "why_not_higher": "Anchor 4 needs a miss to trigger action without the owner; q39 says about a third of issues carry over unresolved, and the ones that get closed fastest are the ones Anil asks about." },
+  "S5": { "score": 3, "na": false, "evidence": "documented", "note": "IT Glue SOP library export covers all ten critical workflows (Doc), and five entries opened at random in session were four-of-five current. q35: 78% documented, 70% current, 72% used in training. Onboarding runs from a checklist that spawns from the deal record.", "why_not_higher": "Anchor 4 needs the documentation actually followed; q35 puts adherence at 66% and nothing audits it." },
+  "S6": { "score": 3, "na": false, "evidence": "demonstrated", "note": "q40 'Weekly, structured and action-oriented'. Monday meeting attended: six KPIs, every one owned, targets visible on the BrightGauge board, issues opened with names against them.", "why_not_higher": "Anchor 4 needs the rhythm to close its own loop; q39 says roughly a third of issues raised carry into the following week without resolution." },
+  "S7": { "score": 3, "na": false, "evidence": "demonstrated", "note": "Utilization dashboard shown live; SLA attainment is a weekly owned KPI; QC steps are defined in the SOP library and patch compliance is reviewed weekly. q31: +20% means 'minor adjustments'.", "why_not_higher": "Anchor 4 needs a capacity plan; there is no written hiring trigger tied to utilization, and Devon's own answer to +20% was 'we'd feel it in month two'." },
+  "S8": { "score": 3, "na": false, "evidence": "documented", "note": "Front Range Credit Union 12% of revenue at 210 seats on the revenue-by-client report; top five 31% across 61 clients. v2 anchor 3 is 10–15%.", "why_not_higher": "Anchor 4 needs the largest client under 10%. Well below the 25% overlay, so a watch item only — though it is also the compliance reference the company sells other credit unions with, which concentrates more than revenue." },
+  "S9": { "score": 4, "na": false, "evidence": "documented", "note": "MRR report (Doc): $207K of monthly recurring, 80% of revenue contracted, 96% logo retention, 103% net revenue retention, with a rolling twelve-month MRR forecast maintained in BrightGauge.", "why_not_higher": "Top of the anchor — a meaningful contracted base that is genuinely forecastable, and the forecast is used in the annual plan rather than admired." },
+  "S10": { "score": 3, "na": false, "evidence": "documented", "note": "Contract set of 61 written agreements plus a drafted continuity plan (Doc). q53 confirms current insurance, employment agreements and company-owned IP. Priya and Devon hold equity and are being cross-trained into the two roles that matter.", "why_not_higher": "Anchor 4 needs transferable contracts and a tested plan; the continuity plan is unsigned and has never been exercised, and e6 records that no lawyer has read any of the 61 auto-renewing agreements for change-of-control." },
+  "L1": { "score": 3, "na": false, "evidence": "demonstrated", "note": "Systems tour: HubSpot, ConnectWise Manage, NinjaOne, BrightGauge, Power BI, IT Glue, SharePoint, Teams, QuickBooks Online, Rippling, Quoter. Every core area named in q41 has a real system behind it.", "why_not_higher": "Anchor 4 needs every core area on a real system; project delivery still runs partly out of a shared spreadsheet beside ConnectWise, which Devon called out himself." },
+  "L2": { "score": 3, "na": false, "evidence": "demonstrated", "note": "HubSpot→ConnectWise→QuickBooks→BrightGauge walked end to end in session with data moving at every hop. Invoices generate from ConnectWise agreements.", "why_not_higher": "Anchor 4 needs core systems sharing data cleanly; two double-entry points remain — the monthly seat reconciliation before invoicing (3.2 h) and the parallel project spreadsheet." },
+  "L3": { "score": 3, "na": false, "evidence": "documented", "note": "KPI definitions document v3 on file (Doc) and q43 confirms agreed definitions, accurate data, connectable customer and financial records, backups and a sensitive-data map. Six KPIs come out of BrightGauge without a human touching them.", "why_not_higher": "Anchor 4 needs reports on demand; q43 leaves 'Reports don't need manual cleanup' unchecked, and the QBR deck still takes 2.5 h/wk of a vCIO's time to assemble." },
+  "L4": { "score": 2, "na": false, "evidence": "reported", "note": "19.3 h/wk inventoried across five tasks (q44). Real reductions have been made — patching, backup verification, invoicing generation and onboarding checklists all run themselves. What remains is concentrated: 9.2 h/wk of after-hours tier-1 triage on a rotating pager.", "why_not_higher": "Anchor 3 needs the major repetitive tasks reduced with a few hours a week left per role; the single largest task on the list is untouched and it is the one carried outside working hours." },
+  "L5": { "score": 3, "na": false, "evidence": "demonstrated", "note": "Ticket routing and SLA clocks, patch deployment and reporting, nightly backup verification with failure alerting, the HubSpot sequences, invoice generation and self-spawning onboarding checklists — all shown running. q45: there is a named owner per automation in the runbook and Devon owns the list.", "why_not_higher": "Anchor 4 needs the automations maintained as a set; there is no review cadence on the runbook and the ticket-summarisation pilot was built, never rolled out, and never turned off." },
+  "L6": { "score": 2, "na": false, "evidence": "demonstrated", "note": "q46: drafting, research, customer communication, knowledge retrieval and reporting — five people using it daily, confirmed in the tour. The ticket-summarisation pilot was opened and confirmed never rolled out.", "why_not_higher": "Anchor 3 needs AI inside one or two defined workflows; usage is broad and entirely individual, and the one attempt at a defined workflow stalled at pilot." },
+  "L7": { "score": 2, "na": false, "evidence": "reported", "note": "q47: human-review rules are clear and sensitive-data rules are defined — both stated verbally and consistently by three separate people. Nothing is written, no use case has been picked on impact, and nothing is measured.", "why_not_higher": "Anchor 3 needs written use-case selection and data rules with human review defined; the rules are real and consistent but exist only in conversation, which for a company that writes SOPs for everything else is the finding." },
+  "L8": { "score": 3, "na": false, "evidence": "documented", "note": "Backup restore-test report, February 2026 (Doc) — full restore verified on three clients. Individual logins, Rippling-driven off-boarding, sensitive data mapped (q43). q48 flags one thing: unclear account ownership.", "why_not_higher": "Anchor 4 needs the data map complete and access fully controlled; the company's own domain and marketing accounts have no documented owner and the Microsoft partner portal is under Anil's personal login. They secure their clients better than they secure themselves." },
+  "L9": { "score": 3, "na": false, "evidence": "reported", "note": "q58: 'Trained on the core tools, adoption uneven.' q59: Devon and Priya build, Rina adopts fast, the account managers consume without improving, and the tier-1 desk resists — because every new thing has landed on the people already carrying the pager.", "why_not_higher": "Anchor 4 needs the team adopting and improving it themselves; that is true of three people out of sixteen, and the group with the most to gain is the group pushing back." },
+  "L10": { "score": 3, "na": false, "evidence": "reported", "note": "q49: $40–60K a year as a named line in the annual plan, six owner hours and twelve team hours a week. q55: 'Ready, with leadership capacity.'", "why_not_higher": "Anchor 4 needs execution independent of the owner; Anil still personally runs the roadmap review, and his six hours are the pacing item on every initiative in the plan." }
+ },
+ "assessment": {
+  "owner_objective": "Prepare to scale toward $5M with a partial recapitalisation in four to five years — and get new-logo acquisition out of the owner's calendar before that conversation starts.",
+  "owner_belief": "Honestly I do not think we have one big bottleneck — I think we have four small ones and I cannot tell which to do first. If you pushed me I would say sales: every new logo still closes because I am in the room, and that is the thing that will cap us at five million.",
+  "primary_constraint": "New-logo acquisition is the one process in the company that has never been systematised: every other workflow is documented, owned, measured and automated, and this one runs on the founder being in the room — which caps growth at his calendar and is the single item a partial-sale buyer will price down.",
+  "constraint_symptoms": "Block 1: 'every new logo still closes because I am in the room', and q4 sets the target at six a year without him. Block 2: the seven-touch sequence covers inbound and stops at partner introductions — the highest-quality source at 7 a month — because those are Anil's. Block 3: the sales workflow is the one of ten with the thinnest SOP entry in an otherwise current library. Block 5: q52 puts new-logo acquisition first on the key-person list, and e6 ties the exit itself to whether the base is transferable without him. Four blocks; the rule requires two.",
+  "constraint_cost": "~$137K of first-year recurring revenue a year not pursued because qualified opportunities queue behind one calendar (24 qualified/yr against 18 inquiries/mo, funnel Doc) · ~$61K of contribution sitting in the 26-point gap between a 34% security attach rate and the 60% target on a 1,480-seat base · 0 new logos closed without the owner in three years, against a stated target of six.",
+  "constraint_fix": "Write the sales workflow the way the other nine are written: a qualification standard, a discovery script, cost-backed pricing floors the account managers can hold without escalation, and partner introductions routed into the same sequence as everything else. Give Jaycee and Ben one segment each to own end to end, and measure new logos closed without Anil as a weekly KPI beside the other six.",
+  "momentum_initiative": "Reprice the seat base still on pre-2025 agreements. It is a decision rather than a project, the January 2026 rate card and the annual review memo already justify it, it touches 40% of the recurring base, and it lands in the P&L inside 60 days.",
+  "overlay_flags": ["nontransferable_contracts"],
+  "plan_items": [
+   "Pre-2025 per-seat agreements repriced to the January 2026 card — Marta Kowal — 2026-09-28",
+   "Change-of-control and assignability review of the 61 agreements by outside counsel (referral) — Anil Patel — 2026-10-12",
+   "Sales workflow documented in IT Glue with pricing floors and a qualification standard — Anil Patel — 2026-11-02",
+   "Security attach campaign built into the QBR agenda with an owned weekly number — Priya Ramanathan — 2026-11-16",
+   "After-hours tier-1 triage automation build — Devon Marsh — 2026-12-07",
+   "Company's own domain, marketing and partner-portal accounts moved to documented company ownership — Devon Marsh — 2026-09-21"
+  ],
+  "overlap_factor": 0.7
+ },
+ "opportunities": [
+  {
+   "title": "Bring the pre-2025 agreements onto the current rate card",
+   "finding": "The January 2026 rate card and the annual price-review memo are both on file and both defensible — priced from per-seat tool cost plus a target engineer load. Roughly 40% of the seat base ($980K of annual recurring revenue) is still billing on agreements written before that review. Logo retention is 96% and net revenue retention 103%, so the base tolerates a price move; nothing has been asked of it.",
+   "calculator": {
+    "kind": "price_change",
+    "inputs": {
+     "revenueAffected": 980000,
+     "priceChangePctLow": 3,
+     "priceChangePctExpected": 4,
+     "priceChangePctHigh": 6,
+     "volumeLossPctLow": 1,
+     "volumeLossPctExpected": 2,
+     "volumeLossPctHigh": 4,
+     "grossMarginPct": 58
+    }
+   },
+   "fix_cost": 2200,
+   "months_to_benefit": 2,
+   "confidence": "high",
+   "include_in_report": true,
+   "basis_reported_only": false,
+   "blueprint": "Run the pre-2025 agreements in anniversary order, present the current card with the review memo attached, and hold the tier rather than discount to close the gap. Front Range Credit Union goes last and gets a scoped conversation rather than a letter.",
+   "replaces": "Agreements that have auto-renewed at their original per-seat price through two rounds of tool-stack cost increases."
+  },
+  {
+   "title": "Close more of the project and vCIO proposals already going out",
+   "finding": "Project proposals to existing clients close at 62% and represent $690K of quoted volume a year. Loss reasons are a free-text note rather than a required field and roughly a third of closed-lost records have it blank, so the company cannot say what it is losing on. The projects line is also the lowest-margin at 41% and the only one that has not moved in two years — because project margin is only known after the project closes.",
+   "calculator": {
+    "kind": "close_rate_lift",
+    "inputs": {
+     "quotedVolume": 690000,
+     "currentClosePct": 62,
+     "liftPointsLow": 3,
+     "liftPointsExpected": 5,
+     "liftPointsHigh": 8,
+     "grossMarginPct": 58,
+     "incrementalCostPct": 8
+    }
+   },
+   "fix_cost": 4500,
+   "months_to_benefit": 3,
+   "confidence": "medium",
+   "include_in_report": true,
+   "basis_reported_only": false,
+   "blueprint": "Make loss reason a required field on the closed-lost stage, put a real-time margin view on open projects so scope creep is visible before it is billed, and give the account managers option-based proposals rather than a single number. Incremental cost is carried at 8% for the project-engineer overtime the added work will absorb before a hire.",
+   "replaces": "Single-option project proposals, an unenforced loss-reason field, and a project margin nobody sees until the work is finished."
+  },
+  {
+   "title": "Automate after-hours tier-1 triage",
+   "finding": "9.2 h/wk — the single largest task in the repetitive-work inventory — is after-hours tier-1 triage and password resets on a rotating pager. It is the reason the service desk is the one group in the company resisting change (q59), and it is the load standing between the current team and the utilization headroom the growth plan assumes.",
+   "calculator": {
+    "kind": "automation_hours",
+    "inputs": {
+     "hoursPerWeek": 9.2,
+     "loadedHourlyRate": 48,
+     "automationSharePctLow": 35,
+     "automationSharePctExpected": 50,
+     "automationSharePctHigh": 65,
+     "weeksPerYear": 52,
+     "redeployed": true
+    }
+   },
+   "fix_cost": 8800,
+   "months_to_benefit": 3,
+   "confidence": "medium",
+   "include_in_report": true,
+   "basis_reported_only": false,
+   "blueprint": "Self-service password reset and MFA re-enrolment through Entra, automated triage and routing on the top six after-hours ticket types, and a documented escalation path for everything else. This is also the change that buys the team's appetite for the rest of the roadmap — fix the pager first and the resistance in q59 goes away.",
+   "replaces": "A rotating after-hours pager absorbing 478 engineer hours a year on tickets that do not need a human."
+  }
+ ],
+ "expected": {
+  "gate_should_pass": true,
+  "expected_blockers": [],
+  "expected_warnings": [],
+  "band_guess": "Scaling",
+  "cross_checks": {
+   "margin_vs_pnl": "pass",
+   "funnel_vs_revenue": "pass",
+   "concentration": "pass",
+   "hours_vs_headcount": "pass"
+  }
+ }
+}

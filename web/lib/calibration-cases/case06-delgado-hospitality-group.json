@@ -1,0 +1,1171 @@
+{
+ "n": 6,
+ "company": "Delgado Hospitality Group",
+ "owner": "Rosa Delgado",
+ "industry": "Restaurant group (3 units)",
+ "profile": {
+  "revenue": 5800000,
+  "grossMarginPct": 68,
+  "operatingProfit": 406000,
+  "headcount": 62,
+  "founded": 2012,
+  "story": "Rosa runs three restaurants — two full-service neighbourhood Mexican rooms and a fast-casual taqueria — with 62 people across them, most of them hourly. She is a genuinely good operator: real general managers at each unit, weekly numbers, a documented line-check and a food cost report that gets read. What is not solved is the back office. Schedules are built in a spreadsheet, inventory is counted on clipboards twice a week, and invoices from eleven vendors are typed into QuickBooks one at a time. Rosa also has no predictable revenue: three rooms that start from zero every Monday, with a fourth lease she has been offered and cannot evaluate because she has no forecast worth the name."
+ },
+ "edge_cases": [
+  "Restaurants have no lead funnel — leads and conversion are left n/a so the funnel cross-check should return insufficient, not flag",
+  "Hours-vs-headcount must pass comfortably on a 62-person payroll",
+  "Two legitimate N/As, both in Profit (P3 follow-up discipline, P4 sales conversion process) with written reasons — two is under the four-N/A exclusion threshold, so the pillar still scores",
+  "Largest customer effectively nil, so S8 sits at the top of the scale on a genuinely broad base"
+ ],
+ "intake": {
+  "q1": [
+   {
+    "row": "Your name",
+    "value": "Rosa Delgado"
+   },
+   {
+    "row": "Email",
+    "value": "rosa@delgadohospitality.com"
+   },
+   {
+    "row": "Phone",
+    "value": "(602) 555-0154"
+   },
+   {
+    "row": "Company name",
+    "value": "Delgado Hospitality Group"
+   },
+   {
+    "row": "Website",
+    "value": "delgadohospitality.com"
+   },
+   {
+    "row": "Location",
+    "value": "Phoenix, AZ — three units"
+   },
+   {
+    "row": "Industry",
+    "value": "Full-service and fast-casual restaurants"
+   }
+  ],
+  "q2": "Three restaurants: two full-service neighbourhood Mexican rooms (Delgado's on Roosevelt and Delgado's Arcadia) and one fast-casual taqueria in a food hall. About 5,200 covers a week across the group, plus a small catering and private-events line the full-service rooms handle. Everything is walk-in and reservation dining — we cook it, we serve it, the guest pays and leaves. 62 people, most of them hourly, with a general manager at each unit and an executive chef across all three.",
+  "q3": [
+   {
+    "row": "Primary",
+    "objective": "Better operations & delivery capacity"
+   },
+   {
+    "row": "Secondary 1",
+    "objective": "More profit & cash flow"
+   },
+   {
+    "row": "Secondary 2",
+    "objective": "Prepare to scale"
+   }
+  ],
+  "q4": [
+   {
+    "row": "1",
+    "outcome": "Prime cost across the group",
+    "target": "63% → 59%"
+   },
+   {
+    "row": "2",
+    "outcome": "Hours the GMs spend on schedules and counts",
+    "target": "21/wk → under 8"
+   },
+   {
+    "row": "3",
+    "outcome": "A forecast good enough to sign a fourth lease against",
+    "target": "13-week rolling, in place by January"
+   }
+  ],
+  "q5": "Four or five units with a real operations director between me and the GMs, back office that runs itself, and me choosing sites and menus instead of typing invoices. Same margins, more rooms, and a group that could survive me being in Oaxaca for a month.",
+  "q6": "Managing people & operations",
+  "q7": [
+   {
+    "row": "Hours/week now",
+    "value": "57"
+   },
+   {
+    "row": "Hours/week you want in 12 months",
+    "value": "48"
+   },
+   {
+    "row": "Hours/week you want in 3 years",
+    "value": "40"
+   },
+   {
+    "row": "Longest uninterrupted time away in the past 12 months",
+    "value": "16 days — the GMs ran it and it was fine, which surprised me"
+   },
+   {
+    "row": "What pulls you back in",
+    "value": "Vendor pricing, anything to do with the lease or the bank, and hiring a manager"
+   }
+  ],
+  "q8": "The back office is drowning us. My general managers are good operators and they spend a fifth of their week on spreadsheets and clipboards instead of on the floor. And I cannot tell you what next quarter looks like, so I cannot decide about the fourth site. Both of those have been true since we opened the third unit in 2022.",
+  "q9": [
+   {
+    "row": "Year founded",
+    "value": "2012"
+   },
+   {
+    "row": "Owners & percentages",
+    "value": "Rosa Delgado 76%, her brother Hector 24%"
+   },
+   {
+    "row": "Any owner misalignment affecting decisions?",
+    "value": "Hector wants a distribution every year; I want to fund the fourth unit. It is a real conversation, not a fight."
+   }
+  ],
+  "q10": [
+   {
+    "row": "Full-time employees",
+    "count": "24"
+   },
+   {
+    "row": "Part-time",
+    "count": "36"
+   },
+   {
+    "row": "Regular contractors",
+    "count": "2"
+   },
+   {
+    "row": "Managers / team leads",
+    "count": "7"
+   },
+   {
+    "row": "People with direct reports",
+    "count": "7"
+   }
+  ],
+  "q11": "Local",
+  "q12": [
+   {
+    "row": "One-time projects",
+    "pct": "0"
+   },
+   {
+    "row": "Recurring contracts",
+    "pct": "0"
+   },
+   {
+    "row": "Repeat without contract",
+    "pct": "44"
+   },
+   {
+    "row": "Products",
+    "pct": "56"
+   },
+   {
+    "row": "Retainers",
+    "pct": "0"
+   },
+   {
+    "row": "Other",
+    "pct": "0"
+   }
+  ],
+  "q13": [
+   {
+    "name": "Delgado's Roosevelt (full service)",
+    "pct": "41",
+    "margin": "69",
+    "trend": "Flat",
+    "importance": "The original room and the brand; highest average check"
+   },
+   {
+    "name": "Delgado's Arcadia (full service)",
+    "pct": "34",
+    "margin": "67",
+    "trend": "Growing",
+    "importance": "Best growth, newest kitchen, weakest management bench"
+   },
+   {
+    "name": "Taqueria (food hall, fast casual)",
+    "pct": "18",
+    "margin": "71",
+    "trend": "Growing",
+    "importance": "Highest margin per labour hour; the model a fourth unit would copy"
+   },
+   {
+    "name": "Catering & private events",
+    "pct": "7",
+    "margin": "62",
+    "trend": "Flat",
+    "importance": "Booked entirely through an outside events agency on commission"
+   }
+  ],
+  "q14": [
+   {
+    "row": "Active customer count",
+    "value": "Roughly 5,200 covers a week; 4,100 people on the loyalty app"
+   },
+   {
+    "row": "B2B / B2C / mixed",
+    "value": "B2C"
+   },
+   {
+    "row": "% of revenue from your largest customer",
+    "value": "2 — that would be one corporate catering account"
+   },
+   {
+    "row": "% of revenue from your top five",
+    "value": "5"
+   },
+   {
+    "row": "% of revenue tied directly to YOUR personal relationships",
+    "value": "Almost none on the guest side. The vendor and landlord relationships are all mine."
+   }
+  ],
+  "q15": [
+   {
+    "row": "Last completed year",
+    "amount": "5800000"
+   },
+   {
+    "row": "Prior year",
+    "amount": "5350000"
+   },
+   {
+    "row": "Year to date",
+    "amount": "4280000"
+   },
+   {
+    "row": "Full-year forecast",
+    "amount": "6100000"
+   }
+  ],
+  "q16": "Up 10% or less",
+  "q17": [
+   {
+    "row": "Approximate gross margin %",
+    "value": "68"
+   },
+   {
+    "row": "Main direct costs",
+    "value": "Food and beverage cost — labour is tracked separately as prime cost"
+   },
+   {
+    "row": "Tracked by job / service / customer?",
+    "value": "By unit and by menu category, weekly. The food cost report is the one thing we never skip."
+   }
+  ],
+  "q18": [
+   {
+    "row": "Operating profit estimate",
+    "amount": "406000"
+   },
+   {
+    "row": "Owner salary",
+    "amount": "165000"
+   },
+   {
+    "row": "Owner distributions",
+    "amount": "90000"
+   },
+   {
+    "row": "Unusual one-off expenses",
+    "amount": "52000 — Arcadia hood replacement"
+   }
+  ],
+  "q19": [
+   "Profitable but tight",
+   "Seasonality",
+   "Payroll timing",
+   "Big expense coming"
+  ],
+  "q20": "Monthly, delayed",
+  "q21": [
+   {
+    "row": "Revenue",
+    "target": "$6.1M"
+   },
+   {
+    "row": "Gross margin",
+    "target": "Food cost under 31% at every unit"
+   },
+   {
+    "row": "Operating profit",
+    "target": "8% of sales; we run about 7"
+   },
+   {
+    "row": "Cash reserve",
+    "target": "$300K for the fourth unit; we hold about $140K"
+   },
+   {
+    "row": "Owner compensation",
+    "target": "Hold salary, Hector's distribution stays at $90K"
+   }
+  ],
+  "q22": "P&L by unit and consolidated for 2024–2026, the weekly food cost and prime cost reports, POS sales mix by menu item, the loyalty app export, the current menu price list, and vendor invoices if you want to see the mess.",
+  "q23": [
+   {
+    "source": "Walk-in and neighbourhood",
+    "per_month": "n/a",
+    "cost": "0",
+    "quality": "5",
+    "tracked": "No"
+   },
+   {
+    "source": "Loyalty app and email",
+    "per_month": "n/a",
+    "cost": "700",
+    "quality": "4",
+    "tracked": "Yes"
+   },
+   {
+    "source": "Reservation platform",
+    "per_month": "n/a",
+    "cost": "1100",
+    "quality": "4",
+    "tracked": "Yes"
+   },
+   {
+    "source": "Instagram and local press",
+    "per_month": "n/a",
+    "cost": "900",
+    "quality": "3",
+    "tracked": "No"
+   },
+   {
+    "source": "Catering agency (commission)",
+    "per_month": "n/a",
+    "cost": "0",
+    "quality": "3",
+    "tracked": "No"
+   }
+  ],
+  "q24": [
+   {
+    "row": "What happens, step by step",
+    "value": "There is no inquiry to handle for dining — people walk in or book a table on the reservation platform, which seats them. Catering inquiries go to the events agency and we only see the confirmed booking."
+   },
+   {
+    "row": "Typical response time",
+    "value": "Immediate for dining. Catering is the agency's clock, not ours."
+   },
+   {
+    "row": "Who is responsible",
+    "value": "The host stand and the reservation platform"
+   },
+   {
+    "row": "Is every inquiry captured in one system?",
+    "value": "Reservations yes. There is nothing else to capture."
+   },
+   {
+    "row": "Automated follow-up?",
+    "value": "Reservation confirmations and reminders, yes. Loyalty app pushes, yes."
+   },
+   {
+    "row": "% of leads that get 2+ follow-ups",
+    "value": "n/a — we do not have leads in that sense"
+   }
+  ],
+  "q25": [
+   {
+    "row": "Lead→sale or proposal→close %",
+    "value": "n/a — a guest who walks in has already converted"
+   },
+   {
+    "row": "Tracked by source / person / service?",
+    "value": "Covers and average check by unit and daypart, yes"
+   },
+   {
+    "row": "Defined sales process?",
+    "value": "n/a for dining. The catering agency has its own."
+   },
+   {
+    "row": "Most common reason you lose",
+    "value": "A 40-minute wait on a Friday, which is a capacity problem not a sales one"
+   }
+  ],
+  "q26": [
+   {
+    "row": "Typical first sale",
+    "value": "$34 average check full service, $17 at the taqueria"
+   },
+   {
+    "row": "Typical annual customer value",
+    "value": "About $260 for a loyalty member"
+   },
+   {
+    "row": "Most valuable segment",
+    "value": "Weeknight regulars at Roosevelt — highest frequency, lowest cost to serve"
+   },
+   {
+    "row": "Tracked?",
+    "value": "Yes, in the POS and the loyalty app"
+   }
+  ],
+  "q27": [
+   {
+    "row": "% who buy again",
+    "value": "Loyalty members average 4.6 visits a year; overall repeat we estimate around 55%"
+   },
+   {
+    "row": "Renewal rate if applicable",
+    "value": "n/a"
+   },
+   {
+    "row": "Are inactive customers identified?",
+    "value": "The loyalty export shows about 2,900 members with no visit in 12 months"
+   },
+   {
+    "row": "Reactivation campaigns ever run?",
+    "value": "No — we push offers to the whole list or to nobody"
+   },
+   {
+    "row": "Why customers leave",
+    "value": "They move, or they had one bad Friday night wait"
+   }
+  ],
+  "q28": [
+   "Reviewed annually",
+   "Based on real job economics",
+   "The team can defend the price",
+   "Set against competitors"
+  ],
+  "q29": [
+   {
+    "row": "Complementary services routinely offered?",
+    "value": "Yes — the servers are trained on the margarita and dessert upsell and it is measured by server"
+   },
+   {
+    "row": "Bundles or packages?",
+    "value": "Family platters, the taqueria combo, and a private dining menu with three tiers"
+   },
+   {
+    "row": "Premium option?",
+    "value": "The reserve tequila list and the chef's table"
+   },
+   {
+    "row": "Entry-level option?",
+    "value": "Taco Tuesday and the taqueria menu"
+   },
+   {
+    "row": "Customer needs you can't currently serve",
+    "value": "Delivery at Arcadia — the kitchen cannot take the volume — and events over 90 people"
+   }
+  ],
+  "q30": [
+   {
+    "row": "Who owns marketing",
+    "value": "Rosa with a part-time social contractor"
+   },
+   {
+    "row": "Who owns sales",
+    "value": "n/a for dining; the events agency owns catering"
+   },
+   {
+    "row": "Monthly marketing budget",
+    "value": "$2,700 including the reservation platform"
+   },
+   {
+    "row": "Do sales & marketing review results together?",
+    "value": "Covers, average check and promo results are reviewed weekly with the GMs"
+   },
+   {
+    "row": "Are leads, conversion, CAC and customer value ever reviewed together?",
+    "value": "Cover counts, check average and loyalty frequency yes. Acquisition cost, never."
+   }
+  ],
+  "q31": "Quality would slip",
+  "q32": [
+   {
+    "row": "1",
+    "area": "Menu pricing — we have not moved prices since last spring"
+   },
+   {
+    "row": "2",
+    "area": "Labour scheduling against forecast covers"
+   },
+   {
+    "row": "3",
+    "area": "Getting the loyalty list to come back more often"
+   }
+  ],
+  "q33": [
+   {
+    "workflow": "Opening and closing line checks"
+   },
+   {
+    "workflow": "Labour scheduling and shift coverage"
+   },
+   {
+    "workflow": "Inventory counts and ordering"
+   },
+   {
+    "workflow": "Vendor invoice entry and price checking"
+   },
+   {
+    "workflow": "Recipe costing and menu engineering"
+   },
+   {
+    "workflow": "Reservation and waitlist management"
+   },
+   {
+    "workflow": "Guest complaint recovery"
+   },
+   {
+    "workflow": "Hiring and onboarding hourly staff"
+   },
+   {
+    "workflow": "Weekly numbers and prime cost reporting"
+   },
+   {
+    "workflow": "Catering handoff from the events agency"
+   }
+  ],
+  "q34": [
+   {
+    "row": "One clear accountable role",
+    "frequency": "Always"
+   },
+   {
+    "row": "Defined handoffs",
+    "frequency": "Usually"
+   },
+   {
+    "row": "Consistent exception escalation",
+    "frequency": "Usually"
+   }
+  ],
+  "q35": [
+   {
+    "row": "Documented",
+    "pct": "75"
+   },
+   {
+    "row": "Current",
+    "pct": "65"
+   },
+   {
+    "row": "Accessible",
+    "pct": "80"
+   },
+   {
+    "row": "Used in training",
+    "pct": "70"
+   },
+   {
+    "row": "Actually followed",
+    "pct": "60"
+   }
+  ],
+  "q36": [
+   "Scheduling delays",
+   "Late billing",
+   "Quality inconsistency",
+   "Unclear priorities"
+  ],
+  "q37": "Process consistency",
+  "q38": "Clear and followed",
+  "q39": [
+   {
+    "row": "How many KPIs reviewed weekly",
+    "value": "Six — sales, covers, average check, food cost, labour percentage and prime cost, by unit"
+   },
+   {
+    "row": "Does each have one owner?",
+    "value": "Yes, the GM of each unit owns all six for their room"
+   },
+   {
+    "row": "Are targets visible?",
+    "value": "Yes, posted in each back-of-house office"
+   },
+   {
+    "row": "Does a miss trigger action?",
+    "value": "Usually — a food cost miss triggers a recount the same week. A labour miss sometimes just gets noted."
+   }
+  ],
+  "q40": "Weekly, structured and action-oriented",
+  "q41": [
+   {
+    "row": "CRM",
+    "tool": "Loyalty app (guest records) — nothing else"
+   },
+   {
+    "row": "Marketing",
+    "tool": "Loyalty app pushes, Instagram, a part-time contractor"
+   },
+   {
+    "row": "Sales / proposals",
+    "tool": "None — the events agency uses its own"
+   },
+   {
+    "row": "Scheduling / project management",
+    "tool": "Google Sheets, one tab per unit per week"
+   },
+   {
+    "row": "Delivery",
+    "tool": "POS with kitchen display at all three units"
+   },
+   {
+    "row": "Accounting",
+    "tool": "QuickBooks Online with an outside bookkeeper"
+   },
+   {
+    "row": "Reporting",
+    "tool": "A weekly prime cost workbook Rosa maintains"
+   },
+   {
+    "row": "Communication",
+    "tool": "Group texts and a WhatsApp per unit"
+   },
+   {
+    "row": "Files / knowledge",
+    "tool": "Google Drive with the recipe and SOP library"
+   },
+   {
+    "row": "HR / payroll",
+    "tool": "Toast payroll"
+   }
+  ],
+  "q42": "Mostly separate, plus spreadsheets",
+  "q43": [
+   "KPI definitions are agreed",
+   "Data is generally accurate",
+   "Backups exist"
+  ],
+  "q44": [
+   {
+    "task": "Inventory counts and ordering",
+    "who": "GMs and sous chefs",
+    "frequency": "Several times a week",
+    "occurrences": "6",
+    "minutes": "120",
+    "errors": "Yes",
+    "systems": "Clipboards, spreadsheet, vendor portals"
+   },
+   {
+    "task": "Labour schedule building and shift swaps",
+    "who": "GMs",
+    "frequency": "Weekly",
+    "occurrences": "3",
+    "minutes": "180",
+    "errors": "Yes",
+    "systems": "Google Sheets, texts"
+   },
+   {
+    "task": "Vendor invoice entry and price checking",
+    "who": "Bookkeeper and Rosa",
+    "frequency": "Several times a week",
+    "occurrences": "3",
+    "minutes": "140",
+    "errors": "Yes",
+    "systems": "Paper invoices, QuickBooks"
+   },
+   {
+    "task": "Weekly prime cost workbook assembly",
+    "who": "Rosa",
+    "frequency": "Weekly",
+    "occurrences": "1",
+    "minutes": "360",
+    "errors": "No",
+    "systems": "POS exports, payroll, Excel"
+   }
+  ],
+  "q45": "Reservation confirmations and reminders, loyalty pushes, and the POS-to-payroll hours feed all run automatically and are reliable. Everything in the back office — scheduling, counts, ordering, invoice entry, the prime cost workbook — is manual.",
+  "q46": [
+   "Marketing content",
+   "Drafting"
+  ],
+  "q47": [
+   "Human-review rules are clear"
+  ],
+  "q48": [
+   "Shared passwords",
+   "Inconsistent backups",
+   "Unclear account ownership"
+  ],
+  "q49": [
+   {
+    "row": "Implementation budget range",
+    "value": "$20–30K if it comes out of the fourth-unit fund and pays it back"
+   },
+   {
+    "row": "Owner hours/week available",
+    "value": "6"
+   },
+   {
+    "row": "Team hours/week available",
+    "value": "9 across the three GMs"
+   },
+   {
+    "row": "Appetite for changing systems",
+    "value": "High — the GMs have asked for a scheduling tool twice"
+   }
+  ],
+  "q58": "Pockets of capability",
+  "q59": "The Arcadia GM would take anything on and already built the recipe costing sheet everyone uses. The Roosevelt GM is a great floor operator and hates screens. Kitchen staff will adopt anything on a tablet if it means fewer clipboards.",
+  "q56": [
+   {
+    "role": "General manager",
+    "rate": "38"
+   },
+   {
+    "role": "Sous chef",
+    "rate": "32"
+   },
+   {
+    "role": "Server (tipped)",
+    "rate": "17"
+   },
+   {
+    "role": "Line cook",
+    "rate": "24"
+   },
+   {
+    "role": "Bookkeeper (contract)",
+    "rate": "45"
+   },
+   {
+    "role": "Owner",
+    "rate": "72"
+   }
+  ],
+  "q50": [
+   "Pricing exceptions",
+   "Hiring / firing",
+   "Purchasing",
+   "Banking / payments",
+   "Vendor relationships",
+   "Strategy"
+  ],
+  "q51": [
+   {
+    "row": "What keeps running",
+    "value": "All three rooms. The GMs open, close, schedule, order and handle guests — 16 days already proved it."
+   },
+   {
+    "row": "What slows down",
+    "value": "Vendor price negotiations, hiring above hourly, and the weekly numbers"
+   },
+   {
+    "row": "What stops",
+    "value": "Anything to do with the leases, the bank, or the fourth-unit decision"
+   },
+   {
+    "row": "Who decides",
+    "value": "The GMs inside their unit, the executive chef on menu, me on money"
+   },
+   {
+    "row": "What nobody else can access",
+    "value": "The bank, the leases, and the vendor pricing agreements"
+   }
+  ],
+  "q52": [
+   {
+    "risk": "Rosa — sole holder of vendor pricing, leases and banking",
+    "impact": "Cost control and any site decision stop; the rooms would run fine for a month"
+   },
+   {
+    "risk": "Executive chef across all three units",
+    "impact": "Menu consistency and costing would drift within two months; he holds every recipe in his head beyond what is written"
+   },
+   {
+    "risk": "The Roosevelt liquor licence and its renewal",
+    "impact": "A lapse closes the highest-margin part of the highest-revenue unit"
+   },
+   {
+    "risk": "The events agency owning the catering relationship",
+    "impact": "7% of revenue and every private-event client relationship sits outside the business"
+   }
+  ],
+  "q53": [
+   "Vendor agreements are written",
+   "Licenses & insurance are current",
+   "Employment agreements are current",
+   "The company owns its IP and digital accounts",
+   "No known legal, tax or insurance issue"
+  ],
+  "q54": [
+   "Leadership depth",
+   "Delivery consistency",
+   "Financial reporting"
+  ],
+  "q55": "Ready if priorities stay tight",
+  "q57": "Tired but managing"
+ },
+ "session": {
+  "engine": {
+   "leads_per_month": "n/a — walk-in and reservation dining, there is no lead funnel",
+   "conversion_rate": "n/a — a guest who walks in has already converted",
+   "avg_deal_value": "$34 average check full service, $17 taqueria",
+   "response_time": "n/a for dining; reservations are seated by the platform",
+   "gross_margin_pct": "68",
+   "headcount": "62",
+   "repetitive_hours_week": "Inventory counts & ordering — GMs and sous chefs — 12\nLabour schedule building — GMs — 9\nVendor invoice entry — bookkeeper and Rosa — 7\nWeekly prime cost workbook — Rosa — 6\nCatering handoff paperwork — GMs — 4",
+   "largest_customer_pct": "2"
+  },
+  "blockNotes": {
+   "b1": "Q8 belief is the back office and the missing forecast, and the evidence agrees with her on the first half. Owner hours 57, and a 16-day absence this year that the GMs covered without incident — the strongest absence result in the cohort.",
+   "b2": "No funnel to build. Guests walk in or book a table; the catering line is booked by an outside agency and the group only sees a confirmed event. Leads and conversion are recorded n/a deliberately, so the funnel cross-check has nothing to reconcile and should return insufficient rather than a flag. What was captured instead: 5,200 covers a week, $34 and $17 average checks, food cost by unit and menu category weekly.",
+   "b3": "Menu price list on file, last moved March 2026, costed from the recipe sheets. Servers can defend a price and the margarita and dessert upsell is measured by server — genuinely good offer discipline for a business this size.",
+   "b4": "Everything in the back office is a spreadsheet or a clipboard. 38 h/wk of repetitive work against a 62-person, ~2,480-hour payroll — 1.5%, comfortably inside the check, but 21 of those hours are GM hours that should be on the floor, which is exactly her Q8 complaint.",
+   "b5": "Largest customer 2% — one corporate catering account. No concentration exposure on the guest side at all. The real single points are Rosa on vendor pricing and leases, the executive chef on menu, and the liquor licence."
+  },
+  "demonstrated": [
+   "The Arcadia GM built next week's labour schedule live — 2 hours 45 minutes in a spreadsheet, three shift swaps by text",
+   "An inventory count walked in the taqueria: clipboard, then typed into the ordering sheet, then re-typed into the vendor portal",
+   "Weekly numbers meeting observed — six KPIs per unit off the posted board, GM owning each, food cost miss triggering a recount on the spot",
+   "The recipe and SOP library opened in Drive: line checks, opening and closing procedures current and dated this year",
+   "The prime cost workbook rebuilt in front of us — six hours a week of POS exports and payroll pulls into Excel",
+   "Loyalty app pushes and reservation reminders shown firing automatically"
+  ],
+  "documents_seen": [
+   "P&L by unit and consolidated 2024–2026 — revenue $5.80M, food and beverage margin 68%, operating profit $406K",
+   "Weekly food cost and prime cost reports by unit",
+   "POS sales mix by menu item and daypart",
+   "Menu price list, last revised March 2026, with recipe costing behind it",
+   "Loyalty app export — 4,100 members, 4.6 visits a year, 2,900 with no visit in 12 months"
+  ]
+ },
+ "dataRoom": {
+  "pnl_on_file": true,
+  "documents": [
+   {
+    "name": "P&L by unit and consolidated 2024–2026",
+    "kind": "pnl",
+    "received_on": "2026-08-26"
+   },
+   {
+    "name": "Weekly food cost and prime cost reports",
+    "kind": "job_cost",
+    "received_on": "2026-08-26"
+   },
+   {
+    "name": "POS sales mix by menu item and daypart",
+    "kind": "other",
+    "received_on": "2026-08-28"
+   },
+   {
+    "name": "Menu price list revised March 2026 with recipe costing",
+    "kind": "rate_card",
+    "received_on": "2026-08-28"
+   },
+   {
+    "name": "Loyalty app member export",
+    "kind": "revenue_by_customer",
+    "received_on": "2026-09-02"
+   }
+  ]
+ },
+ "scores": {
+  "P1": {
+   "score": 1,
+   "na": false,
+   "evidence": "documented",
+   "note": "The reservation platform and the loyalty app both report volume, but q23 records no monthly count for any source and two of the five sources are untracked. Sources can be named; nothing is counted in one place.",
+   "why_not_higher": "Anchor 2 needs volume roughly tracked; covers are counted but where a cover came from is not, so the group cannot say what any channel produces."
+  },
+  "P2": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Reservations are captured and confirmed automatically by the platform, and the host stand seats walk-ins immediately (q24, reminders shown firing). Catering inquiries never reach the business at all — the agency passes over a confirmed booking.",
+   "why_not_higher": "Anchor 3 needs every inquiry captured in one system; the 7% of revenue that does have an inquiry step is invisible to the group."
+  },
+  "P3": {
+   "score": null,
+   "na": true,
+   "evidence": "reported",
+   "note": "N/A because follow-up discipline cannot apply to this model: dining revenue has no inquiry to follow up — a guest walks in or books a table and is served the same hour — and the one line that does have inquiries, catering, is handled end to end by an outside events agency on commission, so no lead ever sits in the group's hands to be followed up or dropped. Scored N/A rather than 0 under the rubric's model-fit rule; the loyalty reactivation gap is scored at P7 where it belongs.",
+   "why_not_higher": "n/a"
+  },
+  "P4": {
+   "score": null,
+   "na": true,
+   "evidence": "reported",
+   "note": "N/A because there is no sales conversion motion to assess: there is no quote, no proposal and no close for a restaurant cover (q25: 'a guest who walks in has already converted'), and the private-events sales process belongs to the agency, not to Delgado. Covers, average check and daypart are tracked instead and are read weekly. Scored N/A rather than 0 so a missing motion is not counted as a failed one.",
+   "why_not_higher": "n/a"
+  },
+  "P5": {
+   "score": 2,
+   "na": false,
+   "evidence": "documented",
+   "note": "Menu price list on file revised March 2026 with recipe costing behind it; q28 says reviewed annually, based on real economics, and the team can defend the price.",
+   "why_not_higher": "Anchor 3 needs prices reviewed against costs annually with written discount rules — the review is annual and the costing is real, but comps and staff discounts have no written rule and the last move predates this year's vendor increases."
+  },
+  "P6": {
+   "score": 3,
+   "na": false,
+   "evidence": "reported",
+   "note": "Named tiers and bundles across all three units — family platters, the taqueria combo, three private dining tiers, the reserve tequila list — and the margarita and dessert upsell is scripted and measured by server (q29).",
+   "why_not_higher": "Anchor 4 needs the ladder deliberate across the group; the taqueria has no upsell of any kind and the private dining tiers are sold by an agency, not by the team."
+  },
+  "P7": {
+   "score": 2,
+   "na": false,
+   "evidence": "documented",
+   "note": "Loyalty export measures 4.6 visits a year per member and identifies 2,900 members with no visit in 12 months; q27 says offers go 'to the whole list or to nobody' and no reactivation has ever run.",
+   "why_not_higher": "Anchor 3 needs the inactive list worked at least twice a year; it has been pulled for this diagnostic and never before."
+  },
+  "P8": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Rosa owns marketing with a contractor, and covers, average check and promo results are reviewed weekly with the GMs (q30, observed in the numbers meeting).",
+   "why_not_higher": "Anchor 3 needs a named owner and value reviewed monthly; marketing has no owner other than the owner, and acquisition cost is never in the room by her own answer."
+  },
+  "P9": {
+   "score": 2,
+   "na": false,
+   "evidence": "documented",
+   "note": "P&L confirms 68% food and beverage margin; the weekly food cost report gives it by unit and menu category and it is the report they never skip (q17).",
+   "why_not_higher": "Anchor 3 needs the by-category margin used in pricing decisions; menu prices moved once in March and the sales-mix report has not been used to re-engineer the menu since — the data is read, not acted on."
+  },
+  "P10": {
+   "score": 3,
+   "na": false,
+   "evidence": "documented",
+   "note": "Weekly prime cost reporting by unit with six KPIs and posted targets (q39), plus a monthly close, and q21 carries revenue, food cost, profit, cash and comp targets.",
+   "why_not_higher": "Q20 is monthly-delayed and there is no forecast at all — the reason she cannot evaluate the fourth lease — which is the line anchor 4 draws."
+  },
+  "S1": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "GMs open, close, schedule, order and handle guests inside their units and the executive chef owns menu (q51); q50 leaves pricing, purchasing, hiring above hourly, banking, vendors and strategy with Rosa.",
+   "why_not_higher": "Anchor 3 needs decision rights written for most areas; the delegation is real but entirely verbal, and money and hiring have no written threshold."
+  },
+  "S2": {
+   "score": 3,
+   "na": false,
+   "evidence": "reported",
+   "note": "A 16-day absence this year ran without incident, and q51 says all three rooms keep running with named GMs deciding inside their units.",
+   "why_not_higher": "Anchor 4 needs nothing critical owner-locked; leases, banking and vendor pricing are all locked to Rosa, and the liquor licence renewal sits with her too."
+  },
+  "S3": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Guest revenue needs no owner involvement at all and only 2% of revenue touches one account; the servers carry the upsell that lifts check average.",
+   "why_not_higher": "Anchor 3 requires the team to close standard deals with the owner on the largest few — the catering line, the only line with a sale in it, is outside the business entirely, so the group has no sales capability of its own to score higher."
+  },
+  "S4": {
+   "score": 3,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Seven managers with direct reports; each GM owns all six unit KPIs and a food cost miss triggered a recount in the room. Q38 'clear and followed' and q34 rates accountable ownership 'always'.",
+   "why_not_higher": "Anchor 4 needs misses to trigger action without the owner — q39 says a labour miss 'sometimes just gets noted', and there is no operations layer between Rosa and the three GMs."
+  },
+  "S5": {
+   "score": 3,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Recipe and SOP library opened in session: line checks, opening and closing procedures current and dated this year; q35 puts documentation at 75% and used-in-training at 70%.",
+   "why_not_higher": "Q35 also says only 60% is actually followed and adherence is not audited — anchor 4 needs the documented way to be the way it is done, and quality inconsistency is still on the q36 list."
+  },
+  "S6": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Weekly structured meeting observed with six owned KPIs per unit and targets posted back-of-house (q39, q40).",
+   "why_not_higher": "Held at 2 rather than 3 on follow-through: a labour miss produces a note rather than an action by her own answer, and there is no group-level scoreboard above the three unit boards."
+  },
+  "S7": {
+   "score": 3,
+   "na": false,
+   "evidence": "reported",
+   "note": "Documented line checks and a current SOP library define the standards, and the group absorbs 5,200 covers a week across three rooms; q31 says a 20% jump means quality slips.",
+   "why_not_higher": "No written capacity plan — Arcadia already cannot take delivery volume and Friday waits run 40 minutes, so +20% strains the kitchens with nothing modelled behind it."
+  },
+  "S8": {
+   "score": 4,
+   "na": false,
+   "evidence": "documented",
+   "note": "Largest customer 2% — a single corporate catering account — and top five 5%, against 5,200 weekly covers. The broadest base in the cohort.",
+   "why_not_higher": "Top of the scale."
+  },
+  "S9": {
+   "score": 1,
+   "na": false,
+   "evidence": "documented",
+   "note": "Q12: no contracted or recurring revenue whatever; 44% is repeat-without-contract, measured through the loyalty app at 4.6 visits a year. No forecast exists — which is precisely why the fourth-lease decision is stalled.",
+   "why_not_higher": "Anchor 2 needs some repeat or contract revenue you can plan from; loyalty frequency is measured but nothing is committed and every week starts at zero."
+  },
+  "S10": {
+   "score": 2,
+   "na": false,
+   "evidence": "documented",
+   "note": "Vendor agreements, licences, insurance and employment agreements all written and current, and the company owns its IP and accounts (q53, seen in the data room).",
+   "why_not_higher": "Q52 names four unaddressed exposures — Rosa on leases and vendor pricing, the chef's unwritten menu knowledge, the liquor licence, and the agency owning the catering relationships. No cross-training and no continuity plan."
+  },
+  "L1": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "POS with kitchen display at all three units, Toast payroll, QuickBooks and the loyalty app are real systems (q41, walked in session).",
+   "why_not_higher": "Two big gaps rather than one: scheduling is a Google Sheet per unit per week and there is no inventory or ordering system at all — both are clipboards."
+  },
+  "L2": {
+   "score": 1,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "The POS-to-payroll hours feed genuinely works; everything else is manual re-entry, shown on the tour — count on a clipboard, into the ordering sheet, into the vendor portal, invoices then typed into QuickBooks.",
+   "why_not_higher": "Anchor 2 needs some integrations and some double entry; there is one integration and the rest is a scheduled human export, which is the anchor-1 line."
+  },
+  "L3": {
+   "score": 2,
+   "na": false,
+   "evidence": "documented",
+   "note": "Q43: KPI definitions agreed and data generally accurate — the food cost and prime cost reports are trusted and consistent across units. But the prime cost workbook is rebuilt by hand for six hours every week.",
+   "why_not_higher": "Anchor 3 needs light cleanup only; here the group's headline report does not exist until the owner builds it from three exports."
+  },
+  "L4": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "38 h/wk inventoried (q44), 21 of it GM time on schedules and counts. The load is named in her own q4 target and nothing has been reduced.",
+   "why_not_higher": "Anchor 2 needs a few fixes made; the GMs have asked for a scheduling tool twice and nothing has been bought."
+  },
+  "L5": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Reservation confirmations and reminders, loyalty pushes and the POS-to-payroll feed all run reliably and were shown firing (q45).",
+   "why_not_higher": "Anchor 3 needs automations in several functions owned and monitored; all three sit in guest-facing and payroll, none in the back office where the work is, and nobody is named as owner."
+  },
+  "L6": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q46: marketing content and drafting only — the social contractor uses it for captions and Rosa for staff notices.",
+   "why_not_higher": "One contractor and the owner experimenting; no workflow in the business depends on it."
+  },
+  "L7": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q47 returns one of eight — human-review rules are clear, because everything the contractor drafts is read before it posts. Nothing else is defined or measured.",
+   "why_not_higher": "Anchor 2 needs several practices however inconsistent; one is not several."
+  },
+  "L8": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q48: shared passwords on the POS back office and vendor portals, inconsistent backups, unclear account ownership — against q43 confirming backups exist and data is accurate. Partial hygiene with known gaps.",
+   "why_not_higher": "Anchor 3 needs access controlled and off-boarding done; in a 62-person business with 36 part-timers, shared POS logins are the specific gap that keeps this at 2."
+  },
+  "L9": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q58 'pockets of capability'; q59 names the Arcadia GM as building tools unprompted and the kitchen as willing, against the Roosevelt GM who avoids screens.",
+   "why_not_higher": "Anchor 3 needs the team trained on the core tools; no training has been run — the capability that exists is one manager's own initiative."
+  },
+  "L10": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q49: $20–30K from the fourth-unit fund, 6 owner hours and 9 GM hours a week, and the GMs have asked for a scheduling tool twice; q55 'ready if priorities stay tight'.",
+   "why_not_higher": "Anchor 3 needs budget and time named and set aside; the budget competes directly with the fourth unit and with Hector's distribution, so it is real but not committed."
+  }
+ },
+ "assessment": {
+  "owner_objective": "Better operations & delivery capacity — then More profit & cash flow, Prepare to scale",
+  "owner_belief": "The back office is drowning us. My general managers are good operators and they spend a fifth of their week on spreadsheets and clipboards instead of on the floor. And I cannot tell you what next quarter looks like, so I cannot decide about the fourth site. Both of those have been true since we opened the third unit in 2022.",
+  "primary_constraint": "The group runs three well-managed rooms on a hand-built back office: scheduling, counts, ordering and the prime cost report are all spreadsheets and clipboards, so the managers who create margin on the floor spend a fifth of their week off it, and the group has no forecast to make a fourth-unit decision with.",
+  "constraint_symptoms": "21 GM hours a week on schedules and counts; a 2 hour 45 minute schedule build watched live with three swaps by text; the same count typed three times; a six-hour weekly workbook the owner builds herself; no forecast and therefore a lease decision stalled for two years; labour misses noted rather than acted on.",
+  "constraint_cost": "~$41K of manager payroll a year on 21 weekly hours of scheduling and counting that should be floor time · ~$63K of food cost above the 31% target across two units, on the weekly report · ~312 owner hours a year building the prime cost workbook by hand.",
+  "constraint_fix": "A real scheduling and inventory system feeding the POS, with vendor invoices captured rather than typed, and a 13-week rolling forecast built off cover counts and booked events so the fourth-unit decision has a number under it.",
+  "momentum_initiative": "Re-engineer the menu from the sales-mix and food cost reports already on file — the data exists, the decision is Rosa's alone, and it shows up in the weekly food cost inside a month.",
+  "overlay_flags": [
+   "key_person"
+  ],
+  "plan_items": [
+   "Menu re-engineering from the sales mix and food cost reports — Rosa Delgado — 2026-09-22",
+   "Scheduling and inventory system across all three units — Camila Ortega (Arcadia GM) — 2026-10-19",
+   "13-week rolling forecast for the fourth-unit decision — Rosa Delgado — 2026-11-16",
+   "Lapsed loyalty member reactivation on the 2,900-member list — Rosa Delgado — 2026-10-12"
+  ],
+  "overlap_factor": 0.7
+ },
+ "opportunities": [
+  {
+   "title": "Re-engineer and reprice the menu against the food cost report",
+   "finding": "Food and beverage margin is 68% on the P&L against a food-cost target of 31% that two of three units miss. The menu price list moved once, in March 2026, and the POS sales-mix report — which shows exactly which items are high-volume and low-margin — has never been used to change the menu since. This is not a broken-pricing finding: the costing is real and the team can defend a price. It is a data-on-file-and-unused finding, on the two full-service rooms only.",
+   "calculator": {
+    "kind": "price_change",
+    "inputs": {
+     "revenueAffected": 2900000,
+     "priceChangePctLow": 2,
+     "priceChangePctExpected": 3,
+     "priceChangePctHigh": 4,
+     "volumeLossPctLow": 1,
+     "volumeLossPctExpected": 2,
+     "volumeLossPctHigh": 3,
+     "grossMarginPct": 68
+    }
+   },
+   "fix_cost": 2200,
+   "months_to_benefit": 1,
+   "confidence": "high",
+   "include_in_report": true,
+   "basis_reported_only": false,
+   "blueprint": "Rank every item by contribution margin and popularity from the existing sales-mix report, reprice or re-cost the bottom quadrant, move three high-margin items into the eye line on the menu, and write the comp and staff-discount rule that is currently custom.",
+   "replaces": "One across-the-board price move a year"
+  },
+  {
+   "title": "Bring back the 2,900 loyalty members who have not visited in a year",
+   "finding": "The loyalty export (Doc) shows 4,100 members averaging 4.6 visits a year and 2,900 with no visit in twelve months, worth about $260 a year each on her own q26 number. Offers currently go 'to the whole list or to nobody' (q27) — the segment has never been worked on its own. No acquisition cost attaches to a guest who already knows the room.",
+   "calculator": {
+    "kind": "reactivation",
+    "inputs": {
+     "dormantCustomers": 2900,
+     "reactivationRatePctLow": 4,
+     "reactivationRatePctExpected": 7,
+     "reactivationRatePctHigh": 11,
+     "averageAnnualValue": 260,
+     "grossMarginPct": 68
+    }
+   },
+   "fix_cost": 1800,
+   "months_to_benefit": 2,
+   "confidence": "medium",
+   "include_in_report": true,
+   "basis_reported_only": false,
+   "blueprint": "Segment the dormant members by unit and last visit, run a three-touch sequence through the loyalty app tied to a weeknight occasion rather than a discount, and hold the Friday capacity constraint out of it entirely.",
+   "replaces": "Blanket pushes to 4,100 people at once"
+  },
+  {
+   "title": "Give the managers their floor hours back",
+   "finding": "Schedule building and inventory counting take 21 GM hours a week between three units (q44; a 2 hour 45 minute schedule build and a triple-entry count both watched live). These hours are priced as dollars, not capacity, for one reason: the hours go back onto the floor, where the group's own weekly report shows labour percentage and quality consistency are the two things that move margin — this is redeployment onto revenue work, not payroll removal.",
+   "calculator": {
+    "kind": "automation_hours",
+    "inputs": {
+     "hoursPerWeek": 21,
+     "loadedHourlyRate": 26,
+     "automationSharePctLow": 35,
+     "automationSharePctExpected": 50,
+     "automationSharePctHigh": 65,
+     "weeksPerYear": 52,
+     "redeployed": true
+    }
+   },
+   "fix_cost": 9400,
+   "months_to_benefit": 3,
+   "confidence": "medium",
+   "include_in_report": true,
+   "basis_reported_only": false,
+   "blueprint": "Scheduling built from forecast covers with shift swaps handled in-app, tablet-based counts feeding par-level ordering, and vendor invoices captured to QuickBooks instead of typed.",
+   "replaces": "One spreadsheet tab per unit per week and a clipboard"
+  }
+ ],
+ "expected": {
+  "gate_should_pass": true,
+  "expected_blockers": [],
+  "expected_warnings": [],
+  "band_guess": "Building",
+  "cross_checks": {
+   "margin_vs_pnl": "pass",
+   "funnel_vs_revenue": "insufficient",
+   "concentration": "pass",
+   "hours_vs_headcount": "pass"
+  }
+ }
+}
