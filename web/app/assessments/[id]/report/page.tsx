@@ -7,6 +7,11 @@ import { createClient } from "@/lib/supabase/server";
 import { getActiveOrgId } from "@/lib/active-org";
 import { ReportToolbar } from "@/components/assessments/print-button";
 import { CountUp } from "@/components/assessments/report/count-up";
+import {
+  CoverPillarBars,
+  CoverScoreLadder,
+} from "@/components/assessments/report/cover-exhibit";
+import { D } from "@/components/assessments/report/tokens";
 import { ScoreBandRail } from "@/components/assessments/report/score-band";
 import { PillarBars } from "@/components/assessments/report/pillar-bars";
 import { MoneyMap } from "@/components/assessments/report/money-map";
@@ -143,6 +148,21 @@ const REPORT_CSS = `
   }
   .report-page table { table-layout: fixed; }
   .report-page td, .report-page th { overflow-wrap: anywhere; }
+  /* The cover is the one dark sheet — the present deck's treatment, so the
+     first page of the document and the first frame of the results session
+     read as one family. The fills only reach paper because print-color-adjust
+     is exact; it is set again here so the cover never depends on inheritance.
+     Every interior page stays white. */
+  .report-page.report-cover {
+    background: #0a0e1a;
+    color: #f1f5f9;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  /* The watermark tint is set for a white sheet; on ink it needs more. */
+  .is-practice .report-page.report-cover::after {
+    color: rgba(139, 92, 246, 0.32);
+  }
   .report-flag {
     display: flex;
     justify-content: space-between;
@@ -381,9 +401,10 @@ export default async function ExecutiveBlueprintPage({
   const reportDate = formatLongDate(
     assessment.delivered_at ?? assessment.started_at
   );
-  const clientLine = assessment.company
-    ? `${assessment.company} · ${assessment.client_name}`
-    : assessment.client_name;
+  const coverCompany = assessment.company?.trim() || assessment.client_name;
+  /** The owner's name stands on its own line; when there is no company it IS the headline. */
+  const coverOwner = assessment.company?.trim() ? assessment.client_name : null;
+  const reviewedBy = assessment.reviewed_by?.trim() || null;
 
   // Report-readiness. Below the threshold the pillar averages rest on a
   // handful of indicators and the document reads as an unfinished checklist —
@@ -524,74 +545,185 @@ export default async function ExecutiveBlueprintPage({
       <ReportToolbar assessmentId={assessment.id} />
 
       {/* ── Cover ─────────────────────────────────────────────────────── */}
+      {/* The present deck's treatment on paper: ink ground, the company as the
+          headline, the score as the hero number, the ladder and the three
+          pillars as compact exhibits. Everything on it is the report's own
+          number — `computed` is the same object the dashboard page draws from.
+          Budgeted to one Letter sheet: ~8in of content inside the 9.5in the
+          @page margins and print padding leave, with room for both banners and
+          a two-line company name. */}
       <section
-        className="report-page"
+        className="report-page report-cover"
         style={{ display: "flex", flexDirection: "column", minHeight: "9in" }}
       >
         {pageBanners}
-        <div style={{ marginTop: "auto", position: "relative", zIndex: 2 }}>
-          <p style={{ fontSize: 14, fontWeight: 800, letterSpacing: "0.3em", color: blue }}>
-            C R E A i T
-          </p>
-          <h1 style={{ fontSize: 40, fontWeight: 800, lineHeight: 1.15, marginTop: 20 }}>
+        <div style={{ position: "relative", zIndex: 2 }}>
+          <p
+            style={{
+              fontSize: 12,
+              fontWeight: 700,
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
+              color: D.glow,
+            }}
+          >
             {PRODUCT_NAME}
+          </p>
+          <h1
+            style={{
+              fontSize: 42,
+              fontWeight: 800,
+              lineHeight: 1.02,
+              letterSpacing: "-0.02em",
+              marginTop: 16,
+              color: D.ink,
+            }}
+          >
+            {coverCompany}
           </h1>
-          {roadmapIdentity ? (
-            <>
-              <p
-                style={{
-                  fontSize: 24,
-                  fontWeight: 700,
-                  color: ink,
-                  marginTop: 8,
-                  letterSpacing: "-0.015em",
-                }}
-              >
-                {roadmapIdentity}
-              </p>
-              <p style={{ fontSize: 12, color: muted, marginTop: 6 }}>
-                Expected annual operating-profit impact of the priced
-                initiatives, overlap-adjusted. The arithmetic is inside.
-              </p>
-            </>
-          ) : (
-            <p style={{ fontSize: 22, color: muted, marginTop: 6 }}>
-              Executive Blueprint
+          {(coverOwner || assessment.industry) && (
+            <p style={{ fontSize: 18, color: D.muted, marginTop: 10, lineHeight: 1.35 }}>
+              {coverOwner}
+              {coverOwner && assessment.industry ? " · " : ""}
+              {assessment.industry}
             </p>
           )}
-          <div style={{ borderTop: `2px solid ${line}`, marginTop: 40, paddingTop: 24 }}>
-            <p style={{ fontSize: 18, fontWeight: 700 }}>{clientLine}</p>
-            {assessment.industry && (
-              <p style={{ fontSize: 14, color: muted, marginTop: 2 }}>
-                {assessment.industry}
-              </p>
-            )}
-            <p style={{ fontSize: 14, color: muted, marginTop: 10 }}>
-              {reportDate} · Prepared by CREAiT
+          <p
+            style={{
+              fontSize: 20,
+              fontWeight: 600,
+              color: D.ink,
+              marginTop: 16,
+              letterSpacing: "-0.01em",
+            }}
+          >
+            Growth &amp; AI Diagnostic &mdash; Executive Blueprint
+          </p>
+          {roadmapIdentity && (
+            <p style={{ fontSize: 13, color: D.muted, marginTop: 4, lineHeight: 1.5 }}>
+              {`${roadmapIdentity} — expected annual operating-profit impact of the priced initiatives, overlap-adjusted. The arithmetic is inside.`}
+            </p>
+          )}
+        </div>
+
+        {/* Hero: the number, its band, and where it sits on the ladder. */}
+        <div
+          style={{
+            position: "relative",
+            zIndex: 2,
+            display: "flex",
+            gap: 28,
+            alignItems: "flex-end",
+            marginTop: 26,
+            paddingTop: 20,
+            borderTop: `1px solid ${D.line}`,
+          }}
+        >
+          <div style={{ flex: "0 0 auto", minWidth: 168 }}>
+            <p
+              style={{
+                fontSize: 96,
+                fontWeight: 800,
+                lineHeight: 0.92,
+                letterSpacing: "-0.04em",
+                color: D.ink,
+                fontVariantNumeric: "tabular-nums",
+              }}
+            >
+              {computed.creaitScore === null ? (
+                "—"
+              ) : (
+                <CountUp value={computed.creaitScore} />
+              )}
+            </p>
+            <p
+              style={{
+                fontSize: 11,
+                fontWeight: 700,
+                letterSpacing: "0.14em",
+                textTransform: "uppercase",
+                color: D.muted,
+                marginTop: 10,
+              }}
+            >
+              CREAiT Score{computed.provisional ? " (provisional)" : ""}
+            </p>
+            <p style={{ fontSize: 19, fontWeight: 800, color: D.glow, marginTop: 3 }}>
+              {computed.band ?? "Not yet scored"}
+            </p>
+            <p style={{ fontSize: 10.5, color: D.muted, marginTop: 3, lineHeight: 1.5 }}>
+              {`Built on ${computed.scoredCount} of ${INDICATORS.length} indicators`}
+              {computed.naCount > 0 ? ` · ${computed.naCount} excluded as N/A` : ""}
             </p>
           </div>
+          <div style={{ flex: 1, minWidth: 0, paddingBottom: 2 }}>
+            <CoverScoreLadder score={computed.creaitScore} />
+          </div>
         </div>
-        <div style={{ marginTop: "auto" }}>
+
+        {/* The three pillars — one rail each, in the deck's proportions. */}
+        <div style={{ position: "relative", zIndex: 2, marginTop: 20 }}>
+          <p
+            style={{
+              fontSize: 10.5,
+              fontWeight: 700,
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+              color: D.muted,
+            }}
+          >
+            The three pillars
+          </p>
+          <div style={{ marginTop: 10 }}>
+            <CoverPillarBars
+              pillars={computed.pillars}
+              counts={computed.pillarScoredCounts}
+              thin={computed.thinPillars}
+            />
+          </div>
+        </div>
+
+        <div style={{ marginTop: "auto", paddingTop: 20, position: "relative", zIndex: 2 }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "baseline",
+              gap: 16,
+              flexWrap: "wrap",
+              borderTop: `1px solid ${D.line}`,
+              paddingTop: 14,
+              marginBottom: 14,
+            }}
+          >
+            <p style={{ fontSize: 13, fontWeight: 600, color: D.ink }}>
+              {`Delivered ${reportDate}`}
+            </p>
+            <p style={{ fontSize: 12.5, color: D.muted }}>
+              Prepared by CREAiT
+              {reviewedBy ? ` · reviewed by ${reviewedBy}` : ""}
+            </p>
+          </div>
           {/* The disclosure sits on the cover, not only in the appendix: a
               reader who never reaches page fourteen still learns what the
               Profit figures rest on. */}
           {!pnlOnFile && (
             <p
               style={{
-                fontSize: 11.5,
-                lineHeight: 1.6,
-                color: ink,
-                border: `1px solid ${line}`,
-                borderLeft: `4px solid ${blue}`,
+                fontSize: 11,
+                lineHeight: 1.55,
+                color: D.ink,
+                border: `1px solid ${D.line}`,
+                borderLeft: `4px solid ${D.electric}`,
                 borderRadius: 8,
-                padding: "10px 14px",
-                marginBottom: 14,
+                padding: "9px 14px",
+                marginBottom: 12,
               }}
             >
               {pnlDisclosure}
             </p>
           )}
-          <p style={{ fontSize: 11, color: muted }}>
+          <p style={{ fontSize: 10.5, color: D.muted, lineHeight: 1.55 }}>
             Confidential. Prepared for the named recipient. Figures are
             evidence-based estimates, not guarantees, and are shown as ranges
             with their basis. This is not a business valuation or appraisal.

@@ -51,6 +51,42 @@ export const BAND_RAMP = [
 /** Ink colour for text laid *inside* a band segment — picked by luminance. */
 export const BAND_TEXT_ON = ["#0b3c56", "#ffffff", "#ffffff", "#ffffff", "#ffffff"] as const;
 
+/**
+ * The cover's dark treatment — the present deck's palette, verbatim, so the
+ * first printed page and the first screen-shared frame read as one family
+ * (see components/assessments/present/present-deck.tsx). Only the cover uses
+ * these; every interior page stays on the light `T` tokens above.
+ */
+export const D = {
+  /** Page ground — brand ink. */
+  bg: "#0a0e1a",
+  /** Primary text on the dark ground. */
+  ink: "#f1f5f9",
+  /** Secondary text. */
+  muted: "#94a3b8",
+  /** Data fill. */
+  electric: "#3b82f6",
+  /** Accent for the band label and kicker. */
+  glow: "#60a5fa",
+  /** Unfilled rail — chrome, never data. */
+  rail: "#1a2235",
+  /** Hairlines and panel borders. */
+  line: "rgba(255, 255, 255, 0.14)",
+} as const;
+
+/**
+ * The five bands on the dark ground: one hue, dark to bright, so the ladder
+ * reads in one glance and still steps monotonically in grayscale. Mirrors the
+ * deck's BAND_FILL.
+ */
+export const BAND_FILL_DARK = [
+  "#1e3a8a",
+  "#1d4ed8",
+  "#2563eb",
+  "#3b82f6",
+  "#60a5fa",
+] as const;
+
 /** Compact money for chart labels: $147K, $2.4M, $850. Never invents digits. */
 export function compactMoney(n: number | null | undefined): string {
   if (n === null || n === undefined || !Number.isFinite(n)) return "—";
