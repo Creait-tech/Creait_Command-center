@@ -61,6 +61,7 @@ export default async function AssessmentDetailPage({
   return (
     <AssessmentWorkbench
       currentUserName={currentUserName}
+      currentUserId={user?.id ?? ""}
       initialAssessment={assessment as CcAssessment}
       initialScores={(scoresRes.data as CcAssessmentScore[] | null) ?? []}
       initialOpportunities={

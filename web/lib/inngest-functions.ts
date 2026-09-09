@@ -1747,6 +1747,8 @@ interface FollowThroughAssessment {
   intake_submitted_at: string | null
   started_at: string | null
   delivered_at: string | null
+  /** What the engagement became (migration 0016); null = not yet. */
+  converted_to: 'build' | 'advisory' | null
   outcomes: unknown
   updated_at: string
 }
@@ -1796,13 +1798,6 @@ function hasOutcomeReview(outcomes: unknown, day: 'day30' | 'day90'): boolean {
   return value !== null && value !== undefined
 }
 
-/** Case-insensitive match token for a company or client name. */
-function companyToken(value: string | null | undefined): string | null {
-  if (typeof value !== 'string') return null
-  const normalized = value.trim().toLowerCase().replace(/\s+/g, ' ')
-  return normalized.length > 0 ? normalized : null
-}
-
 /**
  * The name the to-do should use for the engagement: the company, falling back
  * to the owner's name for an assessment filed without one.
@@ -1815,18 +1810,15 @@ function assessmentLabel(row: FollowThroughAssessment): string {
  * Every follow-through to-do one assessment is due for today, before
  * de-duplication. Pure: the same row and clock always yield the same set.
  *
- * `linkedCompanies` holds the case-insensitive names of this org's cc_clients
- * rows. There is no link column from an assessment to a client — cc_clients
- * carries no assessment_id and cc_client_journey only joins a client to a
- * template deliverable (migration 0003) — so "converted to a Build or
- * Advisory" is approximated as "a cc_clients row exists whose company or name
- * matches the assessment's company, case-insensitively". Until a real link
- * exists, an assessment whose client was entered under a different spelling
- * will get a credit-clock to-do it doesn't need; the operator can tick it off.
+ * "Converted to a Build or Advisory" is the row's own `converted_to` column
+ * (migration 0016), recorded from the workbench's "What happened next" panel
+ * once the engagement is delivered. It used to be guessed by matching the
+ * assessment's company name against cc_clients; now a null means exactly
+ * "nobody has recorded a conversion", and the credit clock runs until someone
+ * does.
  */
 function followThroughCandidates(
   row: FollowThroughAssessment,
-  linkedCompanies: ReadonlySet<string>,
   today: string,
   nowMs: number,
 ): FollowThroughCandidate[] {
@@ -1896,18 +1888,18 @@ function followThroughCandidates(
       )
     }
 
-    if (days >= CREDIT_WINDOW_OPENS_DAY && days < CREDIT_EXPIRES_DAY) {
-      const token = companyToken(row.company) ?? companyToken(row.client_name)
-      const linked = token !== null && linkedCompanies.has(token)
-      if (!linked) {
-        const daysLeft = CREDIT_EXPIRES_DAY - days
-        push(
-          'credit',
-          `${label}: ${DIAGNOSTIC_CREDIT_LABEL} credit expires in ${daysLeft} days`,
-          `${label} was delivered ${days} days ago and has no Build or Advisory on file. The ${DIAGNOSTIC_CREDIT_LABEL} Diagnostic credit toward the next engagement expires on day ${CREDIT_EXPIRES_DAY} (${addDays(row.delivered_at, CREDIT_EXPIRES_DAY)}). Book the conversion call now.`,
-          addDays(row.delivered_at, CREDIT_EXPIRES_DAY),
-        )
-      }
+    if (
+      days >= CREDIT_WINDOW_OPENS_DAY &&
+      days < CREDIT_EXPIRES_DAY &&
+      row.converted_to === null
+    ) {
+      const daysLeft = CREDIT_EXPIRES_DAY - days
+      push(
+        'credit',
+        `${label}: ${DIAGNOSTIC_CREDIT_LABEL} credit expires in ${daysLeft} days`,
+        `${label} was delivered ${days} days ago and no Build or Advisory has been recorded against it. The ${DIAGNOSTIC_CREDIT_LABEL} Diagnostic credit toward the next engagement expires on day ${CREDIT_EXPIRES_DAY} (${addDays(row.delivered_at, CREDIT_EXPIRES_DAY)}). Book the conversion call now — and once it lands, record it under "What happened next" on the engagement so this clock stops.`,
+        addDays(row.delivered_at, CREDIT_EXPIRES_DAY),
+      )
     }
   }
 
@@ -1922,8 +1914,8 @@ function followThroughCandidates(
  *   1. Intake link unsubmitted 3+ days (nudge), again at 7+ days (escalate).
  *   2. Day-30 review due and not recorded in `outcomes.day30`.
  *   3. Day-90 review due and not recorded in `outcomes.day90`.
- *   4. Delivered 45–59 days ago with no Build/Advisory client on file — the
- *      $7,500 credit clock.
+ *   4. Delivered 45–59 days ago with no conversion recorded
+ *      (`converted_to` is null) — the $7,500 credit clock.
  *
  * Scans every org (the rules need no per-org config) and skips practice
  * assessments. Idempotent by construction: each to-do carries a stable
@@ -1954,7 +1946,7 @@ export const assessmentFollowThrough = inngest.createFunction(
       const { data, error } = await supabase
         .from('cc_assessments')
         .select(
-          'id, org_id, company, client_name, status, is_practice, intake_token, intake_submitted_at, started_at, delivered_at, outcomes, updated_at',
+          'id, org_id, company, client_name, status, is_practice, intake_token, intake_submitted_at, started_at, delivered_at, converted_to, outcomes, updated_at',
         )
         .eq('is_practice', false)
         .in('status', ['intake', 'delivered'])
@@ -1971,60 +1963,9 @@ export const assessmentFollowThrough = inngest.createFunction(
       )
       const orgIds = [...new Set(rows.map((row) => row.org_id))]
 
-      // Only delivered rows inside the credit window need the client list.
-      const needsClients = new Set(
-        rows
-          .filter((row) => {
-            if (row.status !== 'delivered' || !row.delivered_at) return false
-            const days = daysSinceDate(row.delivered_at, today)
-            return (
-              days !== null &&
-              days >= CREDIT_WINDOW_OPENS_DAY &&
-              days < CREDIT_EXPIRES_DAY
-            )
-          })
-          .map((row) => row.org_id),
-      )
-
-      const linkedByOrg = new Map<string, Set<string>>()
-      for (const orgId of needsClients) {
-        const { data: clients, error: clientsError } = await supabase
-          .from('cc_clients')
-          .select('name, company')
-          .eq('org_id', orgId)
-        if (clientsError) {
-          // Without the client list every credit-window assessment would look
-          // unlinked. Skip the credit rule for this org rather than filing a
-          // false alarm on every converted client; tomorrow's run retries.
-          console.error(
-            `[inngest] assessment-follow-through client lookup for ${orgId} failed:`,
-            clientsError.message,
-          )
-          linkedByOrg.set(orgId, new Set(['*']))
-          continue
-        }
-        const tokens = new Set<string>()
-        for (const client of (clients ?? []) as Array<{
-          name: string | null
-          company: string | null
-        }>) {
-          for (const value of [client.name, client.company]) {
-            const token = companyToken(value)
-            if (token) tokens.add(token)
-          }
-        }
-        linkedByOrg.set(orgId, tokens)
-      }
-
       const candidates: FollowThroughCandidate[] = []
       for (const row of rows) {
-        const linked = linkedByOrg.get(row.org_id) ?? new Set<string>()
-        const forRow = linked.has('*')
-          ? followThroughCandidates(row, linked, today, nowMs).filter(
-              (c) => c.kind !== 'credit',
-            )
-          : followThroughCandidates(row, linked, today, nowMs)
-        candidates.push(...forRow)
+        candidates.push(...followThroughCandidates(row, today, nowMs))
       }
 
       return { scanned: rows.length, orgs: orgIds.length, candidates }

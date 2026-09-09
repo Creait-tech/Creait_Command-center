@@ -281,6 +281,14 @@ export function AssessmentsView({
                       >
                         {STATUS_LABELS[a.status]}
                       </span>
+                      {a.converted_to && (
+                        <span
+                          title={`Became ${a.converted_to === "build" ? "a Build" : "an Advisory retainer"}${a.converted_on ? ` on ${formatDate(a.converted_on)}` : ""} — Diagnostic fee credited`}
+                          className="rounded-full bg-[color:var(--color-brand-electric)]/15 px-1.5 py-0.5 text-[10px] font-semibold text-[color:var(--color-brand-electric)]"
+                        >
+                          → {a.converted_to === "build" ? "Build" : "Advisory"}
+                        </span>
+                      )}
                       {outcomeMarks(a.outcomes).map((mark) => (
                         <span
                           key={mark}
