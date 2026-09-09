@@ -170,10 +170,59 @@ export interface CrossCheckRecord {
   note: string;
 }
 
+/** One value the transcript draft proposes, with the line it rests on. */
+export interface TranscriptDraftItem {
+  value: string;
+  /** Verbatim from the transcript, or null when the model could not point at one. */
+  quote: string | null;
+}
+
+/** The baseline fields on the engagement row that Block 1 captures. */
+export const TRANSCRIPT_BASELINE_KEYS = [
+  "owner_objective",
+  "owner_belief",
+  "annual_revenue",
+  "gross_margin",
+  "operating_profit",
+] as const;
+export type TranscriptBaselineKey = (typeof TRANSCRIPT_BASELINE_KEYS)[number];
+
+/**
+ * What the recording proposes, held apart from what the facilitator wrote.
+ *
+ * Stored under `session_notes.transcriptDraft` so it survives a reload and a
+ * block change, and so a later reader can see what the model offered and what
+ * was taken. Nothing in here reaches a block note, a metric or the baseline
+ * until the facilitator accepts it — the same rule as every other AI surface
+ * in the diagnostic: the model proposes, a person decides.
+ */
+export interface TranscriptDraft {
+  meeting_id: string;
+  meeting_title: string;
+  drafted_at: string;
+  model: string;
+  blocks: Partial<
+    Record<
+      BlockId,
+      {
+        /** A draft of the block note, organised by the block's questions. */
+        note: string;
+        /** Verbatim lines worth keeping — the scoring notes want quotes. */
+        quotes: string[];
+        /** Questions the recording never answered, so the gap is named. */
+        not_covered: string[];
+      }
+    >
+  >;
+  metrics: Partial<Record<EngineMetricKey, TranscriptDraftItem>>;
+  baseline: Partial<Record<TranscriptBaselineKey, TranscriptDraftItem>>;
+}
+
 export type SessionNotes = {
   blocks?: Partial<Record<BlockId, string>>;
   elapsed?: Partial<Record<BlockId, number>>;
   crossChecks?: Partial<Record<CrossCheckId, CrossCheckRecord>>;
+  transcriptDraft?: TranscriptDraft;
 } & Partial<Record<EngineMetricKey, string>>;
 
 const METRIC_KEYS: EngineMetricKey[] = ENGINE_METRICS.map((m) => m.key);
@@ -237,7 +286,71 @@ export function parseSessionNotes(value: Json | null | undefined): SessionNotes 
     out.crossChecks = checks;
   }
 
+  const draft = parseTranscriptDraft(raw.transcriptDraft);
+  if (draft) out.transcriptDraft = draft;
+
   return out;
+}
+
+function stringList(v: unknown): string[] {
+  return Array.isArray(v) ? v.filter((s): s is string => typeof s === "string") : [];
+}
+
+function draftItem(v: unknown): TranscriptDraftItem | null {
+  if (!v || typeof v !== "object" || Array.isArray(v)) return null;
+  const row = v as Record<string, unknown>;
+  if (typeof row.value !== "string" || row.value.trim() === "") return null;
+  return {
+    value: row.value,
+    quote: typeof row.quote === "string" && row.quote.trim() ? row.quote : null,
+  };
+}
+
+/** Same defensive read for the stored draft — a malformed one is simply absent. */
+export function parseTranscriptDraft(value: unknown): TranscriptDraft | null {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return null;
+  const raw = value as Record<string, unknown>;
+  if (typeof raw.meeting_id !== "string") return null;
+
+  const blocks: TranscriptDraft["blocks"] = {};
+  if (raw.blocks && typeof raw.blocks === "object" && !Array.isArray(raw.blocks)) {
+    for (const id of BLOCK_IDS) {
+      const b = (raw.blocks as Record<string, unknown>)[id];
+      if (!b || typeof b !== "object" || Array.isArray(b)) continue;
+      const row = b as Record<string, unknown>;
+      blocks[id] = {
+        note: typeof row.note === "string" ? row.note : "",
+        quotes: stringList(row.quotes),
+        not_covered: stringList(row.not_covered),
+      };
+    }
+  }
+
+  const metrics: TranscriptDraft["metrics"] = {};
+  if (raw.metrics && typeof raw.metrics === "object" && !Array.isArray(raw.metrics)) {
+    for (const key of METRIC_KEYS) {
+      const item = draftItem((raw.metrics as Record<string, unknown>)[key]);
+      if (item) metrics[key] = item;
+    }
+  }
+
+  const baseline: TranscriptDraft["baseline"] = {};
+  if (raw.baseline && typeof raw.baseline === "object" && !Array.isArray(raw.baseline)) {
+    for (const key of TRANSCRIPT_BASELINE_KEYS) {
+      const item = draftItem((raw.baseline as Record<string, unknown>)[key]);
+      if (item) baseline[key] = item;
+    }
+  }
+
+  return {
+    meeting_id: raw.meeting_id,
+    meeting_title: typeof raw.meeting_title === "string" ? raw.meeting_title : "",
+    drafted_at: typeof raw.drafted_at === "string" ? raw.drafted_at : "",
+    model: typeof raw.model === "string" ? raw.model : "",
+    blocks,
+    metrics,
+    baseline,
+  };
 }
 
 function isCrossCheckStatus(v: unknown): v is CrossCheckStatus {
