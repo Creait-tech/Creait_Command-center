@@ -83,6 +83,10 @@ const RELEASE_SAFE_FIELDS = new Set([
   "reviewed_at",
   "delivered_snapshot",
   "meeting_id",
+  // The client link and the released PDF exist only after delivery (0014).
+  "client_token",
+  "client_token_issued_at",
+  "blueprint_storage_path",
 ]);
 const DOCUMENT_KINDS = new Set<string>(ASSESSMENT_DOCUMENT_KINDS);
 
@@ -842,7 +846,14 @@ export async function setAssessmentDocuments(
   id: string,
   input: {
     pnl_on_file?: boolean;
-    documents?: Array<{ name: string; kind: string; received_on?: string | null }>;
+    documents?: Array<{
+      name: string;
+      kind: string;
+      received_on?: string | null;
+      storage_path?: string | null;
+      content_type?: string | null;
+      size_bytes?: number | null;
+    }>;
   }
 ): Promise<ActionResult<{ assessment: CcAssessment }>> {
   const ctx = await requireOrg();
@@ -864,10 +875,29 @@ export async function setAssessmentDocuments(
       if (!DOCUMENT_KINDS.has(doc.kind)) {
         return { ok: false, error: `Unknown document kind: ${doc.kind}` };
       }
+      // A stored file's path is only ever minted by uploadAssessmentDocument,
+      // which puts it under this org and this engagement; anything else is
+      // dropped rather than trusted.
+      const storagePath =
+        typeof doc.storage_path === "string" &&
+        doc.storage_path.startsWith(`${ctx.orgId}/${id}/`)
+          ? doc.storage_path
+          : null;
       docs.push({
         name,
         kind: doc.kind as AssessmentDocument["kind"],
         received_on: doc.received_on?.trim() || todayInET(),
+        ...(storagePath
+          ? {
+              storage_path: storagePath,
+              content_type:
+                typeof doc.content_type === "string" ? doc.content_type : null,
+              size_bytes:
+                typeof doc.size_bytes === "number" && Number.isFinite(doc.size_bytes)
+                  ? doc.size_bytes
+                  : null,
+            }
+          : {}),
       });
     }
     update.documents = docs;

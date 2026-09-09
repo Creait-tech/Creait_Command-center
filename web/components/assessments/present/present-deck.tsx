@@ -29,6 +29,7 @@ import {
 
 import { BANDS } from "@/lib/assessment-instrument";
 import { cn } from "@/lib/utils";
+import { money, moneyExact } from "./format";
 
 export interface PresentPillar {
   key: string;
@@ -77,21 +78,10 @@ const RAIL = "#1a2235";
 /** Five band steps of one hue, dark to bright, so the ladder reads in one glance. */
 const BAND_FILL = ["#1e3a8a", "#1d4ed8", "#2563eb", "#3b82f6", "#60a5fa"];
 
-function money(n: number | null | undefined): string {
-  if (n === null || n === undefined || !Number.isFinite(n)) return "—";
-  const abs = Math.abs(n);
-  if (abs >= 1_000_000) return `$${(Math.round((n / 1_000_000) * 10) / 10).toLocaleString("en-US")}M`;
-  if (abs >= 1_000) return `$${Math.round(n / 1_000).toLocaleString("en-US")}K`;
-  return `$${Math.round(n).toLocaleString("en-US")}`;
-}
-
-function moneyExact(n: number): string {
-  return `$${Math.round(n).toLocaleString("en-US")}`;
-}
 
 // ── Exhibits ────────────────────────────────────────────────────────────────
 
-function ScoreLadder({ score }: { score: number | null }) {
+export function ScoreLadder({ score }: { score: number | null }) {
   const W = 1000;
   const H = 150;
   const seg = W / BANDS.length;
@@ -156,7 +146,7 @@ function ScoreLadder({ score }: { score: number | null }) {
   );
 }
 
-function PillarBarsDark({ pillars }: { pillars: PresentPillar[] }) {
+export function PillarBarsDark({ pillars }: { pillars: PresentPillar[] }) {
   const W = 1000;
   const ROW = 96;
   const LABEL = 300;
@@ -219,7 +209,7 @@ function PillarBarsDark({ pillars }: { pillars: PresentPillar[] }) {
   );
 }
 
-function RangeBars({ rows }: { rows: PresentOpportunity[] }) {
+export function RangeBars({ rows }: { rows: PresentOpportunity[] }) {
   const W = 1000;
   const ROW = 78;
   const LABEL = 380;
@@ -275,7 +265,7 @@ function RangeBars({ rows }: { rows: PresentOpportunity[] }) {
   );
 }
 
-function PlanTimeline({ items }: { items: string[] }) {
+export function PlanTimeline({ items }: { items: string[] }) {
   const shown = items.slice(0, 3);
   return (
     <div className="grid gap-6 md:grid-cols-3">
