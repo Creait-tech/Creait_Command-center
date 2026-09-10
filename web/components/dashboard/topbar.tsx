@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { NotificationsBell } from "@/components/dashboard/notifications-bell";
 import { QuickAddButton } from "@/components/dashboard/quick-add-button";
+import { ThemeToggle } from "@/components/dashboard/theme-toggle";
 import { OrganizationSwitcher } from "@clerk/nextjs";
 
 const PAGE_TITLES: Record<string, string> = {
@@ -110,6 +111,7 @@ export function Topbar({ className, onMobileMenuClick }: TopbarProps) {
           }}
         />
         <QuickAddButton />
+        <ThemeToggle />
         <NotificationsBell />
       </div>
     </header>

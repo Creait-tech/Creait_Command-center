@@ -188,7 +188,7 @@ export function FlywheelDiagram({
                 y={pos.y}
                 textAnchor="middle"
                 dominantBaseline="middle"
-                fill="var(--color-brand-paper)"
+                fill="var(--foreground)"
                 fontSize="14"
                 fontWeight="600"
               >

@@ -218,7 +218,7 @@ export function RosterGrid({
                 <Card className="h-full transition-shadow hover:shadow-md">
                   <CardContent className="flex flex-col gap-3">
                     <div className="flex items-start gap-3">
-                      <div className="size-12 rounded-full bg-[color:var(--color-brand-slate)] text-[color:var(--color-brand-paper)] flex items-center justify-center text-sm font-semibold ring-1 ring-[color:var(--color-brand-fog)] shrink-0">
+                      <div className="size-12 rounded-full bg-[color:var(--color-brand-slate)] text-foreground flex items-center justify-center text-sm font-semibold ring-1 ring-[color:var(--color-brand-fog)] shrink-0">
                         {m.avatar_url ? (
                           // eslint-disable-next-line @next/next/no-img-element
                           <img

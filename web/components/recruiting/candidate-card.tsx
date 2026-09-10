@@ -88,7 +88,7 @@ export function CandidateCard({ candidate, onClick }: CandidateCardProps) {
       )}
     >
       <div className="flex items-start justify-between gap-2">
-        <p className="text-sm font-semibold leading-tight text-[color:var(--color-brand-paper)]">
+        <p className="text-sm font-semibold leading-tight text-foreground">
           {candidate.full_name}
         </p>
         {candidate.source && (

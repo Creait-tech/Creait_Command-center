@@ -112,12 +112,12 @@ function MemberCardInner({
           <button
             type="button"
             {...dragHandleProps}
-            className="mt-0.5 cursor-grab active:cursor-grabbing text-[color:var(--color-brand-mist)] hover:text-[color:var(--color-brand-paper)] transition-colors touch-none"
+            className="mt-0.5 cursor-grab active:cursor-grabbing text-[color:var(--color-brand-mist)] hover:text-foreground transition-colors touch-none"
             aria-label={`Drag ${personName(member)}`}
           >
             <GripVertical className="size-4" />
           </button>
-          <div className="size-9 rounded-full bg-[color:var(--color-brand-slate)] text-[color:var(--color-brand-paper)] flex items-center justify-center text-xs font-semibold ring-1 ring-[color:var(--color-brand-fog)] shrink-0">
+          <div className="size-9 rounded-full bg-[color:var(--color-brand-slate)] text-foreground flex items-center justify-center text-xs font-semibold ring-1 ring-[color:var(--color-brand-fog)] shrink-0">
             {member.avatar_url ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img

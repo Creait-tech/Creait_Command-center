@@ -170,7 +170,7 @@ export function ScorecardCell({ kpi, reading, onSave }: ScorecardCellProps) {
         onBlur={() => void commit()}
         aria-label={`${kpi.name}, week of ${formatWeekRangeLong(reading.weekStart)}`}
         placeholder="blank"
-        className="h-8 w-full rounded-md border border-[color:var(--color-brand-electric)] bg-[color:var(--color-brand-ink)] px-1.5 text-right text-[13px] font-data tabular-nums text-foreground outline-none disabled:opacity-60 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+        className="h-8 w-full rounded-md border border-[color:var(--color-brand-electric)] bg-sidebar px-1.5 text-right text-[13px] font-data tabular-nums text-foreground outline-none disabled:opacity-60 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
       />
     );
   }

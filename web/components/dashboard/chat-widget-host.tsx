@@ -76,7 +76,7 @@ export function ChatWidgetHost() {
         "inset-0 sm:inset-auto sm:bottom-6 sm:right-6 sm:h-[600px] sm:w-[400px] sm:rounded-lg"
       )}
     >
-      <header className="flex h-12 items-center justify-between gap-2 border-b border-border bg-brand-ink px-3">
+      <header className="flex h-12 items-center justify-between gap-2 border-b border-border bg-sidebar px-3">
         <div className="flex items-center gap-2 min-w-0">
           <MessageSquare className="size-4 shrink-0 text-brand-aqua" />
           <span className="truncate font-heading text-sm font-medium text-foreground">

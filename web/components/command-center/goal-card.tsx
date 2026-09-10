@@ -59,7 +59,7 @@ export function GoalCard({ goal, subtasks, onSubtaskToggle }: GoalCardProps) {
           <button
             {...attributes}
             {...listeners}
-            className="absolute left-1.5 top-4 cursor-grab active:cursor-grabbing text-[color:var(--color-brand-mist)] hover:text-[color:var(--color-brand-paper)] transition-colors"
+            className="absolute left-1.5 top-4 cursor-grab active:cursor-grabbing text-[color:var(--color-brand-mist)] hover:text-foreground transition-colors"
             aria-label="Drag to reorder"
           >
             <GripVertical className="size-4" />

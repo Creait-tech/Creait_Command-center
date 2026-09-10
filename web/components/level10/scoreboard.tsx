@@ -170,7 +170,7 @@ function TrendTooltip({ active, payload, unit }: TrendTooltipProps) {
   if (!active || !payload || payload.length === 0) return null;
   const point = payload[0].payload;
   return (
-    <div className="rounded-md border border-[color:var(--color-brand-fog)] bg-[#0a0e1a] px-2.5 py-1.5 text-xs shadow-lg">
+    <div className="rounded-md border border-[color:var(--color-brand-fog)] bg-popover px-2.5 py-1.5 text-xs shadow-lg">
       <p className="font-semibold text-foreground">
         {formatKpiValue(point.value, unit)}
       </p>

@@ -236,7 +236,7 @@ export function AttendanceBoard({
                     className={cn(
                       "flex-1 sm:flex-none sm:min-w-24",
                       decision === true &&
-                        "bg-brand-success text-brand-ink hover:bg-brand-success/85",
+                        "bg-brand-success text-brand-charcoal hover:bg-brand-success/85",
                     )}
                   >
                     <Check /> Here
@@ -250,7 +250,7 @@ export function AttendanceBoard({
                     className={cn(
                       "flex-1 sm:flex-none sm:min-w-24",
                       decision === false &&
-                        "bg-brand-warning text-brand-ink hover:bg-brand-warning/85",
+                        "bg-brand-warning text-brand-charcoal hover:bg-brand-warning/85",
                     )}
                   >
                     <UserX /> No-show

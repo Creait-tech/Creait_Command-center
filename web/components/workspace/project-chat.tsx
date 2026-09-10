@@ -249,7 +249,7 @@ export function ProjectChat({ project }: Props) {
         </div>
       </ScrollArea>
 
-      <div className="shrink-0 border-t border-border bg-[color:var(--color-brand-ink)]">
+      <div className="shrink-0 border-t border-border bg-sidebar">
         <div className="max-w-3xl mx-auto px-4 py-3 flex gap-2 items-end">
           <Textarea
             value={input}
