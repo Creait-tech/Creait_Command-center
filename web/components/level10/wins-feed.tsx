@@ -17,19 +17,22 @@ import { Card, CardContent } from "@/components/ui/card";
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
 import { useActiveOrgId } from "@/lib/use-active-org";
 import { AuthorStamp } from "@/components/authorship/author-stamp";
-import { asAuthoredRows, type AuthoredWin } from "@/lib/authorship";
+import { asAuthoredRows, personName, type AuthoredWin, type Person } from "@/lib/authorship";
 import { createWin } from "@/lib/eos-actions";
+import { MeetingStamp } from "./meeting-titles";
 
 interface WinsFeedProps {
   initialWins: AuthoredWin[];
   meetingId: string | null;
+  /** Roster, to name the owner of a Segue win. */
+  people?: Person[];
 }
 
 function sortWins(wins: AuthoredWin[]): AuthoredWin[] {
   return [...wins].sort((a, b) => b.created_at.localeCompare(a.created_at));
 }
 
-export function WinsFeed({ initialWins, meetingId }: WinsFeedProps) {
+export function WinsFeed({ initialWins, meetingId, people = [] }: WinsFeedProps) {
   const orgId = useActiveOrgId();
   const [wins, setWins] = useState<AuthoredWin[]>(sortWins(initialWins));
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -54,7 +57,7 @@ export function WinsFeed({ initialWins, meetingId }: WinsFeedProps) {
             .select("*")
             .eq("org_id", orgId)
             .order("created_at", { ascending: false })
-            .limit(20);
+            .limit(50);
 
       const { data } = await query;
       if (data) setWins(sortWins(asAuthoredRows<AuthoredWin>(data)));
@@ -164,6 +167,12 @@ export function WinsFeed({ initialWins, meetingId }: WinsFeedProps) {
                   <span className="text-xs text-muted-foreground">
                     {formatWinDate(win.win_date)}
                   </span>
+                  {win.owner_id && people.some((p) => p.id === win.owner_id) && (
+                    <span className="text-xs text-foreground">
+                      {personName(people.find((p) => p.id === win.owner_id)!)}
+                    </span>
+                  )}
+                  <MeetingStamp meetingId={win.meeting_id} />
                   <AuthorStamp
                     label="logged by"
                     name={win.created_by_name}

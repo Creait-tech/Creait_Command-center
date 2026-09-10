@@ -5,6 +5,7 @@ import { getActiveOrgId } from "@/lib/active-org";
 import { currentMemberId, loadMeetingWorkspace } from "@/lib/meeting-workspace";
 import { MeetingRoom } from "@/components/level10/meeting-room";
 import { MeetingRecord } from "@/components/level10/meeting-record";
+import { MeetingTitlesProvider } from "@/components/level10/meeting-titles";
 import { asAuthoredRows, type Person } from "@/lib/authorship";
 import type { Headline, IdsItem, Meeting, MeetingRating, Todo, Win } from "@/lib/supabase/types";
 
@@ -30,7 +31,11 @@ export default async function MeetingPage({ params }: { params: Promise<{ id: st
       loadMeetingWorkspace(supabase, orgId),
       currentMemberId(supabase, orgId, userId),
     ]);
-    return <MeetingRoom meeting={meeting} workspace={workspace} currentMemberId={memberId} />;
+    return (
+      <MeetingTitlesProvider titles={workspace.meetingTitles}>
+        <MeetingRoom meeting={meeting} workspace={workspace} currentMemberId={memberId} />
+      </MeetingTitlesProvider>
+    );
   }
 
   const [peopleRes, ratingsRes, headlinesRes, issuesRes, todosRes, winsRes] = await Promise.all([

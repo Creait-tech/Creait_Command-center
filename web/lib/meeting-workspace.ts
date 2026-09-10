@@ -35,16 +35,39 @@ export interface MeetingWorkspaceData {
   idsItems: AuthoredIdsItem[];
   /** Open (not done) to-dos, for the To-Do Review section. */
   todos: AuthoredTodo[];
+  /** Titles of the team's meetings, keyed by id, for "from L10 — Sep 10" stamps. */
+  meetingTitles: Record<string, string>;
   currentQuarter: string;
 }
+
+/**
+ * Titles for every meeting the team has run, so a to-do, issue, headline or
+ * win can say which meeting it came from without a join per row. A few
+ * hundred rows a year at most.
+ */
+export async function loadMeetingTitles(
+  supabase: AnyClient,
+  orgId: string,
+): Promise<Record<string, string>> {
+  const { data } = await supabase
+    .from("meetings")
+    .select("id, title")
+    .eq("org_id", orgId)
+    .eq("source", "manual")
+    .order("created_at", { ascending: false })
+    .limit(500);
+  const map: Record<string, string> = {};
+  for (const row of (data as Array<{ id: string; title: string }> | null) ?? []) map[row.id] = row.title;
+  return map;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type AnyClient = SupabaseClient<any, any, any>;
 
 export function currentQuarter(): string {
   const d = new Date();
   return `${d.getFullYear()}-Q${Math.floor(d.getMonth() / 3) + 1}`;
 }
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type AnyClient = SupabaseClient<any, any, any>;
 
 export async function loadMeetingWorkspace(
   supabase: AnyClient,
@@ -67,6 +90,7 @@ export async function loadMeetingWorkspace(
     rockMilestonesResult,
     rockStatusResult,
     todosResult,
+    meetingTitles,
   ] = await Promise.all([
     supabase.from("kpis").select("*").eq("org_id", orgId).order("sort_order", { ascending: true }),
     supabase
@@ -107,6 +131,7 @@ export async function loadMeetingWorkspace(
       .eq("done", false)
       .order("due_date", { ascending: true, nullsFirst: false })
       .order("created_at", { ascending: true }),
+    loadMeetingTitles(supabase, orgId),
   ]);
 
   // `select("*")` returns the authorship and profile columns from
@@ -122,6 +147,7 @@ export async function loadMeetingWorkspace(
     rockStatusUpdates: (rockStatusResult.data as RockStatusUpdate[] | null) ?? [],
     idsItems: asAuthoredRows<AuthoredIdsItem>(idsResult.data),
     todos: asAuthoredRows<AuthoredTodo>(todosResult.data),
+    meetingTitles,
     currentQuarter: currentQuarter(),
   };
 }

@@ -31,6 +31,7 @@ import { createBrowserClient as createClient } from "@/lib/supabase/client";
 import { useActiveOrgId } from "@/lib/use-active-org";
 import { cn } from "@/lib/utils";
 import { AuthorStamp } from "@/components/authorship/author-stamp";
+import { MeetingStamp } from "./meeting-titles";
 import { asAuthoredRows, type AuthoredIdsItem } from "@/lib/authorship";
 import { createIdsItem, deleteIdsItem, updateIdsItem } from "@/lib/eos-actions";
 import type { IdsStatus } from "@/lib/supabase/types";
@@ -133,12 +134,13 @@ function IdsCardBody({
           <p className="text-xs text-muted-foreground line-clamp-2">{item.description}</p>
         )}
         {item.status === "solved" && item.resolution && (
-          <p className="text-xs text-[color:var(--color-brand-success)] line-clamp-3 italic">"{item.resolution}"</p>
+          <p className="text-xs text-[color:var(--color-brand-success)] line-clamp-3 italic">&ldquo;{item.resolution}&rdquo;</p>
         )}
         {/* Guarded so the ~40 issues that predate authorship don't each carry
             an empty row's worth of vertical rhythm. */}
-        {(item.created_by_name || item.updated_by_name) && (
+        {(item.created_by_name || item.updated_by_name || item.meeting_id) && (
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+            <MeetingStamp meetingId={item.meeting_id} />
             <AuthorStamp
               name={item.created_by_name}
               actorId={item.created_by}
@@ -408,7 +410,7 @@ export function IdsSection({ initialItems, meetingId }: IdsSectionProps) {
               <Clock className="size-8 text-[color:var(--color-brand-mist)] mb-2" />
               <p className="text-sm font-medium">No long-term issues parked</p>
               <p className="text-xs text-muted-foreground mt-1 max-w-md">
-                Long-term issues are bigger problems / opportunities the team isn't ready to solve this week — park them here for your Quarterly Planning meeting.
+                Long-term issues are bigger problems / opportunities the team isn&apos;t ready to solve this week — park them here for your Quarterly Planning meeting.
               </p>
             </div>
           ) : (

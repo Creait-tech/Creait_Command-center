@@ -1,6 +1,8 @@
 import { createClient } from "@/lib/supabase/server";
 import { getActiveOrgId } from "@/lib/active-org";
 import { TodosView } from "@/components/todos/todos-view";
+import { MeetingTitlesProvider } from "@/components/level10/meeting-titles";
+import { loadMeetingTitles } from "@/lib/meeting-workspace";
 import { asAuthoredRows, type AuthoredTodo, type Person } from "@/lib/authorship";
 
 export const dynamic = "force-dynamic";
@@ -9,7 +11,7 @@ export default async function TodosPage() {
   const supabase = await createClient();
   const orgId = await getActiveOrgId();
 
-  const [todosRes, membersRes] = await Promise.all([
+  const [todosRes, membersRes, meetingTitles] = await Promise.all([
     supabase
       .from("cc_todos")
       .select("*")
@@ -23,6 +25,7 @@ export default async function TodosPage() {
       .eq("org_id", orgId)
       .eq("status", "active")
       .order("full_name"),
+    loadMeetingTitles(supabase, orgId),
   ]);
 
   // `select("*")` already returns the authorship and profile columns added by
@@ -39,7 +42,9 @@ export default async function TodosPage() {
           EOS 7-day commitments. Captured during Level 10 meetings, owned by a person, due in 7 days unless changed.
         </p>
       </div>
-      <TodosView initialTodos={todos} members={members} orgId={orgId} />
+      <MeetingTitlesProvider titles={meetingTitles}>
+        <TodosView initialTodos={todos} members={members} orgId={orgId} />
+      </MeetingTitlesProvider>
     </div>
   );
 }

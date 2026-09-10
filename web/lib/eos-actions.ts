@@ -274,6 +274,8 @@ export async function createWin(input: {
   description?: string | null;
   meetingId?: string | null;
   winDate?: string | null;
+  /** Whose win it is — the Segue captures one per person in the room. */
+  ownerId?: string | null;
 }): Promise<ActionResult<AuthoredWin>> {
   const ctx = await context();
   if ("error" in ctx) return { ok: false, error: ctx.error };
@@ -288,6 +290,7 @@ export async function createWin(input: {
       title,
       description: input.description?.trim() || null,
       meeting_id: input.meetingId ?? null,
+      owner_id: input.ownerId || null,
       win_date: input.winDate ?? new Date().toISOString().slice(0, 10),
       created_by: ctx.actor.id,
       created_by_name: ctx.actor.name,
@@ -402,6 +405,8 @@ export async function createHeadline(input: {
   text: string;
   category: HeadlineCategory;
   meetingId?: string | null;
+  /** A cascading message: something the whole company needs to hear. */
+  cascade?: boolean;
 }): Promise<ActionResult<AuthoredHeadline>> {
   const ctx = await context();
   if ("error" in ctx) return { ok: false, error: ctx.error };
@@ -415,6 +420,7 @@ export async function createHeadline(input: {
       org_id: ctx.orgId,
       text,
       category: input.category,
+      cascade: input.cascade === true,
       meeting_id: input.meetingId ?? null,
       created_by: ctx.actor.id,
       created_by_name: ctx.actor.name,
@@ -425,5 +431,6 @@ export async function createHeadline(input: {
   if (error || !data) {
     return { ok: false, error: error?.message ?? "Couldn't save that headline." };
   }
+  revalidatePath("/level-10");
   return { ok: true, data: asRow<AuthoredHeadline>(data) };
 }
