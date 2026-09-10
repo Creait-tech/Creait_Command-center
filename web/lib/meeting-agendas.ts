@@ -61,6 +61,7 @@ export type MeetingType = Extract<
   | "huddle"
   | "financial"
   | "state_of_company"
+  | "focus_day"
 >;
 
 const min = (n: number) => n * 60;
@@ -193,6 +194,23 @@ export const DEFAULT_MEETING_AGENDAS: Record<MeetingType, MeetingAgenda> = {
       { key: "conclude", label: "Q&A and Close", budgetSec: min(10), description: "Open floor. Then rate the session 1–10." },
     ],
   },
+
+  focus_day: {
+    type: "focus_day",
+    label: "Focus Day",
+    cadence: "Once · full day",
+    purpose: "Install the EOS foundation: accountability chart, rocks, meeting pulse, scorecard.",
+    titlePrefix: "Focus Day",
+    sections: [
+      { key: "expectations", label: "Expectations", budgetSec: min(30), description: "What each person wants from running the company this way. Name it so you can check it at the end." },
+      { key: "ceiling", label: "Hitting the Ceiling", budgetSec: min(45), description: "The five abilities: simplify, delegate, predict, systemize, structure. Where are we stuck?" },
+      { key: "accountability", label: "Accountability Chart", budgetSec: min(120), description: "Structure first, people second. Three to seven major functions, one owner each. GWC every seat." },
+      { key: "rocks", label: "Rocks", budgetSec: min(90), description: "The three to seven most important things for the next 90 days. One owner each." },
+      { key: "pulse", label: "Meeting Pulse", budgetSec: min(30), description: "Weekly Level 10 — same day, same time, same agenda. Quarterlies on the calendar." },
+      { key: "scorecard", label: "Scorecard", budgetSec: min(60), description: "Five to fifteen weekly numbers with a goal each. The absolute pulse of the business." },
+      { key: "conclude", label: "Conclude", budgetSec: min(30), description: "Recap the rocks and the pulse. Did the day meet the expectations? Rate it 1–10." },
+    ],
+  },
 };
 
 export const MEETING_TYPE_ORDER: MeetingType[] = [
@@ -204,6 +222,7 @@ export const MEETING_TYPE_ORDER: MeetingType[] = [
   "same_page",
   "state_of_company",
   "annual",
+  "focus_day",
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────

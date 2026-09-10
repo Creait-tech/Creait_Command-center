@@ -13,12 +13,13 @@ import { OrganizationSwitcher } from "@clerk/nextjs";
 const PAGE_TITLES: Record<string, string> = {
   "/command-center": "Command Center",
   "/level-10": "Level 10 Meeting",
+  "/prep": "Meeting Prep",
   "/meetings": "Meeting History",
   "/war-room": "War Room",
   "/rocks": "Rocks",
   "/todos": "To-Dos",
   "/initiatives": "Initiatives",
-  "/team": "Team Scorecard",
+  "/team": "Team",
   "/recruiting": "Recruiting",
   "/journey": "Client Journey",
   "/strategy": "Strategy",
@@ -27,6 +28,10 @@ const PAGE_TITLES: Record<string, string> = {
   "/comms": "Comms Hub",
   "/agents": "Agent Center",
   "/quarterly": "Quarterly Planning",
+  "/clients": "Clients",
+  "/tuesday-class": "AI Tuesday",
+  "/workspace": "AI Workspace",
+  "/assessments": "Assessments",
   "/settings": "Settings",
 };
 
