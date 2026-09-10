@@ -305,7 +305,7 @@ export function MemberDetailSheet({
       <SheetContent className="sm:max-w-md flex flex-col">
         <SheetHeader>
           <div className="flex items-center gap-3">
-            <div className="size-12 rounded-full bg-[color:var(--color-brand-slate)] text-[color:var(--color-brand-paper)] flex items-center justify-center text-sm font-semibold ring-1 ring-[color:var(--color-brand-fog)] shrink-0">
+            <div className="size-12 rounded-full bg-[color:var(--color-brand-slate)] text-foreground flex items-center justify-center text-sm font-semibold ring-1 ring-[color:var(--color-brand-fog)] shrink-0">
               {member.avatar_url ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img

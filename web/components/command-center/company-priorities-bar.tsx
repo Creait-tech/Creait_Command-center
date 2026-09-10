@@ -99,7 +99,7 @@ export function CompanyPrioritiesBar({
         {priorities.map((p) => (
           <span
             key={p.id}
-            className="bg-[color:var(--color-brand-slate)] text-[color:var(--color-brand-paper)] rounded-full px-3 py-1 text-sm"
+            className="bg-[color:var(--color-brand-slate)] text-foreground rounded-full px-3 py-1 text-sm"
           >
             {p.title}
           </span>

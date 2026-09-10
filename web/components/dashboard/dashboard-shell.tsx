@@ -26,7 +26,7 @@ export function DashboardShell({ children }: DashboardShellProps) {
       <Sheet open={mobileNavOpen} onOpenChange={setMobileNavOpen}>
         <SheetContent
           side="left"
-          className="w-60 max-w-none border-r border-border bg-brand-ink p-0"
+          className="w-60 max-w-none border-r border-border bg-sidebar p-0"
           showCloseButton={false}
         >
           <Sidebar onNavigate={() => setMobileNavOpen(false)} />

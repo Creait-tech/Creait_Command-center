@@ -138,7 +138,7 @@ function WorkspaceShellInner({ initialProjects, orgId }: Props) {
   return (
     <div className="flex h-[calc(100vh-3.5rem)] overflow-hidden">
       {/* Projects sidebar */}
-      <aside className="w-64 shrink-0 flex flex-col border-r border-border bg-[color:var(--color-brand-ink)]">
+      <aside className="w-64 shrink-0 flex flex-col border-r border-border bg-sidebar">
         <div className="h-12 shrink-0 border-b border-border px-3 flex items-center gap-2">
           <Sparkles className="size-4 text-[color:var(--color-brand-electric)]" />
           <span className="text-sm font-semibold">AI Workspace</span>

@@ -67,7 +67,7 @@ function Column({ stage, candidates, onCardClick }: ColumnProps) {
             style={{ backgroundColor: `var(${stage.accent})` }}
             aria-hidden
           />
-          <h2 className="text-xs font-semibold uppercase tracking-wide text-[color:var(--color-brand-paper)]">
+          <h2 className="text-xs font-semibold uppercase tracking-wide text-foreground">
             {stage.label}
           </h2>
         </div>
@@ -122,7 +122,7 @@ function Leaderboard({ candidates }: { candidates: Candidate[] }) {
       <div className="sticky top-6 rounded-lg border border-[color:var(--color-brand-fog)] bg-[color:var(--color-brand-charcoal)]/40">
         <div className="flex items-center gap-2 border-b border-[color:var(--color-brand-fog)] px-3 py-2">
           <Trophy className="size-3.5 text-[color:var(--color-brand-gold)]" />
-          <h2 className="text-xs font-semibold uppercase tracking-wide text-[color:var(--color-brand-paper)]">
+          <h2 className="text-xs font-semibold uppercase tracking-wide text-foreground">
             Source Leaderboard
           </h2>
         </div>
@@ -138,7 +138,7 @@ function Leaderboard({ candidates }: { candidates: Candidate[] }) {
                   key={e.source}
                   className="flex items-center justify-between rounded-md px-2 py-1.5 text-xs hover:bg-[color:var(--color-brand-slate)]/60"
                 >
-                  <span className="truncate text-[color:var(--color-brand-paper)]">
+                  <span className="truncate text-foreground">
                     {e.source}
                   </span>
                   <span className="flex items-center gap-2 shrink-0">

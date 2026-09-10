@@ -41,22 +41,35 @@
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
 
-  /* CREAIT brand tokens (use as bg-brand-ink, text-brand-electric, etc.) */
+  /* CREAIT brand tokens (use as bg-brand-slate, text-brand-electric, etc.).
+     These point at the theme layer below rather than carrying a literal
+     colour, which is what lets the same ~1,300 call sites across the app
+     render correctly in both themes without being rewritten.
+
+     Two of them are deliberately absolute:
+       --color-brand-ink   is "the deep dark" and --color-brand-paper is "the
+       light sheet". They name a physical thing, not a role, and the
+       client-facing surfaces (the present deck, the results page) pair
+       `bg-brand-ink` with `text-white` on purpose. Flipping those with the
+       theme would turn a client's report white-on-white.
+     Everything else names a role — surface, border, muted text, accent — and
+     is redefined per theme. */
   --color-brand-ink: #0a0e1a;
-  --color-brand-charcoal: #111827;
-  --color-brand-slate: #1a2235;
-  --color-brand-fog: #2a3447;
-  --color-brand-mist: #94a3b8;
   --color-brand-paper: #f1f5f9;
-  --color-brand-electric: #3b82f6;
-  --color-brand-electric-glow: #60a5fa;
-  --color-brand-aqua: #6ee7b7;
-  --color-brand-aqua-glow: #a7f3d0;
-  --color-brand-violet: #8b5cf6;
-  --color-brand-gold: #f59e0b;
-  --color-brand-success: #22c55e;
-  --color-brand-warning: #f59e0b;
-  --color-brand-danger: #ef4444;
+
+  --color-brand-charcoal: var(--brand-charcoal);
+  --color-brand-slate: var(--brand-slate);
+  --color-brand-fog: var(--brand-fog);
+  --color-brand-mist: var(--brand-mist);
+  --color-brand-electric: var(--brand-electric);
+  --color-brand-electric-glow: var(--brand-electric-glow);
+  --color-brand-aqua: var(--brand-aqua);
+  --color-brand-aqua-glow: var(--brand-aqua-glow);
+  --color-brand-violet: var(--brand-violet);
+  --color-brand-gold: var(--brand-gold);
+  --color-brand-success: var(--brand-success);
+  --color-brand-warning: var(--brand-warning);
+  --color-brand-danger: var(--brand-danger);
 
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
@@ -67,25 +80,111 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-/* Dark-only theme: :root === .dark values. CREAIT brand mapped to shadcn primitives. */
-:root,
+/* ─────────────────────────────────────────────────────────────────────────────
+   The two themes.
+
+   `:root` is light and `.dark` is dark, and both define the SAME set of
+   names. A colour must never be defined in only one of these blocks: a token
+   that exists in one theme and not the other renders as the browser's
+   `unset`, which is how a "light mode" ends up with black cards in it.
+
+   Accents are not the same hex in both. #f59e0b amber on white is 2.1:1 —
+   legible on an ink background, unreadable on paper. The light column uses
+   the darker step of each hue: measured, every light accent clears 4.7:1 as
+   text on all three light surfaces (background, card, raised) and 5.4:1 as
+   white text on a filled chip of itself. The 10–20% opacity chips the app
+   builds from these stay tinted rather than muddy.
+   ───────────────────────────────────────────────────────────────────────── */
+
+:root {
+  /* Brand roles — light */
+  --brand-charcoal: #ffffff;                  /* card surface */
+  --brand-slate: #eaeff6;                     /* raised / hover surface */
+  --brand-fog: #d6dee9;                       /* hairline border */
+  --brand-mist: #5a6675;                      /* muted text (4.9:1 on bg) */
+  --brand-electric: #1d4ed8;
+  --brand-electric-glow: #2563eb;
+  --brand-aqua: #0f766e;
+  --brand-aqua-glow: #14b8a6;
+  --brand-violet: #6d28d9;
+  --brand-gold: #92400e;
+  --brand-success: #166534;
+  --brand-warning: #92400e;
+  --brand-danger: #b91c1c;
+
+  /* Shadcn primitives — light */
+  --background: #f6f8fb;
+  --foreground: #0f172a;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
+  --primary: #1d4ed8;
+  --primary-foreground: #ffffff;
+  --secondary: #eaeff6;
+  --secondary-foreground: #0f172a;
+  --muted: #eaeff6;
+  --muted-foreground: #5a6675;
+  --accent: #eaeff6;
+  --accent-foreground: #0f172a;
+  --destructive: #b91c1c;
+  --border: #d6dee9;
+  --input: #d6dee9;
+  --ring: #1d4ed8;
+  --chart-1: #1d4ed8;
+  --chart-2: #0f766e;
+  --chart-3: #6d28d9;
+  --chart-4: #92400e;
+  --chart-5: #b91c1c;
+  --radius: 0.625rem;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #0f172a;
+  --sidebar-primary: #1d4ed8;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #eaeff6;
+  --sidebar-accent-foreground: #0f172a;
+  --sidebar-border: #d6dee9;
+  --sidebar-ring: #1d4ed8;
+
+  /* How strong the decorative glow is. Bloom reads as depth on an ink
+     background and as smudge on paper, so light turns it off. */
+  --glow-strength: 0;
+  color-scheme: light;
+}
+
 .dark {
+  /* Brand roles — dark */
+  --brand-charcoal: #111827;
+  --brand-slate: #1a2235;
+  --brand-fog: #2a3447;
+  --brand-mist: #94a3b8;
+  --brand-electric: #3b82f6;
+  --brand-electric-glow: #60a5fa;
+  --brand-aqua: #6ee7b7;
+  --brand-aqua-glow: #a7f3d0;
+  --brand-violet: #8b5cf6;
+  --brand-gold: #f59e0b;
+  --brand-success: #22c55e;
+  --brand-warning: #f59e0b;
+  --brand-danger: #ef4444;
+
+  /* Shadcn primitives — dark */
   --background: #0a0e1a;                      /* brand.ink */
   --foreground: #f1f5f9;                      /* brand.paper */
-  --card: #111827;                            /* brand.charcoal */
+  --card: #111827;
   --card-foreground: #f1f5f9;
   --popover: #111827;
   --popover-foreground: #f1f5f9;
-  --primary: #3b82f6;                         /* brand.electric */
+  --primary: #3b82f6;
   --primary-foreground: #ffffff;
-  --secondary: #1a2235;                       /* brand.slate */
+  --secondary: #1a2235;
   --secondary-foreground: #f1f5f9;
   --muted: #1a2235;
-  --muted-foreground: #94a3b8;                /* brand.mist */
+  --muted-foreground: #94a3b8;
   --accent: #1a2235;
   --accent-foreground: #f1f5f9;
-  --destructive: #ef4444;                     /* brand.danger */
-  --border: #2a3447;                          /* brand.fog */
+  --destructive: #ef4444;
+  --border: #2a3447;
   --input: #2a3447;
   --ring: #3b82f6;
   --chart-1: #3b82f6;
@@ -102,6 +201,9 @@
   --sidebar-accent-foreground: #f1f5f9;
   --sidebar-border: #2a3447;
   --sidebar-ring: #3b82f6;
+
+  --glow-strength: 1;
+  color-scheme: dark;
 }
 
 @layer base {
@@ -110,7 +212,6 @@
   }
   html {
     @apply font-sans;
-    color-scheme: dark;
   }
   body {
     @apply bg-background text-foreground antialiased;
@@ -169,9 +270,19 @@
   .glow-electric {
     box-shadow:
       0 0 0 1px color-mix(in oklab, var(--color-brand-electric) 40%, transparent),
-      0 0 24px -8px color-mix(in oklab, var(--color-brand-electric) 55%, transparent);
+      0 0 24px -8px
+        color-mix(
+          in oklab,
+          var(--color-brand-electric) calc(55% * var(--glow-strength)),
+          transparent
+        );
   }
   .glow-electric-text {
-    text-shadow: 0 0 18px color-mix(in oklab, var(--color-brand-electric) 45%, transparent);
+    text-shadow: 0 0 18px
+      color-mix(
+        in oklab,
+        var(--color-brand-electric) calc(45% * var(--glow-strength)),
+        transparent
+      );
   }
 }

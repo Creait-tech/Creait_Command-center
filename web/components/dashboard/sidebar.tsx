@@ -91,7 +91,7 @@ export function Sidebar({ className, onNavigate }: SidebarProps) {
   return (
     <aside
       className={cn(
-        "flex h-full w-full flex-col border-r border-border bg-brand-ink",
+        "flex h-full w-full flex-col border-r border-border bg-sidebar",
         className
       )}
     >
@@ -128,8 +128,8 @@ export function Sidebar({ className, onNavigate }: SidebarProps) {
                     className={cn(
                       "flex items-center gap-2.5 rounded-md px-2 py-2 text-sm transition-colors",
                       isActive
-                        ? "bg-brand-slate text-brand-paper"
-                        : "text-brand-mist hover:bg-brand-slate/50 hover:text-brand-paper"
+                        ? "bg-brand-slate text-foreground"
+                        : "text-brand-mist hover:bg-brand-slate/50 hover:text-foreground"
                     )}
                   >
                     <Icon className="size-4 shrink-0" />

@@ -286,7 +286,7 @@ export function CandidateDetailModal({
           {/* Notes log */}
           <div className="space-y-2">
             <h3 className="text-sm font-semibold">Notes</h3>
-            <div className="rounded-md border border-[color:var(--color-brand-fog)] bg-[color:var(--color-brand-slate)]/40 p-3 max-h-48 overflow-y-auto text-xs whitespace-pre-wrap text-[color:var(--color-brand-paper)]/90">
+            <div className="rounded-md border border-[color:var(--color-brand-fog)] bg-[color:var(--color-brand-slate)]/40 p-3 max-h-48 overflow-y-auto text-xs whitespace-pre-wrap text-foreground/90">
               {candidate.notes && candidate.notes.trim() ? (
                 candidate.notes
               ) : (
