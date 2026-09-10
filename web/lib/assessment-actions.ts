@@ -9,7 +9,7 @@
 
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
-import { auth, currentUser } from "@clerk/nextjs/server";
+import { auth, clerkClient, currentUser } from "@clerk/nextjs/server";
 
 import { createClient } from "@/lib/supabase/server";
 import { getActiveOrgId } from "@/lib/active-org";
@@ -38,6 +38,7 @@ import type {
   CcAssessment,
   CcAssessmentOpportunity,
   CcAssessmentScore,
+  CcClientStatus,
   EvidenceConfidence,
   Json,
   OpportunityConfidence,
@@ -80,6 +81,7 @@ const RELEASE_SAFE_FIELDS = new Set([
   "status",
   "delivered_at",
   "reviewed_by",
+  "reviewed_by_id",
   "reviewed_at",
   "delivered_snapshot",
   "meeting_id",
@@ -87,7 +89,12 @@ const RELEASE_SAFE_FIELDS = new Set([
   "client_token",
   "client_token_issued_at",
   "blueprint_storage_path",
+  // What the engagement became is recorded after delivery by definition (0016).
+  "converted_to",
+  "converted_on",
+  "converted_client_id",
 ]);
+const CONVERSIONS = new Set(["build", "advisory"]);
 const DOCUMENT_KINDS = new Set<string>(ASSESSMENT_DOCUMENT_KINDS);
 
 async function requireOrg(): Promise<{ orgId: string } | { error: string }> {
@@ -157,6 +164,9 @@ export async function createAssessment(input: {
   if (!clientName) return { ok: false, error: "Client name is required" };
 
   const isPractice = Boolean(input.is_practice);
+  // Whoever opens the engagement is presumed to be running it. Setup lets
+  // them hand it to someone else; the release gate needs it filled either way.
+  const { userId } = await auth();
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("cc_assessments")
@@ -168,6 +178,8 @@ export async function createAssessment(input: {
       status: (isPractice ? "practice" : "intake") satisfies AssessmentStatus,
       is_practice: isPractice,
       started_at: todayInET(),
+      facilitator_id: userId ?? null,
+      facilitator_name: userId ? await reviewerName() : null,
     })
     .select("id")
     .single();
@@ -203,6 +215,13 @@ export interface AssessmentPatch {
   pnl_on_file?: boolean;
   /** Who signs the release. Defaults to the signed-in user at delivery. */
   reviewed_by?: string | null;
+  /**
+   * Who ran the engagement (migration 0016). Both or neither: an id without a
+   * name records nothing a person can read, a name without an id cannot be
+   * held against the releaser.
+   */
+  facilitator_id?: string | null;
+  facilitator_name?: string | null;
 }
 
 export async function updateAssessment(
@@ -252,6 +271,18 @@ export async function updateAssessment(
   }
   if (patch.reviewed_by !== undefined) {
     update.reviewed_by = patch.reviewed_by?.trim() || null;
+  }
+  if (patch.facilitator_id !== undefined || patch.facilitator_name !== undefined) {
+    const facilitatorId = patch.facilitator_id?.trim() || null;
+    const facilitatorName = patch.facilitator_name?.trim() || null;
+    if ((facilitatorId === null) !== (facilitatorName === null)) {
+      return {
+        ok: false,
+        error: "Facilitator needs both a user and a name — or neither to clear it.",
+      };
+    }
+    update.facilitator_id = facilitatorId;
+    update.facilitator_name = facilitatorName;
   }
   if (patch.overlay_flags !== undefined) {
     // Every flag is checked against OVERLAY_FLAGS. An unrecognised key would
@@ -328,6 +359,7 @@ export async function updateAssessment(
       patch.status !== "delivered"
     ) {
       update.reviewed_by = null;
+      update.reviewed_by_id = null;
       update.reviewed_at = null;
     }
 
@@ -394,6 +426,34 @@ async function deliveryGate(
   if (readError) return { error: readError.message };
   if (!row) return { error: "Assessment not found" };
   const stored = row as CcAssessment;
+
+  /**
+   * The second signature (0016). A real engagement is released by someone
+   * other than the person who ran it — the facilitator is too close to their
+   * own findings to be the one who says "this is releasable". Judged on the
+   * facilitator as it will be after this write, and on the Clerk user id of
+   * the session rather than a name, because a name can be typed. Practice
+   * engagements are rehearsals and are exempt.
+   */
+  const { userId } = await auth();
+  if (!stored.is_practice) {
+    const facilitatorId =
+      ("facilitator_id" in update
+        ? (update.facilitator_id as string | null)
+        : stored.facilitator_id) ?? null;
+    if (!facilitatorId) {
+      return {
+        error:
+          "Record who facilitated this engagement in Setup before releasing it — a real engagement needs a second signature.",
+      };
+    }
+    if (userId && userId === facilitatorId) {
+      return {
+        error:
+          "You facilitated this engagement, so you can't release it. Ask another founder to review and release.",
+      };
+    }
+  }
 
   const [scoresRes, oppsRes] = await Promise.all([
     supabase.from("cc_assessment_scores").select("*").eq("assessment_id", id),
@@ -480,17 +540,21 @@ async function deliveryGate(
     overlap_factor: after("overlap_factor"),
     pnl_on_file: after("pnl_on_file"),
     documents: after("documents"),
+    facilitator_id: after("facilitator_id"),
+    facilitator_name: after("facilitator_name"),
     is_practice: stored.is_practice,
   };
 
   return {
     fields: {
       reviewed_by: reviewer,
+      reviewed_by_id: userId ?? null,
       reviewed_at: now,
       delivered_at: deliveredAt,
       delivered_snapshot: {
         at: now,
         reviewed_by: reviewer,
+        reviewed_by_id: userId ?? null,
         assessment: parent,
         scores: scoreRows,
         opportunities: oppRows,
@@ -1567,5 +1631,164 @@ export async function saveOutcomes(
     };
   }
   revalidate(id);
+  return { ok: true, data: { assessment: data as CcAssessment } };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Second signature and conversion (migration 0016)
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Everyone in the active org, for the Facilitator picker in Setup. Read from
+ * Clerk rather than from any table of ours because org membership IS the
+ * roster — there is no second copy to drift. Names go through the same ladder
+ * the release signature uses, ending at the identifier (an email) rather than
+ * a placeholder.
+ */
+export async function listOrgMembers(): Promise<
+  ActionResult<{ members: Array<{ id: string; name: string }> }>
+> {
+  const ctx = await requireOrg();
+  if ("error" in ctx) return { ok: false, error: ctx.error };
+
+  try {
+    const client = await clerkClient();
+    const { data } = await client.organizations.getOrganizationMembershipList({
+      organizationId: ctx.orgId,
+      limit: 100,
+    });
+    const members: Array<{ id: string; name: string }> = [];
+    for (const membership of data) {
+      const user = membership.publicUserData;
+      if (!user?.userId) continue;
+      const name =
+        displayNameOf({
+          firstName: user.firstName,
+          lastName: user.lastName,
+          primaryEmailAddress: { emailAddress: user.identifier },
+        }) ?? user.identifier;
+      members.push({ id: user.userId, name });
+    }
+    members.sort((a, b) => a.name.localeCompare(b.name));
+    return { ok: true, data: { members } };
+  } catch (err) {
+    return {
+      ok: false,
+      error:
+        err instanceof Error ? err.message : "Could not load the team from Clerk",
+    };
+  }
+}
+
+/** The org's clients, for linking a delivered engagement to what it became. */
+export async function listClientsForLink(): Promise<
+  ActionResult<{
+    clients: Array<{
+      id: string;
+      name: string;
+      company: string | null;
+      status: CcClientStatus;
+    }>;
+  }>
+> {
+  const ctx = await requireOrg();
+  if ("error" in ctx) return { ok: false, error: ctx.error };
+
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("cc_clients")
+    .select("id, name, company, status")
+    .eq("org_id", ctx.orgId)
+    .order("name", { ascending: true });
+
+  if (error) return { ok: false, error: error.message };
+  return {
+    ok: true,
+    data: {
+      clients: ((data ?? []) as Array<{
+        id: string;
+        name: string;
+        company: string | null;
+        status: CcClientStatus;
+      }>),
+    },
+  };
+}
+
+/**
+ * Record what a delivered Diagnostic became — a Build or an Advisory — and
+ * which client row it is now. This is the fact the follow-through job's
+ * $7,500 credit clock reads; before 0016 it guessed from a company-name match.
+ *
+ * Allowed on a delivered row: none of these columns change a word of the
+ * document that went out, and by definition the conversion happens after it.
+ * `null` in `converted_to` clears the record ("not yet"). A client id is only
+ * accepted when the row belongs to this org — the FK alone would let an id
+ * from another workspace through under the service role.
+ */
+export async function recordConversion(
+  assessmentId: string,
+  input: {
+    converted_to: "build" | "advisory" | null;
+    converted_on: string | null;
+    converted_client_id: string | null;
+  }
+): Promise<ActionResult<{ assessment: CcAssessment }>> {
+  const ctx = await requireOrg();
+  if ("error" in ctx) return { ok: false, error: ctx.error };
+
+  const convertedTo = input.converted_to ?? null;
+  if (convertedTo !== null && !CONVERSIONS.has(convertedTo)) {
+    return { ok: false, error: `Unknown conversion: ${String(convertedTo)}` };
+  }
+
+  // "Not yet" clears the whole record: a date or a client without a kind is
+  // a half-statement nobody can read back.
+  const convertedOn =
+    convertedTo === null ? null : input.converted_on?.trim() || todayInET();
+  if (convertedOn !== null && !/^\d{4}-\d{2}-\d{2}$/.test(convertedOn)) {
+    return { ok: false, error: "Converted-on must be a date (YYYY-MM-DD)" };
+  }
+  const clientId =
+    convertedTo === null ? null : input.converted_client_id?.trim() || null;
+
+  const supabase = await createClient();
+
+  if (clientId) {
+    const { data: clientRow, error: clientError } = await supabase
+      .from("cc_clients")
+      .select("id")
+      .eq("id", clientId)
+      .eq("org_id", ctx.orgId)
+      .maybeSingle();
+    if (clientError) return { ok: false, error: clientError.message };
+    if (!clientRow) {
+      return { ok: false, error: "That client is not in this workspace." };
+    }
+  }
+
+  const { data, error } = await supabase
+    .from("cc_assessments")
+    .update({
+      converted_to: convertedTo,
+      converted_on: convertedOn,
+      converted_client_id: clientId,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", assessmentId)
+    .eq("org_id", ctx.orgId)
+    .select("*")
+    .maybeSingle();
+
+  if (error) return { ok: false, error: error.message };
+  // A refused UPDATE under RLS matches zero rows and reports success — an
+  // empty result is a refusal, not a saved conversion.
+  if (!data) {
+    return {
+      ok: false,
+      error: "The conversion did not save — you may not have access to this engagement.",
+    };
+  }
+  revalidate(assessmentId);
   return { ok: true, data: { assessment: data as CcAssessment } };
 }

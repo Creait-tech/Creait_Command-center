@@ -809,6 +809,28 @@ export interface CcAssessment {
   reviewed_by: string | null;
   reviewed_at: string | null;
   /**
+   * Clerk user id of the releaser (migration 0016), beside the display name.
+   * On a non-practice engagement it must differ from `facilitator_id` — the
+   * second signature. Cleared on reopen, like `reviewed_by`.
+   */
+  reviewed_by_id: string | null;
+  /**
+   * Who ran the engagement (migration 0016): Clerk user id and the display
+   * name captured at write time. Defaults to the creator; set in Setup. Part
+   * of the delivered record, so it locks with the document.
+   */
+  facilitator_id: string | null;
+  facilitator_name: string | null;
+  /**
+   * What the delivered Diagnostic became (migration 0016): a Build or an
+   * Advisory retainer, when, and which cc_clients row. Null = not yet. The
+   * follow-through job's $7,500 credit clock reads `converted_to`. Recorded
+   * after delivery, so all three are release-safe.
+   */
+  converted_to: "build" | "advisory" | null;
+  converted_on: string | null;
+  converted_client_id: string | null;
+  /**
    * What was actually handed over: scores, opportunities, computed scores and
    * the readiness result at the moment of release. The report re-renders from
    * live rows, so this is the only record of the delivered document.

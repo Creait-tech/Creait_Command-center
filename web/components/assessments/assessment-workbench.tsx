@@ -58,6 +58,9 @@ import {
 import { intakeProgress } from "@/lib/assessment-intake";
 import {
   appendPlanItem,
+  listClientsForLink,
+  listOrgMembers,
+  recordConversion,
   removePlanItem,
   reorderPlanItems,
   setAssessmentDocuments,
@@ -67,6 +70,8 @@ import {
   type ActionResult,
   type AssessmentPatch,
 } from "@/lib/assessment-actions";
+// The same business date the server actions stamp — see lib/business-date.ts.
+import { todayInET } from "@/lib/business-date";
 import {
   ClientLinkPanel,
   DocumentRowActions,
@@ -115,10 +120,206 @@ const DEFAULT_SECONDS_PER_INDICATOR = 45;
 
 /**
  * The parent-row fields that may still change on a delivered engagement: the
- * release record and the results-session link. Mirrors RELEASE_SAFE_FIELDS in
- * assessment-actions and the cc_assessments_lock_delivered_row trigger.
+ * release record, the results-session link, and what the engagement became.
+ * Mirrors RELEASE_SAFE_FIELDS in assessment-actions and the
+ * cc_assessments_lock_delivered_row trigger (0012, extended in 0016).
  */
-const RELEASE_SAFE_PATCH = new Set(["status", "reviewed_by", "meeting_id"]);
+const RELEASE_SAFE_PATCH = new Set([
+  "status",
+  "reviewed_by",
+  "reviewed_by_id",
+  "meeting_id",
+  "converted_to",
+  "converted_on",
+  "converted_client_id",
+]);
+
+type ConversionKind = NonNullable<CcAssessment["converted_to"]>;
+const CONVERSION_LABELS: Record<ConversionKind, string> = {
+  build: "Build",
+  advisory: "Advisory",
+};
+
+/** Sentinel item values — a Select item cannot carry an empty string. */
+const NO_CLIENT = "__none__";
+const NO_FACILITATOR = "__none__";
+
+interface LinkableClient {
+  id: string;
+  name: string;
+  company: string | null;
+  status: string;
+}
+
+/** "Reid Comfort" or "Reid Comfort · Comfort Roofing" — what the picker shows. */
+function clientLabel(client: LinkableClient): string {
+  const company = client.company?.trim();
+  return company && company !== client.name ? `${client.name} · ${company}` : client.name;
+}
+
+/**
+ * What a delivered Diagnostic became. Lives OUTSIDE the delivered-lock
+ * fieldset on purpose: the conversion is recorded after release by
+ * definition, and migration 0016 keeps its three columns out of the lock.
+ * The follow-through job's $7,500 credit clock reads `converted_to`, so
+ * saving "Build" or "Advisory" here is what stops it.
+ */
+function ConversionPanel({
+  assessment,
+  onAssessment,
+}: {
+  assessment: CcAssessment;
+  onAssessment: (next: CcAssessment) => void;
+}) {
+  const [kind, setKind] = useState<ConversionKind | "none">(
+    assessment.converted_to ?? "none"
+  );
+  const [date, setDate] = useState(assessment.converted_on ?? todayInET());
+  const [clientId, setClientId] = useState(assessment.converted_client_id ?? "");
+  const [clients, setClients] = useState<LinkableClient[] | null>(null);
+  const [saving, setSaving] = useState(false);
+
+  // The picker needs the client list; a delivered engagement is the only
+  // place it is shown, so the fetch happens here rather than on every load.
+  useEffect(() => {
+    let cancelled = false;
+    void listClientsForLink().then((res) => {
+      if (cancelled) return;
+      if (!res.ok) {
+        toast.error(res.error, { id: "clients-for-link" });
+        setClients([]);
+        return;
+      }
+      setClients(res.data?.clients ?? []);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const dirty =
+    kind !== (assessment.converted_to ?? "none") ||
+    (kind !== "none" &&
+      (date !== (assessment.converted_on ?? "") ||
+        clientId !== (assessment.converted_client_id ?? "")));
+
+  async function save() {
+    setSaving(true);
+    const res = await recordConversion(assessment.id, {
+      converted_to: kind === "none" ? null : kind,
+      converted_on: kind === "none" ? null : date || null,
+      converted_client_id: kind === "none" ? null : clientId || null,
+    });
+    setSaving(false);
+    if (!res.ok) {
+      toast.error(res.error);
+      return;
+    }
+    if (res.data) onAssessment(res.data.assessment);
+    toast.success(
+      kind === "none" ? "Conversion cleared" : `Recorded as ${CONVERSION_LABELS[kind]}`
+    );
+  }
+
+  const savedClient = clients?.find((c) => c.id === assessment.converted_client_id);
+  const savedSentence = assessment.converted_to
+    ? `Became ${assessment.converted_to === "build" ? "a Build" : "an Advisory retainer"}${
+        savedClient
+          ? ` with ${savedClient.name}`
+          : assessment.converted_client_id
+            ? " with a linked client"
+            : ""
+      }${
+        assessment.converted_on
+          ? ` on ${formatDeliveredDate(assessment.converted_on)}`
+          : ""
+      } · fee credited`
+    : null;
+
+  return (
+    <section
+      aria-label="What happened next"
+      className="relative z-10 flex flex-col gap-3 rounded-xl bg-[color:var(--color-brand-slate)]/40 px-5 py-4 ring-1 ring-inset ring-foreground/10"
+    >
+      <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
+        <h3 className="text-[13px] font-semibold">What happened next</h3>
+        <span className="text-[11.5px] text-muted-foreground">
+          {savedSentence ??
+            "No Build or Advisory recorded yet — the $7,500 credit clock is running."}
+        </span>
+      </div>
+      <p className="max-w-[74ch] text-[12px] leading-relaxed text-muted-foreground">
+        The Diagnostic fee is credited toward a Build or an Advisory retainer
+        inside 60 days. Record it here the day it is agreed — this is what the
+        follow-through job reads, so nothing else needs to know.
+      </p>
+      <div className="flex flex-wrap items-end gap-3">
+        <Labelled label="Became">
+          <Select
+            value={kind}
+            onValueChange={(v) =>
+              typeof v === "string" && setKind(v as ConversionKind | "none")
+            }
+          >
+            <SelectTrigger className="h-8 w-36 text-xs">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="build">Build</SelectItem>
+              <SelectItem value="advisory">Advisory</SelectItem>
+              <SelectItem value="none">Not yet</SelectItem>
+            </SelectContent>
+          </Select>
+        </Labelled>
+        {kind !== "none" && (
+          <>
+            <Labelled label="Agreed on">
+              <Input
+                type="date"
+                className="h-8 w-40 text-xs"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+              />
+            </Labelled>
+            <Labelled
+              label="Client"
+              hint={
+                clients === null
+                  ? "loading…"
+                  : clients.length === 0
+                    ? "no clients in this workspace yet"
+                    : undefined
+              }
+            >
+              <Select
+                value={clientId || NO_CLIENT}
+                onValueChange={(v) =>
+                  typeof v === "string" && setClientId(v === NO_CLIENT ? "" : v)
+                }
+                disabled={!clients || clients.length === 0}
+              >
+                <SelectTrigger className="h-8 w-64 text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={NO_CLIENT}>No client linked</SelectItem>
+                  {(clients ?? []).map((c) => (
+                    <SelectItem key={c.id} value={c.id}>
+                      {clientLabel(c)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </Labelled>
+          </>
+        )}
+        <Button size="sm" onClick={save} disabled={saving || !dirty}>
+          {saving ? "Saving…" : "Save"}
+        </Button>
+      </div>
+    </section>
+  );
+}
 
 /** `delivered_at` is a date column ("2026-09-09"); read it as a local day. */
 function formatDeliveredDate(d: string): string {
@@ -217,6 +418,7 @@ export function AssessmentWorkbench({
   initialBlock,
   initialIndicator,
   currentUserName,
+  currentUserId,
 }: {
   initialAssessment: CcAssessment;
   initialScores: CcAssessmentScore[];
@@ -226,8 +428,34 @@ export function AssessmentWorkbench({
   initialIndicator?: string;
   /** The signed-in person — the default reviewer on the release. */
   currentUserName: string;
+  /**
+   * The signed-in person's Clerk user id — held against `facilitator_id` for
+   * the second signature (0016). Empty when Clerk cannot name the session.
+   */
+  currentUserId: string;
 }) {
   const [assessment, setAssessment] = useState(initialAssessment);
+  // The org roster for the Facilitator picker. null = not loaded yet;
+  // [] = Clerk could not list it, so Setup falls back to a typed name.
+  const [members, setMembers] = useState<Array<{ id: string; name: string }> | null>(
+    null
+  );
+  const [membersFailed, setMembersFailed] = useState(false);
+  useEffect(() => {
+    let cancelled = false;
+    void listOrgMembers().then((res) => {
+      if (cancelled) return;
+      if (!res.ok) {
+        setMembersFailed(true);
+        setMembers([]);
+        return;
+      }
+      setMembers(res.data?.members ?? []);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
   const [scores, setScores] = useState(() => toScoreMap(initialScores));
   const [opportunities, setOpportunities] = useState(initialOpportunities);
   const [planDraft, setPlanDraft] = useState("");
@@ -617,6 +845,20 @@ export function AssessmentWorkbench({
     });
   }
 
+  /**
+   * The second signature, judged here with the same rule the server applies
+   * in deliveryGate so the button and the refusal never disagree. A practice
+   * engagement is exempt; a real one needs a recorded facilitator who is not
+   * the person at the keyboard.
+   */
+  const secondSignatureBlock: string | null = assessment.is_practice
+    ? null
+    : !assessment.facilitator_id
+      ? "Record who facilitated this engagement in Setup before releasing it — a real engagement needs a second signature."
+      : currentUserId && assessment.facilitator_id === currentUserId
+        ? "You facilitated this engagement, so you can't release it. Ask another founder to review and release."
+        : null;
+
   // ── Derived step state ───────────────────────────────────────────────────
   const capturedBlocks = sessionCapturedCount(sessionNotes);
   const constraintFilled = Boolean(assessment.primary_constraint?.trim());
@@ -782,6 +1024,12 @@ export function AssessmentWorkbench({
         </div>
       )}
 
+      {/* What the engagement became. Outside the locked fieldset by design —
+          the conversion is recorded after release, and stays editable. */}
+      {locked && (
+        <ConversionPanel assessment={assessment} onAssessment={setAssessment} />
+      )}
+
       {/*
         The score bar is hidden during Session. The guide's whole reveal depends
         on the owner not seeing a verdict until the Results Session, and this
@@ -916,6 +1164,77 @@ export function AssessmentWorkbench({
                 onBlur={(e) => patchAssessment({ industry: e.target.value })}
                 placeholder="Property services"
               />
+            </Labelled>
+
+            {/* The second signature (0016): who ran the engagement is recorded
+                here so that the release can be held against it. Defaults to
+                whoever created the engagement. */}
+            <Labelled
+              label="Facilitator"
+              hint={
+                assessment.is_practice
+                  ? "who is running this rehearsal"
+                  : "who runs the engagement — someone else must release it"
+              }
+              className="max-w-sm"
+            >
+              {membersFailed ? (
+                <Input
+                  defaultValue={assessment.facilitator_name ?? ""}
+                  onBlur={(e) => {
+                    const name = e.target.value.trim();
+                    // The team list could not be loaded, so the name is
+                    // recorded against the stored facilitator id — or you,
+                    // when none is stored. Clearing the name clears both.
+                    patchAssessment({
+                      facilitator_id: name
+                        ? assessment.facilitator_id || currentUserId || null
+                        : null,
+                      facilitator_name: name || null,
+                    });
+                  }}
+                  placeholder="Maurice Grant"
+                />
+              ) : (
+                <Select
+                  value={assessment.facilitator_id ?? NO_FACILITATOR}
+                  onValueChange={(v) => {
+                    if (typeof v !== "string") return;
+                    if (v === NO_FACILITATOR) {
+                      patchAssessment({ facilitator_id: null, facilitator_name: null });
+                      return;
+                    }
+                    const member = members?.find((m) => m.id === v);
+                    if (!member) return;
+                    patchAssessment({
+                      facilitator_id: member.id,
+                      facilitator_name: member.name,
+                    });
+                  }}
+                  disabled={members === null}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value={NO_FACILITATOR}>Not recorded</SelectItem>
+                    {(members ?? []).map((m) => (
+                      <SelectItem key={m.id} value={m.id}>
+                        {m.name}
+                        {m.id === currentUserId ? " (you)" : ""}
+                      </SelectItem>
+                    ))}
+                    {/* A stored facilitator who has since left the org still
+                        needs to render, or the select would show blank. */}
+                    {assessment.facilitator_id &&
+                      !(members ?? []).some((m) => m.id === assessment.facilitator_id) && (
+                        <SelectItem value={assessment.facilitator_id}>
+                          {assessment.facilitator_name ?? assessment.facilitator_id}
+                        </SelectItem>
+                      )}
+                  </SelectContent>
+                </Select>
+              )}
             </Labelled>
 
             <div className="border-t border-border/60 pt-3">
@@ -1315,6 +1634,23 @@ export function AssessmentWorkbench({
                   placeholder="Maurice Grant"
                 />
               </Labelled>
+              <p className="mt-2 max-w-[74ch] text-[12px] leading-relaxed text-muted-foreground">
+                {assessment.is_practice
+                  ? "A rehearsal can be released by whoever ran it."
+                  : "A real engagement needs a second signature: the person who releases it must be a different founder from the one who facilitated it."}{" "}
+                Facilitated by{" "}
+                <span className="font-medium text-foreground">
+                  {assessment.facilitator_name?.trim() ||
+                    (assessment.facilitator_id ? assessment.facilitator_id : "nobody yet")}
+                </span>
+                {assessment.facilitator_id &&
+                assessment.facilitator_id === currentUserId
+                  ? " — that's you."
+                  : "."}
+                {!assessment.facilitator_id && !assessment.is_practice
+                  ? " Record the facilitator in Setup before releasing."
+                  : ""}
+              </p>
               {assessment.reviewed_at && (
                 <p className="mt-2 text-[11.5px] text-muted-foreground">
                   {`Released by ${assessment.reviewed_by ?? "—"} on ${new Date(
@@ -1340,11 +1676,12 @@ export function AssessmentWorkbench({
               {assessment.status !== "delivered" && (
                 <Button
                   variant="outline"
-                  disabled={!readiness.ready}
+                  disabled={!readiness.ready || secondSignatureBlock !== null}
                   title={
-                    readiness.ready
+                    secondSignatureBlock ??
+                    (readiness.ready
                       ? "Records the reviewer and snapshots exactly what was released"
-                      : readiness.blockers[0]
+                      : readiness.blockers[0])
                   }
                   onClick={() =>
                     patchAssessment({
