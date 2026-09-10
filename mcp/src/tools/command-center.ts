@@ -138,6 +138,16 @@ export const ccSetRockStatusInput = {
 };
 export async function ccSetRockStatus({ rock_id, status, note }: { rock_id: string; status: "green" | "yellow" | "red"; note?: string }) {
   const supabase = client();
+  // Service role bypasses RLS, so confirm the rock belongs to this org before
+  // attaching a status update to it.
+  const { data: rock, error: rockError } = await supabase
+    .from("cc_rocks")
+    .select("id")
+    .eq("id", rock_id)
+    .eq("org_id", ORG_ID)
+    .maybeSingle();
+  if (rockError) return jsonText({ ok: false, error: rockError.message });
+  if (!rock) return jsonText({ ok: false, error: `Rock ${rock_id} not found in this org` });
   const { error } = await supabase.from("cc_rock_status_updates").insert({ rock_id, status, note: note ?? null });
   if (error) return jsonText({ ok: false, error: error.message });
   return jsonText({ ok: true, message: `Rock marked ${status}` });
@@ -185,8 +195,16 @@ export const ccCompleteTodoInput = {
 };
 export async function ccCompleteTodo({ todo_id }: { todo_id: string }) {
   const supabase = client();
-  const { error } = await supabase.from("cc_todos").update({ done: true, updated_at: new Date().toISOString() }).eq("id", todo_id);
+  // Scoped to the org and selected back: an UPDATE matching zero rows still
+  // reports success, which would tell the agent it closed a To-Do it never touched.
+  const { data, error } = await supabase
+    .from("cc_todos")
+    .update({ done: true, updated_at: new Date().toISOString() })
+    .eq("id", todo_id)
+    .eq("org_id", ORG_ID)
+    .select("id");
   if (error) return jsonText({ ok: false, error: error.message });
+  if (!data || data.length === 0) return jsonText({ ok: false, error: `To-Do ${todo_id} not found in this org` });
   return jsonText({ ok: true });
 }
 

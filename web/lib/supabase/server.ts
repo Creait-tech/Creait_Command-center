@@ -79,29 +79,3 @@ export function createServiceClient() {
     },
   });
 }
-
-/**
- * Read the current Clerk-issued JWT claims (org_id, sub, email, name).
- * Returns null when unauthenticated or when Clerk session token unavailable.
- * Used by server components/actions that need to scope writes to the
- * active org without going through Supabase RLS.
- */
-export async function getOrgContext(): Promise<{
-  orgId: string | null;
-  userId: string | null;
-  email: string | null;
-  name: string | null;
-} | null> {
-  try {
-    const { userId, orgSlug, sessionClaims } = await auth();
-    if (!userId) return null;
-    return {
-      orgId: orgSlug ?? null,
-      userId,
-      email: (sessionClaims as { email?: string } | null)?.email ?? null,
-      name: (sessionClaims as { name?: string } | null)?.name ?? null,
-    };
-  } catch {
-    return null;
-  }
-}

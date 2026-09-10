@@ -310,12 +310,21 @@ export async function setSessionTopic(
   if ("error" in org) return { ok: false, error: org.error };
 
   const supabase = await createClient();
-  const { error } = await supabase
+  // Select the row back: an UPDATE that RLS refuses matches zero rows and
+  // still reports success.
+  const { data, error } = await supabase
     .from("cc_class_sessions")
     .update({ topic: topic.trim() || null })
     .eq("id", session.data!.id)
-    .eq("org_id", org.orgId);
+    .eq("org_id", org.orgId)
+    .select("id");
   if (error) return { ok: false, error: error.message };
+  if (!data || data.length === 0) {
+    return {
+      ok: false,
+      error: "Couldn't save the topic — the session no longer exists, or your session doesn't have permission for it.",
+    };
+  }
 
   revalidatePath("/tuesday-class");
   return { ok: true };

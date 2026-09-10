@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { anthropic } from "@ai-sdk/anthropic";
-import { generateText } from "ai";
+import { generateText, stepCountIs } from "ai";
 import { createServiceClient } from "@/lib/supabase/server";
+import { getActiveOrgId } from "@/lib/active-org";
 import { loadMcpTools } from "@/lib/mcp-client";
 import type { Rock, RockMilestone, RockStatusUpdate } from "@/lib/supabase/types";
 
@@ -20,10 +21,13 @@ export async function POST(_req: Request, { params }: Params) {
   }
 
   const { id: rockId } = await params;
+  // Service role bypasses RLS, so the rock is scoped to the caller's org here;
+  // milestones and status history hang off the rock and are only used when it matches.
+  const orgId = await getActiveOrgId();
   const supabase = createServiceClient();
 
   const [rockRes, milestonesRes, statusesRes] = await Promise.all([
-    supabase.from("cc_rocks").select("*").eq("id", rockId).maybeSingle(),
+    supabase.from("cc_rocks").select("*").eq("id", rockId).eq("org_id", orgId).maybeSingle(),
     supabase.from("cc_rock_milestones").select("*").eq("rock_id", rockId).order("sort_order"),
     supabase.from("cc_rock_status_updates").select("*").eq("rock_id", rockId).order("created_at", { ascending: false }).limit(8),
   ]);
@@ -77,6 +81,8 @@ Output ONLY this exact format, no preamble:
       system: systemPrompt,
       prompt: userPrompt,
       tools,
+      // Without a stop condition a tool call ends generation with empty text.
+      stopWhen: stepCountIs(5),
       maxRetries: 1,
     });
 

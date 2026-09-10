@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { Plus, Trophy, UserPlus } from "lucide-react";
+import { toast } from "sonner";
 import {
   DndContext,
   PointerSensor,
@@ -265,16 +266,21 @@ export function RecruitingBoard({ initialCandidates, orgId }: RecruitingBoardPro
     );
 
     const supabase = createClient();
-    const { error } = await supabase
+    // Select the row back: a refused UPDATE matches zero rows and still
+    // reports success, which would leave the optimistic move lying.
+    const { data, error } = await supabase
       .from("candidates")
       .update({
         stage: targetStage,
         sort_order: 0,
         updated_at: nowIso,
       })
-      .eq("id", candidateId);
+      .eq("id", candidateId)
+      .eq("org_id", orgId)
+      .select("id");
 
-    if (error) {
+    if (error || !data || data.length === 0) {
+      toast.error(error?.message ?? "Couldn't move that candidate — the change was rejected.");
       // Rollback on failure.
       setCandidates((prev) =>
         prev.map((c) =>

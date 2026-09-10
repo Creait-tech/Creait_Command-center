@@ -305,9 +305,19 @@ function ClientDetailSheet({
     if (!window.confirm(`Delete "${client.name}"? This cannot be undone.`)) return;
     setDeleting(true);
     const supabase = createClient();
-    const { error: e } = await supabase.from("cc_clients").delete().eq("id", client.id);
+    // Select the row back: a refused DELETE matches zero rows and still
+    // reports success, which would toast "deleted" over an untouched client.
+    const { data, error: e } = await supabase
+      .from("cc_clients")
+      .delete()
+      .eq("id", client.id)
+      .select("id");
     setDeleting(false);
     if (e) { toast.error(e.message); return; }
+    if (!data || data.length === 0) {
+      toast.error("Couldn't delete that client — the change was rejected. Try reloading the page.");
+      return;
+    }
     onDeleted(client.id);
     onOpenChange(false);
     toast.success("Client deleted");

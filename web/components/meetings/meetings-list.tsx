@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { CalendarCheck, Star, Clock, ExternalLink } from "lucide-react";
@@ -131,31 +131,46 @@ function MeetingDetailModal({
   ratings: MeetingRating[];
   onClose: () => void;
 }) {
-  const [wins, setWins] = useState<Win[]>([]);
-  const [issues, setIssues] = useState<IdsItem[]>([]);
-  const [todos, setTodos] = useState<Todo[]>([]);
-  const [loading, setLoading] = useState(false);
+  // Extracted items for the meeting currently open, keyed by its id so a stale
+  // fetch for a previous meeting never shows under the next one. The fetch runs
+  // in an effect (this used to be a useMemo that fetched and set state during
+  // render); state is only set from the resolved promise, never synchronously.
+  const [detail, setDetail] = useState<{
+    meetingId: string;
+    wins: Win[];
+    issues: IdsItem[];
+    todos: Todo[];
+  } | null>(null);
 
-  useMemo(() => {
-    if (!meeting) {
-      setWins([]); setIssues([]); setTodos([]);
-      return;
-    }
-    setLoading(true);
+  useEffect(() => {
+    if (!meeting) return;
+    let cancelled = false;
     const supabase = createClient();
     void Promise.all([
       supabase.from("wins").select("*").eq("meeting_id", meeting.id).order("created_at"),
       supabase.from("ids_items").select("*").eq("meeting_id", meeting.id).order("priority", { ascending: false }),
       supabase.from("cc_todos").select("*").eq("meeting_id", meeting.id).order("created_at"),
     ]).then(([w, i, t]) => {
-      setWins((w.data as Win[] | null) ?? []);
-      setIssues((i.data as IdsItem[] | null) ?? []);
-      setTodos((t.data as Todo[] | null) ?? []);
-      setLoading(false);
+      if (cancelled) return;
+      setDetail({
+        meetingId: meeting.id,
+        wins: (w.data as Win[] | null) ?? [],
+        issues: (i.data as IdsItem[] | null) ?? [],
+        todos: (t.data as Todo[] | null) ?? [],
+      });
     });
+    return () => {
+      cancelled = true;
+    };
   }, [meeting]);
 
   if (!meeting) return null;
+
+  const loaded = detail?.meetingId === meeting.id ? detail : null;
+  const loading = loaded === null;
+  const wins = loaded?.wins ?? [];
+  const issues = loaded?.issues ?? [];
+  const todos = loaded?.todos ?? [];
 
   const agendaState = meeting.agenda_state as Record<string, { durationSec: number; budgetSec: number }> | null;
 

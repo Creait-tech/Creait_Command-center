@@ -76,11 +76,19 @@ export function DraftReplyPanel({ message, onMessageUpdated }: DraftReplyPanelPr
       const supabase = createClient();
       const now = new Date().toISOString();
       const update = { status, updated_at: now, ...extra };
-      const { error } = await supabase.from("messages").update(update).eq("id", message.id);
+      // Select the row back: a refused UPDATE matches zero rows and still
+      // reports success.
+      const { data, error } = await supabase
+        .from("messages")
+        .update(update)
+        .eq("id", message.id)
+        .eq("org_id", orgId)
+        .select("id");
       if (error) throw new Error(error.message);
+      if (!data || data.length === 0) throw new Error("The change was rejected");
       onMessageUpdated({ ...message, ...update } as Message);
     },
-    [message, onMessageUpdated],
+    [message, onMessageUpdated, orgId],
   );
 
   async function handleSnooze(label: string) {
@@ -124,10 +132,14 @@ export function DraftReplyPanel({ message, onMessageUpdated }: DraftReplyPanelPr
       const draft = (json.output ?? "").trim();
       setDraftText(draft);
       const supabase = createClient();
-      await supabase
+      const { data, error } = await supabase
         .from("messages")
         .update({ draft_reply: draft, updated_at: new Date().toISOString() })
-        .eq("id", message.id);
+        .eq("id", message.id)
+        .eq("org_id", orgId)
+        .select("id");
+      if (error) throw new Error(error.message);
+      if (!data || data.length === 0) throw new Error("Draft generated but couldn't be saved — the change was rejected");
       onMessageUpdated({ ...message, draft_reply: draft });
       toast.success("Draft generated");
     } catch (err) {
@@ -141,10 +153,14 @@ export function DraftReplyPanel({ message, onMessageUpdated }: DraftReplyPanelPr
     setActionLoading(true);
     try {
       const supabase = createClient();
-      await supabase
+      const { data, error } = await supabase
         .from("messages")
         .update({ draft_reply: draftText, updated_at: new Date().toISOString() })
-        .eq("id", message.id);
+        .eq("id", message.id)
+        .eq("org_id", orgId)
+        .select("id");
+      if (error) throw new Error(error.message);
+      if (!data || data.length === 0) throw new Error("Couldn't save the draft — the change was rejected");
       onMessageUpdated({ ...message, draft_reply: draftText });
       toast.success("Draft saved");
     } catch {

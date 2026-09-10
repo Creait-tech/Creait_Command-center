@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Plus } from "lucide-react";
+import { toast } from "sonner";
 import {
   DndContext,
   PointerSensor,
@@ -107,15 +108,19 @@ export function TimeHorizonColumns({
       prev.map((st) => (st.id === subtaskId ? { ...st, done } : st))
     );
 
-    const { error } = await supabase
+    // A refused UPDATE matches zero rows and reports success, so the row is
+    // selected back and an empty result is treated as a failed save.
+    const { data, error } = await supabase
       .from("subtasks")
       .update({ done })
-      .eq("id", subtaskId);
+      .eq("id", subtaskId)
+      .select("id");
 
-    if (error) {
+    if (error || !data || data.length === 0) {
       setSubtasks((prev) =>
         prev.map((st) => (st.id === subtaskId ? { ...st, done: !done } : st))
       );
+      toast.error(error?.message ?? "Couldn't save that subtask — the change was rejected.");
       return;
     }
 
@@ -132,7 +137,15 @@ export function TimeHorizonColumns({
         prev.map((g) => (g.id === goalId ? { ...g, progress: newProgress } : g))
       );
 
-      await supabase.from("goals").update({ progress: newProgress }).eq("id", goalId);
+      const { data: goalRows, error: goalError } = await supabase
+        .from("goals")
+        .update({ progress: newProgress })
+        .eq("id", goalId)
+        .eq("org_id", orgId)
+        .select("id");
+      if (goalError || !goalRows || goalRows.length === 0) {
+        toast.error(goalError?.message ?? "Couldn't update goal progress — the change was rejected.");
+      }
     }
   }
 
@@ -153,14 +166,25 @@ export function TimeHorizonColumns({
       return idx === -1 ? g : { ...g, sort_order: idx };
     });
 
+    const previousGoals = goals;
     setGoals(sortGoals(updatedGoals));
 
     const supabase = createClient();
-    await Promise.all(
+    const results = await Promise.all(
       reordered.map((g, idx) =>
-        supabase.from("goals").update({ sort_order: idx }).eq("id", g.id)
+        supabase
+          .from("goals")
+          .update({ sort_order: idx })
+          .eq("id", g.id)
+          .eq("org_id", orgId)
+          .select("id")
       )
     );
+    const failed = results.find((r) => r.error || !r.data || r.data.length === 0);
+    if (failed) {
+      setGoals(previousGoals);
+      toast.error(failed.error?.message ?? "Couldn't save the new order — the change was rejected.");
+    }
   }
 
   return (
