@@ -73,25 +73,35 @@ export function SeatsBoard({ members, seats, assignments }: Props) {
   async function deleteSeat(id: string) {
     if (!confirm("Delete this seat? (Assignments will be removed.)")) return;
     const supabase = createClient();
-    const { error } = await supabase.from("cc_team_seats").delete().eq("id", id);
+    // Select the row back: a refused DELETE matches zero rows and still
+    // reports success.
+    const { data, error } = await supabase.from("cc_team_seats").delete().eq("id", id).select("id");
     if (error) toast.error(error.message);
+    else if (!data || data.length === 0) toast.error("Couldn't delete that seat — the change was rejected.");
     else toast.success("Seat deleted");
   }
 
   async function cycleGwc(assignmentId: string, field: "gwc_get" | "gwc_want" | "gwc_capacity", current: GwcRating) {
     const next = GWC_CYCLE[current];
     const supabase = createClient();
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from("cc_seat_assignments")
       .update({ [field]: next, updated_at: new Date().toISOString() })
-      .eq("id", assignmentId);
+      .eq("id", assignmentId)
+      .select("id");
     if (error) toast.error(error.message);
+    else if (!data || data.length === 0) toast.error("Couldn't save that GWC rating — the change was rejected.");
   }
 
   async function unassign(assignmentId: string) {
     const supabase = createClient();
-    const { error } = await supabase.from("cc_seat_assignments").delete().eq("id", assignmentId);
+    const { data, error } = await supabase
+      .from("cc_seat_assignments")
+      .delete()
+      .eq("id", assignmentId)
+      .select("id");
     if (error) toast.error(error.message);
+    else if (!data || data.length === 0) toast.error("Couldn't remove that assignment — the change was rejected.");
     else toast.success("Removed from seat");
   }
 
@@ -291,7 +301,9 @@ function SeatEditorDialog({
 
     const supabase = createClient();
     if (seat) {
-      const { error } = await supabase
+      // Select the row back: a refused UPDATE matches zero rows and still
+      // reports success.
+      const { data, error } = await supabase
         .from("cc_team_seats")
         .update({
           title: title.trim(),
@@ -299,9 +311,12 @@ function SeatEditorDialog({
           responsibilities,
           updated_at: new Date().toISOString(),
         })
-        .eq("id", seat.id);
+        .eq("id", seat.id)
+        .eq("org_id", orgId)
+        .select("id");
       setSubmitting(false);
       if (error) toast.error(error.message);
+      else if (!data || data.length === 0) toast.error("Couldn't save that seat — the change was rejected.");
       else {
         toast.success("Seat updated");
         onOpenChange(false);

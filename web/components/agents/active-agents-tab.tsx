@@ -154,12 +154,16 @@ export function ActiveAgentsTab({ initialAgents, initialRunHistory, orgId }: Pro
       prev.map((a) => (a.id === agent.id ? { ...a, status: nextStatus } : a)),
     );
     const supabase = createClient();
-    const { error } = await supabase
+    // Select the row back: an UPDATE that RLS refuses matches zero rows and
+    // still reports success, which would leave the toggle lying.
+    const { data, error } = await supabase
       .from("agents")
       .update({ status: nextStatus })
-      .eq("id", agent.id);
-    if (error) {
-      toast.error(`Failed to update ${agent.name}`);
+      .eq("id", agent.id)
+      .eq("org_id", orgId)
+      .select("id");
+    if (error || !data || data.length === 0) {
+      toast.error(error ? `Failed to update ${agent.name}` : `Couldn't save ${agent.name} — the change was rejected.`);
       // revert
       setAgents((prev) =>
         prev.map((a) =>

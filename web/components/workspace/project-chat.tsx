@@ -186,10 +186,17 @@ export function ProjectChat({ project }: Props) {
         content: assistantText,
         model: project.preferred_model,
       });
-      await supabase
+      // Bookkeeping touch; selected back because a refused UPDATE matches zero
+      // rows and reports success. The reply already rendered, so a rejected
+      // touch is logged rather than shown as a failed answer.
+      const { data: touched, error: touchError } = await supabase
         .from("cc_workspace_projects")
         .update({ updated_at: new Date().toISOString() })
-        .eq("id", project.id);
+        .eq("id", project.id)
+        .select("id");
+      if (touchError || !touched || touched.length === 0) {
+        console.error("[workspace] failed to touch project", touchError?.message ?? "no rows matched");
+      }
     } catch (err) {
       const message = err instanceof Error ? err.message : "Unknown error";
       setMessages((prev) =>

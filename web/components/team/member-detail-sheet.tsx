@@ -217,13 +217,16 @@ export function MemberDetailSheet({
     // Deletes
     for (const k of toDelete) {
       if (!k.dbId) continue;
-      const { error: delErr } = await supabase
+      // Select the row back: a refused DELETE matches zero rows and still
+      // reports success.
+      const { data: delRows, error: delErr } = await supabase
         .from("member_kpis")
         .delete()
-        .eq("id", k.dbId);
-      if (delErr) {
+        .eq("id", k.dbId)
+        .select("id");
+      if (delErr || !delRows || delRows.length === 0) {
         setSaving(false);
-        setError(delErr.message);
+        setError(delErr?.message ?? "Couldn't remove that KPI — the change was rejected. Try reloading the page.");
         return;
       }
     }
@@ -233,7 +236,7 @@ export function MemberDetailSheet({
       if (!k.dbId) continue;
       const valueNum = Number(k.value);
       const targetNum = k.target.trim() === "" ? null : Number(k.target);
-      const { error: updErr } = await supabase
+      const { data: updRows, error: updErr } = await supabase
         .from("member_kpis")
         .update({
           name: k.name.trim(),
@@ -244,10 +247,11 @@ export function MemberDetailSheet({
           period: k.period,
           sort_order: k.sort_order,
         })
-        .eq("id", k.dbId);
-      if (updErr) {
+        .eq("id", k.dbId)
+        .select("id");
+      if (updErr || !updRows || updRows.length === 0) {
         setSaving(false);
-        setError(updErr.message);
+        setError(updErr?.message ?? "Couldn't save that KPI — the change was rejected. Try reloading the page.");
         return;
       }
     }

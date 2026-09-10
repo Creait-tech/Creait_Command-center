@@ -14,9 +14,9 @@ export const dynamic = "force-dynamic";
 
 export default async function SettingsPage() {
   // Only NEXT_PUBLIC_* env vars are safe to surface in a server component
-  // result to a client (these are public by construction).
-  // The webhook URL is derived from the request host; we use NEXT_PUBLIC for the readai pieces.
-  const readaiSecret = process.env.READAI_WEBHOOK_SECRET ?? "";
+  // result to a client. The Read.ai signing secret never crosses to the
+  // browser — the panel only learns whether one is configured.
+  const readaiConfigured = Boolean(process.env.READAI_WEBHOOK_SECRET);
   const mcpUrl = process.env.MCP_URL ?? "https://mcp.getcreait.com";
 
   // Gmail connection status — service client only, and we deliberately select
@@ -72,7 +72,7 @@ export default async function SettingsPage() {
       <TeamPanel roster={roster} isAdmin={orgRole === "org:admin"} />
       <MeetingAgendasPanel agendas={agendas} />
       <IntegrationsPanel
-        readaiSecret={readaiSecret}
+        readaiConfigured={readaiConfigured}
         mcpUrl={mcpUrl}
         gmailConnectedEmail={gmailConnectedEmail}
       />

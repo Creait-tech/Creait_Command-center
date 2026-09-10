@@ -69,18 +69,25 @@ function Section({
     setSaveError(null);
 
     const supabase = createClient();
-    const { error } = await supabase
+    // A refused UPDATE matches zero rows and reports success, so the row is
+    // selected back and an empty result is treated as a failed save.
+    const { data, error } = await supabase
       .from("strategy")
       .update({
         [section.field]: draft,
         updated_at: new Date().toISOString(),
       })
-      .eq("id", strategy.id);
+      .eq("id", strategy.id)
+      .select("id");
 
     setSaving(false);
 
     if (error) {
       setSaveError(error.message);
+      return;
+    }
+    if (!data || data.length === 0) {
+      setSaveError("Couldn't save — your session doesn't have permission for this document. Try reloading the page.");
       return;
     }
 

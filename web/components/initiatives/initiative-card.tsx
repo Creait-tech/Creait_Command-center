@@ -142,12 +142,15 @@ export function InitiativeCard({
 
   async function markComplete() {
     const supabase = createClient();
-    const { error } = await supabase
+    // Select the row back: a refused UPDATE matches zero rows and still
+    // reports success.
+    const { data, error } = await supabase
       .from("initiatives")
       .update({ status: "complete", progress: 100 })
-      .eq("id", initiative.id);
-    if (error) {
-      toast.error("Failed to mark complete");
+      .eq("id", initiative.id)
+      .select("id");
+    if (error || !data || data.length === 0) {
+      toast.error(error ? "Failed to mark complete" : "Couldn't mark complete — the change was rejected.");
       return;
     }
     toast.success("Initiative marked complete");
@@ -155,12 +158,13 @@ export function InitiativeCard({
 
   async function dropInitiative() {
     const supabase = createClient();
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from("initiatives")
       .update({ status: "dropped" })
-      .eq("id", initiative.id);
-    if (error) {
-      toast.error("Failed to drop initiative");
+      .eq("id", initiative.id)
+      .select("id");
+    if (error || !data || data.length === 0) {
+      toast.error(error ? "Failed to drop initiative" : "Couldn't drop initiative — the change was rejected.");
       return;
     }
     toast.success("Initiative dropped");

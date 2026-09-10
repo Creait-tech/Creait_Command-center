@@ -8,7 +8,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button, buttonVariants } from "@/components/ui/button";
 
 interface Props {
-  readaiSecret: string;
+  /** Whether READAI_WEBHOOK_SECRET is set on the server. The value itself never reaches the browser. */
+  readaiConfigured: boolean;
   mcpUrl: string;
   /** Connected Gmail address, or null when Gmail isn't connected for this org. */
   gmailConnectedEmail: string | null;
@@ -89,9 +90,9 @@ function MaskedField({ label, value, masked = true }: { label: string; value: st
   );
 }
 
-export function IntegrationsPanel({ readaiSecret, mcpUrl, gmailConnectedEmail }: Props) {
+export function IntegrationsPanel({ readaiConfigured, mcpUrl, gmailConnectedEmail }: Props) {
   const readaiUrl = "https://cc.getcreait.com/api/webhooks/readai";
-  const testCurl = `curl -X POST -H "Authorization: Bearer ${readaiSecret || "<READAI_WEBHOOK_SECRET>"}" -H "Content-Type: application/json" -d '{"meeting":{"id":"test-001","title":"Test from curl","start_time":"${new Date().toISOString()}"},"transcript":{"text":"Maurice mentioned MRR is up 12%. John raised concern about Asia QWN delivery."}}' ${readaiUrl}`;
+  const testCurl = `curl -X POST -H "Authorization: Bearer <READAI_WEBHOOK_SECRET>" -H "Content-Type: application/json" -d '{"meeting":{"id":"test-001","title":"Test from curl","start_time":"${new Date().toISOString()}"},"transcript":{"text":"Maurice mentioned MRR is up 12%. John raised concern about Asia QWN delivery."}}' ${readaiUrl}`;
 
   const gmailConnected = Boolean(gmailConnectedEmail);
 
@@ -165,7 +166,14 @@ export function IntegrationsPanel({ readaiSecret, mcpUrl, gmailConnectedEmail }:
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <MaskedField label="Webhook URL (paste in Read.ai)" value={readaiUrl} masked={false} />
-            <MaskedField label="X-Readai-Signature secret (HMAC-SHA256 of body)" value={readaiSecret} masked />
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-muted-foreground">X-Readai-Signature secret (HMAC-SHA256 of body)</label>
+              <div className="flex items-center gap-2 bg-[color:var(--color-brand-slate)]/40 border border-border rounded px-2 py-1.5">
+                <code className="flex-1 text-xs font-mono break-all">
+                  {readaiConfigured ? "Configured — read READAI_WEBHOOK_SECRET from Vercel env" : "Not set — add READAI_WEBHOOK_SECRET in Vercel env"}
+                </code>
+              </div>
+            </div>
           </div>
 
           <div className="space-y-1">
@@ -184,7 +192,7 @@ export function IntegrationsPanel({ readaiSecret, mcpUrl, gmailConnectedEmail }:
             <ol className="space-y-0.5 text-muted-foreground list-decimal list-inside">
               <li>Open Read.ai dashboard → Settings → Integrations → Webhooks</li>
               <li>Add a new webhook, paste the URL above</li>
-              <li>Set the secret to the value above (used for HMAC signing)</li>
+              <li>Set the secret to the READAI_WEBHOOK_SECRET value from Vercel env (used for HMAC signing)</li>
               <li>Select event: "Meeting completed" / "Summary generated"</li>
               <li>Save. Next Zoom meeting auto-debriefs into /level-10.</li>
             </ol>

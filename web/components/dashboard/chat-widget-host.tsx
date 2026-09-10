@@ -201,17 +201,21 @@ function ChatHistoryList({
       onDeleted(id);
       try {
         const supabase = createBrowserClient();
-        // Messages cascade via the FK.
-        const { error } = await supabase
+        // Messages cascade via the FK. The row is selected back because a
+        // DELETE that RLS refuses matches zero rows and still reports success.
+        const { data, error } = await supabase
           .from("cc_chat_conversations")
           .delete()
-          .eq("id", id);
+          .eq("id", id)
+          .eq("org_id", orgId)
+          .select("id");
         if (error) throw error;
+        if (!data || data.length === 0) throw new Error("delete was rejected (no rows matched)");
       } catch (err) {
         console.error("[chat] failed to delete conversation", err);
       }
     },
-    [onDeleted],
+    [onDeleted, orgId],
   );
 
   return (

@@ -40,11 +40,18 @@ export function VtoBuilder({ strategy, rocks, issues, quarter }: Props) {
     setVto(next);
     const supabase = createClient();
     if (strategyId) {
-      const { error } = await supabase
+      // Select the row back: a refused UPDATE matches zero rows and still
+      // reports success.
+      const { data, error } = await supabase
         .from("strategy")
         .update({ vto: next, updated_at: new Date().toISOString() })
-        .eq("id", strategyId);
+        .eq("id", strategyId)
+        .eq("org_id", orgId)
+        .select("id");
       if (error) toast.error(error.message);
+      else if (!data || data.length === 0) {
+        toast.error("Couldn't save the V/TO — the change was rejected. Try reloading the page.");
+      }
     } else {
       const { data, error } = await supabase
         .from("strategy")

@@ -310,15 +310,22 @@ export function OrgChart({ members, onMembersChange }: OrgChartProps) {
     onMembersChange(members.map((m) => (m.id === dragged.id ? updated : m)));
 
     const supabase = createClient();
-    const { error } = await supabase
+    // Select the row back: a refused UPDATE matches zero rows and still
+    // reports success, which would leave the optimistic move lying.
+    const { data, error } = await supabase
       .from("team_members")
       .update({ reports_to: targetId })
-      .eq("id", dragged.id);
+      .eq("id", dragged.id)
+      .select("id");
 
-    if (error) {
+    if (error || !data || data.length === 0) {
       // Revert
       onMembersChange(members.map((m) => (m.id === dragged.id ? dragged : m)));
-      setErrorMsg(`Failed to update reporting line: ${error.message}`);
+      setErrorMsg(
+        error
+          ? `Failed to update reporting line: ${error.message}`
+          : "Couldn't update reporting line — the change was rejected. Try reloading the page.",
+      );
     }
   }
 
@@ -329,14 +336,19 @@ export function OrgChart({ members, onMembersChange }: OrgChartProps) {
     onMembersChange(members.map((m) => (m.id === member.id ? updated : m)));
 
     const supabase = createClient();
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from("team_members")
       .update({ reports_to: null })
-      .eq("id", member.id);
+      .eq("id", member.id)
+      .select("id");
 
-    if (error) {
+    if (error || !data || data.length === 0) {
       onMembersChange(members.map((m) => (m.id === member.id ? member : m)));
-      setErrorMsg(`Failed to set as root: ${error.message}`);
+      setErrorMsg(
+        error
+          ? `Failed to set as root: ${error.message}`
+          : "Couldn't set as root — the change was rejected. Try reloading the page.",
+      );
     }
   }
 

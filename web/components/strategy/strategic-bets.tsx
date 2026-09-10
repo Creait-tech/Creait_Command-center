@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Plus, GripVertical, Dice5 } from "lucide-react";
+import { toast } from "sonner";
 import {
   DndContext,
   PointerSensor,
@@ -203,11 +204,13 @@ export function StrategicBets({ bets, onChange }: StrategicBetsProps) {
       ...b,
       sort_order: idx,
     }));
+    const previous = bets;
     onChange(reordered);
 
-    // Persist new sort_order for affected rows. Update in parallel.
+    // Persist new sort_order for affected rows. Update in parallel, selecting
+    // each row back: a refused UPDATE matches zero rows and reports success.
     const supabase = createClient();
-    await Promise.all(
+    const results = await Promise.all(
       reordered.map((b) =>
         supabase
           .from("strategic_bets")
@@ -216,8 +219,15 @@ export function StrategicBets({ bets, onChange }: StrategicBetsProps) {
             updated_at: new Date().toISOString(),
           })
           .eq("id", b.id)
+          .eq("org_id", orgId)
+          .select("id")
       )
     );
+    const failed = results.find((r) => r.error || !r.data || r.data.length === 0);
+    if (failed) {
+      onChange(previous);
+      toast.error(failed.error?.message ?? "Couldn't save the new order — the change was rejected.");
+    }
   }
 
   const ids = bets.map((b) => b.id);

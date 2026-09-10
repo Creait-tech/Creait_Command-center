@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { Plus, Target } from "lucide-react";
+import { toast } from "sonner";
 import {
   DndContext,
   PointerSensor,
@@ -191,16 +192,20 @@ export function InitiativesView({
     );
     setTasks(nextTasks);
 
-    const { error } = await supabase
+    // Select the row back: a refused UPDATE matches zero rows and still
+    // reports success, which would leave the optimistic tick lying.
+    const { data, error } = await supabase
       .from("initiative_tasks")
       .update({ done })
-      .eq("id", taskId);
+      .eq("id", taskId)
+      .select("id");
 
-    if (error) {
+    if (error || !data || data.length === 0) {
       // Roll back.
       setTasks((prev) =>
         prev.map((t) => (t.id === taskId ? { ...t, done: !done } : t))
       );
+      toast.error(error?.message ?? "Couldn't save that task — the change was rejected.");
       return;
     }
 
@@ -216,10 +221,15 @@ export function InitiativesView({
         )
       );
 
-      await supabase
+      const { data: initRows, error: initError } = await supabase
         .from("initiatives")
         .update({ progress: newProgress })
-        .eq("id", initiativeId);
+        .eq("id", initiativeId)
+        .eq("org_id", orgId)
+        .select("id");
+      if (initError || !initRows || initRows.length === 0) {
+        toast.error(initError?.message ?? "Couldn't update initiative progress — the change was rejected.");
+      }
     }
   }
 

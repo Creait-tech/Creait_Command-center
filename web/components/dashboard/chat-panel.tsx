@@ -498,11 +498,17 @@ async function persistAssistantTurn(
     if (insertError) throw insertError;
 
     const now = new Date().toISOString();
-    const { error: updateError } = await supabase
+    // Selected back: a refused UPDATE matches zero rows and reports success.
+    const { data: touched, error: updateError } = await supabase
       .from("cc_chat_conversations")
       .update({ last_message_at: now, updated_at: now })
-      .eq("id", conversationId);
+      .eq("id", conversationId)
+      .eq("org_id", orgId)
+      .select("id");
     if (updateError) throw updateError;
+    if (!touched || touched.length === 0) {
+      throw new Error("conversation update was rejected (no rows matched)");
+    }
   } catch (err) {
     console.error("[chat] failed to persist assistant message", err);
   }

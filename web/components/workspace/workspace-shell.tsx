@@ -95,21 +95,34 @@ function WorkspaceShellInner({ initialProjects, orgId }: Props) {
     }
   }
 
+  // Both writes select the row back: an UPDATE that RLS refuses matches zero
+  // rows and still reports success, so an empty result is a failed save.
   async function togglePin(p: WorkspaceProject) {
     const supabase = createClient();
-    await supabase
+    const { data, error } = await supabase
       .from("cc_workspace_projects")
       .update({ pinned: !p.pinned })
-      .eq("id", p.id);
+      .eq("id", p.id)
+      .eq("org_id", orgId)
+      .select("id");
+    if (error || !data || data.length === 0) {
+      toast.error(error?.message ?? "Couldn't update that project — the change was rejected.");
+    }
   }
 
   async function archive(p: WorkspaceProject) {
     if (!confirm(`Archive "${p.name}"? (won't delete messages)`)) return;
     const supabase = createClient();
-    await supabase
+    const { data, error } = await supabase
       .from("cc_workspace_projects")
       .update({ archived: true })
-      .eq("id", p.id);
+      .eq("id", p.id)
+      .eq("org_id", orgId)
+      .select("id");
+    if (error || !data || data.length === 0) {
+      toast.error(error?.message ?? "Couldn't archive that project — the change was rejected.");
+      return;
+    }
     if (selectedProject?.id === p.id) selectProject(null);
     toast.success("Archived");
   }

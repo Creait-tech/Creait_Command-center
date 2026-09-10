@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useMemo, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Inbox } from "lucide-react";
+import { toast } from "sonner";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
@@ -128,10 +129,20 @@ function CommsLayoutInner({ initialMessages, orgId }: CommsLayoutProps) {
         prev.map((m) => (m.id === msg.id ? { ...m, status: "read" as MessageStatus } : m)),
       );
       const supabase = createClient();
-      await supabase
+      // Select the row back: a refused UPDATE matches zero rows and still
+      // reports success, which would leave the optimistic "read" lying.
+      const { data, error } = await supabase
         .from("messages")
         .update({ status: "read", updated_at: new Date().toISOString() })
-        .eq("id", msg.id);
+        .eq("id", msg.id)
+        .eq("org_id", orgId)
+        .select("id");
+      if (error || !data || data.length === 0) {
+        setMessages((prev) =>
+          prev.map((m) => (m.id === msg.id ? { ...m, status: msg.status } : m)),
+        );
+        toast.error(error?.message ?? "Couldn't mark that message read — the change was rejected.");
+      }
     }
   }
 
