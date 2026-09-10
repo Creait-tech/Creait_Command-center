@@ -3,12 +3,14 @@
 import { useState, useEffect, useMemo } from "react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { CalendarCheck, Star, Clock, ExternalLink } from "lucide-react";
+import Link from "next/link";
+import { CalendarCheck, Star, Clock, ExternalLink, FileText } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
+import { totalDurationSec } from "@/lib/meeting-progress";
 import type { Meeting, MeetingRating, Win, IdsItem, Todo } from "@/lib/supabase/types";
 
 interface Props {
@@ -22,9 +24,7 @@ function fmtDate(iso: string | null): string {
 }
 
 function fmtDurationFromAgenda(agenda: unknown): string | null {
-  if (!agenda || typeof agenda !== "object") return null;
-  const obj = agenda as Record<string, { durationSec?: number }>;
-  const total = Object.values(obj).reduce((acc, v) => acc + (v?.durationSec ?? 0), 0);
+  const total = totalDurationSec(agenda);
   if (total === 0) return null;
   const m = Math.floor(total / 60);
   return `${m} min`;
@@ -64,7 +64,7 @@ export function MeetingsList({ initialMeetings, ratings }: Props) {
           <CalendarCheck className="size-10 text-muted-foreground mx-auto" />
           <p className="text-sm font-medium">No meetings logged yet</p>
           <p className="text-xs text-muted-foreground max-w-md mx-auto">
-            Run your first L10 from /level-10 (Start Meeting button), or connect Read.ai webhook so Zoom meetings auto-populate here.
+            Run your first Level 10 from the Level 10 page. Every concluded meeting lands here with its ratings, timings and what was captured.
           </p>
         </CardContent>
       </Card>
@@ -80,12 +80,13 @@ export function MeetingsList({ initialMeetings, ratings }: Props) {
               const rs = ratingsByMeeting.get(m.id) ?? [];
               const avgRating = rs.length > 0 ? rs.reduce((a, r) => a + r.rating, 0) / rs.length : m.rating ?? null;
               const duration = fmtDurationFromAgenda(m.agenda_state);
+              const live = m.status === "in_progress";
               return (
-                <li key={m.id} className="py-3">
+                <li key={m.id} className="py-3 flex items-center gap-2">
                   <button
                     type="button"
                     onClick={() => setSelected(m)}
-                    className="w-full text-left flex items-center gap-3 hover:bg-[color:var(--color-brand-slate)]/40 -mx-2 px-2 py-2 rounded-md transition-colors"
+                    className="flex-1 min-w-0 text-left flex items-center gap-3 hover:bg-[color:var(--color-brand-slate)]/40 -mx-2 px-2 py-2 rounded-md transition-colors"
                   >
                     <div className="size-9 rounded-full bg-[color:var(--color-brand-slate)] flex items-center justify-center shrink-0">
                       <CalendarCheck className="size-4 text-[color:var(--color-brand-electric)]" />
@@ -93,7 +94,12 @@ export function MeetingsList({ initialMeetings, ratings }: Props) {
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium truncate">{m.title}</p>
                       <div className="flex items-center gap-3 mt-0.5 text-[11px] text-muted-foreground">
-                        <span>{fmtDate(m.scheduled_at ?? m.created_at)}</span>
+                        {live && (
+                          <span className="rounded-full bg-[color:var(--color-brand-electric)]/15 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wider text-[color:var(--color-brand-electric)]">
+                            In progress
+                          </span>
+                        )}
+                        <span>{fmtDate(m.started_at ?? m.scheduled_at ?? m.created_at)}</span>
                         <span>{SOURCE_LABEL[m.source ?? "manual"]}</span>
                         {duration && <span className="flex items-center gap-1"><Clock className="size-3" /> {duration}</span>}
                       </div>
@@ -106,6 +112,13 @@ export function MeetingsList({ initialMeetings, ratings }: Props) {
                     )}
                     <ExternalLink className="size-3.5 text-muted-foreground" />
                   </button>
+                  <Link
+                    href={`/level-10/meeting/${m.id}`}
+                    className="shrink-0 inline-flex items-center gap-1 rounded-md border border-border px-2 py-1 text-[11px] text-muted-foreground hover:text-foreground hover:border-[color:var(--color-brand-electric)]"
+                  >
+                    <FileText className="size-3" />
+                    {live ? "Resume" : "Open"}
+                  </Link>
                 </li>
               );
             })}

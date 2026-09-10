@@ -11,7 +11,16 @@ export default async function MeetingsPage() {
 
   // Team Meetings is the EOS operating rhythm only. Zoom/Read.ai transcripts
   // and all client, sales, or ad-hoc calls belong in the War Room.
-  const TEAM_MEETING_TYPES: readonly MeetingType[] = ["level_10", "quarterly", "annual", "huddle"];
+  const TEAM_MEETING_TYPES: readonly MeetingType[] = [
+    "level_10",
+    "huddle",
+    "quarterly",
+    "annual",
+    "quarterly_conversation",
+    "same_page",
+    "financial",
+    "state_of_company",
+  ];
   const [meetingsRes, ratingsRes] = await Promise.all([
     supabase
       .from("meetings")
@@ -35,7 +44,7 @@ export default async function MeetingsPage() {
       <div>
         <h1 className="text-2xl font-bold">Team Meetings</h1>
         <p className="text-sm text-muted-foreground mt-1">
-          Level 10s, Quarterly Planning, Annual Planning, and Team Huddles only. Every recorded Zoom/Read.ai call lives in War Room.
+          Every EOS meeting the team has run — Level 10s, huddles, planning sessions and conversations. Recorded Zoom calls live in the War Room.
         </p>
       </div>
       <MeetingsList initialMeetings={meetings} ratings={ratings} />
