@@ -1,0 +1,1175 @@
+{
+ "n": 7,
+ "company": "Fieldnote Software",
+ "owner": "Kevin Zhang",
+ "industry": "Vertical SaaS (inspection software for environmental consultancies)",
+ "profile": {
+  "revenue": 900000,
+  "grossMarginPct": 82,
+  "operatingProfit": 81000,
+  "headcount": 6,
+  "founded": 2021,
+  "story": "Fieldnote is a field-inspection and reporting tool for small environmental consultancies — the firms that do phase-one site assessments, wetland delineations and stormwater inspections. Kevin wrote the first version himself in 2021 after a decade as a consultant, and at $900K ARR across 145 customers it is a real, growing, profitable software company with a proper product analytics stack, a documented onboarding and clean unit economics. It also has exactly one engineer, and he is the founder. Everything that is strong about this business — the tooling, the metrics, the automation — makes the single-point risk more conspicuous rather than less: if Kevin stops writing code, the roadmap stops that day and the support escalation path ends nowhere."
+ },
+ "edge_cases": [
+  "Composite should land in Scaling (61–80) — the strongest business in the cohort",
+  "key_person overlay active: the founder is the only engineer",
+  "S9 at 4 on 95% recurring revenue with a contracted base and a rolling forecast",
+  "Funnel cross-check is expected to FLAG by design: new-business bookings are compared against total ARR in a 95%-recurring business, so implied revenue lands near 43% — the facilitator note explains why that is arithmetic, not a discrepancy"
+ ],
+ "intake": {
+  "q1": [
+   {
+    "row": "Your name",
+    "value": "Kevin Zhang"
+   },
+   {
+    "row": "Email",
+    "value": "kevin@fieldnote.app"
+   },
+   {
+    "row": "Phone",
+    "value": "(503) 555-0121"
+   },
+   {
+    "row": "Company name",
+    "value": "Fieldnote Software"
+   },
+   {
+    "row": "Website",
+    "value": "fieldnote.app"
+   },
+   {
+    "row": "Location",
+    "value": "Portland, OR (remote team)"
+   },
+   {
+    "row": "Industry",
+    "value": "Vertical SaaS — environmental inspection & reporting"
+   }
+  ],
+  "q2": "We make field inspection and reporting software for small environmental consultancies — phase-one site assessments, wetland delineations, stormwater inspections. Field staff capture observations and photos on a phone, and the platform generates the deliverable report their client actually pays for. Sold as an annual subscription priced per seat with a usage tier, $340 to $1,900 a month. 145 customers, mostly 5-to-40-person consultancies across the western states. Six of us: me, two customer success, a designer, a part-time marketer and a contract QA tester.",
+  "q3": [
+   {
+    "row": "Primary",
+    "objective": "Prepare to scale"
+   },
+   {
+    "row": "Secondary 1",
+    "objective": "Reduce owner dependence"
+   },
+   {
+    "row": "Secondary 2",
+    "objective": "Reliable revenue growth"
+   }
+  ],
+  "q4": [
+   {
+    "row": "1",
+    "outcome": "ARR",
+    "target": "$900K → $1.4M"
+   },
+   {
+    "row": "2",
+    "outcome": "Engineers who are not me",
+    "target": "0 → 2"
+   },
+   {
+    "row": "3",
+    "outcome": "Demo-to-close rate",
+    "target": "22% → 30%"
+   }
+  ],
+  "q5": "$3M ARR, an engineering team of four with a lead who owns the roadmap, and me doing product strategy and the customer conversations that inform it. The thing I want most is for a bad week of mine to stop being a bad week for the product.",
+  "q6": "Doing the technical work",
+  "q7": [
+   {
+    "row": "Hours/week now",
+    "value": "61"
+   },
+   {
+    "row": "Hours/week you want in 12 months",
+    "value": "50"
+   },
+   {
+    "row": "Hours/week you want in 3 years",
+    "value": "40"
+   },
+   {
+    "row": "Longest uninterrupted time away in the past 12 months",
+    "value": "5 days, and I shipped a hotfix from a cabin on day three"
+   },
+   {
+    "row": "What pulls you back in",
+    "value": "Any production bug, any integration question, and anything a customer asks that touches the report engine"
+   }
+  ],
+  "q8": "I am the only engineer. Everything else in this company works — the funnel works, the onboarding works, the numbers are clean — and all of it is sitting on one person who also has to sell the vision. I have known it since we passed fifty customers and I keep not hiring because I cannot afford to hire wrong at this size.",
+  "q9": [
+   {
+    "row": "Year founded",
+    "value": "2021"
+   },
+   {
+    "row": "Owners & percentages",
+    "value": "Kevin Zhang 92%, a former colleague 8% for the early design work"
+   },
+   {
+    "row": "Any owner misalignment affecting decisions?",
+    "value": "No — the minority holder is passive and supportive"
+   }
+  ],
+  "q10": [
+   {
+    "row": "Full-time employees",
+    "count": "4"
+   },
+   {
+    "row": "Part-time",
+    "count": "1"
+   },
+   {
+    "row": "Regular contractors",
+    "count": "1"
+   },
+   {
+    "row": "Managers / team leads",
+    "count": "1"
+   },
+   {
+    "row": "People with direct reports",
+    "count": "1"
+   }
+  ],
+  "q11": "Multi-state",
+  "q12": [
+   {
+    "row": "One-time projects",
+    "pct": "3"
+   },
+   {
+    "row": "Recurring contracts",
+    "pct": "95"
+   },
+   {
+    "row": "Repeat without contract",
+    "pct": "0"
+   },
+   {
+    "row": "Products",
+    "pct": "0"
+   },
+   {
+    "row": "Retainers",
+    "pct": "0"
+   },
+   {
+    "row": "Other",
+    "pct": "2"
+   }
+  ],
+  "q13": [
+   {
+    "name": "Core subscription (per seat)",
+    "pct": "74",
+    "margin": "88",
+    "trend": "Growing",
+    "importance": "The business. Expansion within accounts is the growth engine."
+   },
+   {
+    "name": "Usage tier overage (report volume)",
+    "pct": "18",
+    "margin": "79",
+    "trend": "Growing",
+    "importance": "Scales with customer success, best leading indicator of expansion"
+   },
+   {
+    "name": "Onboarding & data migration",
+    "pct": "5",
+    "margin": "41",
+    "trend": "Flat",
+    "importance": "Priced to remove a barrier, not to make money — and it does that"
+   },
+   {
+    "name": "Custom report templates",
+    "pct": "3",
+    "margin": "34",
+    "trend": "Flat",
+    "importance": "Always me, always at night; the work I most need to stop doing"
+   }
+  ],
+  "q14": [
+   {
+    "row": "Active customer count",
+    "value": "145 paying accounts"
+   },
+   {
+    "row": "B2B / B2C / mixed",
+    "value": "B2B only"
+   },
+   {
+    "row": "% of revenue from your largest customer",
+    "value": "17"
+   },
+   {
+    "row": "% of revenue from your top five",
+    "value": "34"
+   },
+   {
+    "row": "% of revenue tied directly to YOUR personal relationships",
+    "value": "The first thirty customers know me personally — call it 30%. The rest bought from the website."
+   }
+  ],
+  "q15": [
+   {
+    "row": "Last completed year",
+    "amount": "900000"
+   },
+   {
+    "row": "Prior year",
+    "amount": "640000"
+   },
+   {
+    "row": "Year to date",
+    "amount": "710000"
+   },
+   {
+    "row": "Full-year forecast",
+    "amount": "1050000"
+   }
+  ],
+  "q16": "Up more than 25%",
+  "q17": [
+   {
+    "row": "Approximate gross margin %",
+    "value": "82"
+   },
+   {
+    "row": "Main direct costs",
+    "value": "Cloud hosting, the map and imagery APIs, payment processing, and the customer success salaries carried in COGS"
+   },
+   {
+    "row": "Tracked by job / service / customer?",
+    "value": "Yes — cost to serve per account is in the monthly metrics review, and the heavy imagery users are visible"
+   }
+  ],
+  "q18": [
+   {
+    "row": "Operating profit estimate",
+    "amount": "81000"
+   },
+   {
+    "row": "Owner salary",
+    "amount": "140000"
+   },
+   {
+    "row": "Owner distributions",
+    "amount": "0"
+   },
+   {
+    "row": "Unusual one-off expenses",
+    "amount": "26000 — SOC 2 readiness work"
+   }
+  ],
+  "q19": [
+   "Comfortable",
+   "Big expense coming"
+  ],
+  "q20": "Monthly, within 15 days",
+  "q21": [
+   {
+    "row": "Revenue",
+    "target": "$1.4M ARR by next December"
+   },
+   {
+    "row": "Gross margin",
+    "target": "Hold above 80%"
+   },
+   {
+    "row": "Operating profit",
+    "target": "Break even after two engineering hires"
+   },
+   {
+    "row": "Cash reserve",
+    "target": "Nine months of runway; we hold about eleven"
+   },
+   {
+    "row": "Owner compensation",
+    "target": "Flat until the second engineer is productive"
+   }
+  ],
+  "q22": "P&L and balance sheet 2024–2026, the ARR and contract schedule by customer, cohort retention and churn report, the price list and discount grid, and the product analytics export if it is useful.",
+  "q23": [
+   {
+    "source": "Organic search & the report-template library",
+    "per_month": "13",
+    "cost": "1200",
+    "quality": "4",
+    "tracked": "Yes"
+   },
+   {
+    "source": "Customer referrals & word of mouth",
+    "per_month": "8",
+    "cost": "0",
+    "quality": "5",
+    "tracked": "Yes"
+   },
+   {
+    "source": "Industry association partnerships",
+    "per_month": "5",
+    "cost": "900",
+    "quality": "4",
+    "tracked": "Yes"
+   },
+   {
+    "source": "Conference & trade show",
+    "per_month": "3",
+    "cost": "2100",
+    "quality": "3",
+    "tracked": "Yes"
+   },
+   {
+    "source": "Outbound to target consultancies",
+    "per_month": "1",
+    "cost": "400",
+    "quality": "2",
+    "tracked": "Yes"
+   }
+  ],
+  "q24": [
+   {
+    "row": "What happens, step by step",
+    "value": "Demo request or trial signup creates a record in the CRM, an automated sequence offers times immediately, and customer success runs the demo within two business days"
+   },
+   {
+    "row": "Typical response time",
+    "value": "Automated inside two minutes; a human on a call within two business days"
+   },
+   {
+    "row": "Who is responsible",
+    "value": "Dani, customer success lead, owns every inbound demo"
+   },
+   {
+    "row": "Is every inquiry captured in one system?",
+    "value": "Yes — trials, demo requests and partner referrals all land in the CRM"
+   },
+   {
+    "row": "Automated follow-up?",
+    "value": "Yes, a trial sequence and a post-demo sequence, both measured"
+   },
+   {
+    "row": "% of leads that get 2+ follow-ups",
+    "value": "Everyone in the sequences, so about 95%"
+   }
+  ],
+  "q25": [
+   {
+    "row": "Lead→sale or proposal→close %",
+    "value": "22% of demos become paying customers"
+   },
+   {
+    "row": "Tracked by source / person / service?",
+    "value": "By source and by rep in the CRM; reviewed monthly"
+   },
+   {
+    "row": "Defined sales process?",
+    "value": "Stages exist and Dani follows them. The pricing conversation still escalates to me about a third of the time."
+   },
+   {
+    "row": "Most common reason you lose",
+    "value": "They stay on their existing spreadsheet-and-Word process, or they need an integration we do not have"
+   }
+  ],
+  "q26": [
+   {
+    "row": "Typical first sale",
+    "value": "$4,900 first-year value"
+   },
+   {
+    "row": "Typical annual customer value",
+    "value": "$6,200 average across the base, growing with seats"
+   },
+   {
+    "row": "Most valuable segment",
+    "value": "15-to-40-person consultancies with multiple field crews"
+   },
+   {
+    "row": "Tracked?",
+    "value": "Yes, in the metrics review"
+   }
+  ],
+  "q27": [
+   {
+    "row": "% who buy again",
+    "value": "Net revenue retention 112%; logo retention 89%"
+   },
+   {
+    "row": "Renewal rate if applicable",
+    "value": "89% of accounts renew annually"
+   },
+   {
+    "row": "Are inactive customers identified?",
+    "value": "Yes — churned accounts and low-usage accounts are both flagged in the analytics"
+   },
+   {
+    "row": "Reactivation campaigns ever run?",
+    "value": "Yes, a win-back sequence to churned accounts twice a year; it brought back nine last year"
+   },
+   {
+    "row": "Why customers leave",
+    "value": "The firm gets acquired, or the champion leaves and nobody else was trained"
+   }
+  ],
+  "q28": [
+   "Reviewed annually",
+   "Based on real job economics",
+   "Varies by scope or value",
+   "Discount rules defined"
+  ],
+  "q29": [
+   {
+    "row": "Complementary services routinely offered?",
+    "value": "Onboarding and data migration, offered on every new account"
+   },
+   {
+    "row": "Bundles or packages?",
+    "value": "Three plan tiers with a usage allowance in each"
+   },
+   {
+    "row": "Premium option?",
+    "value": "The enterprise tier with SSO and a custom report engine"
+   },
+   {
+    "row": "Entry-level option?",
+    "value": "A two-seat starter plan at $340/mo"
+   },
+   {
+    "row": "Customer needs you can't currently serve",
+    "value": "Accounting integrations, offline sync in dead zones, and anything requiring a native tablet app"
+   }
+  ],
+  "q30": [
+   {
+    "row": "Who owns marketing",
+    "value": "Aisha, part-time marketer, with Kevin on product content"
+   },
+   {
+    "row": "Who owns sales",
+    "value": "Dani, customer success lead"
+   },
+   {
+    "row": "Monthly marketing budget",
+    "value": "$4,600"
+   },
+   {
+    "row": "Do sales & marketing review results together?",
+    "value": "Yes, monthly metrics review with both in it"
+   },
+   {
+    "row": "Are leads, conversion, CAC and customer value ever reviewed together?",
+    "value": "Yes — CAC, payback period, NRR and close rate are all on the same page"
+   }
+  ],
+  "q31": "We'd have to hire",
+  "q32": [
+   {
+    "row": "1",
+    "area": "Demo-to-close conversion"
+   },
+   {
+    "row": "2",
+    "area": "Plan pricing — we have not raised prices since 2023"
+   },
+   {
+    "row": "3",
+    "area": "Support load that lands on me instead of on customer success"
+   }
+  ],
+  "q33": [
+   {
+    "workflow": "Trial signup and product onboarding"
+   },
+   {
+    "workflow": "Demo booking and sales conversation"
+   },
+   {
+    "workflow": "Implementation and data migration"
+   },
+   {
+    "workflow": "Support triage and escalation"
+   },
+   {
+    "workflow": "Bug intake, prioritisation and release"
+   },
+   {
+    "workflow": "Renewal and expansion conversations"
+   },
+   {
+    "workflow": "Billing, dunning and collections"
+   },
+   {
+    "workflow": "Product analytics and the monthly metrics review"
+   }
+  ],
+  "q34": [
+   {
+    "row": "One clear accountable role",
+    "frequency": "Usually"
+   },
+   {
+    "row": "Defined handoffs",
+    "frequency": "Usually"
+   },
+   {
+    "row": "Consistent exception escalation",
+    "frequency": "Always"
+   }
+  ],
+  "q35": [
+   {
+    "row": "Documented",
+    "pct": "65"
+   },
+   {
+    "row": "Current",
+    "pct": "50"
+   },
+   {
+    "row": "Accessible",
+    "pct": "85"
+   },
+   {
+    "row": "Used in training",
+    "pct": "55"
+   },
+   {
+    "row": "Actually followed",
+    "pct": "60"
+   }
+  ],
+  "q36": [
+   "Unclear priorities",
+   "The owner has to step in",
+   "Incomplete information"
+  ],
+  "q37": "Skilled labor",
+  "q38": "Mostly clear, with gaps",
+  "q39": [
+   {
+    "row": "How many KPIs reviewed weekly",
+    "value": "Six — trials, demos, close rate, MRR, churn and support backlog"
+   },
+   {
+    "row": "Does each have one owner?",
+    "value": "Five do. The support backlog is nominally Dani's and practically mine."
+   },
+   {
+    "row": "Are targets visible?",
+    "value": "Yes, in the shared metrics dashboard"
+   },
+   {
+    "row": "Does a miss trigger action?",
+    "value": "Yes on the commercial ones. On the support backlog it triggers me working a weekend."
+   }
+  ],
+  "q40": "Weekly, structured and action-oriented",
+  "q41": [
+   {
+    "row": "CRM",
+    "tool": "HubSpot"
+   },
+   {
+    "row": "Marketing",
+    "tool": "HubSpot, the template library on the site, webinar tooling"
+   },
+   {
+    "row": "Sales / proposals",
+    "tool": "HubSpot quotes with the standard discount grid"
+   },
+   {
+    "row": "Scheduling / project management",
+    "tool": "Linear for product, Notion for everything else"
+   },
+   {
+    "row": "Delivery",
+    "tool": "The platform itself, plus the analytics stack"
+   },
+   {
+    "row": "Accounting",
+    "tool": "QuickBooks Online with Stripe billing and a fractional controller"
+   },
+   {
+    "row": "Reporting",
+    "tool": "Metrics dashboard fed by the product analytics and Stripe"
+   },
+   {
+    "row": "Communication",
+    "tool": "Slack, with a shared channel for the twelve largest accounts"
+   },
+   {
+    "row": "Files / knowledge",
+    "tool": "Notion — runbooks, onboarding, the support playbook"
+   },
+   {
+    "row": "HR / payroll",
+    "tool": "Gusto"
+   }
+  ],
+  "q42": "Systems share data cleanly",
+  "q43": [
+   "KPI definitions are agreed",
+   "Data is generally accurate",
+   "Reports don't need manual cleanup",
+   "Customer and financial data can be connected",
+   "Backups exist",
+   "We know where sensitive data lives"
+  ],
+  "q44": [
+   {
+    "task": "Support triage and escalation",
+    "who": "Dani, escalating to Kevin",
+    "frequency": "Daily",
+    "occurrences": "5",
+    "minutes": "84",
+    "errors": "No",
+    "systems": "Help desk, Slack, Linear"
+   },
+   {
+    "task": "Onboarding setup and data migration",
+    "who": "Customer success",
+    "frequency": "Several times a week",
+    "occurrences": "3",
+    "minutes": "100",
+    "errors": "Yes",
+    "systems": "Admin console, spreadsheets"
+   },
+   {
+    "task": "Invoicing exceptions and dunning follow-up",
+    "who": "Dani",
+    "frequency": "Weekly",
+    "occurrences": "3",
+    "minutes": "60",
+    "errors": "No",
+    "systems": "Stripe, QuickBooks, email"
+   },
+   {
+    "task": "Release notes and changelog writing",
+    "who": "Kevin",
+    "frequency": "Weekly",
+    "occurrences": "2",
+    "minutes": "60",
+    "errors": "No",
+    "systems": "Linear, Notion, email"
+   }
+  ],
+  "q45": "A lot: trial onboarding emails, in-app activation prompts, the post-demo sequence, dunning, usage alerts to customer success when an account's report volume drops, renewal reminders, and the metrics dashboard refresh. All of it is monitored and all of it has an owner. What is not automated is support triage and the onboarding data migration.",
+  "q46": [
+   "Drafting",
+   "Research",
+   "Marketing content",
+   "Customer communication",
+   "Knowledge retrieval",
+   "Reporting"
+  ],
+  "q47": [
+   "Use cases picked by business impact",
+   "Someone accountable per implementation",
+   "Human-review rules are clear",
+   "Sensitive-data rules are defined",
+   "Failures are detectable",
+   "The team is trained"
+  ],
+  "q48": [
+   "One-vendor or one-person dependence"
+  ],
+  "q49": [
+   {
+    "row": "Implementation budget range",
+    "value": "$15–25K, separate from the hiring budget"
+   },
+   {
+    "row": "Owner hours/week available",
+    "value": "4"
+   },
+   {
+    "row": "Team hours/week available",
+    "value": "8"
+   },
+   {
+    "row": "Appetite for changing systems",
+    "value": "High, but the product roadmap wins every time there is a conflict"
+   }
+  ],
+  "q58": "Trained on the core tools, adoption uneven",
+  "q59": "Dani would take on anything and already writes her own automations in HubSpot. Aisha is quick. Nobody resists tooling here — the constraint is that every change competes with the roadmap for my attention, so things get adopted and then never revisited.",
+  "q56": [
+   {
+    "role": "Customer success lead",
+    "rate": "62"
+   },
+   {
+    "role": "Customer success associate",
+    "rate": "48"
+   },
+   {
+    "role": "Designer",
+    "rate": "70"
+   },
+   {
+    "role": "Marketer (part-time)",
+    "rate": "58"
+   },
+   {
+    "role": "Founder / engineer",
+    "rate": "115"
+   }
+  ],
+  "q50": [
+   "Pricing exceptions",
+   "Technical decisions",
+   "Hiring / firing",
+   "Banking / payments",
+   "Strategy",
+   "Quality sign-off"
+  ],
+  "q51": [
+   {
+    "row": "What keeps running",
+    "value": "The product runs, customers are supported, billing collects, sales continues. For about two weeks it looks completely normal."
+   },
+   {
+    "row": "What slows down",
+    "value": "Any support ticket that needs a code change; pricing exceptions; the roadmap immediately"
+   },
+   {
+    "row": "What stops",
+    "value": "All engineering. Every bug fix, every integration request, every custom report template."
+   },
+   {
+    "row": "Who decides",
+    "value": "Dani on customers and support, nobody on product or money"
+   },
+   {
+    "row": "What nobody else can access",
+    "value": "Production infrastructure, the code repository owner account, the bank, and the app store credentials"
+   }
+  ],
+  "q52": [
+   {
+    "risk": "Kevin — sole engineer, sole holder of production access",
+    "impact": "The roadmap stops the day he does, and any production incident has no second responder"
+   },
+   {
+    "risk": "The largest customer at 17% of ARR",
+    "impact": "A single non-renewal takes a sixth of revenue and would push the hiring plan out a year"
+   },
+   {
+    "risk": "Dani — sole seller and the only person who runs a demo",
+    "impact": "New business stops within a fortnight"
+   },
+   {
+    "risk": "The map and imagery API vendor",
+    "impact": "A pricing change or deprecation would hit gross margin directly and requires engineering to migrate"
+   }
+  ],
+  "q53": [
+   "Customer agreements are written & accessible",
+   "Vendor agreements are written",
+   "Contracts are transferable",
+   "Licenses & insurance are current",
+   "Employment agreements are current",
+   "The company owns its IP and digital accounts",
+   "No known legal, tax or insurance issue"
+  ],
+  "q54": [
+   "Leadership depth",
+   "SOPs & knowledge transfer",
+   "Tech & data ownership"
+  ],
+  "q55": "Ready if priorities stay tight",
+  "q57": "Tired but managing"
+ },
+ "session": {
+  "engine": {
+   "leads_per_month": "30",
+   "conversion_rate": "22%",
+   "avg_deal_value": "$4,900",
+   "response_time": "Automated inside two minutes; human demo within two business days",
+   "gross_margin_pct": "82",
+   "headcount": "6",
+   "repetitive_hours_week": "Support triage & escalation — Dani and Kevin — 7\nOnboarding setup & data migration — customer success — 5\nInvoicing exceptions & dunning — Dani — 3\nRelease notes & changelog — Kevin — 2",
+   "largest_customer_pct": "17"
+  },
+  "blockNotes": {
+   "b1": "Q8 belief is exactly right and unusually precise: the only engineer is the founder, and every other system in the business is strong enough to make that visible. Objective is scale, blocked on one hire he is afraid of getting wrong.",
+   "b2": "Funnel built from the CRM: 30 demos a month, 22% close, $4,900 first-year value. That multiplies to about $388K of new-business value a year against $900K of ARR — roughly 43%, which the funnel cross-check will read as a mismatch and flag. It is not one. In a business where 95% of revenue is contracted and renews, new bookings are supposed to be a fraction of total revenue; the check compares new-business flow to total revenue and has no way to see the renewing base. Recorded here so the reviewer reads the flag as a model artefact and not as a number to chase. The reconciliation that does hold: 145 accounts × $6,200 average annual value = $899K.",
+   "b3": "Price list on file with a written discount grid, last moved 2023. Cost to serve per account is in the monthly review and the heavy-imagery accounts are visible by name — the best margin visibility in the cohort. Two years of hosting and imagery API increases have not been passed through.",
+   "b4": "17 h/wk repetitive on a 240-hour payroll (7%). Everything that can be automated in the commercial funnel already is, monitored, with named owners. The two that are not — support triage and onboarding migration — are the two that escalate to the founder.",
+   "b5": "Four-week test: two weeks look normal, then engineering has stopped for a fortnight and the roadmap with it. Largest customer 17%, below the overlay threshold but material at this size. Contracts, IP and vendor agreements all written and transferable — the cleanest legal position in the cohort. Production access, the repo owner account, the bank and the app store credentials are all Kevin alone."
+  },
+  "demonstrated": [
+   "CRM walked end to end — trial signup to demo booking to close, with stage history and close rate by source",
+   "The trial onboarding, post-demo, dunning, usage-drop and renewal-reminder sequences all shown running and monitored",
+   "Weekly metrics review observed: six KPIs, five with named owners, targets on a shared dashboard, actions assigned",
+   "Systems tour: HubSpot ↔ Stripe ↔ QuickBooks ↔ the product analytics, all connected with no manual re-entry",
+   "The Notion runbook library opened — onboarding, support playbook and release process documented; incident response missing",
+   "The metrics dashboard refreshed live from product analytics and Stripe with no cleanup step",
+   "A support escalation arrived during the session and went from Dani to Kevin inside four minutes",
+   "The AI-assisted support draft and release-note workflows shown running with the human review step visible",
+   "Access review opened: individual logins throughout, SOC 2 readiness evidence, and production access held by one person",
+   "Cost-to-serve per account shown in the monthly metrics view, with the three heavy-imagery accounts named"
+  ],
+  "documents_seen": [
+   "P&L and balance sheet 2024–2026 — revenue $900K, gross margin 82%, operating profit $81K, eleven months of runway",
+   "ARR and contract schedule by customer — 145 accounts, largest 17%, top five 34%",
+   "Cohort retention and churn report — NRR 112%, logo retention 89%",
+   "Price list and written discount grid, last revised 2023",
+   "Product analytics export — activation, usage and low-usage account flags"
+  ]
+ },
+ "dataRoom": {
+  "pnl_on_file": true,
+  "documents": [
+   {
+    "name": "P&L and balance sheet 2024–2026",
+    "kind": "pnl",
+    "received_on": "2026-08-25"
+   },
+   {
+    "name": "ARR and contract schedule by customer",
+    "kind": "revenue_by_customer",
+    "received_on": "2026-08-25"
+   },
+   {
+    "name": "Cohort retention and churn report",
+    "kind": "other",
+    "received_on": "2026-08-26"
+   },
+   {
+    "name": "Price list and discount grid (2023)",
+    "kind": "rate_card",
+    "received_on": "2026-08-26"
+   },
+   {
+    "name": "Cost-to-serve by account",
+    "kind": "job_cost",
+    "received_on": "2026-08-31"
+   }
+  ]
+ },
+ "scores": {
+  "P1": {
+   "score": 3,
+   "na": false,
+   "evidence": "documented",
+   "note": "Five sources with monthly volume, cost and quality in the CRM (q23: organic 13, referrals 8, associations 5, conferences 3, outbound 1), all tracked and reviewed monthly with CAC per source.",
+   "why_not_higher": "Held at 3 because the two highest-quality sources — referrals and associations — have no cost attached and therefore no comparable CAC, so the monthly comparison is partial."
+  },
+  "P2": {
+   "score": 3,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Every trial, demo request and partner referral lands in the CRM and an automated scheduling sequence fires within two minutes (q24, watched in session). Dani owns every inbound demo.",
+   "why_not_higher": "Anchor 4 needs a human response under an hour; the first human contact is up to two business days out, which is where the close rate leaks."
+  },
+  "P3": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Trial and post-demo sequences run on essentially every lead and are measured (q24, shown firing). Missed follow-ups are visible in the CRM.",
+   "why_not_higher": "Held at 2 rather than 3 because the sequences stop at the end of the trial window — a prospect who says 'not this quarter' has no defined path back, which is his own named loss reason ('they stay on their spreadsheet')."
+  },
+  "P4": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Stages exist in the CRM and Dani follows them; 22% close tracked by source and rep, reviewed monthly. Loss reasons are captured in the deal record.",
+   "why_not_higher": "Q25: the pricing conversation escalates to Kevin about a third of the time, so the process is not one the business can run without him — anchor 3 needs stages defined and used end to end."
+  },
+  "P5": {
+   "score": 2,
+   "na": false,
+   "evidence": "documented",
+   "note": "Price list and written discount grid on file, tiers by seat and usage, q28 confirms reviewed annually and based on real economics.",
+   "why_not_higher": "Last revised 2023 while hosting and imagery costs have risen twice since, and a third of pricing conversations still need the founder — anchor 3 needs an actual annual review against costs and a team that can hold the price."
+  },
+  "P6": {
+   "score": 3,
+   "na": false,
+   "evidence": "reported",
+   "note": "Three plan tiers with usage allowances, an enterprise premium tier with SSO, a two-seat starter at $340, and onboarding offered on every new account (q29).",
+   "why_not_higher": "Expansion is the growth engine by his own account, but there is no scripted expansion motion — usage alerts fire to customer success and what happens next is improvised, so the upsell is not yet routine."
+  },
+  "P7": {
+   "score": 4,
+   "na": false,
+   "evidence": "documented",
+   "note": "Cohort report measures NRR 112% and logo retention 89%; churned and low-usage accounts are both flagged automatically, and a win-back sequence runs twice a year and brought back nine accounts last year (q27).",
+   "why_not_higher": "Top of the scale — retention is measured, worked, and the inactive list is reactivated on a cadence."
+  },
+  "P8": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Aisha owns marketing, Dani owns sales, and CAC, payback, NRR and close rate sit on one page reviewed monthly (q30) — the content that anchor 4 asks for is genuinely there.",
+   "why_not_higher": "Held at 2 on accountability rather than measurement: the marketing owner is part-time and product content is still Kevin's, so neither named owner can move the number without him."
+  },
+  "P9": {
+   "score": 4,
+   "na": false,
+   "evidence": "documented",
+   "note": "P&L confirms 82% gross margin, and cost-to-serve per account is in the monthly metrics review with the three heavy-imagery accounts named — margin is tracked by customer and it changes decisions.",
+   "why_not_higher": "Top of the scale."
+  },
+  "P10": {
+   "score": 3,
+   "na": false,
+   "evidence": "documented",
+   "note": "Monthly close inside 15 days with a fractional controller, Stripe and QuickBooks connected, and q21 carries ARR, margin, profit, runway and comp targets.",
+   "why_not_higher": "Anchor 4 wants targets that hold; the operating profit target is 'break even after two hires' — a plan, not a number the monthly close is measured against."
+  },
+  "S1": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q50 keeps pricing exceptions, all technical decisions, hiring, banking, quality sign-off and strategy with Kevin; q51 says nobody decides on product or money.",
+   "why_not_higher": "Customer and support decisions are genuinely Dani's, but every decision above routine returns to the founder — anchor 2 needs several areas delegated, and only one is."
+  },
+  "S2": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Four-week test (q51): two weeks look normal, then all engineering has been stopped for a fortnight. Longest actual absence five days, with a hotfix shipped from a cabin on day three.",
+   "why_not_higher": "Anchor 2 needs the business to run short-term with decisions stacking up; here an entire function is stopped from day one and the founder has never actually been unreachable."
+  },
+  "S3": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Dani runs every demo and closes standard deals without him; only about 30% of revenue traces to Kevin's personal relationships and most customers bought from the website (q14).",
+   "why_not_higher": "Anchor 3 needs the owner in on only the largest 10–20%; the pricing conversation pulls him into roughly a third of deals, and there is exactly one seller."
+  },
+  "S4": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "One lead with direct reports (q10) — Dani, who owns customers and support well. Q39 concedes the support backlog is 'nominally Dani's and practically mine'.",
+   "why_not_higher": "Anchor 2 needs some real managers with patchy accountability; there is one manager, no engineering management at all, and the one metric she nominally owns escalates."
+  },
+  "S5": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Notion runbooks opened in session: onboarding, support playbook and release process documented and accessible (q35: 65% documented, 85% accessible).",
+   "why_not_higher": "Only 50% is current and incident response — the procedure that matters most given a single engineer — does not exist at all."
+  },
+  "S6": {
+   "score": 3,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Weekly structured review observed with six KPIs, five owned, targets on a shared dashboard and actions assigned (q39, q40).",
+   "why_not_higher": "Anchor 4 needs the rhythm to hold on every number; the support backlog has no real owner and a miss on it 'triggers me working a weekend' rather than a decision."
+  },
+  "S7": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Product delivery is consistent and support quality is not on the q36 failure list, but q31 says a 20% jump means hiring and q37 names skilled labour as the limiting resource.",
+   "why_not_higher": "Anchor 3 needs +20% to strain rather than break; at one engineer, a 20% customer increase raises support and bug load with no capacity behind it and no written plan."
+  },
+  "S8": {
+   "score": 2,
+   "na": false,
+   "evidence": "documented",
+   "note": "ARR schedule: largest customer 17% of revenue, top five 34% across 145 accounts.",
+   "why_not_higher": "v2 anchor 3 is 10–15%; at 17% this sits in the 15–20% band. Below the 25% overlay threshold, so a watch item rather than a warning — but material at this revenue, as q52 says."
+  },
+  "S9": {
+   "score": 4,
+   "na": false,
+   "evidence": "documented",
+   "note": "Contract schedule confirms 95% of revenue on annual recurring contracts (q12) renewing at 89% with NRR 112%, and the metrics dashboard carries a rolling forecast off the contract dates.",
+   "why_not_higher": "Top of the scale — a contracted base that covers fixed costs and is genuinely forecastable."
+  },
+  "S10": {
+   "score": 2,
+   "na": false,
+   "evidence": "documented",
+   "note": "Q53 returns every item true, including transferable contracts and company-owned IP, all seen in the data room — the strongest contract position in the cohort.",
+   "why_not_higher": "Cross-training has not started on the one role that matters: production access, the repo owner account and every line of code sit with one person, with no continuity plan and no incident runbook."
+  },
+  "L1": {
+   "score": 4,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "HubSpot, Linear, Notion, Stripe, QuickBooks, Gusto, the analytics stack and the product itself cover every core area (q41), all walked in session.",
+   "why_not_higher": "Top of the scale — there is no core area running on a spreadsheet."
+  },
+  "L2": {
+   "score": 3,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Q42 'systems share data cleanly'; the tour confirmed HubSpot ↔ Stripe ↔ QuickBooks ↔ analytics with no manual re-entry in the commercial chain.",
+   "why_not_higher": "Onboarding data migration is still spreadsheet-to-admin-console by hand (q44, 5 h/wk), which is the one double-entry point that remains."
+  },
+  "L3": {
+   "score": 4,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Q43 returns all six true, and the metrics dashboard was refreshed live from product analytics and Stripe with no cleanup step — definitions agreed, reports on demand.",
+   "why_not_higher": "Top of the scale."
+  },
+  "L4": {
+   "score": 3,
+   "na": false,
+   "evidence": "reported",
+   "note": "17 h/wk across four tasks (q44) in a six-person business. The commercial funnel, billing and reporting have genuinely been automated away; what remains is a few hours per role.",
+   "why_not_higher": "Anchor 4 needs little manual repetition; support triage and onboarding migration are still 12 of those hours and both escalate to the founder."
+  },
+  "L5": {
+   "score": 4,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Trial onboarding, in-app activation, post-demo, dunning, usage-drop alerts, renewal reminders and the dashboard refresh all run across marketing, sales, success and finance — monitored, owned, and shown firing (q45).",
+   "why_not_higher": "Top of the scale — reliable automation across functions with named owners."
+  },
+  "L6": {
+   "score": 4,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Q46 covers six categories, and the AI-assisted support drafting and release-note workflows were shown running with their human review step; results are in the monthly metrics review.",
+   "why_not_higher": "Top of the scale — deliberate use in defined workflows with measurement attached."
+  },
+  "L7": {
+   "score": 3,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Q47 returns six of eight — impact-picked use cases, an accountable owner, human-review rules, sensitive-data rules, detectable failures and a trained team, corroborated by the visible review step in session.",
+   "why_not_higher": "Two are missing and they are the two that matter for scale: results are not systematically measured beyond anecdote, and the process is not documented before it is automated."
+  },
+  "L8": {
+   "score": 3,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Access review opened in session: individual logins throughout, off-boarding done, SOC 2 readiness work underway, data map known (q43, q48 raises only one-person dependence).",
+   "why_not_higher": "Anchor 4 needs backups tested and access controlled; production access is held by exactly one person and restore has never been rehearsed — the SOC 2 work is in progress, not finished."
+  },
+  "L9": {
+   "score": 3,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q58 'trained on the core tools, adoption uneven'; q59 says nobody resists tooling and Dani writes her own HubSpot automations.",
+   "why_not_higher": "Anchor 4 needs the team improving it themselves and sticking with it; q59's own diagnosis is that changes get adopted and never revisited because the roadmap always wins."
+  },
+  "L10": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q49: $15–25K separate from hiring, 4 owner hours and 8 team hours a week; q55 'ready if priorities stay tight'.",
+   "why_not_higher": "Anchor 3 needs the time genuinely set aside — his own answer is that the product roadmap wins every conflict, and the roadmap is the same person's calendar."
+  }
+ },
+ "assessment": {
+  "owner_objective": "Prepare to scale — then Reduce owner dependence, Reliable revenue growth",
+  "owner_belief": "I am the only engineer. Everything else in this company works — the funnel works, the onboarding works, the numbers are clean — and all of it is sitting on one person who also has to sell the vision. I have known it since we passed fifty customers and I keep not hiring because I cannot afford to hire wrong at this size.",
+  "primary_constraint": "Engineering is one person: product, every bug, every integration and every production incident run through the founder's week, so the roadmap that new revenue depends on is rate-limited by the same calendar that handles support escalations and a third of pricing conversations.",
+  "constraint_symptoms": "Four-week test stops engineering on day one; a hotfix shipped from holiday on day three of a five-day break; a support escalation reaching him in four minutes during the session; the support backlog owned nominally by customer success and practically by him; no incident runbook; custom report templates done 'always at night'; two named lost deals citing a missing integration.",
+  "constraint_cost": "~$63K of expected operating profit in demo-stage conversion lost to a two-day human response and a founder-gated pricing conversation · ~$23K of customer-success payroll on 12 weekly hours of support triage and onboarding migration · ~364 founder hours a year on support escalation, release notes and custom templates.",
+  "constraint_fix": "A first engineering hire scoped narrowly to the support-and-integration queue rather than to the roadmap, an incident runbook with a second person holding production access, and a support triage tier that resolves the common cases before they reach him.",
+  "momentum_initiative": "Raise plan prices for the first time since 2023 on the two-year-old price list — the discount grid is already written, gross margin is documented at 82%, and the decision is entirely his.",
+  "overlay_flags": [
+   "key_person"
+  ],
+  "plan_items": [
+   "Plan repricing against 2023 list and current hosting costs — Kevin Zhang — 2026-09-21",
+   "Support triage tier and escalation rules so tickets stop reaching the founder first — Dani Okonjo — 2026-10-12",
+   "Incident runbook and second holder of production access — Kevin Zhang — 2026-10-26",
+   "First engineering hire scoped to support and integrations — Kevin Zhang — 2026-11-30"
+  ],
+  "overlap_factor": 0.7
+ },
+ "opportunities": [
+  {
+   "title": "Close more demos by removing the founder from the pricing conversation",
+   "finding": "30 demos a month at a 22% close on $4,900 first-year value — about $1.76M of first-year value moving through the funnel annually (CRM, walked in session). Two things are demonstrably costing conversion: the first human contact is up to two business days after an automated reply that fires in two minutes, and the pricing conversation escalates to Kevin in about a third of deals (q25). Both are fixable without touching the product.",
+   "calculator": {
+    "kind": "close_rate_lift",
+    "inputs": {
+     "quotedVolume": 1760000,
+     "currentClosePct": 22,
+     "liftPointsLow": 3,
+     "liftPointsExpected": 5,
+     "liftPointsHigh": 8,
+     "grossMarginPct": 82,
+     "incrementalCostPct": 10
+    }
+   },
+   "fix_cost": 5600,
+   "months_to_benefit": 2,
+   "confidence": "medium",
+   "include_in_report": true,
+   "basis_reported_only": false,
+   "blueprint": "Same-day demo slots held on the calendar, the written discount grid given to Dani as real authority with an exception threshold, and a defined path back for the 'not this quarter' prospects the sequences currently drop.",
+   "replaces": "A two-day wait and a founder escalation on one deal in three"
+  },
+  {
+   "title": "Reprice the plans for the first time since 2023",
+   "finding": "The price list on file is dated 2023 with a written discount grid behind it; hosting and imagery API costs have risen twice since, and cost-to-serve per account (Doc) shows exactly which accounts absorb that. Gross margin is documented at 82%, so a price move flows almost entirely to contribution — and with NRR at 112% and 89% logo retention, the base has demonstrated it absorbs change.",
+   "calculator": {
+    "kind": "price_change",
+    "inputs": {
+     "revenueAffected": 900000,
+     "priceChangePctLow": 6,
+     "priceChangePctExpected": 9,
+     "priceChangePctHigh": 14,
+     "volumeLossPctLow": 2,
+     "volumeLossPctExpected": 4,
+     "volumeLossPctHigh": 7,
+     "grossMarginPct": 82
+    }
+   },
+   "fix_cost": 2200,
+   "months_to_benefit": 3,
+   "confidence": "high",
+   "include_in_report": true,
+   "basis_reported_only": false,
+   "blueprint": "New list price on all new business immediately, existing accounts moved at their renewal date with 60 days' notice, usage allowances re-cut against the imagery cost that actually drives them, and the largest account handled personally and last.",
+   "replaces": "A 2023 price list carrying two years of cost increases"
+  },
+  {
+   "title": "Tier support triage so tickets stop landing on the engineer",
+   "finding": "Support triage runs seven hours a week and escalates to Kevin — one escalation reached him in four minutes during the session (q44, demonstrated). The help desk, the runbook library and the analytics that would resolve most of it already exist; what is missing is a triage tier and a rule about what actually needs the engineer. These hours are dollarised because they come off the founder's engineering week and go back onto the roadmap the growth plan depends on.",
+   "calculator": {
+    "kind": "automation_hours",
+    "inputs": {
+     "hoursPerWeek": 7,
+     "loadedHourlyRate": 62,
+     "automationSharePctLow": 40,
+     "automationSharePctExpected": 60,
+     "automationSharePctHigh": 75,
+     "weeksPerYear": 52,
+     "redeployed": true
+    }
+   },
+   "fix_cost": 6400,
+   "months_to_benefit": 2,
+   "confidence": "medium",
+   "include_in_report": true,
+   "basis_reported_only": false,
+   "blueprint": "AI-assisted first-response drafting against the existing runbook library with the human review step already in place, a written escalation rule naming the three ticket types that genuinely need engineering, and an incident runbook so the fourth type has a path that is not a phone call.",
+   "replaces": "Every hard ticket routing to the only engineer within minutes"
+  }
+ ],
+ "expected": {
+  "gate_should_pass": true,
+  "expected_blockers": [],
+  "expected_warnings": [],
+  "band_guess": "Scaling",
+  "cross_checks": {
+   "margin_vs_pnl": "pass",
+   "funnel_vs_revenue": "flag",
+   "concentration": "pass",
+   "hours_vs_headcount": "pass"
+  }
+ }
+}

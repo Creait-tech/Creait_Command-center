@@ -79,6 +79,7 @@ export function IndicatorCard({
   onChange,
   onAdvance,
   noteRef,
+  hideTarget = false,
 }: {
   indicator: IndicatorDef;
   row: CcAssessmentScore | undefined;
@@ -89,6 +90,8 @@ export function IndicatorCard({
   onChange: (patch: IndicatorPatch) => void;
   onAdvance: () => void;
   noteRef: React.RefObject<HTMLInputElement | null>;
+  /** Calibration scores today only — there is no 90-day plan to set a target against. */
+  hideTarget?: boolean;
 }) {
   const isNa = row?.not_applicable ?? false;
   const score = isNa ? null : (row?.score ?? null);
@@ -337,7 +340,7 @@ export function IndicatorCard({
         {/* Target — deliberately secondary to the score: small, outlined, and
             optional. Click the same value again to clear it. Hidden for N/A —
             an excluded indicator can't carry a target. */}
-        {!isNa && (
+        {!isNa && !hideTarget && (
           <div className="mt-3.5 flex flex-wrap items-center gap-x-2.5 gap-y-1.5 border-t border-border/40 pt-3">
             <span className="text-[11px] font-medium text-muted-foreground">
               Target

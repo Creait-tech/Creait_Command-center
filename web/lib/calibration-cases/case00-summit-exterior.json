@@ -1,0 +1,320 @@
+{
+ "n": 0,
+ "slug": "summit-exterior",
+ "company": "Summit Exterior Services",
+ "owner": "Dana Brooks",
+ "industry": "Commercial & residential exterior maintenance (landscaping contracts, pressure washing, gutter and roof maintenance)",
+ "profile": {
+  "revenue": 2410000,
+  "grossMarginPct": 38,
+  "operatingProfit": 216000,
+  "headcount": 17,
+  "founded": 2014,
+  "story": "Dana Brooks has run Summit Exterior Services for twelve years: four crews, forty commercial properties on contract, the rest one-off residential and project work around metro Atlanta. Revenue has been flat at about $2.4M for two years. She is still the chief estimator, the closer and the complaint department, and she believes the problem is marketing."
+ },
+ "edge_cases": [
+  "The founder-scored calibration baseline (Rubrics v2, 8 Sep 2026): a trainee who scores this case entirely Reported has not used the data room",
+  "Owner belief (more leads) and the evidence (leads leak at response, follow-up and quote speed) disagree — the Mirror page",
+  "Key-person and data-risk overlays both active; concentration is a watch item at 22%"
+ ],
+ "intake_markdown": "# CREAiT Growth & AI Diagnostic — Intake Responses\n## ⚠ FICTIONAL COMPOSITE TEST CLIENT — for system validation & demo use\nClient: Summit Exterior Services (Dana Brooks, Owner — she/her) · Marietta, GA · Exported for dry run\n\n## Section 1 — You & the Business You Want\n**Describe your company:** \"We do commercial and residential exterior maintenance around metro Atlanta — landscaping contracts, pressure washing, gutter and roof maintenance. About 60% one-off residential and project work, 40 commercial properties on contracts. 15 people, 4 crews. Been at it 12 years.\"\n**Primary objective:** Reliable revenue growth. Secondary: Reduce my dependence · Use AI & automation effectively.\n**Three 12-month outcomes:** Revenue $2.4M → $3M · My weeks from 55 hrs → 40 · Quotes out same-day instead of \"when I get to them.\"\n**3-year vision:** \"A $4M business run day-to-day by my ops manager, where I do strategy and the big commercial relationships. I want to take a real vacation. My daughter's graduation trip is in two summers and I want three weeks off without my phone.\"\n**Current role:** Split across most of these. \"Honestly I'm still the chief estimator, closer, and complaint department.\"\n**Time & freedom:** 55 hrs/wk now · want 40 in 12 mo · 30 in 3 yrs · longest time away: 5 days (Thanksgiving) · **\"What pulls you back in?\"** — \"Quotes. Nobody else can price a job. And the big property managers only want to talk to me.\"\n**Q8 — biggest bottleneck (verbatim):** \"We need more leads. Growth has been flat two years and I think marketing is the problem. We're invisible online compared to the bigger guys.\"\n\n## Section 2 — Business Profile & Money\nFounded 2014 · Dana 100% · Team: 12 FT, 3 PT, 1 ops manager (8 months in), 1 office manager, 3 crew leads.\nRevenue model: one-time projects 45% · recurring contracts 28% · repeat-no-contract 22% · other 5%.\nCustomer mix: ~410 active · mixed B2B/B2C · **largest customer (Beacon Property Group) = 22% of revenue** · top five = 41% · **\"revenue tied to my personal relationships: honestly 50%+ of commercial.\"**\nRevenue: 2025: $2.41M · 2024: $2.36M · YTD on pace $2.45M. Trend: flat. \"We lose as many as we win lately.\"\nGross margin: \"around 38% I think — bounces between low 30s and mid 40s by month. Not tracked by job.\" Operating profit: ~$216K. Owner salary $110K + $40K distributions.\nCash: profitable but tight when big projects run · customer payment timing creates pressure (\"commercial pays in 45–60 days\").\nFinancial visibility: monthly but late (\"QuickBooks reports around the 25th\"), reviewed \"when something looks off.\" Targets: revenue $3M, no others.\n\n## Section 3 — The Growth Engine\nLeads: referrals ~30/mo · Google/LSA ~25/mo ($1,400/mo) · property-manager RFPs 3–4/mo · door hangers seasonal. Quality tracked \"in my head.\"\nLead response: \"Office manager or I answer when we can — usually same day, sometimes next.\" Not in one system (voicemail, email, FB messages, LSA). No automated follow-up. \"Maybe 40% get a second touch.\"\nConversion: ~35% of quotes close · not tracked by source · no defined process · most common loss reason: **\"They went with someone who got them a number faster.\"**\nTransaction value: residential job ~$1,850 · commercial contract ~$28K/yr · not tracked.\nRetention: ~45% of residential repeats · commercial renewal ~85% · inactive customers not identified · never run reactivation. \"We have 12 years of customers in QuickBooks we never talk to.\"\nPricing: unchanged 3 years except fuel surcharge · competitor-based · \"Pricing is a current worry.\" Last real change: 2023.\nOffers: no bundles, no maintenance plans for residential (\"we've talked about it for years\"), no premium tier.\nGrowth ownership: marketing = \"me, when I have time\" · sales = \"me\" · budget $1,400/mo LSA · numbers never reviewed together.\n**20% jump test:** \"Quality would slip and I'd be quoting at midnight. Crews could handle it — I couldn't.\"\nOwner's guess (top 3): more leads · better website/SEO · maybe raise prices.\n\n## Section 4 — Operations & Systems\nCritical workflows: lead intake (unclear owner) · estimating/quoting (**Dana**) · scheduling (office mgr + ops mgr) · crew dispatch (crew leads) · job completion/QC (crew leads, informal) · invoicing (office mgr, after Dana approves) · collections (office mgr) · commercial renewals (**Dana**) · hiring (Dana + ops mgr).\nOwnership: \"handoffs are tribal knowledge.\" Documentation: ~15% documented, mostly outdated safety sheets.\nRecurring failures: scheduling delays · incomplete job info to crews · late billing (\"invoices go out 5–10 days after job — I'm the approval bottleneck\") · slow collections · **\"I have to step in personally\" (checked)**. Biggest cost: late invoicing/collections.\nLimiting resource: \"My time.\" Evidence: \"Every growth idea dies in my inbox.\"\nRoles: \"Things frequently fall back to me.\" KPIs: none weekly (\"we look at revenue monthly\"). Meetings: Monday crew huddle (scheduling only); no leadership meeting. Unresolved issues: \"They come to me.\"\n\n## Section 5 — Technology, AI & Automation\nSystems: field-service app (scheduling/dispatch) · QuickBooks Online · Gmail/Sheets for quoting · no CRM · GroupMe for crews · no dashboards.\nIntegration: \"Quote spreadsheet → field app → QuickBooks all manual. Office manager retypes everything.\" One person is the integration (checked).\nData: \"Numbers conflict between the app and QuickBooks. I trust neither completely.\"\n**Repetitive work (top 5):** quote assembly — Dana, ~15/wk, 30–40 min each (~8 hrs/wk) · invoice prep + chasing — office mgr, ~6 hrs/wk · schedule reshuffling — 4 hrs/wk · customer status calls/texts — ~5 hrs/wk across office · weekly numbers pull for Dana — 3 hrs/wk.\nAutomation today: appointment reminders in field app (reliable). That's it.\nAI today: ops manager uses ChatGPT for emails. Nothing systematic.\nDiscipline: \"None of these are consistently true.\" Tech risk: shared office login for QuickBooks · no tested backup of the quote sheets · Dana's phone holds all commercial contacts.\n90-day readiness: budget \"$10–15K if it clearly pays back\" · Dana 4 hrs/wk · team 6 hrs/wk · appetite for change: high (\"I'm done duct-taping\").\n\n## Section 6 — Owner Independence & Risk\nRequires Dana: pricing exceptions · major sales · escalations · hiring/firing · purchasing >$500 · quality sign-off on commercial · banking/payments · vendor relationships · strategy. Hand off first: \"quoting, invoicing approval, escalations.\"\n**Four-week test:** \"Week one, fine — crews run scheduled work. Week two, quoting stops, pipeline dries up, invoices pile up waiting on my approval. Week three, Beacon calls with an issue and nobody can make it right. Honestly by week four we'd have lost a commercial account and a month of new sales. Nobody else can access the bank or my contact list either.\"\nKey-person risk: Dana (quoting, commercial relationships, banking) · Marcus, senior crew lead (\"only one who knows the Beacon properties cold\") · Beacon Property Group itself at 22%.\nContracts: commercial contracts written, \"probably transferable, never checked\" · licenses/insurance current · no continuity plan · company owns accounts \"except everything is under my personal Google.\"\nTransferability priorities: sales that don't need me · SOPs & knowledge transfer · leadership depth.\nReadiness: \"We can implement if priorities stay tightly limited.\" What could stop it: \"Me. If it needs my hours, it won't happen. That's why nothing's changed in two years.\"",
+ "session": {
+  "engine": {
+   "leads_per_month": "~85 (referrals ~30, Google/LSA ~25, RFPs 3–4, seasonal door hangers)",
+   "conversion_rate": "~35% of quotes close — an estimate, not tracked",
+   "avg_deal_value": "Residential ~$1,850; commercial contract ~$28K/yr",
+   "response_time": "Usually same day, sometimes next; four inboxes, no log",
+   "gross_margin_pct": "38 (owner said \"around 38% I think\")",
+   "headcount": "17 (12 FT, 3 PT, ops manager, office manager)",
+   "repetitive_hours_week": "Quote assembly — Dana — 8\nInvoice prep & chasing — Lena (office) — 6\nSchedule reshuffling — office/ops — 4\nStatus calls & texts — office — 5\nWeekly numbers pull — Lena — 3",
+   "largest_customer_pct": "22 (Beacon Property Group; top five 41%)"
+  },
+  "blockNotes": {
+   "b1": "Objective: reliable revenue growth, then reduce dependence and use AI. Twelve-month outcomes: $2.4M → $3M, 55-hour weeks → 40, same-day quotes. Three-year picture: a $4M business run day to day by the ops manager, three weeks off without her phone. Longest time away five days (Thanksgiving). What pulls her back: \"Quotes. Nobody else can price a job. And the big property managers only want to talk to me.\" Q8 belief, verbatim: \"We need more leads. Growth has been flat two years and I think marketing is the problem.\"",
+   "b2": "Funnel rebuilt live: referrals ~30/mo, Google/LSA ~25/mo at $1,400/mo, property-manager RFPs 3–4/mo, door hangers in season — about 85 a month, tracked \"in my head.\" Leads land in voicemail, email, Facebook messages and LSA; \"usually same day, sometimes next\"; no log; \"maybe 40% get a second touch.\" Close ~35%, not by source, no defined process; loss reason: \"They went with someone who got them a number faster.\" Quotes take 3–5 days. Residential job ~$1,850, commercial contract ~$28K/yr. Repeat ~45% residential, renewal ~85% commercial; inactive customers never identified — \"12 years of customers in QuickBooks we never talk to.\" Rate card dated 2023, competitor-based, unchanged except fuel surcharge; \"pricing is a current worry.\" No bundles, no residential maintenance plan (\"talked about it for years\"), no premium tier. Marketing is \"me, when I have time\"; sales is \"me\"; numbers never reviewed together. Cross-check: 85 × 35% × ~$1,850 residential plus ~$28K/yr commercial reconciles to within 15% of $2.41M.",
+   "b3": "Workflows: lead intake (unclear owner), quoting (Dana), scheduling (office + ops manager), dispatch (crew leads), QC (crew leads, informal), invoicing (office manager after Dana approves — invoices go out 5–10 days after the job), collections (office manager), commercial renewals (Dana), hiring (Dana + ops manager). \"Handoffs are tribal knowledge.\" About 15% documented — the written procedures are 2021 safety sheets, opened in the room. Priya (ops manager, 8 months) wants more; no manager owns an outcome or a metric; \"things frequently fall back to me.\" Monday crew huddle is scheduling only; no leadership meeting; no weekly KPIs; revenue looked at monthly. Watched two escalations arrive during the session. Four-week test: week one fine, week two quoting stops and invoices stall, week three an unanswerable Beacon call, week four a lost account. Crews \"could handle\" +20%; \"I would be quoting at midnight.\"",
+   "b4": "Tools: field-service app, QuickBooks Online, Gmail + Sheets for quoting, GroupMe; no CRM, no dashboards. Systems tour showed quote sheet → field app → QuickBooks re-keyed by Lena at every hand-off; \"numbers conflict between the app and QuickBooks. I trust neither.\" Repetitive-work inventory: quote assembly 8 h/wk (Dana), invoice prep and chasing 6 (Lena), schedule reshuffling 4, status calls and texts 5, weekly numbers pull 3 — 26 h/wk, 18 of them staff, against a ~680-hour team. One automation: appointment reminders in the field app, set up by the vendor, reliable, nobody owns it. AI: ops manager uses ChatGPT for emails; \"nothing systematic.\" Discipline: \"None of these are consistently true.\" Shared QuickBooks login; quote sheets never backed up; all commercial contacts on Dana's phone. Budget \"$10–15K if it clearly pays back\"; Dana 4 h/wk, team 6 h/wk; \"I'm done duct-taping.\"",
+   "b5": "Requires Dana: pricing exceptions, major sales, escalations, hiring, purchasing over $500, commercial QC sign-off, banking, vendor relationships, strategy. Hand off first: quoting, invoice approval, escalations. Key people: Dana (quoting, commercial relationships, banking); Marcus Hale, senior crew lead, \"the only one who knows the Beacon properties cold.\" Beacon Property Group 22% of revenue on the revenue-by-customer report, top five 41% — below the 25% overlay line. Commercial contracts written, \"probably transferable, never checked\"; licences and insurance current; no continuity plan; accounts \"under my personal Google.\" Cash: profitable but tight when big projects run; commercial pays in 45–60 days. \"If it needs my hours, it won't happen. That's why nothing's changed in two years.\""
+  },
+  "demonstrated": [
+   "Dana built a quote live in Sheets — 34 minutes, priced from memory",
+   "Systems tour of the field-service app, QuickBooks and the quote sheet: manual re-entry at every hand-off",
+   "The safety-sheet SOPs opened — dated 2021",
+   "The appointment-reminder automation shown running",
+   "Two escalations arrived for Dana during the session"
+  ],
+  "documents_seen": [
+   "QuickBooks P&L, 24 months — revenue $2.41M, gross margin 38%, operating profit $216K",
+   "Revenue-by-customer report — Beacon Property Group 22%, top five 41%",
+   "Rate card dated 2023 plus three recent quotes",
+   "Payroll summary — office roles ~$30/hr loaded",
+   "Not received: AR aging; job-cost breakdown (none exists)"
+  ]
+ },
+ "dataRoom": {
+  "pnl_on_file": true,
+  "documents": [
+   {
+    "name": "QuickBooks P&L, 24 months",
+    "kind": "pnl",
+    "received_on": "2026-09-02"
+   },
+   {
+    "name": "Revenue by customer, trailing 12 months",
+    "kind": "revenue_by_customer",
+    "received_on": "2026-09-02"
+   },
+   {
+    "name": "Rate card (2023) and three recent quotes",
+    "kind": "rate_card",
+    "received_on": "2026-09-04"
+   },
+   {
+    "name": "Payroll summary",
+    "kind": "other",
+    "received_on": "2026-09-04"
+   }
+  ]
+ },
+ "scores": {
+  "P1": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Sources and rough volumes known: referrals ~30/mo, Google/LSA ~25/mo at $1,400, RFPs 3–4. Quality \"tracked in my head.\"",
+   "why_not_higher": "Nothing is logged in one place; cost known for one source only."
+  },
+  "P2": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Four inboxes (voicemail, email, Facebook, LSA). \"Usually same day, sometimes next.\" No log.",
+   "why_not_higher": "Anchor 2 needs usually-within-a-day *and* some capture; there is no capture."
+  },
+  "P3": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "\"Maybe 40% get a second touch.\" No automation; person-dependent.",
+   "why_not_higher": "No defined sequence; nobody can say who was followed up."
+  },
+  "P4": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "No defined process; ~35% close is an estimate, not tracked by source; loss reason known anecdotally (\"someone who got them a number faster\").",
+   "why_not_higher": "Anchor 2 needs a loose process and a rate that is actually tracked."
+  },
+  "P5": {
+   "score": 0,
+   "na": false,
+   "evidence": "documented",
+   "note": "Rate card dated 2023, competitor-based, unchanged except fuel surcharge. \"Pricing is a current worry.\"",
+   "why_not_higher": "Two-plus years unchanged is the 0 anchor verbatim."
+  },
+  "P6": {
+   "score": 0,
+   "na": false,
+   "evidence": "reported",
+   "note": "No bundles, no residential maintenance plan (\"talked about it for years\"), no premium tier.",
+   "why_not_higher": "No add-ons of any kind."
+  },
+  "P7": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Repeat ~45% residential, renewal ~85% commercial known roughly. Inactive customers not identified; \"we never talk to them.\"",
+   "why_not_higher": "No reactivation has ever run."
+  },
+  "P8": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Marketing \"me, when I have time\"; sales \"me\"; $1,400/mo LSA; numbers never reviewed together.",
+   "why_not_higher": "No named owners, nothing reviewed on a cadence."
+  },
+  "P9": {
+   "score": 2,
+   "na": false,
+   "evidence": "documented",
+   "note": "Gross margin 38% confirmed on the P&L; swings 32–44% by month; nothing by job or service. No job-cost export exists.",
+   "why_not_higher": "Anchor 3 needs margin by service line or job type."
+  },
+  "P10": {
+   "score": 2,
+   "na": false,
+   "evidence": "documented",
+   "note": "QuickBooks monthlies \"around the 25th,\" reviewed \"when something looks off.\" One target (revenue $3M).",
+   "why_not_higher": "Anchor 3 needs a close within 30 days *and* review by the owner."
+  },
+  "S1": {
+   "score": 1,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Scheduled crew work runs without her; pricing exceptions, major sales, escalations, hiring, purchasing >$500, banking, commercial QC, vendors and strategy all return to Dana. Watched two escalations arrive during the session.",
+   "why_not_higher": "Only routine work is delegated."
+  },
+  "S2": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Four-week test: week one fine, week two quoting stops and invoices stall, week three an unanswerable Beacon call, week four a lost account. Longest absence 5 days.",
+   "why_not_higher": "Runs about a week; no named deputy."
+  },
+  "S3": {
+   "score": 0,
+   "na": false,
+   "evidence": "reported",
+   "note": "\"Nobody else can price a job.\" Property managers \"only want to talk to me.\" 50%+ of commercial revenue on Dana's relationships.",
+   "why_not_higher": "Anchor 1 needs someone else able to quote."
+  },
+  "S4": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Ops manager 8 months in, wants more; office manager; crew leads. No manager owns an outcome or a metric; \"things frequently fall back to me.\"",
+   "why_not_higher": "Anchor 2 needs some real managers with outcomes, even patchy."
+  },
+  "S5": {
+   "score": 1,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "~15% documented; the written procedures are 2021 safety sheets. New hires learn by shadowing.",
+   "why_not_higher": "Not current, not trained from."
+  },
+  "S6": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Monday crew huddle is scheduling only; no leadership meeting; no weekly KPIs; revenue looked at monthly.",
+   "why_not_higher": "A regular meeting exists, so not 0; no KPIs, so not 2."
+  },
+  "S7": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Crews deliver and \"could handle\" +20%; QC is informal by crew leads; the owner would be \"quoting at midnight.\"",
+   "why_not_higher": "Growth needs heroics from the owner; QC steps not defined."
+  },
+  "S8": {
+   "score": 1,
+   "na": false,
+   "evidence": "documented",
+   "note": "Beacon Property Group 22% of revenue on the revenue-by-customer report; top five 41%.",
+   "why_not_higher": "v2 anchor 1 is 20–30%. Below the 25% overlay, so a watch item, not a warning."
+  },
+  "S9": {
+   "score": 2,
+   "na": false,
+   "evidence": "documented",
+   "note": "28% contracted (renewing at 85%) plus 22% repeat without contract. No forecast.",
+   "why_not_higher": "Anchor 3 needs ≥40% recurring or fixed costs covered, plus a rolling forecast."
+  },
+  "S10": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Commercial contracts written; transferability \"never checked.\" Marcus alone knows the Beacon properties; no continuity plan; accounts under Dana's personal Google.",
+   "why_not_higher": "Cross-training has not started; nothing is tested."
+  },
+  "L1": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Field-service app, QuickBooks Online, Gmail + Sheets for quoting, GroupMe. No CRM, no dashboard.",
+   "why_not_higher": "Two significant gaps (CRM, reporting), so not 3."
+  },
+  "L2": {
+   "score": 0,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "\"Quote spreadsheet → field app → QuickBooks all manual. Office manager retypes everything.\" Seen on the tour.",
+   "why_not_higher": "A person is the glue."
+  },
+  "L3": {
+   "score": 0,
+   "na": false,
+   "evidence": "reported",
+   "note": "\"Numbers conflict between the app and QuickBooks. I trust neither.\"",
+   "why_not_higher": "No single trusted report."
+  },
+  "L4": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "26 h/wk of repetitive work inventoried; the load is acknowledged and nothing beyond reminders has been fixed.",
+   "why_not_higher": "Nothing reduced."
+  },
+  "L5": {
+   "score": 1,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "One automation (appointment reminders), reliable, set up by the vendor; nobody owns it.",
+   "why_not_higher": "One, not several."
+  },
+  "L6": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Ops manager uses ChatGPT for emails. \"Nothing systematic.\"",
+   "why_not_higher": "One person experimenting."
+  },
+  "L7": {
+   "score": 0,
+   "na": false,
+   "evidence": "reported",
+   "note": "\"None of these are consistently true.\"",
+   "why_not_higher": "No rules of any kind."
+  },
+  "L8": {
+   "score": 0,
+   "na": false,
+   "evidence": "reported",
+   "note": "Shared QuickBooks login; quote sheets never backed up; all commercial contacts on Dana's phone.",
+   "why_not_higher": "The 0 anchor verbatim."
+  },
+  "L9": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Appetite high; ops manager curious; no training has happened.",
+   "why_not_higher": "Curious individuals, no training."
+  },
+  "L10": {
+   "score": 3,
+   "na": false,
+   "evidence": "reported",
+   "note": "\"$10–15K if it clearly pays back\"; Dana 4 h/wk, team 6 h/wk; \"I'm done duct-taping.\"",
+   "why_not_higher": "Execution still depends on the owner's hours, by her own account."
+  }
+ },
+ "assessment": {
+  "owner_objective": "Reliable revenue growth — then Reduce owner dependence, Use AI & automation effectively",
+  "owner_belief": "We need more leads. Growth has been flat two years and I think marketing is the problem. We're invisible online compared to the bigger guys.",
+  "primary_constraint": "The revenue engine is Dana — quoting, closing and commercial relationships run through one calendar, so sales speed and follow-through collapse to whatever her week allows.",
+  "constraint_symptoms": "Block 1 (\"nobody else can price a job\"); Block 2 (3–5 day quotes, loss reason is speed, 40% follow-up); Block 3 (four-week test fails on quoting); Block 6 (hand-off list starts with quoting).",
+  "constraint_cost": "~$92K expected operating profit from slow quotes and missing follow-up · ~$28K staff payroll on automatable work · ~416 owner hours on quote assembly.",
+  "constraint_fix": "Templated pricing with ops-manager approval rights, a 24-hour quote standard with three-touch follow-up, shared bank and contact access, and a written Beacon playbook.",
+  "momentum_initiative": "The price refresh (P5) — a decision, not a project, measurable inside 30 days, in the owner's control.",
+  "overlay_flags": [
+   "key_person",
+   "data_risk"
+  ],
+  "plan_items": [],
+  "overlap_factor": 0.7
+ },
+ "opportunities": [],
+ "expected": {
+  "gate_should_pass": true,
+  "expected_blockers": [],
+  "expected_warnings": [],
+  "band_guess": "Stabilizing",
+  "cross_checks": {
+   "margin_vs_pnl": "pass",
+   "funnel_vs_revenue": "pass",
+   "concentration": "pass",
+   "hours_vs_headcount": "pass"
+  }
+ },
+ "key_version": "Rubrics v2, 8 Sep 2026 — draft key, founder approval pending"
+}

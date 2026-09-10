@@ -1,0 +1,1183 @@
+{
+ "n": 10,
+ "company": "IronPath Fitness",
+ "owner": "Sam Alvarez",
+ "industry": "Fitness studios (2 locations)",
+ "profile": {
+  "revenue": 1300000,
+  "grossMarginPct": 62,
+  "operatingProfit": 143000,
+  "headcount": 19,
+  "founded": 2016,
+  "story": "Sam runs two strength-and-conditioning studios with about 1,150 members on monthly agreements, coached by a mostly part-time team of nineteen. The membership model does what a membership model should: 88% of revenue renews on a date, retention is measured every month, and there is a general manager at each studio who runs the floor and the schedule. Where IronPath is ordinary rather than good is money and follow-through — prices have not moved since 2024 while coach wages and rent both have, 820 former members sit in the system with nobody calling them, and lead follow-up is eight hours a week of coaches typing texts between classes."
+ },
+ "edge_cases": [
+  "Membership model — S9 near the top of the scale on 88% recurring revenue",
+  "P7 at 3: retention genuinely measured and the inactive list worked, which most of this cohort cannot claim",
+  "L9 at 3: team trained on the core tools with uneven adoption across a mostly part-time staff",
+  "Carries both a reactivation and a price_change calculator; everything should pass cleanly"
+ ],
+ "intake": {
+  "q1": [
+   {
+    "row": "Your name",
+    "value": "Sam Alvarez"
+   },
+   {
+    "row": "Email",
+    "value": "sam@ironpathfitness.com"
+   },
+   {
+    "row": "Phone",
+    "value": "(720) 555-0193"
+   },
+   {
+    "row": "Company name",
+    "value": "IronPath Fitness"
+   },
+   {
+    "row": "Website",
+    "value": "ironpathfitness.com"
+   },
+   {
+    "row": "Location",
+    "value": "Denver, CO — two studios"
+   },
+   {
+    "row": "Industry",
+    "value": "Strength and conditioning studios"
+   }
+  ],
+  "q2": "Two studios running small-group strength and conditioning — coached classes of eight to fourteen, plus personal training and a nutrition programme. Members pay monthly on a rolling agreement: unlimited, three-a-week, or a class pack. About 1,150 active members between the two locations. Nineteen of us, most part-time coaches, with a general manager at each studio and a front-desk lead who handles member admin across both.",
+  "q3": [
+   {
+    "row": "Primary",
+    "objective": "More profit & cash flow"
+   },
+   {
+    "row": "Secondary 1",
+    "objective": "Reliable revenue growth"
+   },
+   {
+    "row": "Secondary 2",
+    "objective": "Reduce owner dependence"
+   }
+  ],
+  "q4": [
+   {
+    "row": "1",
+    "outcome": "Operating profit",
+    "target": "$143K → $230K"
+   },
+   {
+    "row": "2",
+    "outcome": "Member count across both studios",
+    "target": "1,150 → 1,400"
+   },
+   {
+    "row": "3",
+    "outcome": "12-month member retention",
+    "target": "63% → 70%"
+   }
+  ],
+  "q5": "Three studios, $2M, and a head coach who owns programming across all of them so I am not writing the training cycle at eleven at night. I would like to coach two classes a week because I want to, not because someone called in sick.",
+  "q6": "Split across most of these",
+  "q7": [
+   {
+    "row": "Hours/week now",
+    "value": "58"
+   },
+   {
+    "row": "Hours/week you want in 12 months",
+    "value": "45"
+   },
+   {
+    "row": "Hours/week you want in 3 years",
+    "value": "35"
+   },
+   {
+    "row": "Longest uninterrupted time away in the past 12 months",
+    "value": "9 days, and I still wrote the programming from a hotel"
+   },
+   {
+    "row": "What pulls you back in",
+    "value": "Coach call-outs, and any member who wants to cancel — the GMs send those to me"
+   }
+  ],
+  "q8": "We fill classes and we do not keep enough of the money. Members join, they stay eight or nine months, and we spend everything we make on payroll because I keep adding class times. My honest belief is that we are underpriced and I have been too nervous to do anything about it for two years.",
+  "q9": [
+   {
+    "row": "Year founded",
+    "value": "2016"
+   },
+   {
+    "row": "Owners & percentages",
+    "value": "Sam Alvarez 70%, Devon Pryor 30% — Devon put in the second studio's build-out"
+   },
+   {
+    "row": "Any owner misalignment affecting decisions?",
+    "value": "Devon is silent day to day but wants a third location sooner than I think we are ready for"
+   }
+  ],
+  "q10": [
+   {
+    "row": "Full-time employees",
+    "count": "5"
+   },
+   {
+    "row": "Part-time",
+    "count": "12"
+   },
+   {
+    "row": "Regular contractors",
+    "count": "2"
+   },
+   {
+    "row": "Managers / team leads",
+    "count": "3"
+   },
+   {
+    "row": "People with direct reports",
+    "count": "2"
+   }
+  ],
+  "q11": "Local",
+  "q12": [
+   {
+    "row": "One-time projects",
+    "pct": "3"
+   },
+   {
+    "row": "Recurring contracts",
+    "pct": "88"
+   },
+   {
+    "row": "Repeat without contract",
+    "pct": "5"
+   },
+   {
+    "row": "Products",
+    "pct": "4"
+   },
+   {
+    "row": "Retainers",
+    "pct": "0"
+   },
+   {
+    "row": "Other",
+    "pct": "0"
+   }
+  ],
+  "q13": [
+   {
+    "name": "Unlimited membership",
+    "pct": "49",
+    "margin": "64",
+    "trend": "Growing",
+    "importance": "The core product and the best retention"
+   },
+   {
+    "name": "Three-a-week membership",
+    "pct": "32",
+    "margin": "61",
+    "trend": "Flat",
+    "importance": "The volume tier; where most new members land"
+   },
+   {
+    "name": "Personal training",
+    "pct": "11",
+    "margin": "52",
+    "trend": "Flat",
+    "importance": "Coach income and the best upgrade path; sold inconsistently"
+   },
+   {
+    "name": "Nutrition programme",
+    "pct": "5",
+    "margin": "71",
+    "trend": "Growing",
+    "importance": "Highest margin per hour, tiny attach rate"
+   },
+   {
+    "name": "Apparel and supplements",
+    "pct": "3",
+    "margin": "38",
+    "trend": "Flat",
+    "importance": "Community, not profit"
+   }
+  ],
+  "q14": [
+   {
+    "row": "Active customer count",
+    "value": "1,150 active members; 820 former members still in the system"
+   },
+   {
+    "row": "B2B / B2C / mixed",
+    "value": "B2C with one corporate wellness account"
+   },
+   {
+    "row": "% of revenue from your largest customer",
+    "value": "3"
+   },
+   {
+    "row": "% of revenue from your top five",
+    "value": "6"
+   },
+   {
+    "row": "% of revenue tied directly to YOUR personal relationships",
+    "value": "Maybe 15% — the founding members came for me, the rest came for the programme"
+   }
+  ],
+  "q15": [
+   {
+    "row": "Last completed year",
+    "amount": "1300000"
+   },
+   {
+    "row": "Prior year",
+    "amount": "1150000"
+   },
+   {
+    "row": "Year to date",
+    "amount": "980000"
+   },
+   {
+    "row": "Full-year forecast",
+    "amount": "1400000"
+   }
+  ],
+  "q16": "Up 11–25%",
+  "q17": [
+   {
+    "row": "Approximate gross margin %",
+    "value": "62"
+   },
+   {
+    "row": "Main direct costs",
+    "value": "Coach wages, class-time payroll burden, programming software, and the merchant fees on 1,150 monthly charges"
+   },
+   {
+    "row": "Tracked by job / service / customer?",
+    "value": "By membership type and by studio in the member management reports, monthly"
+   }
+  ],
+  "q18": [
+   {
+    "row": "Operating profit estimate",
+    "amount": "143000"
+   },
+   {
+    "row": "Owner salary",
+    "amount": "88000"
+   },
+   {
+    "row": "Owner distributions",
+    "amount": "24000"
+   },
+   {
+    "row": "Unusual one-off expenses",
+    "amount": "38000 — rig and flooring replacement at the north studio"
+   }
+  ],
+  "q19": [
+   "Profitable but tight",
+   "Seasonality",
+   "Debt payments"
+  ],
+  "q20": "Monthly, within 15 days",
+  "q21": [
+   {
+    "row": "Revenue",
+    "target": "$1.6M"
+   },
+   {
+    "row": "Gross margin",
+    "target": "Hold 62% while wages rise"
+   },
+   {
+    "row": "Operating profit",
+    "target": "$230K"
+   },
+   {
+    "row": "Cash reserve",
+    "target": "Two months of payroll; we hold about six weeks"
+   },
+   {
+    "row": "Owner compensation",
+    "target": "$120K and stop coaching for free"
+   }
+  ],
+  "q22": "P&L for both studios 2024–2026, the member management reports (membership by type, retention cohorts, dormant member list), the current rate card and the founding-member legacy pricing list, and the class attendance export.",
+  "q23": [
+   {
+    "source": "Member referrals",
+    "per_month": "44",
+    "cost": "0",
+    "quality": "5",
+    "tracked": "Yes"
+   },
+   {
+    "source": "Instagram and local content",
+    "per_month": "38",
+    "cost": "1100",
+    "quality": "3",
+    "tracked": "Yes"
+   },
+   {
+    "source": "Google and maps",
+    "per_month": "31",
+    "cost": "1600",
+    "quality": "4",
+    "tracked": "Yes"
+   },
+   {
+    "source": "Free intro week promotions",
+    "per_month": "24",
+    "cost": "900",
+    "quality": "3",
+    "tracked": "Yes"
+   },
+   {
+    "source": "Corporate wellness partner",
+    "per_month": "8",
+    "cost": "0",
+    "quality": "4",
+    "tracked": "Yes"
+   }
+  ],
+  "q24": [
+   {
+    "row": "What happens, step by step",
+    "value": "Lead fills in the intro form or DMs us, it lands in the member management system, the front desk or whichever coach is free texts them to book a free intro session, and the GM runs the intro"
+   },
+   {
+    "row": "Typical response time",
+    "value": "Usually within a couple of hours in the day; overnight leads get answered at 6am"
+   },
+   {
+    "row": "Who is responsible",
+    "value": "Front desk lead officially; in practice whichever coach picks it up between classes"
+   },
+   {
+    "row": "Is every inquiry captured in one system?",
+    "value": "Yes — forms, DMs and walk-ins all get entered into the member system"
+   },
+   {
+    "row": "Automated follow-up?",
+    "value": "An intro reminder and a no-show follow-up, both automated. The rest is coaches texting."
+   },
+   {
+    "row": "% of leads that get 2+ follow-ups",
+    "value": "About 70%"
+   }
+  ],
+  "q25": [
+   {
+    "row": "Lead→sale or proposal→close %",
+    "value": "26% of leads become paying members; about 55% of the ones who actually attend an intro join"
+   },
+   {
+    "row": "Tracked by source / person / service?",
+    "value": "By source and by studio, monthly"
+   },
+   {
+    "row": "Defined sales process?",
+    "value": "There is an intro script and the GMs use it. Neither of them handles the price objection the same way."
+   },
+   {
+    "row": "Most common reason you lose",
+    "value": "Price, and people who never show up for the intro they booked"
+   }
+  ],
+  "q26": [
+   {
+    "row": "Typical first sale",
+    "value": "$179/mo unlimited or $139/mo three-a-week"
+   },
+   {
+    "row": "Typical annual customer value",
+    "value": "About $2,880 first year; $1,320 for the ones who lapse mid-year"
+   },
+   {
+    "row": "Most valuable segment",
+    "value": "Unlimited members who also buy personal training — they stay nearly twice as long"
+   },
+   {
+    "row": "Tracked?",
+    "value": "Yes, in the member reports"
+   }
+  ],
+  "q27": [
+   {
+    "row": "% who buy again",
+    "value": "12-month retention 63%; average membership length 8.7 months"
+   },
+   {
+    "row": "Renewal rate if applicable",
+    "value": "Monthly agreements — 94% month-over-month retention"
+   },
+   {
+    "row": "Are inactive customers identified?",
+    "value": "Yes, the dormant list is pulled monthly — 820 former members, 310 of them cancelled inside the last year"
+   },
+   {
+    "row": "Reactivation campaigns ever run?",
+    "value": "Yes, twice a year, a January push and a September push. They work but nobody owns them."
+   },
+   {
+    "row": "Why customers leave",
+    "value": "Injury, moving, cost, and the ones who stopped coming for three weeks and never came back — we do not catch those in time"
+   }
+  ],
+  "q28": [
+   "Varies by scope or value",
+   "Set against competitors",
+   "Unchanged for 2+ years",
+   "Pricing is a current worry"
+  ],
+  "q29": [
+   {
+    "row": "Complementary services routinely offered?",
+    "value": "Personal training and the nutrition programme — offered at the intro and rarely after"
+   },
+   {
+    "row": "Bundles or packages?",
+    "value": "Yes: unlimited, three-a-week, class packs, and a hybrid with two PT sessions"
+   },
+   {
+    "row": "Premium option?",
+    "value": "The hybrid membership with personal training"
+   },
+   {
+    "row": "Entry-level option?",
+    "value": "The eight-class pack"
+   },
+   {
+    "row": "Customer needs you can't currently serve",
+    "value": "Early-morning classes at the north studio, physio and rehab, and anyone who wants to train alone"
+   }
+  ],
+  "q30": [
+   {
+    "row": "Who owns marketing",
+    "value": "Sam, with a coach who runs the Instagram account as part of her hours"
+   },
+   {
+    "row": "Who owns sales",
+    "value": "The two GMs run the intros"
+   },
+   {
+    "row": "Monthly marketing budget",
+    "value": "$3,600 including the intro-week promotions"
+   },
+   {
+    "row": "Do sales & marketing review results together?",
+    "value": "Yes, monthly with both GMs"
+   },
+   {
+    "row": "Are leads, conversion, CAC and customer value ever reviewed together?",
+    "value": "Leads, conversion and member value yes. We calculated cost per member once, in 2024."
+   }
+  ],
+  "q31": "Minor adjustments",
+  "q32": [
+   {
+    "row": "1",
+    "area": "Membership pricing"
+   },
+   {
+    "row": "2",
+    "area": "The members who drift out at month eight"
+   },
+   {
+    "row": "3",
+    "area": "Personal training attach rate"
+   }
+  ],
+  "q33": [
+   {
+    "workflow": "Lead capture and intro booking"
+   },
+   {
+    "workflow": "Intro session and membership sale"
+   },
+   {
+    "workflow": "Member onboarding and first 30 days"
+   },
+   {
+    "workflow": "Class scheduling and coach rostering"
+   },
+   {
+    "workflow": "Programming and coach briefing"
+   },
+   {
+    "workflow": "Billing, failed payments and dunning"
+   },
+   {
+    "workflow": "At-risk member outreach"
+   },
+   {
+    "workflow": "Cancellation and save conversation"
+   },
+   {
+    "workflow": "Coach hiring and certification tracking"
+   }
+  ],
+  "q34": [
+   {
+    "row": "One clear accountable role",
+    "frequency": "Usually"
+   },
+   {
+    "row": "Defined handoffs",
+    "frequency": "Usually"
+   },
+   {
+    "row": "Consistent exception escalation",
+    "frequency": "Sometimes"
+   }
+  ],
+  "q35": [
+   {
+    "row": "Documented",
+    "pct": "55"
+   },
+   {
+    "row": "Current",
+    "pct": "45"
+   },
+   {
+    "row": "Accessible",
+    "pct": "70"
+   },
+   {
+    "row": "Used in training",
+    "pct": "60"
+   },
+   {
+    "row": "Actually followed",
+    "pct": "50"
+   }
+  ],
+  "q36": [
+   "Scheduling delays",
+   "The owner has to step in",
+   "Unclear priorities",
+   "Quality inconsistency"
+  ],
+  "q37": "Owner time",
+  "q38": "Mostly clear, with gaps",
+  "q39": [
+   {
+    "row": "How many KPIs reviewed weekly",
+    "value": "Four — new members, cancellations, class attendance and revenue"
+   },
+   {
+    "row": "Does each have one owner?",
+    "value": "The GMs own new members and attendance; cancellations are nominally mine"
+   },
+   {
+    "row": "Are targets visible?",
+    "value": "Yes, in the shared dashboard both GMs can open"
+   },
+   {
+    "row": "Does a miss trigger action?",
+    "value": "On new members yes. On cancellations it triggers me having the conversation myself."
+   }
+  ],
+  "q40": "Weekly but loose",
+  "q41": [
+   {
+    "row": "CRM",
+    "tool": "Member management platform (leads, members, billing all in one)"
+   },
+   {
+    "row": "Marketing",
+    "tool": "Instagram, the platform's email and SMS, a landing page builder"
+   },
+   {
+    "row": "Sales / proposals",
+    "tool": "The intro script and the platform's membership sign-up"
+   },
+   {
+    "row": "Scheduling / project management",
+    "tool": "The platform's class scheduler; coach rostering in a spreadsheet"
+   },
+   {
+    "row": "Delivery",
+    "tool": "Programming software the coaches read from, plus whiteboards"
+   },
+   {
+    "row": "Accounting",
+    "tool": "QuickBooks Online with a part-time bookkeeper"
+   },
+   {
+    "row": "Reporting",
+    "tool": "The platform's dashboards, plus a monthly spreadsheet Sam keeps"
+   },
+   {
+    "row": "Communication",
+    "tool": "Slack for coaches, SMS and app push for members"
+   },
+   {
+    "row": "Files / knowledge",
+    "tool": "Google Drive with the coach handbook and class standards"
+   },
+   {
+    "row": "HR / payroll",
+    "tool": "Gusto"
+   }
+  ],
+  "q42": "Some integrations",
+  "q43": [
+   "KPI definitions are agreed",
+   "Data is generally accurate",
+   "Customer and financial data can be connected",
+   "Backups exist"
+  ],
+  "q44": [
+   {
+    "task": "Lead follow-up texts and intro rebooking",
+    "who": "Coaches and front desk",
+    "frequency": "Daily",
+    "occurrences": "5",
+    "minutes": "96",
+    "errors": "No",
+    "systems": "Member platform, personal phones"
+   },
+   {
+    "task": "Class schedule changes and coach cover",
+    "who": "GMs",
+    "frequency": "Daily",
+    "occurrences": "5",
+    "minutes": "72",
+    "errors": "Yes",
+    "systems": "Spreadsheet, platform scheduler, Slack"
+   },
+   {
+    "task": "Failed payment chasing",
+    "who": "Front desk lead",
+    "frequency": "Several times a week",
+    "occurrences": "3",
+    "minutes": "100",
+    "errors": "No",
+    "systems": "Member platform, phone"
+   },
+   {
+    "task": "At-risk member check-in calls",
+    "who": "GMs",
+    "frequency": "Weekly",
+    "occurrences": "4",
+    "minutes": "60",
+    "errors": "No",
+    "systems": "Attendance report, phone"
+   },
+   {
+    "task": "Coach payroll hours reconciliation",
+    "who": "Sam",
+    "frequency": "Weekly",
+    "occurrences": "1",
+    "minutes": "180",
+    "errors": "Yes",
+    "systems": "Spreadsheet, Gusto, platform"
+   }
+  ],
+  "q45": "Quite a lot on the member side: billing runs automatically, class reminders, the intro reminder and no-show follow-up, the birthday and milestone messages, and the monthly dormant list pull. All reliable. Lead follow-up beyond the first automated touch is coaches texting from their own phones, and the coach roster is a spreadsheet.",
+  "q46": [
+   "Drafting",
+   "Marketing content",
+   "Customer communication",
+   "Scheduling"
+  ],
+  "q47": [
+   "Someone accountable per implementation",
+   "The team is trained",
+   "Human-review rules are clear"
+  ],
+  "q48": [
+   "Shared passwords",
+   "Sensitive data in unapproved tools",
+   "Unclear account ownership"
+  ],
+  "q49": [
+   {
+    "row": "Implementation budget range",
+    "value": "$8–14K"
+   },
+   {
+    "row": "Owner hours/week available",
+    "value": "5"
+   },
+   {
+    "row": "Team hours/week available",
+    "value": "8 between the two GMs"
+   },
+   {
+    "row": "Appetite for changing systems",
+    "value": "High — the coaches adopt anything that lives on their phone"
+   }
+  ],
+  "q58": "Trained on the core tools, adoption uneven",
+  "q59": "Both GMs are trained on the platform and one of them builds her own reports. The full-time coaches are fine with it. The part-timers who coach two classes a week barely open anything beyond the schedule, which is where the unevenness is.",
+  "q56": [
+   {
+    "role": "Coach (part-time)",
+    "rate": "34"
+   },
+   {
+    "role": "Front desk lead",
+    "rate": "28"
+   },
+   {
+    "role": "General manager",
+    "rate": "42"
+   },
+   {
+    "role": "Owner",
+    "rate": "68"
+   }
+  ],
+  "q50": [
+   "Pricing exceptions",
+   "Customer escalations",
+   "Hiring / firing",
+   "Banking / payments",
+   "Technical decisions",
+   "Strategy",
+   "Quality sign-off"
+  ],
+  "q51": [
+   {
+    "row": "What keeps running",
+    "value": "Classes, billing, member admin and the schedule — the GMs and the platform carry it for weeks"
+   },
+   {
+    "row": "What slows down",
+    "value": "Programming after about two weeks; hiring; anything needing a price decision"
+   },
+   {
+    "row": "What stops",
+    "value": "Cancellation saves, because the GMs send those to me, and any coach dispute"
+   },
+   {
+    "row": "Who decides",
+    "value": "The GMs inside their studio; nothing on money"
+   },
+   {
+    "row": "What nobody else can access",
+    "value": "The bank, the merchant account, and the landlord relationships"
+   }
+  ],
+  "q52": [
+   {
+    "risk": "Sam — sole programmer of the training cycle and the only person who saves a cancellation",
+    "impact": "Programming quality drifts within a month and cancellations go unworked immediately"
+   },
+   {
+    "risk": "The north studio lease, up for renewal in 14 months",
+    "impact": "A rent step at renewal would take most of the profit at current prices"
+   },
+   {
+    "risk": "The member management platform holding leads, members, billing and payment details",
+    "impact": "One vendor holds the entire commercial record and no export has ever been tested"
+   },
+   {
+    "risk": "The two general managers",
+    "impact": "Each is the operating layer for a whole studio, and neither has a deputy"
+   }
+  ],
+  "q53": [
+   "Customer agreements are written & accessible",
+   "Vendor agreements are written",
+   "Licenses & insurance are current",
+   "The company owns its IP and digital accounts",
+   "No known legal, tax or insurance issue"
+  ],
+  "q54": [
+   "Recurring revenue",
+   "Leadership depth",
+   "SOPs & knowledge transfer"
+  ],
+  "q55": "Ready if priorities stay tight",
+  "q57": "Tired but managing"
+ },
+ "session": {
+  "engine": {
+   "leads_per_month": "145",
+   "conversion_rate": "26%",
+   "avg_deal_value": "$2,880",
+   "response_time": "Within a couple of hours in the day; overnight leads at 6am",
+   "gross_margin_pct": "62",
+   "headcount": "19",
+   "repetitive_hours_week": "Lead follow-up texts & rebooking — coaches and front desk — 8\nClass schedule changes & coach cover — GMs — 6\nFailed payment chasing — front desk lead — 5\nAt-risk member check-ins — GMs — 4\nCoach payroll reconciliation — Sam — 3",
+   "largest_customer_pct": "3"
+  },
+  "blockNotes": {
+   "b1": "Q8 belief is that they are underpriced, and for once the evidence agrees almost entirely — the rate card is dated 2024, coach wages and rent have both moved since, and the owner named her own two-year hesitation as the reason. Owner hours 58; a 9-day break this year still involved writing the programming.",
+   "b2": "Funnel from the member platform: 145 leads a month across five tracked sources, 26% become paying members, $2,880 first-year value. Multiplies to $1.30M against $1.30M on the P&L. The interesting split is inside it — 55% of the people who actually attend an intro join, so the leak is intro attendance, not the sales conversation.",
+   "b3": "Rate card on file dated March 2024 at $179 unlimited and $139 for three-a-week, set against two competitors down the road. A legacy list of 96 founding members still pays $119. Margin by membership type is in the platform reports monthly and is genuinely used.",
+   "b4": "26 h/wk repetitive on a 19-person, 760-hour payroll (3.4%). The member-side automation is good — billing, reminders, no-show follow-up, dormant list — and lead follow-up beyond the first touch is still coaches texting from personal phones between classes.",
+   "b5": "Largest customer 3%, one corporate wellness account: no concentration exposure. The real single points are Sam on programming and cancellation saves, the north studio lease renewal in 14 months, and a single platform vendor holding leads, members and card details with no tested export."
+  },
+  "demonstrated": [
+   "Intro session observed end to end at the south studio, including the price objection handled two different ways by the two GMs on the same afternoon",
+   "The member platform walked: lead capture, intro booking, membership sale and billing all in one record",
+   "Automated billing run, class reminders, intro reminders and no-show follow-up all shown firing",
+   "The monthly dormant list pulled live — 820 former members, 310 cancelled inside the last year",
+   "Weekly numbers meeting observed: four KPIs on the shared dashboard, two owned by GMs, cancellations owned by Sam",
+   "The coach handbook and class standards opened in Drive — current, used in onboarding, adherence not checked",
+   "Coach roster spreadsheet and the platform scheduler shown side by side, kept in agreement by hand"
+  ],
+  "documents_seen": [
+   "P&L for both studios 2024–2026 — revenue $1.30M, gross margin 62%, operating profit $143K",
+   "Membership by type and studio with margin per type",
+   "Retention cohort report — 63% at twelve months, 94% month-over-month, average tenure 8.7 months",
+   "Dormant member list — 820 former members, 310 cancelled within the last year",
+   "Rate card dated March 2024 plus the 96-name founding-member legacy pricing list",
+   "Class attendance export by time slot and coach"
+  ]
+ },
+ "dataRoom": {
+  "pnl_on_file": true,
+  "documents": [
+   {
+    "name": "P&L both studios 2024–2026",
+    "kind": "pnl",
+    "received_on": "2026-08-30"
+   },
+   {
+    "name": "Membership by type and studio with margin",
+    "kind": "revenue_by_customer",
+    "received_on": "2026-08-30"
+   },
+   {
+    "name": "Retention cohort and dormant member report",
+    "kind": "other",
+    "received_on": "2026-09-01"
+   },
+   {
+    "name": "Rate card March 2024 and founding-member legacy list",
+    "kind": "rate_card",
+    "received_on": "2026-09-01"
+   },
+   {
+    "name": "Class attendance export by slot and coach",
+    "kind": "other",
+    "received_on": "2026-09-04"
+   }
+  ]
+ },
+ "scores": {
+  "P1": {
+   "score": 3,
+   "na": false,
+   "evidence": "documented",
+   "note": "Five sources with monthly volume, cost and quality in the platform reports (q23: referrals 44, Instagram 38, Google 31, intro promos 24, corporate 8), all tracked and reviewed monthly by source and studio.",
+   "why_not_higher": "Anchor 4 needs cost and quality reviewed together monthly; q30 says cost per member was calculated once, in 2024, so the cost half of that comparison is two years stale."
+  },
+  "P2": {
+   "score": 3,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Forms, DMs and walk-ins all land in the member platform (q24, walked in session); response within a couple of hours in the day and overnight leads by 6am, with an automated intro reminder and no-show follow-up shown firing.",
+   "why_not_higher": "Anchor 4 needs a sub-hour automated response; the first human touch is whichever coach picks it up between classes, which is the eight hours a week in q44."
+  },
+  "P3": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "About 70% of leads get two or more touches (q24) and the no-show follow-up is automated, but everything after the first automated touch is coaches texting from personal phones.",
+   "why_not_higher": "Anchor 3 needs a defined sequence used on most leads with misses visible; a lead nobody texted does not surface anywhere, and the b2 finding is that intro attendance is exactly where the funnel leaks."
+  },
+  "P4": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "26% lead-to-member and 55% intro-to-member both tracked by source and studio monthly; there is an intro script and both GMs use it (observed).",
+   "why_not_higher": "Watching the same objection handled two different ways by the two GMs in one afternoon is the anchor: the process is loose and the loss reason — price — has no agreed answer."
+  },
+  "P5": {
+   "score": 2,
+   "na": false,
+   "evidence": "documented",
+   "note": "Rate card on file dated March 2024, set against two nearby competitors, with 96 founding members still on $119 legacy pricing. Q28 confirms unchanged 2+ years and pricing named as a current worry.",
+   "why_not_higher": "Scored 2 rather than 0 because margin by membership type is genuinely known and used (q17, Doc), which is more economics than the 0 anchor allows — but there has been no review against the wage and rent increases since."
+  },
+  "P6": {
+   "score": 3,
+   "na": false,
+   "evidence": "reported",
+   "note": "Named tiers throughout: eight-class pack, three-a-week, unlimited, and a hybrid premium with personal training; nutrition and PT are scripted into the intro (q29).",
+   "why_not_higher": "Anchor 4 needs routine upsell across the team — q29 says PT and nutrition are offered at the intro 'and rarely after', so the ladder exists and is climbed once."
+  },
+  "P7": {
+   "score": 3,
+   "na": false,
+   "evidence": "documented",
+   "note": "Retention cohort report measures 63% at twelve months, 94% month-over-month and 8.7-month average tenure; the dormant list is pulled monthly and reactivation runs twice a year, in January and September (q27).",
+   "why_not_higher": "Anchor 4 needs the inactive list reactivated on a cadence with an owner — her own answer is 'they work but nobody owns them', and at-risk members are called weekly by GMs rather than by a rule."
+  },
+  "P8": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Both GMs own intros, a coach runs Instagram inside her hours, and leads, conversion and member value are reviewed monthly with both GMs (q30).",
+   "why_not_higher": "Anchor 3 needs named owners across the function; marketing has no owner other than Sam, and acquisition cost has not been calculated since 2024."
+  },
+  "P9": {
+   "score": 2,
+   "na": false,
+   "evidence": "documented",
+   "note": "P&L confirms 62% gross margin, and the platform reports give margin by membership type and studio monthly (q17).",
+   "why_not_higher": "Anchor 3 needs that margin used in pricing decisions; it has been read monthly for two years while prices stayed at the 2024 card and coach wages rose — the report informs nothing."
+  },
+  "P10": {
+   "score": 2,
+   "na": false,
+   "evidence": "documented",
+   "note": "Monthly close inside 15 days with a part-time bookkeeper (q20) and q21 carries revenue, margin, profit, cash and comp targets.",
+   "why_not_higher": "Anchor 3 needs the owner reviewing a close inside 30 days with targets that operate; the operating number Sam actually manages by is a monthly spreadsheet he keeps himself, and the cash target is missed with no action attached."
+  },
+  "S1": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "The GMs run their studios — floor, schedule, intros, member admin — and q51 confirms it holds for weeks; q50 keeps pricing, escalations, hiring, banking, technical decisions, quality sign-off and strategy with Sam.",
+   "why_not_higher": "Anchor 3 needs decision rights written for most areas; nothing is written and cancellation saves are explicitly routed back to the owner by both GMs."
+  },
+  "S2": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Four-week test (q51): classes, billing and member admin run for weeks; programming drifts after about two weeks and cancellation saves stop entirely. A 9-day absence this year still involved writing programming from a hotel.",
+   "why_not_higher": "Anchor 3 needs a named deputy with only a few owner-locked items; programming and saves are both core revenue functions and neither has a second person."
+  },
+  "S3": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "The GMs sell every membership at the intro without Sam, and only about 15% of revenue traces to his personal relationships (q14).",
+   "why_not_higher": "Anchor 3 needs the team closing standard business with the owner on the largest few — here the owner is pulled into every price exception and every save, which is the highest-value conversation in a membership business."
+  },
+  "S4": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Three team leads, two with direct reports; the GMs own new members and attendance on the weekly board (q39) and q34 rates accountable ownership 'usually'.",
+   "why_not_higher": "Anchor 3 needs managers owning outcomes and metrics; cancellations — the number that decides this business — is nominally the owner's and a miss triggers him having the conversation himself."
+  },
+  "S5": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Coach handbook and class standards opened in session: current and used in onboarding (q35: 55% documented, 60% used in training).",
+   "why_not_higher": "Only 50% is actually followed, adherence is never checked, and quality inconsistency is still on the q36 list — anchor 3 needs the core workflows documented and current, and the save conversation and at-risk outreach have nothing written at all."
+  },
+  "S6": {
+   "score": 2,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Weekly meeting observed with four KPIs on a shared dashboard and visible targets (q39), though q40 calls the rhythm 'weekly but loose'.",
+   "why_not_higher": "Anchor 3 needs 3–7 owned KPIs with an agenda; two of four have owners, the agenda is verbal, and the unowned one is cancellations."
+  },
+  "S7": {
+   "score": 3,
+   "na": false,
+   "evidence": "reported",
+   "note": "Class standards are defined in the handbook, attendance is tracked by slot and coach, and q31 says a 20% jump needs only minor adjustments — there is real capacity in the off-peak slots.",
+   "why_not_higher": "No written capacity plan; q29 concedes there are no early-morning classes at the north studio and q36 lists quality inconsistency, so the headroom is real but unmanaged."
+  },
+  "S8": {
+   "score": 4,
+   "na": false,
+   "evidence": "documented",
+   "note": "Membership report: largest customer 3% — the one corporate wellness account — and top five 6%, across 1,150 members. A genuinely broad base.",
+   "why_not_higher": "Top of the scale."
+  },
+  "S9": {
+   "score": 4,
+   "na": false,
+   "evidence": "documented",
+   "note": "Q12 and the membership report: 88% of revenue on rolling monthly agreements retaining at 94% month over month, comfortably covering fixed costs, with membership count and churn giving a forward view the GMs read weekly.",
+   "why_not_higher": "Top of the scale — a meaningful contracted base that the business can forecast from."
+  },
+  "S10": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Member agreements, vendor agreements, licences, insurance and account ownership all written and in place (q53).",
+   "why_not_higher": "Q52 names four unaddressed exposures — the owner on programming and saves, the north studio lease renewal, an untested export from the platform holding every member and card record, and two GMs with no deputies. No cross-training and no continuity plan."
+  },
+  "L1": {
+   "score": 3,
+   "na": false,
+   "evidence": "reported",
+   "note": "The member platform covers leads, members, scheduling, billing and reporting in one system, with programming software, QuickBooks, Gusto, Slack and Drive around it (q41).",
+   "why_not_higher": "One significant gap: coach rostering is a spreadsheet kept in agreement with the platform scheduler by hand, which is also six GM hours a week."
+  },
+  "L2": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q42 'some integrations' — the platform connects leads to members to billing cleanly, and payment data flows to QuickBooks.",
+   "why_not_higher": "Two double-entry points remain: the coach roster spreadsheet against the platform scheduler, and the weekly payroll reconciliation Sam does by hand between the spreadsheet, the platform and Gusto."
+  },
+  "L3": {
+   "score": 2,
+   "na": false,
+   "evidence": "documented",
+   "note": "Q43: definitions agreed, data accurate, member and financial data connectable, backups exist. The retention and membership reports are trusted and were pulled live without cleanup.",
+   "why_not_higher": "Anchor 3 needs reports to need only light cleanup; the operating view Sam actually manages by is a spreadsheet he rebuilds monthly, and payroll hours never match without manual correction."
+  },
+  "L4": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "26 h/wk inventoried (q44). Billing, reminders, no-show follow-up and the dormant pull have genuinely been automated away; lead follow-up (8h), rostering (6h) and payroll reconciliation (3h) remain.",
+   "why_not_higher": "Anchor 3 needs the major repetitive tasks reduced to a few hours per role; the largest remaining task is also the one sitting directly on the funnel leak identified in b2."
+  },
+  "L5": {
+   "score": 3,
+   "na": false,
+   "evidence": "demonstrated",
+   "note": "Billing runs, class reminders, intro reminders, no-show follow-up, milestone messages and the monthly dormant pull all run reliably across member operations, marketing and finance, and were shown firing (q45).",
+   "why_not_higher": "Anchor 4 needs reliable automation across functions maintained; nothing in scheduling, rostering or payroll is automated and no single person is named as owner of the automations that exist."
+  },
+  "L6": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q46: drafting, marketing content, member communication and scheduling — the Instagram coach uses it for captions and both GMs draft member messages with it.",
+   "why_not_higher": "Anchor 3 needs AI in one or two defined workflows with results; here it is individual use by three people and nothing in the business depends on it."
+  },
+  "L7": {
+   "score": 1,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q47 returns three of eight — someone accountable per implementation, human-review rules clear, and the team trained. Nothing is measured, no data rules are defined, and nothing is documented before it is automated.",
+   "why_not_higher": "Held at 1 rather than 2 because the missing item is the consequential one in a business holding member health and payment data: there is no sensitive-data rule at all, and q48 confirms member data is already going into unapproved tools."
+  },
+  "L8": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q48: shared passwords on the platform and social accounts, member data in unapproved tools, unclear account ownership — against q43 confirming backups exist. Partial hygiene with known gaps.",
+   "why_not_higher": "Anchor 3 needs access controlled and off-boarding done; with twelve part-timers coming and going and shared logins on the system that holds card details, off-boarding is the specific unfixed gap."
+  },
+  "L9": {
+   "score": 3,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q58 'trained on the core tools, adoption uneven'; q59 confirms both GMs trained with one building her own reports, full-time coaches fine, and the two-classes-a-week part-timers using nothing beyond the schedule.",
+   "why_not_higher": "Anchor 4 needs the team improving it themselves; that is true of one GM and of nobody else, and the part-time majority is untrained beyond the schedule screen."
+  },
+  "L10": {
+   "score": 2,
+   "na": false,
+   "evidence": "reported",
+   "note": "Q49: $8–14K budget, 5 owner hours and 8 GM hours a week, high appetite because the coaches adopt anything on a phone; q55 'ready if priorities stay tight'.",
+   "why_not_higher": "Anchor 3 needs budget and time named and set aside; both are real but unprotected, and the co-owner's push for a third location is a live competing claim on the same money."
+  }
+ },
+ "assessment": {
+  "owner_objective": "More profit & cash flow — then Reliable revenue growth, Reduce owner dependence",
+  "owner_belief": "We fill classes and we do not keep enough of the money. Members join, they stay eight or nine months, and we spend everything we make on payroll because I keep adding class times. My honest belief is that we are underpriced and I have been too nervous to do anything about it for two years.",
+  "primary_constraint": "The membership machine works and nothing collects on it: prices have not moved since March 2024 while coach wages and rent have, and the two highest-value member moments — the intro price objection and the cancellation save — have no agreed answer and route to the owner.",
+  "constraint_symptoms": "A 2024 rate card with 96 members still on $119 legacy pricing; margin by membership type read monthly for two years and never acted on; the same price objection handled two different ways by two GMs in one afternoon; cancellations owned by nobody but Sam; 820 dormant members worked twice a year by a campaign nobody owns; 8.7-month average tenure against a 12-month retention target.",
+  "constraint_cost": "~$63K of contribution left on the table by two years of flat pricing on a $1.05M non-legacy membership base · ~$25K of coach and front-desk payroll on eight weekly hours of manual lead follow-up · ~156 owner hours a year on cancellation saves and payroll reconciliation nobody else does.",
+  "constraint_fix": "A repriced card built from the margin-by-type report the platform already produces, one agreed answer to the price objection that both GMs and the intro script use, and a named owner for cancellations and reactivation with a rule rather than a January push.",
+  "momentum_initiative": "Reprice the membership card against the wage and rent increases since March 2024, grandfathering the 96 founding members — a decision that is entirely Sam's, needs no system, and shows up in the next billing run.",
+  "overlay_flags": [
+   "key_person"
+  ],
+  "plan_items": [
+   "Membership repricing off the margin-by-type report, founding members grandfathered — Sam Alvarez — 2026-09-21",
+   "One agreed price-objection answer in the intro script, both GMs trained — Devon Pryor — 2026-10-05",
+   "Cancellation save and at-risk outreach owned by the GMs with a written rule — Jordan Ellery (south GM) — 2026-10-19",
+   "Dormant member reactivation moved from two pushes a year to a monthly sequence — Marisa Chen (front desk lead) — 2026-11-09"
+  ],
+  "overlap_factor": 0.7
+ },
+ "opportunities": [
+  {
+   "title": "Reprice the membership card for the first time since 2024",
+   "finding": "The rate card on file is dated March 2024 at $179 unlimited and $139 for three-a-week, set against two nearby competitors rather than against cost — while coach wages and rent have both risen since and the P&L confirms 62% gross margin under pressure. The margin-by-membership-type report has been read monthly for two years without changing a price. This prices a move on the $1.05M non-legacy base only; the 96 founding members on $119 are held out.",
+   "calculator": {
+    "kind": "price_change",
+    "inputs": {
+     "revenueAffected": 1050000,
+     "priceChangePctLow": 4,
+     "priceChangePctExpected": 6,
+     "priceChangePctHigh": 9,
+     "volumeLossPctLow": 3,
+     "volumeLossPctExpected": 5,
+     "volumeLossPctHigh": 8,
+     "grossMarginPct": 62
+    }
+   },
+   "fix_cost": 1900,
+   "months_to_benefit": 1,
+   "confidence": "medium",
+   "include_in_report": true,
+   "basis_reported_only": false,
+   "blueprint": "New card built from the margin-by-type report, 30 days' notice to existing members, founding members grandfathered by name, and one scripted answer to the price objection that both GMs give the same way.",
+   "replaces": "A 2024 price set by looking at two studios down the road"
+  },
+  {
+   "title": "Work the 820 former members properly instead of twice a year",
+   "finding": "The dormant list (Doc) holds 820 former members, 310 of whom cancelled inside the last year — the freshest and most winnable segment in the business. Reactivation already runs, in January and September, and by her own answer 'they work but nobody owns them.' A returning member is worth $1,320 in the year on her own q26 figure, with no acquisition cost and existing class capacity in the off-peak slots.",
+   "calculator": {
+    "kind": "reactivation",
+    "inputs": {
+     "dormantCustomers": 820,
+     "reactivationRatePctLow": 3,
+     "reactivationRatePctExpected": 5,
+     "reactivationRatePctHigh": 8,
+     "averageAnnualValue": 1320,
+     "grossMarginPct": 62
+    }
+   },
+   "fix_cost": 2400,
+   "months_to_benefit": 2,
+   "confidence": "medium",
+   "include_in_report": true,
+   "basis_reported_only": false,
+   "blueprint": "Segment the list by cancellation reason and recency, run a monthly sequence out of the member platform against the under-filled class times, and give the front desk lead the number as her own.",
+   "replaces": "A January push and a September push that belong to nobody"
+  },
+  {
+   "title": "Automate the lead follow-up the coaches are texting by hand",
+   "finding": "Eight hours a week of lead follow-up and intro rebooking is done by coaches and the front desk on personal phones between classes (q44). The b2 split shows why it matters: 55% of people who attend an intro join, so the leak is intro attendance, not the conversation. These hours are dollarised because they come straight back onto coaching and floor time, which is what the class schedule is short of.",
+   "calculator": {
+    "kind": "automation_hours",
+    "inputs": {
+     "hoursPerWeek": 8,
+     "loadedHourlyRate": 28,
+     "automationSharePctLow": 40,
+     "automationSharePctExpected": 60,
+     "automationSharePctHigh": 75,
+     "weeksPerYear": 52,
+     "redeployed": true
+    }
+   },
+   "fix_cost": 3600,
+   "months_to_benefit": 2,
+   "confidence": "medium",
+   "include_in_report": true,
+   "basis_reported_only": false,
+   "blueprint": "A five-touch booked-intro sequence out of the member platform with rebooking links, no-show recovery already in place extended to unbooked leads, and every message sent from the business number rather than a coach's phone.",
+   "replaces": "Coaches texting leads from their own phones between classes"
+  }
+ ],
+ "expected": {
+  "gate_should_pass": true,
+  "expected_blockers": [],
+  "expected_warnings": [],
+  "band_guess": "Building",
+  "cross_checks": {
+   "margin_vs_pnl": "pass",
+   "funnel_vs_revenue": "pass",
+   "concentration": "pass",
+   "hours_vs_headcount": "pass"
+  }
+ }
+}
