@@ -11,6 +11,16 @@ import { personName, type AuthoredRock, type Person } from "@/lib/authorship";
 import { createRock } from "@/lib/eos-actions";
 import type { RockType } from "@/lib/supabase/types";
 
+/** Fields a suggestion can prefill. Everything stays editable — a suggested
+ *  rock still has to be chosen, owned and worded by a person. */
+export interface RockDraft {
+  title?: string;
+  description?: string;
+  rockType?: RockType;
+  ownerId?: string;
+  smartMeasurable?: string;
+}
+
 interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -18,6 +28,8 @@ interface Props {
   members: Person[];
   /** Lets the list show the new Rock — and its author — without a refetch. */
   onCreated?: (rock: AuthoredRock) => void;
+  /** Opens the form already filled in, e.g. from a suggestion. */
+  draft?: RockDraft | null;
 }
 
 function quarterEnd(quarter: string): string {
@@ -29,13 +41,13 @@ function quarterEnd(quarter: string): string {
   return `${year}-${String(monthEnd).padStart(2, "0")}-${String(lastDay).padStart(2, "0")}`;
 }
 
-export function AddRockDialog({ open, onOpenChange, defaultQuarter, members, onCreated }: Props) {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [rockType, setRockType] = useState<RockType>("company");
-  const [ownerId, setOwnerId] = useState<string>("");
+export function AddRockDialog({ open, onOpenChange, defaultQuarter, members, onCreated, draft }: Props) {
+  const [title, setTitle] = useState(draft?.title ?? "");
+  const [description, setDescription] = useState(draft?.description ?? "");
+  const [rockType, setRockType] = useState<RockType>(draft?.rockType ?? "company");
+  const [ownerId, setOwnerId] = useState<string>(draft?.ownerId ?? "");
   const [smartSpecific, setSmartSpecific] = useState("");
-  const [smartMeasurable, setSmartMeasurable] = useState("");
+  const [smartMeasurable, setSmartMeasurable] = useState(draft?.smartMeasurable ?? "");
   const [smartRelevant, setSmartRelevant] = useState("");
   const [submitting, setSubmitting] = useState(false);
 

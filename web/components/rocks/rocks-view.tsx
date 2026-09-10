@@ -13,7 +13,8 @@ import {
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
 import { useActiveOrgId } from "@/lib/use-active-org";
 import { RockCard } from "./rock-card";
-import { AddRockDialog } from "./add-rock-dialog";
+import { AddRockDialog, type RockDraft } from "./add-rock-dialog";
+import { SuggestRocksDialog } from "./suggest-rocks-dialog";
 import { asAuthoredRows, type AuthoredRock, type Person } from "@/lib/authorship";
 import type {
   RockMilestone,
@@ -41,6 +42,7 @@ export function RocksView({
   const [statusUpdates, setStatusUpdates] = useState<RockStatusUpdate[]>(initialStatus);
   const [selectedQuarter, setSelectedQuarter] = useState(currentQuarter);
   const [addOpen, setAddOpen] = useState(false);
+  const [draft, setDraft] = useState<RockDraft | null>(null);
 
   // Available quarters: current + any quarter that has Rocks
   const quarters = useMemo(() => {
@@ -135,17 +137,32 @@ export function RocksView({
             {visibleRocks.length > 7 && <span className="text-[color:var(--color-brand-warning)] ml-1">(EOS says max 7)</span>}
           </span>
         </div>
-        <Button onClick={() => setAddOpen(true)}>
-          <Plus className="size-4" />
-          Add Rock
-        </Button>
+        <div className="flex items-center gap-2">
+          <SuggestRocksDialog
+            quarter={selectedQuarter}
+            members={members}
+            onUse={(d) => {
+              setDraft(d);
+              setAddOpen(true);
+            }}
+          />
+          <Button
+            onClick={() => {
+              setDraft(null);
+              setAddOpen(true);
+            }}
+          >
+            <Plus className="size-4" />
+            Add Rock
+          </Button>
+        </div>
       </div>
 
       {visibleRocks.length === 0 ? (
         <div className="rounded-xl border border-dashed border-[color:var(--color-brand-fog)] p-12 text-center">
           <p className="text-sm font-medium">No rocks for {selectedQuarter} yet</p>
           <p className="text-xs text-muted-foreground mt-1 max-w-md mx-auto">
-            EOS rule: 3-7 quarterly priorities. SMART. One owner each. Click "Add Rock" to set your first one.
+            EOS rule: 3-7 quarterly priorities. SMART. One owner each. Add one yourself, or let the Command Center suggest ideas from your vision, scorecard and open issues.
           </p>
         </div>
       ) : (
@@ -192,11 +209,18 @@ export function RocksView({
       )}
 
       <AddRockDialog
+        // Remounted per draft so a suggestion opens the form already filled in
+        // rather than fighting the field state of the last one.
+        key={draft ? `${draft.title}-${selectedQuarter}` : `blank-${selectedQuarter}`}
         open={addOpen}
-        onOpenChange={setAddOpen}
+        onOpenChange={(next) => {
+          setAddOpen(next);
+          if (!next) setDraft(null);
+        }}
         defaultQuarter={selectedQuarter}
         members={members}
         onCreated={handleRockCreated}
+        draft={draft}
       />
     </>
   );

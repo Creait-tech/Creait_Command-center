@@ -74,6 +74,7 @@ export type MeetingType =
   | "huddle"
   | "financial"
   | "state_of_company"
+  | "focus_day"
   // legacy / non-EOS
   | "client"
   | "internal"
@@ -113,6 +114,8 @@ export interface Meeting {
   presenter_id: string | null;
   /** `team_members.id` of everyone in the room. */
   attendee_ids: string[];
+  /** The prep session this meeting was started from, if any. */
+  prep_session_id: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -633,6 +636,66 @@ export interface Headline {
   created_by: string | null;
   created_by_name: string | null;
   created_at: string;
+}
+
+/**
+ * Prep sessions — the solo questionnaire before a long meeting (0018).
+ *
+ * Each participant answers alone; `reveal` decides when they may read each
+ * other's answers; `synthesis` holds the AI's draft reading of every answer,
+ * which a human accepts item by item in the room.
+ */
+export type PrepSessionStatus = "open" | "synthesized" | "closed";
+export type PrepRevealRule = "after_all" | "at_close" | "live";
+
+export interface CcPrepSession {
+  id: string;
+  org_id: string;
+  meeting_type: MeetingType;
+  title: string;
+  status: PrepSessionStatus;
+  reveal: PrepRevealRule;
+  due_at: string | null;
+  participant_ids: string[];
+  /** `PrepSynthesis` from `lib/prep-synthesis.ts`. A draft, never a decision. */
+  synthesis: Json | null;
+  synthesized_at: string | null;
+  synthesis_model: string | null;
+  meeting_id: string | null;
+  created_by: string | null;
+  created_by_name: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CcPrepQuestion {
+  id: string;
+  org_id: string;
+  session_id: string;
+  /** Matches an agenda section key, so the synthesis lands in the right part of the room. */
+  section_key: string;
+  prompt: string;
+  help: string | null;
+  kind: "text" | "list";
+  sort_order: number;
+}
+
+export interface CcPrepAnswer {
+  id: string;
+  org_id: string;
+  session_id: string;
+  question_id: string;
+  member_id: string;
+  answer: string | null;
+  items: string[];
+  updated_at: string;
+}
+
+export interface CcPrepParticipant {
+  session_id: string;
+  member_id: string;
+  org_id: string;
+  submitted_at: string | null;
 }
 
 export interface MeetingRating {
@@ -1355,6 +1418,11 @@ export interface Database {
       cc_client_activity: Table<CcClientActivity>;
       cc_agent_proposals: Table<CcAgentProposal>;
       cc_chat_messages: Table<CcChatMessage>;
+      // Prep sessions: the solo questionnaire before a long meeting
+      cc_prep_sessions: Table<CcPrepSession>;
+      cc_prep_questions: Table<CcPrepQuestion>;
+      cc_prep_answers: Table<CcPrepAnswer>;
+      cc_prep_participants: Table<CcPrepParticipant>;
     };
     Views: { [_ in never]: never };
     Functions: {

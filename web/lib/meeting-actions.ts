@@ -59,6 +59,8 @@ export async function startMeeting(input: {
   type: MeetingType;
   attendeeIds: string[];
   presenterId: string | null;
+  /** Started from a prep session — the room shows its synthesis per section. */
+  prepSessionId?: string | null;
 }): Promise<ActionResult<{ id: string }>> {
   const ctx = await context();
   if ("error" in ctx) return { ok: false, error: ctx.error };
@@ -110,6 +112,7 @@ export async function startMeeting(input: {
       source: "manual",
       presenter_id: presenterId,
       attendee_ids: attendeeIds,
+      prep_session_id: input.prepSessionId && UUID.test(input.prepSessionId) ? input.prepSessionId : null,
       agenda_state: asJson(progress),
     })
     .select("id")
