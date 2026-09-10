@@ -90,6 +90,16 @@ export const LAST_RESORT_MODEL: ModelId = 'openrouter/nemotron-free'
  */
 export const PAID_FALLBACK_MODEL: ModelId = 'openrouter/gemini-flash'
 
+/**
+ * Funded first-party providers tried after the requested model's own family
+ * and before the OpenRouter rungs. A rung whose key is unset is skipped at
+ * runtime (`hasProviderKey`), so listing a provider here costs nothing until
+ * someone funds it — and the moment they do, an Anthropic billing outage no
+ * longer drops every AI job straight onto a free-tier model that is
+ * overloaded half the time.
+ */
+export const CROSS_PROVIDER_FALLBACKS: readonly ModelId[] = ['gpt-5', 'gemini-3-pro']
+
 type Provider = 'anthropic' | 'openai' | 'google' | 'openrouter'
 
 const MODEL_PROVIDER: Record<ModelId, Provider> = {
@@ -404,7 +414,8 @@ function messageOf(err: unknown): string {
 /**
  * Build the ordered list of models to try for `requested`.
  *
- *   requested → cheaper same-provider sibling (if any) → PAID_FALLBACK_MODEL
+ *   requested → cheaper same-provider sibling (if any) → CROSS_PROVIDER_FALLBACKS
+ *   (funded first-party providers, skipped when unfunded) → PAID_FALLBACK_MODEL
  *   → LAST_RESORT_MODEL
  *
  * The last-resort rung is always present and always attempted; the sibling rung
@@ -416,6 +427,12 @@ export function buildFallbackChain(requested: string | undefined): ModelId[] {
 
   const sibling = CHEAPER_SIBLING[head]
   if (sibling && !chain.includes(sibling)) chain.push(sibling)
+
+  // Another funded provider before the OpenRouter tiers. Skipped per-call
+  // when its key is empty.
+  for (const id of CROSS_PROVIDER_FALLBACKS) {
+    if (!chain.includes(id)) chain.push(id)
+  }
 
   // Paid before free: the free tier's daily cap is not a funding problem, so
   // falling straight to it strands whatever credit the account does have.

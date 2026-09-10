@@ -9,7 +9,7 @@ Internal business OS for CREAIT (AI consulting agency, Atlanta — 4 co-founders
 - `web/` — Next.js (App Router) + Clerk (Organizations; org `org_3J6RO66XyUmqeMbZ8RwIyFTCf7J` = CREAIT, all four founders are org:admin) + Supabase Postgres (project `choxhzsfmiftdaanrkpa`, RLS keyed on Clerk org_id claim) + Inngest (crons + events) + Tailwind + Base UI.
 - `mcp/` — the MCP server source (deployed separately to the VPS).
 - Key routes: `/command-center` (scoreboard), `/level-10` (EOS meeting runner, 8 meeting types), `/war-room` (transcript search), `/meetings`, `/rocks`, `/todos`, `/clients`, `/agents`.
-- Background jobs live in `web/lib/inngest-functions.ts`; each has BOTH a cron trigger and a `cron/<name>` event trigger fired by `GET /api/cron/[name]` (auth: `Bearer CRON_SECRET` or Vercel cron headers).
+- Background jobs live in `web/lib/inngest-functions.ts`; each has BOTH a cron trigger (the only schedule) and a `cron/<name>` event trigger fired by `GET /api/cron/[name]` for manual runs (auth: `Bearer CRON_SECRET`). Do not add schedules to `vercel.json` — that double-fires every job.
 
 ## Data flows (all verified working)
 
@@ -46,4 +46,4 @@ Team docs live in the Google Drive folder "CREAiT Team Library" and as claude.ai
 
 - Conventional commits (`feat:`, `fix:` …), no AI attribution lines.
 - Never work directly against production data without checking; Supabase service role bypasses RLS.
-- When adding a cron: entry in `ALLOWED_NAMES` (`app/api/cron/[name]/route.ts`) + `triggers` in the function + register with Inngest after deploy.
+- When adding a cron: entry in `ALLOWED_NAMES` (`app/api/cron/[name]/route.ts`) + `triggers` in the function + register with Inngest after deploy. Never in `vercel.json`.
