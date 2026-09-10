@@ -7,9 +7,10 @@ import { WinsFeed } from "./wins-feed";
 import { Scorecard } from "./scorecard";
 import { InitiativesReview } from "./initiatives-review";
 import { IdsSection } from "./ids-section";
+import { HeadlinesFeed } from "./headlines-feed";
 import type { KpiRow } from "./kpi-meta";
 import type { CcKpiWeekly } from "./weekly-types";
-import type { AuthoredIdsItem, AuthoredWin, Person } from "@/lib/authorship";
+import type { AuthoredHeadline, AuthoredIdsItem, AuthoredWin, Person } from "@/lib/authorship";
 import type { KpiHistory, Initiative } from "@/lib/supabase/types";
 
 interface Level10TabsProps {
@@ -24,9 +25,10 @@ interface Level10TabsProps {
   people: Person[];
   idsItems: AuthoredIdsItem[];
   initiatives: Initiative[];
+  headlines: AuthoredHeadline[];
 }
 
-const VALID_TABS = ["wins", "scoreboard", "initiatives", "ids"] as const;
+const VALID_TABS = ["scoreboard", "wins", "headlines", "initiatives", "ids"] as const;
 type ValidTab = (typeof VALID_TABS)[number];
 
 function Level10TabsInner({
@@ -39,6 +41,7 @@ function Level10TabsInner({
   people,
   idsItems,
   initiatives,
+  headlines,
 }: Level10TabsProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -47,7 +50,7 @@ function Level10TabsInner({
     rawTab ?? ""
   )
     ? (rawTab as ValidTab)
-    : "wins";
+    : "scoreboard";
 
   function setTab(v: string) {
     const params = new URLSearchParams(searchParams.toString());
@@ -62,15 +65,22 @@ function Level10TabsInner({
       className="w-full"
     >
       <TabsList>
-        <TabsTrigger value="wins">Wins</TabsTrigger>
         {/* The URL value stays "scoreboard" so existing links keep working;
-            the label is the EOS term the team uses out loud. */}
+            the label is the EOS term the team uses out loud. It is the
+            default tab: the numbers are what the team opens the page for. */}
         <TabsTrigger value="scoreboard">Scorecard</TabsTrigger>
+        <TabsTrigger value="wins">Wins</TabsTrigger>
+        <TabsTrigger value="headlines">Headlines</TabsTrigger>
         <TabsTrigger value="initiatives">Initiatives Review</TabsTrigger>
         <TabsTrigger value="ids">IDS</TabsTrigger>
       </TabsList>
       <TabsContent value="wins" className="mt-4">
-        <WinsFeed initialWins={wins} meetingId={meetingId} />
+        {/* The running list, not one meeting's: a win logged in the room is
+            visible here without opening the meeting. */}
+        <WinsFeed initialWins={wins} meetingId={null} people={people} />
+      </TabsContent>
+      <TabsContent value="headlines" className="mt-4">
+        <HeadlinesFeed initialHeadlines={headlines} meetingId={null} />
       </TabsContent>
       <TabsContent value="scoreboard" className="mt-4">
         <Scorecard

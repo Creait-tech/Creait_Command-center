@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { Plus, Check, Trash } from "lucide-react";
+import { Plus, Trash } from "lucide-react";
 import { toast } from "sonner";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -17,6 +17,7 @@ import {
 import { createBrowserClient as createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 import { AuthorStamp } from "@/components/authorship/author-stamp";
+import { MeetingStamp } from "@/components/level10/meeting-titles";
 import { asAuthoredRows, personName, type AuthoredTodo, type Person } from "@/lib/authorship";
 import { createTodo, updateTodo } from "@/lib/eos-actions";
 
@@ -190,7 +191,7 @@ export function TodosView({ initialTodos, members, orgId }: Props) {
               <Plus className="size-4" />
             </Button>
           </div>
-          <p className="text-[10px] text-muted-foreground">EOS default: due in 7 days. Captured To-Dos roll into next L10's To-Do Review.</p>
+          <p className="text-[10px] text-muted-foreground">EOS default: due in 7 days. Captured To-Dos roll into next L10&apos;s To-Do Review.</p>
         </CardContent>
       </Card>
 
@@ -255,6 +256,7 @@ export function TodosView({ initialTodos, members, orgId }: Props) {
                             Carried {t.carried_forward_count}×
                           </span>
                         )}
+                        <MeetingStamp meetingId={t.meeting_id} />
                         <AuthorStamp
                           name={t.created_by_name}
                           actorId={t.created_by}

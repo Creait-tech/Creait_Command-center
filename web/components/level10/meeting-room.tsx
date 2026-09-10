@@ -11,16 +11,18 @@ import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
-import { createHeadline, createIdsItem, createTodo, updateTodo } from "@/lib/eos-actions";
+import { createIdsItem, createTodo, createWin, updateTodo } from "@/lib/eos-actions";
+import { createBrowserClient as createClient } from "@/lib/supabase/client";
 import { concludeMeeting, discardMeeting, saveMeetingProgress } from "@/lib/meeting-actions";
 import { fmtClock, parseProgress, unsavedRunningSec, type MeetingProgress } from "@/lib/meeting-progress";
 import { getAgenda, agendaBudgetSec, type MeetingType } from "@/lib/meeting-agendas";
-import { personName, type AuthoredTodo, type Person } from "@/lib/authorship";
+import { asAuthoredRows, personName, type AuthoredTodo, type Person } from "@/lib/authorship";
 import type { MeetingWorkspaceData } from "@/lib/meeting-workspace";
 import type { Meeting } from "@/lib/supabase/types";
 import { Scorecard } from "./scorecard";
 import { RocksView } from "@/components/rocks/rocks-view";
 import { IdsSection } from "./ids-section";
+import { HeadlinesFeed } from "./headlines-feed";
 
 interface Props {
   meeting: Meeting;
@@ -61,8 +63,11 @@ export function MeetingRoom({ meeting, workspace, currentMemberId }: Props) {
   const [running, setRunning] = useState(initial.running);
 
   const [newTodo, setNewTodo] = useState("");
-  const [newHeadline, setNewHeadline] = useState("");
   const [newIssue, setNewIssue] = useState("");
+  // Segue: one line of good news per person, kept as a Win owned by them.
+  const [segue, setSegue] = useState<Record<string, string>>({});
+  const [segueKind, setSegueKind] = useState<Record<string, "personal" | "business">>({});
+  const [segueDone, setSegueDone] = useState<Record<string, string[]>>({});
   const [todos, setTodos] = useState<AuthoredTodo[]>(workspace.todos);
   const [ratings, setRatings] = useState<Record<string, number>>({});
   const [ratingComment, setRatingComment] = useState("");
@@ -120,6 +125,32 @@ export function MeetingRoom({ meeting, workspace, currentMemberId }: Props) {
     return () => clearInterval(id);
   }, [running, activeIdx]);
 
+  // Keep the To-Do Review live: a to-do added from someone's laptop on the
+  // To-Dos page mid-meeting shows up on the presenter's screen.
+  useEffect(() => {
+    const supabase = createClient();
+    const channel = supabase
+      .channel(`room-todos-${meeting.id}`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "cc_todos", filter: `org_id=eq.${meeting.org_id}` },
+        async () => {
+          const { data } = await supabase
+            .from("cc_todos")
+            .select("*")
+            .eq("org_id", meeting.org_id)
+            .eq("done", false)
+            .order("due_date", { ascending: true, nullsFirst: false })
+            .order("created_at", { ascending: true });
+          if (data) setTodos(asAuthoredRows<AuthoredTodo>(data));
+        },
+      )
+      .subscribe();
+    return () => {
+      void supabase.removeChannel(channel);
+    };
+  }, [meeting.id, meeting.org_id]);
+
   // Autosave the running clock so a crash loses at most thirty seconds.
   useEffect(() => {
     if (!running) return;
@@ -162,14 +193,22 @@ export function MeetingRoom({ meeting, workspace, currentMemberId }: Props) {
     }
   }
 
-  async function addHeadline() {
-    if (!newHeadline.trim()) return;
-    const result = await createHeadline({ text: newHeadline, category: "general", meetingId: meeting.id });
-    if (!result.ok) toast.error(result.error);
-    else {
-      setNewHeadline("");
-      toast.success("Headline captured");
+  async function addSegue(person: Person) {
+    const text = (segue[person.id] ?? "").trim();
+    if (!text) return;
+    const kind = segueKind[person.id] ?? "personal";
+    const result = await createWin({
+      title: text,
+      description: kind === "personal" ? "Personal good news" : "Business good news",
+      ownerId: person.id,
+      meetingId: meeting.id,
+    });
+    if (!result.ok) {
+      toast.error(result.error);
+      return;
     }
+    setSegue((prev) => ({ ...prev, [person.id]: "" }));
+    setSegueDone((prev) => ({ ...prev, [person.id]: [...(prev[person.id] ?? []), text] }));
   }
 
   async function addIssue() {
@@ -319,22 +358,67 @@ export function MeetingRoom({ meeting, workspace, currentMemberId }: Props) {
           <Progress value={pct} className={cn("h-1.5 mt-2", overBudget && "[&>div]:bg-[color:var(--color-brand-danger)]")} />
         </div>
 
+        {section.key === "segue" && (
+          <div className="rounded-lg border border-border p-3 space-y-3">
+            <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+              Round the room — one personal, one business. Saved as that person&apos;s win.
+            </p>
+            {attendees.map((p) => {
+              const kind = segueKind[p.id] ?? "personal";
+              return (
+                <div key={p.id} className="space-y-1">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="w-28 text-sm truncate">{personName(p)}</span>
+                    <div className="flex rounded-md border border-border overflow-hidden text-[11px]">
+                      {(["personal", "business"] as const).map((k) => (
+                        <button
+                          key={k}
+                          type="button"
+                          onClick={() => setSegueKind((prev) => ({ ...prev, [p.id]: k }))}
+                          className={cn(
+                            "px-2 py-1 capitalize",
+                            kind === k ? "bg-[color:var(--color-brand-electric)] text-white" : "text-muted-foreground",
+                          )}
+                        >
+                          {k}
+                        </button>
+                      ))}
+                    </div>
+                    <Input
+                      className="flex-1 min-w-48"
+                      placeholder="Good news…"
+                      value={segue[p.id] ?? ""}
+                      onChange={(e) => setSegue((prev) => ({ ...prev, [p.id]: e.target.value }))}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          void addSegue(p);
+                        }
+                      }}
+                    />
+                    <Button size="sm" variant="outline" onClick={() => void addSegue(p)} disabled={!(segue[p.id] ?? "").trim()}>
+                      Add
+                    </Button>
+                  </div>
+                  {(segueDone[p.id] ?? []).length > 0 && (
+                    <ul className="pl-28 text-xs text-muted-foreground space-y-0.5">
+                      {(segueDone[p.id] ?? []).map((t, i) => (
+                        <li key={i}>✓ {t}</li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+
         {section.key === "headlines" && (
-          <div className="flex gap-2">
-            <Input
-              placeholder="One-sentence headline (customer / employee / market)…"
-              value={newHeadline}
-              onChange={(e) => setNewHeadline(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  void addHeadline();
-                }
-              }}
-            />
-            <Button onClick={() => void addHeadline()} disabled={!newHeadline.trim()}>
-              Add
-            </Button>
+          <div className="rounded-lg border border-border p-3">
+            <p className="mb-3 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+              Customer and employee headlines — tag them, flag what cascades to the whole team
+            </p>
+            <HeadlinesFeed initialHeadlines={[]} meetingId={meeting.id} />
           </div>
         )}
 
