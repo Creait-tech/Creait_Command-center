@@ -1049,7 +1049,13 @@ export function AssessmentWorkbench({
           </Button>
           <Button
             size="sm"
-            render={<Link href={`/assessments/${assessment.id}/report`} />}
+            render={
+              <Link
+                href={`/assessments/${assessment.id}/report`}
+                target="_blank"
+                rel="noopener"
+              />
+            }
           >
             <FileText className="size-4" /> Executive Blueprint
           </Button>
@@ -1749,7 +1755,13 @@ export function AssessmentWorkbench({
 
             <div className="flex flex-wrap items-center gap-3 border-t border-border/60 pt-4">
               <Button
-                render={<Link href={`/assessments/${assessment.id}/report`} />}
+                render={
+              <Link
+                href={`/assessments/${assessment.id}/report`}
+                target="_blank"
+                rel="noopener"
+              />
+            }
               >
                 <FileText className="size-4" /> Open the Executive Blueprint
               </Button>
