@@ -8,8 +8,13 @@ export const maxDuration = 60
  * cron means:
  *   1. Add an entry here.
  *   2. Add the matching `{ event: 'cron/<name>' }` trigger in
- *      `inngest-functions.ts`.
- *   3. Add the path + UTC schedule to `vercel.json`.
+ *      `inngest-functions.ts`, next to its `{ cron: 'TZ=... ' }` schedule.
+ *
+ * The Inngest cron is the only schedule. This route exists for manual and
+ * smoke-test triggers (`Bearer CRON_SECRET`); it must NOT also be listed in
+ * `vercel.json` — that ran every job twice (the daily briefing emailed twice
+ * a day and every KPI accrued double history) until the duplicates were
+ * removed.
  */
 const ALLOWED_NAMES = new Set([
   'daily-briefing',

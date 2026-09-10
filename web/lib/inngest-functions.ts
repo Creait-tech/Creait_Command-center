@@ -899,20 +899,39 @@ export const ghlSync = inngest.createFunction(
           mrrFromActiveClients(ORG_ID),
         ])
 
-      const contacts = countWithinWindow(contactsRes, 'dateAdded', sevenDaysAgoMs)
-      const conversations = countWithinWindow(
-        conversationsRes,
-        'lastMessageDate',
-        sevenDaysAgoMs,
-      )
-      const deals = summarizeOpportunities(opportunitiesRes)
+      // An MCP call that failed (server unreachable, GHL 401/500, 60s timeout)
+      // resolves to null or to an `isError` envelope. Parsed naively that is
+      // an empty list with no `total`, which countWithinWindow reads as "the
+      // whole population, exactly zero rows" — and the scoreboard shows 0 new
+      // contacts and $0 pipeline for as long as the outage lasts. A failed
+      // read is not a measurement: skip the write and keep the last value.
+      const failed = (name: string, res: unknown): boolean => {
+        if (!mcpResultIsError(res)) return false
+        console.warn(
+          `[inngest] ghl-sync: ${name} failed — leaving its KPIs untouched this run`,
+        )
+        return true
+      }
+      const contactsFailed = failed('ghl_get_contacts', contactsRes)
+      const conversationsFailed = failed('ghl_get_conversations', conversationsRes)
+      const opportunitiesFailed = failed('ghl_get_opportunities', opportunitiesRes)
 
-      for (const [name, exact] of [
-        ['New Contacts 7d', contacts.exact],
-        ['Conversations 7d', conversations.exact],
-        ['Sales Pipeline Deals', deals.exact],
+      const contacts = contactsFailed
+        ? { count: 0, exact: false }
+        : countWithinWindow(contactsRes, 'dateAdded', sevenDaysAgoMs)
+      const conversations = conversationsFailed
+        ? { count: 0, exact: false }
+        : countWithinWindow(conversationsRes, 'lastMessageDate', sevenDaysAgoMs)
+      const deals = opportunitiesFailed
+        ? { activeDeals: 0, openPipelineValue: 0, exact: false }
+        : summarizeOpportunities(opportunitiesRes)
+
+      for (const [name, exact, failed] of [
+        ['New Contacts 7d', contacts.exact, contactsFailed],
+        ['Conversations 7d', conversations.exact, conversationsFailed],
+        ['Sales Pipeline Deals', deals.exact, opportunitiesFailed],
       ] as const) {
-        if (!exact) {
+        if (!exact && !failed) {
           console.warn(
             `[inngest] "${name}" could not be measured exactly from the scanned page range — the true number is higher. Skipping the write rather than reporting a floor as a total.`,
           )
@@ -964,21 +983,10 @@ export const ghlSync = inngest.createFunction(
           continue
         }
 
-        // Capture a history point alongside the value update so trend charts
-        // accumulate. Best-effort: a history failure must not fail the sync.
-        const kpiId = updatedRow?.id as string | undefined
-        if (kpiId) {
-          const { error: historyError } = await supabase
-            .from('cc_kpi_history')
-            .insert({ kpi_id: kpiId, org_id: ORG_ID, value })
-          if (historyError) {
-            console.error(
-              `[inngest] kpi history insert for "${name}" failed:`,
-              historyError.message,
-            )
-          }
-        }
-        results.push({ name, updated: true })
+        // History is written once per run by the snapshot step below, which
+        // covers every KPI (synced and manual). Inserting a point here as well
+        // doubled every GHL-synced KPI's history.
+        results.push({ name, updated: Boolean(updatedRow?.id) })
       }
       return results
     })

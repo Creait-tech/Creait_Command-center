@@ -136,10 +136,18 @@ export function RunMeetingModal({ open, onOpenChange, meetingId, meetingType = "
       acc[s.key] = { durationSec: elapsed[i] ?? 0, budgetSec: s.budgetSec };
       return acc;
     }, {});
-    const { error: mErr } = await supabase
+    // Under RLS a refused UPDATE matches zero rows and reports success, so
+    // read the row back and treat an empty result as a failed save.
+    const { data: saved, error: mErr } = await supabase
       .from("meetings")
       .update({ rating, agenda_state: agendaState, updated_at: new Date().toISOString() })
-      .eq("id", meetingId);
+      .eq("id", meetingId)
+      .select("id");
+    if (mErr || !saved || saved.length === 0) {
+      setFinishing(false);
+      toast.error(mErr?.message ?? "Meeting could not be saved — you may not have access to it");
+      return;
+    }
     const { error: rErr } = await supabase.from("cc_meeting_ratings").insert({
       meeting_id: meetingId,
       rating,
@@ -147,8 +155,8 @@ export function RunMeetingModal({ open, onOpenChange, meetingId, meetingType = "
       rater_name: "Self",
     });
     setFinishing(false);
-    if (mErr || rErr) {
-      toast.error((mErr ?? rErr)?.message ?? "Save failed");
+    if (rErr) {
+      toast.error(rErr.message ?? "Rating could not be saved");
       return;
     }
     toast.success(`Meeting saved — rated ${rating}/10`);
