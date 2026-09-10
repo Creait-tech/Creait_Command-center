@@ -21,3 +21,4 @@ mcp/data/**/*.draft.md
 # OS
 .DS_Store
 Thumbs.db
+.claude/worktrees/
