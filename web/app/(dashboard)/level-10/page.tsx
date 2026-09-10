@@ -1,56 +1,43 @@
+import { auth } from "@clerk/nextjs/server";
 import { createClient } from "@/lib/supabase/server";
 import { getActiveOrgId } from "@/lib/active-org";
 import { Level10Tabs } from "@/components/level10/level10-tabs";
 import { StartMeetingButton } from "@/components/level10/start-meeting-button";
-import {
-  asAuthoredRows,
-  type AuthoredIdsItem,
-  type AuthoredRock,
-  type AuthoredWin,
-  type Person,
-} from "@/lib/authorship";
-import { asKpiRows, type KpiRow } from "@/components/level10/kpi-meta";
-import {
-  asWeeklyRows,
-  type CcKpiWeekly,
-} from "@/components/level10/weekly-types";
-import {
-  currentWeekStart,
-  recentWeekStarts,
-  WEEK_COLUMN_COUNT,
-} from "@/components/level10/weeks";
-import type {
-  Meeting,
-  KpiHistory,
-  Initiative,
-  RockMilestone,
-  RockStatusUpdate,
-} from "@/lib/supabase/types";
+import { InProgressBanner } from "@/components/level10/in-progress-banner";
+import { currentMemberId, loadMeetingWorkspace } from "@/lib/meeting-workspace";
+import { asAuthoredRows, type AuthoredWin } from "@/lib/authorship";
+import type { Meeting, Initiative } from "@/lib/supabase/types";
 
 export const dynamic = "force-dynamic";
-
-function currentQuarter(): string {
-  const d = new Date();
-  return `${d.getFullYear()}-Q${Math.floor(d.getMonth() / 3) + 1}`;
-}
 
 export default async function Level10Page() {
   const supabase = await createClient();
   const orgId = await getActiveOrgId();
+  const { userId } = await auth();
 
-  // Step 1: Get the most recent meeting (we need its id for wins-by-meeting).
-  const meetingResult = await supabase
-    .from("meetings")
-    .select("*")
-    .eq("org_id", orgId)
-    .order("scheduled_at", { ascending: false, nullsFirst: false })
-    .order("created_at", { ascending: false })
-    .limit(1);
+  // The most recent concluded meeting anchors the Wins tab; a meeting still in
+  // progress gets a Resume banner instead of a second Start.
+  const [latestRes, inProgressRes] = await Promise.all([
+    supabase
+      .from("meetings")
+      .select("*")
+      .eq("org_id", orgId)
+      .neq("status", "in_progress")
+      .order("scheduled_at", { ascending: false, nullsFirst: false })
+      .order("created_at", { ascending: false })
+      .limit(1),
+    supabase
+      .from("meetings")
+      .select("*")
+      .eq("org_id", orgId)
+      .eq("status", "in_progress")
+      .order("started_at", { ascending: false, nullsFirst: false })
+      .limit(1),
+  ]);
 
-  const meetings = (meetingResult.data as Meeting[] | null) ?? [];
-  const latestMeeting: Meeting | null = meetings[0] ?? null;
+  const latestMeeting: Meeting | null = ((latestRes.data as Meeting[] | null) ?? [])[0] ?? null;
+  const inProgress: Meeting | null = ((inProgressRes.data as Meeting[] | null) ?? [])[0] ?? null;
 
-  // Step 2: Parallel-fetch everything else.
   const winsQuery = latestMeeting
     ? supabase
         .from("wins")
@@ -58,53 +45,12 @@ export default async function Level10Page() {
         .eq("org_id", orgId)
         .eq("meeting_id", latestMeeting.id)
         .order("created_at", { ascending: false })
-    : supabase
-        .from("wins")
-        .select("*")
-        .eq("org_id", orgId)
-        .order("created_at", { ascending: false })
-        .limit(20);
+    : supabase.from("wins").select("*").eq("org_id", orgId).order("created_at", { ascending: false }).limit(20);
 
-  const thirtyDaysAgoIso = new Date(
-    // The page is intentionally dynamic: this server-side query window must be
-    // anchored to the request time, not a cached module value.
-    // eslint-disable-next-line react-hooks/purity
-    Date.now() - 30 * 24 * 60 * 60 * 1000
-  ).toISOString();
-
-  // The week columns are derived once, here, in America/New_York. Deriving
-  // them again in the browser would let a laptop on a different timezone
-  // disagree with the server about which Monday "this week" is — which shows
-  // up as a full re-render on hydration and, worse, as a number typed into the
-  // wrong column.
-  const weekStarts = recentWeekStarts(WEEK_COLUMN_COUNT, currentWeekStart());
-
-  const [
-    winsResult,
-    kpisResult,
-    idsResult,
-    initiativesResult,
-    kpiHistoryResult,
-    kpiWeeklyResult,
-    peopleResult,
-    rocksResult,
-    rockMilestonesResult,
-    rockStatusResult,
-  ] = await Promise.all([
+  const [workspace, memberId, winsResult, initiativesResult] = await Promise.all([
+    loadMeetingWorkspace(supabase, orgId),
+    currentMemberId(supabase, orgId, userId),
     winsQuery,
-    supabase
-      .from("kpis")
-      .select("*")
-      .eq("org_id", orgId)
-      .order("sort_order", { ascending: true }),
-    supabase
-      .from("ids_items")
-      .select("*")
-      .eq("org_id", orgId)
-      .in("status", ["open", "discussing", "solved"])
-      .order("priority", { ascending: false })
-      .order("created_at", { ascending: false })
-      .limit(50),
     supabase
       .from("initiatives")
       .select("*")
@@ -112,62 +58,10 @@ export default async function Level10Page() {
       .not("status", "in", "(dropped,complete)")
       .order("created_at", { ascending: false })
       .limit(20),
-    supabase
-      .from("cc_kpi_history")
-      .select("*")
-      .eq("org_id", orgId)
-      .gte("recorded_at", thirtyDaysAgoIso)
-      .order("recorded_at", { ascending: true }),
-    // Every recorded week, not just the thirteen on screen: the period tabs
-    // report how much trustworthy history exists in total. Six KPIs times one
-    // row a week is a few hundred rows a year.
-    supabase
-      .from("cc_kpi_weekly")
-      .select("*")
-      .eq("org_id", orgId)
-      .order("week_start", { ascending: false }),
-    supabase
-      .from("team_members")
-      .select("*")
-      .eq("org_id", orgId)
-      .eq("status", "active")
-      .order("full_name", { ascending: true }),
-    supabase
-      .from("cc_rocks")
-      .select("*")
-      .eq("org_id", orgId)
-      .order("quarter", { ascending: false })
-      .order("sort_order", { ascending: true }),
-    supabase
-      .from("cc_rock_milestones")
-      .select("*")
-      .order("sort_order", { ascending: true }),
-    supabase
-      .from("cc_rock_status_updates")
-      .select("*")
-      .order("created_at", { ascending: false }),
   ]);
 
-  // `select("*")` returns the authorship columns from
-  // `phase15_authorship_everywhere`; the generated types don't declare them yet.
   const wins: AuthoredWin[] = asAuthoredRows<AuthoredWin>(winsResult.data);
-  const kpis: KpiRow[] = asKpiRows(kpisResult.data);
-  const idsItems: AuthoredIdsItem[] = asAuthoredRows<AuthoredIdsItem>(
-    idsResult.data,
-  );
-  const initiatives: Initiative[] =
-    (initiativesResult.data as Initiative[] | null) ?? [];
-  const kpiHistory: KpiHistory[] =
-    (kpiHistoryResult.data as KpiHistory[] | null) ?? [];
-  const kpiWeekly: CcKpiWeekly[] = asWeeklyRows(kpiWeeklyResult.data);
-  // `select("*")` returns `display_name`/`pronouns` from the profile migration;
-  // the generated types don't declare them yet (see `lib/authorship.ts`).
-  const people: Person[] = asAuthoredRows<Person>(peopleResult.data);
-  const rocks: AuthoredRock[] = asAuthoredRows<AuthoredRock>(rocksResult.data);
-  const rockMilestones: RockMilestone[] =
-    (rockMilestonesResult.data as RockMilestone[] | null) ?? [];
-  const rockStatusUpdates: RockStatusUpdate[] =
-    (rockStatusResult.data as RockStatusUpdate[] | null) ?? [];
+  const initiatives: Initiative[] = (initiativesResult.data as Initiative[] | null) ?? [];
 
   return (
     <div className="flex flex-col gap-6 p-6">
@@ -178,31 +72,20 @@ export default async function Level10Page() {
             EOS weekly leadership rhythm. Same day, same time, same agenda. 90 minutes.
           </p>
         </div>
-        <StartMeetingButton
-          workspace={{
-            kpis,
-            kpiWeekly,
-            kpiHistory,
-            weekStarts,
-            people,
-            rocks,
-            rockMilestones,
-            rockStatusUpdates,
-            idsItems,
-            currentQuarter: currentQuarter(),
-          }}
-        />
+        <StartMeetingButton people={workspace.people} currentMemberId={memberId} />
       </div>
+
+      {inProgress && <InProgressBanner meeting={inProgress} />}
 
       <Level10Tabs
         meetingId={latestMeeting?.id ?? null}
         wins={wins}
-        kpis={kpis}
-        kpiWeekly={kpiWeekly}
-        kpiHistory={kpiHistory}
-        weekStarts={weekStarts}
-        people={people}
-        idsItems={idsItems}
+        kpis={workspace.kpis}
+        kpiWeekly={workspace.kpiWeekly}
+        kpiHistory={workspace.kpiHistory}
+        weekStarts={workspace.weekStarts}
+        people={workspace.people}
+        idsItems={workspace.idsItems}
         initiatives={initiatives}
       />
     </div>

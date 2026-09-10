@@ -81,6 +81,13 @@ export type MeetingType =
   | "other";
 export type MeetingSource = "manual" | "readai" | "zoom" | "other";
 
+/**
+ * Where a meeting is in its life. Recordings and everything that predates the
+ * lifecycle migration are `concluded`; a meeting being run from the room is
+ * `in_progress`; `scheduled` is reserved for a calendar hook.
+ */
+export type MeetingStatus = "scheduled" | "in_progress" | "concluded";
+
 export interface Meeting {
   id: string;
   org_id: string;
@@ -90,12 +97,22 @@ export interface Meeting {
   duration_minutes: number | null;
   transcript: string | null;
   summary: string | null;
+  /** Display names from a recording source (Zoom, Read.ai). Team meetings
+   *  record their people in `attendee_ids` instead. */
   attendees: Json;
   source: MeetingSource;
   source_id: string | null;
   recording_url: string | null;
   rating: number | null;
+  /** Timer and section state while the meeting runs, final timings after.
+   *  Parse with `lib/meeting-progress.ts`; never read the shape directly. */
   agenda_state: Json | null;
+  status: MeetingStatus;
+  started_at: string | null;
+  ended_at: string | null;
+  presenter_id: string | null;
+  /** `team_members.id` of everyone in the room. */
+  attendee_ids: string[];
   created_at: string;
   updated_at: string;
 }
