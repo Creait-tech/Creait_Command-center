@@ -410,6 +410,73 @@ function Labelled({
   );
 }
 
+/**
+ * One pillar in the score bar — the present deck's rail at workbench scale.
+ *
+ * A thin pillar (too few of its ten indicators examined) keeps its asterisk
+ * and its explanatory title exactly as before, and gets an empty dashed rail
+ * instead of a bar: the workbench, like the report, never draws a number it
+ * will not state. A pillar with nothing scored yet reads as a dash.
+ */
+function PillarMeter({
+  label,
+  weight,
+  score,
+  examined,
+  thin,
+}: {
+  label: string;
+  weight: number;
+  score: number | null;
+  examined: number;
+  thin: boolean;
+}) {
+  const readable = score !== null && !thin;
+  const title = thin
+    ? `Only ${examined} of 10 ${label} indicators examined — too few to report as a pillar score, and excluded from the composite`
+    : score === null
+      ? `${label}: no indicators scored yet`
+      : `${label}: ${score} of 100, from ${examined} of 10 indicators examined`;
+  return (
+    <div className="min-w-0" title={title}>
+      <div className="flex items-baseline justify-between gap-2">
+        <span className="truncate text-[11px] font-semibold text-muted-foreground">
+          {label}
+          <span className="ml-1 font-normal text-muted-foreground/70">
+            ({Math.round(weight * 100)}%) · {examined}/10
+          </span>
+        </span>
+        <span
+          className={cn(
+            "text-base font-bold leading-none tabular-nums",
+            readable ? "text-foreground" : "text-muted-foreground/60"
+          )}
+        >
+          {score ?? "—"}
+          {thin && "*"}
+        </span>
+      </div>
+      <div
+        className={cn(
+          "mt-1.5 h-1.5 overflow-hidden rounded-full",
+          readable
+            ? "bg-[color:var(--color-brand-slate)]"
+            : "border border-dashed border-[color:var(--color-brand-fog)]"
+        )}
+        role="img"
+        aria-label={title}
+      >
+        {readable && (
+          <div
+            className="h-full rounded-full bg-[color:var(--color-brand-electric)] motion-safe:transition-[width] motion-safe:duration-500"
+            style={{ width: `${Math.min(100, Math.max(0, score))}%` }}
+          />
+        )}
+      </div>
+    </div>
+  );
+}
+
 export function AssessmentWorkbench({
   initialAssessment,
   initialScores,
@@ -1036,7 +1103,7 @@ export function AssessmentWorkbench({
         screen is often shared or visible across a table.
       */}
       {!inSession && (
-        <div className="relative z-10 flex flex-wrap items-center gap-x-7 gap-y-3 rounded-xl bg-[color:var(--color-brand-charcoal)] px-5 py-3.5 ring-1 ring-inset ring-foreground/10">
+        <div className="relative z-10 flex flex-wrap items-center gap-x-8 gap-y-4 rounded-xl bg-[color:var(--color-brand-charcoal)] px-5 py-4 ring-1 ring-inset ring-foreground/10">
           <div className="flex items-center gap-3">
             <ProgressRing
               value={resolvedCount}
@@ -1056,41 +1123,60 @@ export function AssessmentWorkbench({
             </div>
           </div>
 
-          <div className="border-l border-border/60 pl-6">
-            <span className="text-3xl font-extrabold tabular-nums text-[color:var(--color-brand-electric)]">
+          {/* Hero number + band, the deck's "Where you are" frame in miniature. */}
+          <div
+            className="flex items-end gap-3 border-l border-border/60 pl-6"
+            title={
+              computed.creaitScore === null
+                ? "No composite yet — score indicators to state one"
+                : `CREAiT Score ${computed.creaitScore} of 100, built on ${computed.scoredCount} of ${INDICATORS.length} indicators`
+            }
+          >
+            <span
+              className={cn(
+                "text-[44px] font-extrabold leading-none tracking-tight tabular-nums",
+                computed.creaitScore === null
+                  ? "text-muted-foreground/60"
+                  : "text-foreground"
+              )}
+            >
               {computed.creaitScore ?? "—"}
             </span>
-            <span className="block text-[11px] font-semibold text-muted-foreground">
-              CREAiT Score{computed.band ? ` · ${computed.band}` : ""}
-              {computed.provisional ? " · provisional" : ""}
-            </span>
+            <div className="pb-0.5">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                CREAiT Score
+              </p>
+              <p
+                className={cn(
+                  "text-sm font-bold leading-tight",
+                  computed.band
+                    ? "text-[color:var(--color-brand-electric-glow)]"
+                    : "text-muted-foreground"
+                )}
+              >
+                {computed.band ?? "Not yet scored"}
+                {computed.provisional && (
+                  <span className="ml-1.5 text-[11px] font-medium text-muted-foreground">
+                    provisional
+                  </span>
+                )}
+              </p>
+            </div>
           </div>
 
-          {PILLARS.map((p) => {
-            const n = computed.pillarScoredCounts[p.key];
-            const thin = computed.thinPillars[p.key];
-            return (
-              <div key={p.key}>
-                <span
-                  className={cn(
-                    "block text-base font-bold tabular-nums",
-                    thin && "text-muted-foreground/60"
-                  )}
-                  title={
-                    thin
-                      ? `Only ${n} of 10 ${p.label} indicators examined — too few to report as a pillar score, and excluded from the composite`
-                      : undefined
-                  }
-                >
-                  {computed.pillars[p.key] ?? "—"}
-                  {thin && "*"}
-                </span>
-                <span className="text-[10px] text-muted-foreground">
-                  {p.label} ({Math.round(p.weight * 100)}%) · {n}/10
-                </span>
-              </div>
-            );
-          })}
+          {/* Three pillar rails. Takes the remaining width; wraps under on a narrow window. */}
+          <div className="grid min-w-0 flex-1 basis-[340px] grid-cols-3 gap-x-5 gap-y-2">
+            {PILLARS.map((p) => (
+              <PillarMeter
+                key={p.key}
+                label={p.label}
+                weight={p.weight}
+                score={computed.pillars[p.key]}
+                examined={computed.pillarScoredCounts[p.key]}
+                thin={computed.thinPillars[p.key]}
+              />
+            ))}
+          </div>
 
           <div className="ml-auto text-right">
             <span className="block text-base font-bold tabular-nums text-[color:var(--color-brand-success)]">
